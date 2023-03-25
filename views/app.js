@@ -49,7 +49,7 @@ alert = text => {
     }
     已排队到 = false
     setTimeout(read_now, 1000)
-    app.对话.push({ role: "user", content: app.问题.replace(/\n+/g, '') })
+    app.对话.push({ role: "user", content: app.问题.replace(/\n+/g, '\n') })
     let 当前会话 = { role: "AI", content: '……' }
     response = await fetch("/api/chat_stream", {
         method: 'post',

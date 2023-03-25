@@ -81,9 +81,9 @@ def api_chat_stream():
             tmp = pipeline.decode(all_tokens[out_last:])
             if '\ufffd' not in tmp:
                 out_str += tmp
-                yield out_str.strip()
+                yield out_str.strip()+'///'
                 out_last = i + 1
-        yield out_str.strip()
+        yield out_str.strip()+'///'
         # except Exception as e:
         #     # pass
         #     print("错误",str(e),e)
