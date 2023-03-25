@@ -1,5 +1,11 @@
 # 闻达：一个大型语言模型调用平台
 目前支持chatGLM-6B、chatRWKV、chatYuan。
+![chatRWKV生成小说](imgs/novel.png)
+chatRWKV生成小说
+![设置和预设功能](imgs/setting.png)
+设置和预设功能
+![预设功能使用](imgs/func.png)
+预设功能使用
 ## 通用内容
 ### 1.除官方所需外，安装以下库：`bottle`
 ### 2.日志功能
@@ -17,3 +23,4 @@ YuanAPI.py
 ### 1.详细说明和教程
 ### 2.chatRWKV历史对话支持
 ### 3.chatYuan在线参数调整支持
+### 4.懒人包
