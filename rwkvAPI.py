@@ -110,7 +110,6 @@ def load_model():
     from rwkv.model import RWKV # pip install rwkv
     model = RWKV(model='RWKV-4-Pile-7B-EngChn-testNovel-2119-ctx2048-20230313.pth', strategy='cuda fp16i8 *20 -> cpu fp32')
 
-
     out, state = model.forward([187, 510, 1563, 310, 247], None)
     print(out.detach().cpu().numpy())                   # get logits
     out, state = model.forward([187, 510], None)
@@ -121,9 +120,6 @@ def load_model():
 
     from rwkv.utils import PIPELINE, PIPELINE_ARGS
     pipeline = PIPELINE(model, "20B_tokenizer.json")
-
-    ctx = "\nIn a shocking finding, scientist discovered a herd of dragons living in a remote, previously unexplored valley, in Tibet. Even more surprising to the researchers was the fact that the dragons spoke perfect Chinese."
-    print(ctx, end='')
 
 
     mutex.release()

@@ -14,4 +14,6 @@ rwkvAPI.py
 YuanAPI.py
 模型默认位置：ChatYuan-large-v2
 ## TODO
-详细说明和教程
+### 1.详细说明和教程
+### 2.chatRWKV历史对话支持
+### 3.chatYuan在线参数调整支持
