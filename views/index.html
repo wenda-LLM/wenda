@@ -1,0 +1,124 @@
+<html>
+
+<head>
+	<title>问答</title>
+	<meta charset="utf-8">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="mobile-web-app-capable" content="yes" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=400,  user-scalable=no">
+	<link rel="shortcut icon" href="#" />
+	<link href="https://npm.elemecdn.com/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
+	<link href="https://npm.elemecdn.com/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+	<script src="https://npm.elemecdn.com/vue@2.x/dist/vue.min.js"></script>
+	<script src="https://npm.elemecdn.com/vuetify@2.x/dist/vuetify.min.js"></script>
+
+	<!-- <link href="static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet"> -->
+
+	<!-- <link href="static/vuetify.min.css" rel="stylesheet">
+	<script src="static/vue.js"></script>
+	<script src="static/vuetify.min.js"></script> -->
+
+	<!-- <script src="static/pako.min.js"></script>
+	<script src="static/xlsx.core.min.js" charset="utf-8"></script> -->
+
+	<style>
+		.ask {
+			background: #bcffb0aa;
+			margin-left: auto;
+		}
+
+		.ask,
+		.answer {
+			padding: 1em;
+			background: #cececeaa;
+			border-radius: 16px;
+			white-space: pre-line;
+			max-width: 80%;
+			margin: 0 10px;
+		}
+
+		.头像 {
+			margin-bottom: auto;
+			color: #fff !important;
+			position: unset;
+		}
+
+		#app,
+		.v-application--wrap {
+			background: transparent;
+			min-height: 100%;
+		}
+
+		[v-cloak] {
+			display: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="app" v-cloak>
+		<v-app>
+			<v-navigation-drawer width="350" v-model="drawer" style="height: 100%;position: fixed;" temporary dark>
+				<v-list>
+					<v-list-item v-for="功能 in 功能菜单" @click.stop="载入功能(功能)">
+						<v-list-item-title v-text="功能.名称">
+						</v-list-item-title>
+					</v-list-item>
+					<v-list-item>
+						<v-slider :min="1000" :max="4000" :step="10" v-model="max_length" thumb-color="purple"
+							label="max_length" thumb-label></v-slider>
+					</v-list-item>
+					<v-list-item>
+						<v-slider :min="0" :max="1" :step="0.1" v-model="temperature" thumb-color="purple"
+							label="temperature" thumb-label></v-slider>
+					</v-list-item>
+					<v-list-item>
+						<v-slider :min="0" :max="1" :step="0.1" v-model="top_p" thumb-color="purple" label="top_p"
+							thumb-label></v-slider>
+					</v-list-item>
+				</v-list>
+			</v-navigation-drawer>
+			<v-toolbar dark style="width: 100%;top: 0;position: fixed;">
+				<v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+
+				<v-toolbar-title>问答</v-toolbar-title>
+				<v-spacer></v-spacer>
+
+				<v-switch hide-details color="purple" inset v-model="历史对话" label="历史对话记忆"></v-switch>
+			</v-toolbar>
+			<v-container>
+				<br><br><br>
+				<div v-for="(当前对话, index) in 对话" :key="index"
+					:class="['d-flex flex-row align-center my-2', 当前对话.role == 'user' ? 'justify-end': null]">
+					<span v-if="当前对话.role == 'user'" class="ask">{{ 当前对话.content }}</span>
+					<v-avatar :color="当前对话.role == 'user' ? 'indigo': 'purple'" size="36" class="头像">
+						<span>{{ {user:"问",AI:'答'}[当前对话.role] }}</span>
+					</v-avatar>
+					<span v-if="当前对话.role != 'user'" class="answer">{{ 当前对话.content }}</span>
+				</div>
+				<br><br><br><br><br><br><br><br>
+			</v-container>
+			<v-footer fixed>
+				<v-textarea :loading="loading" :disabled="loading" no-resize :label="会话模式.描述" :placeholder="会话模式.问题"
+					@keypress.enter="提交()" v-model="问题">
+				</v-textarea>
+				<div>
+					<v-btn color="purple" rounded="lg" dark size="x-large" @click="提交()" :loading="loading">
+						发送
+					</v-btn>
+					<br>
+					<br>
+					<v-chip v-if="会话模式.名称!='常规模式'" color="purple" outlined close @click:close="会话模式=功能[0]">
+						{{会话模式.名称}}
+					</v-chip>
+				</div>
+			</v-footer>
+			<v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line;">{{snackbar_text}}</v-snackbar>
+		</v-app>
+	</div>
+	<script src="func.js"></script>
+	<script src="app.js"></script>
+</body>
+
+</html>

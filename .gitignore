@@ -1,0 +1,10 @@
+__pycache__
+model
+ChatYuan-large-v2
+RWKV-4-Pile-7B-EngChn-testNovel-2119-ctx2048-20230313.pth
+py310
+Sunny-Ngrok启动工具.bat
+sunny.exe
+testdb.db
+sqlite3.dll
+SQLiteExpertPers32.exe
