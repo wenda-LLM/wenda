@@ -61,10 +61,9 @@ def api_chat_stream():
         except Exception as e:
             # pass
             print("错误",str(e),e)
-            yield "发生错误，正在重新加载模型"+str(e)+'///'
-            os._exit(0)
+            response=''
     if response=='':
-            yield "疑似显存不足，正在重新加载模型"+'///'
+            yield "发生错误，正在重新加载模型"+'///'
             os._exit(0)
     if logging:
         with session_maker() as session:
