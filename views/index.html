@@ -121,13 +121,13 @@
 			</v-container>
 			<v-footer fixed>
 				<v-textarea :loading="loading" :disabled="loading" no-resize :label="会话模式.描述" :placeholder="会话模式.问题"
-					@keypress.enter="提交()" v-model="问题">
+					@keypress.enter="提交()" v-model="问题" height="120">
 				</v-textarea>
 				<div>
-					<v-btn color="purple" height="200" rounded="lg" dark size="x-large" @click="提交()" :loading="loading">
+					<v-btn color="purple" rounded="lg" dark size="x-large" @click="提交()" :loading="loading">
 						发送
 					</v-btn>
-					<br>
+					<br><br>
 					<v-chip v-if="会话模式.名称!='常规模式'" color="purple" outlined close @click:close="会话模式=功能[0]">
 						{{会话模式.名称}}
 					</v-chip>

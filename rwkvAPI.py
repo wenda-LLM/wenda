@@ -108,7 +108,8 @@ def load_model():
     os.environ["RWKV_CUDA_ON"] = '0' # '1' to compile CUDA kernel (10x faster), requires c++ compiler & cuda libraries
 
     from rwkv.model import RWKV # pip install rwkv
-    model = RWKV(model='RWKV-4-Pile-7B-EngChn-testNovel-2119-ctx2048-20230313.pth', strategy='cuda fp16i8 *20 -> cpu fp32')
+    model = RWKV(model='RWKV-4-Pile-7B-EngChn-test5-20230326.pth',
+     strategy='cuda fp16i8 *20 -> cpu fp32')
 
     out, state = model.forward([187, 510, 1563, 310, 247], None)
     print(out.detach().cpu().numpy())                   # get logits
