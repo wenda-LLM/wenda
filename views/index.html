@@ -42,7 +42,6 @@
 		}
 
 		/* 滑轨两头的监听按钮颜色 */
-
 		.ask {
 			background: #bcffb0aa;
 			margin-left: auto;
@@ -111,10 +110,22 @@
 				<br><br><br>
 				<div v-for="(当前对话, index) in 对话" :key="index"
 					:class="['d-flex flex-row align-center my-2', 当前对话.role == 'user' ? 'justify-end': null]">
+
+
 					<span v-if="当前对话.role == 'user'" class="ask">{{ 当前对话.content }}</span>
-					<v-avatar :color="当前对话.role == 'user' ? 'indigo': 'purple'" size="36" class="头像">
-						<span>{{ {user:"问",AI:'答'}[当前对话.role] }}</span>
-					</v-avatar>
+
+					<v-hover v-slot="{ hover }">
+						<div>
+							<v-avatar :color="当前对话.role == 'user' ? 'indigo': 'purple'" size="36" class="头像">
+								<span>{{ {user:"问",AI:'答'}[当前对话.role] }}</span>
+							</v-avatar>
+							<v-expand-x-transition>
+								<v-icon v-if="hover" large text @click="删除 (当前对话)">mdi-delete</v-icon>
+							</v-expand-x-transition>
+
+						</div>
+					</v-hover>
+
 					<span v-if="当前对话.role != 'user'" class="answer">{{ 当前对话.content }}</span>
 				</div>
 				<br><br><br><br><br><br><br><br><br>
@@ -124,17 +135,24 @@
 					@keypress.enter="提交()" v-model="问题" height="120">
 				</v-textarea>
 				<div>
-					<v-btn color="purple" rounded="lg" dark size="x-large" @click="controller.abort()" v-if="loading">
-						中断
-					</v-btn>
-					<br><br>
-					<v-btn color="purple" rounded="lg" dark size="x-large" @click="提交()" :loading="loading">
+					<v-expand-transition>
+						<div v-if="loading">
+							<v-btn color="purple" rounded="lg" dark size="x-large" @click="中断()">
+								中断
+							</v-btn>
+							<br>
+						</div>
+					</v-expand-transition>
+					<v-btn style="margin: 10px 0;" color="purple" rounded="lg" dark size="x-large" @click="提交()"
+						:loading="loading">
 						发送
 					</v-btn>
-					<br><br>
-					<v-chip v-if="会话模式.名称!='常规模式'" color="purple" outlined close @click:close="会话模式=功能[0]">
-						{{会话模式.名称}}
-					</v-chip>
+					<br>
+					<v-expand-transition>
+						<v-chip v-if="会话模式.名称!='常规模式'" color="purple" outlined close @click:close="会话模式=功能[0]">
+							{{会话模式.名称}}
+						</v-chip>
+					</v-expand-transition>
 				</div>
 			</v-footer>
 			<v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line;">{{snackbar_text}}</v-snackbar>

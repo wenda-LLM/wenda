@@ -4,7 +4,7 @@ app = new Vue({
     vuetify: new Vuetify(),
     data: () => ({
         问题: '',
-        对话: [],
+        对话: JSON.parse(localStorage["对话历史"] || "[]"),
         历史对话: false,
         功能菜单: 功能,
         会话模式: {
@@ -32,8 +32,20 @@ alert = text => {
     app.会话模式 = 功能
     app.drawer = false
 }
-var controller = new AbortController();
-var signal = controller.signal;
+删除 = (item) => {
+    app.对话.splice(Math.floor(app.对话.indexOf(item) / 2) * 2, 2)
+    保存()
+}
+保存 = () => {
+    localStorage["对话历史"] = JSON.stringify(app.对话)
+}
+中断 = () => {
+    controller.abort()
+    controller = new AbortController();
+    signal = controller.signal;
+}
+controller = new AbortController();
+signal = controller.signal;
 提交 = async () => {
     app.loading = true
     let QA_history
@@ -89,6 +101,8 @@ var signal = controller.signal;
         }
     } catch { }
     app.loading = false
+    已排队到 = true
+    保存()
 }
 read_now = async () => {
     if (!已排队到) {
