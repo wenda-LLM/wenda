@@ -124,6 +124,10 @@
 					@keypress.enter="提交()" v-model="问题" height="120">
 				</v-textarea>
 				<div>
+					<v-btn color="purple" rounded="lg" dark size="x-large" @click="controller.abort()" v-if="loading">
+						中断
+					</v-btn>
+					<br><br>
 					<v-btn color="purple" rounded="lg" dark size="x-large" @click="提交()" :loading="loading">
 						发送
 					</v-btn>

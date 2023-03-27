@@ -1,4 +1,4 @@
-import threading
+import threading,os
 import datetime
 from bottle import route, response, request,static_file
 import bottle
@@ -62,12 +62,10 @@ def api_chat_stream():
             # pass
             print("错误",str(e),e)
             yield "发生错误，正在重新加载模型"+str(e)+'///'
-            thread_load_model = threading.Thread(target=load_model)
-            thread_load_model.start()
+            os._exit(0)
     if response=='':
             yield "疑似显存不足，正在重新加载模型"+'///'
-            thread_load_model = threading.Thread(target=load_model)
-            thread_load_model.start()
+            os._exit(0)
     if logging:
         with session_maker() as session:
             jl = 记录(时间=datetime.datetime.now(),IP=IP,问= prompt,答=response)
