@@ -1,0 +1,10 @@
+bottle
+paste
+sqlalchemy
+sqlalchemy_utils
+faiss-cpu
+sentence_transformers
+InstructorEmbedding
+tiktoken
+jieba
+unstructured

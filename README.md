@@ -12,12 +12,19 @@ chatRWKV生成小说
 链接：https://pan.baidu.com/s/105nOsldGt5mEPoT2np1ZoA?pwd=lyqz 
 提取码：lyqz
 包含程序主体和chatGLM-6B、chatYuan，分部是独立的压缩文件。chatRWKV模型更新频繁，请去官方链接下最新的。
+
 ## 安装
-### 1.除官方所需外，安装以下库：`bottle、paste`:
-`pip install bottle
-pip install paste`
+### 1.安装库
+```bottle
+paste
+sqlalchemy
+sqlalchemy_utils
+```
 ### 2.日志功能
-打开功能，需要打开相应模型API文件，改第六行`logging=False`为`logging=True`，安装`sqlalchemy`、`sqlalchemy_utils`。
+打开功能，需要打开相应模型API文件，改第六行`logging=False`为`logging=True`。
+## chatPDF功能(仅限chatGLM-6B模型）
+下载[hkunlp/instructor-large](https://huggingface.co/hkunlp/instructor-large/tree/main)，放在hkunlp/instructor-large。
+完整安装requirements.txt
 ## chatGLM-6B
 GLM6BAPI.py 
 模型默认位置：model\chatglm-6b-int4

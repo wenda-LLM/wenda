@@ -100,20 +100,15 @@
 			</v-navigation-drawer>
 			<v-toolbar dark style="width: 100%;top: 0;position: fixed;">
 				<v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-
 				<v-toolbar-title>闻达</v-toolbar-title>
 				<v-spacer></v-spacer>
-
 				<v-switch hide-details color="purple" inset v-model="历史对话" label="历史对话记忆"></v-switch>
 			</v-toolbar>
 			<v-container>
 				<br><br><br>
 				<div v-for="(当前对话, index) in 对话" :key="index"
 					:class="['d-flex flex-row align-center my-2', 当前对话.role == 'user' ? 'justify-end': null]">
-
-
 					<span v-if="当前对话.role == 'user'" class="ask">{{ 当前对话.content }}</span>
-
 					<v-hover v-slot="{ hover }">
 						<div>
 							<v-avatar :color="当前对话.role == 'user' ? 'indigo': 'purple'" size="36" class="头像">
@@ -122,7 +117,6 @@
 							<v-expand-x-transition>
 								<v-icon v-if="hover" large text @click="删除 (当前对话)">mdi-delete</v-icon>
 							</v-expand-x-transition>
-
 						</div>
 					</v-hover>
 
@@ -149,7 +143,7 @@
 					</v-btn>
 					<br>
 					<v-expand-transition>
-						<v-chip v-if="会话模式.名称!='常规模式'" color="purple" outlined close @click:close="会话模式=功能[0]">
+						<v-chip v-if="会话模式.名称!='常规模式'" color="purple" outlined close @click:close='会话模式={名称: "常规模式",描述: "输入问题",问题: ""}'>
 							{{会话模式.名称}}
 						</v-chip>
 					</v-expand-transition>

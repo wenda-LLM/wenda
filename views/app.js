@@ -65,8 +65,13 @@ signal = controller.signal;
     app.对话.push({ role: "user", content: app.问题.replace(/\n+/g, '\n') })
     let 当前会话 = { role: "AI", content: '……' }
     app.对话.push(当前会话)
+    let url
+    if(app.会话模式.名称=='chatPDF')
+     url="/api/chat_pdf"
+    else
+     url="/api/chat_stream"
     try {
-        response = await fetch("/api/chat_stream", {
+        response = await fetch(url, {
             signal: signal,
             method: 'post',
             body: JSON.stringify({

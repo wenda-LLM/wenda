@@ -72,8 +72,81 @@ def api_chat_stream():
             session.commit()
     print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m\n{response}")
     yield "/././"
+import json
+@route('/api/chat_pdf', method='POST')
+def api_chat_pdf():
+    data = request.json
+    prompt = data.get('prompt')
+    max_length = data.get('max_length')
+    if max_length is None:
+        max_length = 2048
+    top_p = data.get('top_p')
+    if top_p is None:
+        top_p = 0.7
+    temperature = data.get('temperature')
+    if temperature is None:
+        temperature = 0.9
+    response=''
+    # print(request.environ)
+    IP=request.environ.get('HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
+    global 当前用户
+    with mutex:
+        yield '正在计算///'
+        try:
+            response_d=qa({"question": prompt, "chat_history": []})
+            output_sources = [
+                        c.metadata for c in list(response_d["source_documents"])
+                    ]
+            response=  response_d ["answer"]+"\n来源:"+json.dumps(output_sources)
+            if(response):yield response+'///'
+        except Exception as e:
+            # pass
+            print("错误",str(e),e)
+            response=''
+    if response=='':
+            yield "发生错误，正在重新加载模型"+'///'
+            os._exit(0)
+    if logging:
+        with session_maker() as session:
+            jl = 记录(时间=datetime.datetime.now(),IP=IP,问= prompt,答=response)
+            session.add(jl)
+            session.commit()
+    print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m\n{response}")
+    yield "/././"
 model=None
 tokenizer=None
+from langchain.llms.base import LLM
+from langchain.llms.utils import enforce_stop_tokens
+from typing import Optional, List
+class ChatGLM_G(LLM):
+    history = []
+    @property
+    def _llm_type(self) -> str:
+        return "ChatGLM_G"
+
+    def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
+        print("prompt: ", prompt)
+        print("history: ", self.history)
+        response, updated_history = model.chat(
+            tokenizer, prompt, history=self.history, max_length=10000
+        )
+        if stop is not None:
+            response = enforce_stop_tokens(response, stop)
+        # self.history = updated_history
+        return response
+
+    def __call__(self, prompt: str, stop: Optional[List[str]] = None) -> str:
+        print("prompt: ", prompt)
+        print("history: ", self.history)
+        response, updated_history = model.chat(
+            tokenizer, prompt, history=self.history, max_length=10000
+        )
+
+        if stop is not None:
+            response = enforce_stop_tokens(response, stop)
+        # self.history = updated_history
+
+        return response
 def load_model():
     global model,tokenizer,当前用户
     mutex.acquire()
@@ -90,5 +163,50 @@ thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()
 
 
+from langchain.embeddings import HuggingFaceInstructEmbeddings
+model_name = "hkunlp/instructor-large"
+embeddings = HuggingFaceInstructEmbeddings(model_name=model_name)
+def init_agent(index_dir):
+
+    from langchain.vectorstores.faiss import FAISS
+    from langchain.prompts.prompt import PromptTemplate
+    from langchain.prompts.chat import (
+        ChatPromptTemplate,
+        SystemMessagePromptTemplate,
+        HumanMessagePromptTemplate,
+    )
+    from langchain.chains import ChatVectorDBChain
+    vectorstore = FAISS.load_local(index_dir, embeddings=embeddings)
+    system_template = """使用以下文段, 简洁和专业的来回答用户的问题。
+如果无法从中得到答案，请说 "不知道" 或 "没有足够的相关信息". 不要试图编造答案。 答案请使用中文.
+----------------
+{context}
+----------------
+"""
+    messages = [
+        SystemMessagePromptTemplate.from_template(system_template),
+        HumanMessagePromptTemplate.from_template("{question}"),
+    ]
+    prompt = ChatPromptTemplate.from_messages(messages)
+    condese_propmt_template = """任务: 给一段对话和一个后续问题，将后续问题改写成一个独立的问题。(确保问题是完整的, 没有模糊的指代)
+聊天记录：
+{chat_history}
+###
+
+后续问题：{question}
+
+改写后的独立, 完整的问题："""
+    new_question_prompt = PromptTemplate.from_template(condese_propmt_template)
+    # print(new_question_prompt)
+    qa = ChatVectorDBChain.from_llm(
+        llm=ChatGLM_G(),
+        vectorstore=vectorstore,
+        qa_prompt=prompt,
+        condense_question_prompt=new_question_prompt,
+    )
+    qa.return_source_documents = True
+    qa.top_k_docs_for_context = 3
+    return qa
+qa=init_agent('fy')
 # bottle.debug(True)
 bottle.run(server='paste',port=17860,quiet=True)
