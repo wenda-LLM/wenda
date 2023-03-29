@@ -102,7 +102,9 @@
 				<v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 				<v-toolbar-title>闻达</v-toolbar-title>
 				<v-spacer></v-spacer>
-				<v-switch hide-details color="purple" inset v-model="历史对话" label="历史对话记忆"></v-switch>
+				<v-switch hide-details color="purple" inset v-model="chatPDF" label="chatPDF"></v-switch>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<v-switch hide-details color="purple" inset v-model="历史对话" label="历史"></v-switch>
 			</v-toolbar>
 			<v-container>
 				<br><br><br>
@@ -147,6 +149,7 @@
 							{{会话模式.名称}}
 						</v-chip>
 					</v-expand-transition>
+					
 				</div>
 			</v-footer>
 			<v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line;">{{snackbar_text}}</v-snackbar>

@@ -1,7 +1,8 @@
 import threading,os
 import datetime
-from bottle import route, response, request,static_file
+from bottle import route, response, request,static_file,hook
 import bottle
+import torch
 logging=True
 if logging:
     from defineSQL import session_maker, 记录
@@ -20,7 +21,32 @@ def index():
 @route('/api/chat_now', method='GET')
 def api_chat_now():
     return '当前用户：'+当前用户[0]+"\n问题："+当前用户[1]+"\n回答："+当前用户[2]+''
-
+@hook('before_request')
+def validate():
+    REQUEST_METHOD = request.environ.get('REQUEST_METHOD')
+    HTTP_ACCESS_CONTROL_REQUEST_METHOD = request.environ.get('HTTP_ACCESS_CONTROL_REQUEST_METHOD')
+    if REQUEST_METHOD == 'OPTIONS' and HTTP_ACCESS_CONTROL_REQUEST_METHOD:
+        request.environ['REQUEST_METHOD'] = HTTP_ACCESS_CONTROL_REQUEST_METHOD
+@route('/api/save_news', method='OPTIONS')
+@route('/api/save_news', method='POST')
+def api_chat_stream():
+    response.set_header('Access-Control-Allow-Origin', '*')
+    response.add_header('Access-Control-Allow-Methods','POST,OPTIONS')
+    response.add_header('Access-Control-Allow-Headers',
+                        'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token')
+    try:
+        data = request.json
+        if not data:return '0'
+        title = data.get('title')
+        txt = data.get('txt')
+        cut_file=f"txt/{title}.txt"
+        with open(cut_file, 'w',encoding='utf-8') as f:   
+            f.write(txt)
+            f.close()
+        return '1'
+    except Exception as e:
+        print(e)
+    return '2'
 @route('/api/chat_stream', method='POST')
 def api_chat_stream():
     data = request.json
@@ -34,6 +60,9 @@ def api_chat_stream():
     temperature = data.get('temperature')
     if temperature is None:
         temperature = 0.9
+    pdf = data.get('pdf')
+    if pdf is None:
+        pdf = False
     history = data.get('history')
     history_formatted = None
     if history is not None:
@@ -53,56 +82,28 @@ def api_chat_stream():
     IP=request.environ.get('HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
     global 当前用户
     with mutex:
-        yield str(len(prompt))+'字正在计算///'
-        try:
-            for response, history in model.stream_chat(tokenizer, prompt, history_formatted, max_length=max_length, top_p=top_p,temperature=temperature):
-                当前用户=[IP,prompt,response]
-                if(response):yield response+'///'
-        except Exception as e:
-            # pass
-            print("错误",str(e),e)
-            response=''
-    if response=='':
-            yield "发生错误，正在重新加载模型"+'///'
-            os._exit(0)
-    if logging:
-        with session_maker() as session:
-            jl = 记录(时间=datetime.datetime.now(),IP=IP,问= prompt,答=response)
-            session.add(jl)
-            session.commit()
-    print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m\n{response}")
-    yield "/././"
-import json
-@route('/api/chat_pdf', method='POST')
-def api_chat_pdf():
-    data = request.json
-    prompt = data.get('prompt')
-    max_length = data.get('max_length')
-    if max_length is None:
-        max_length = 2048
-    top_p = data.get('top_p')
-    if top_p is None:
-        top_p = 0.7
-    temperature = data.get('temperature')
-    if temperature is None:
-        temperature = 0.9
-    response=''
-    # print(request.environ)
-    IP=request.environ.get('HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
-    global 当前用户
-    with mutex:
-        yield '正在计算///'
-        try:
+        footer='///'
+        if pdf:
             response_d=qa({"question": prompt, "chat_history": []})
             output_sources = [
                         c.metadata for c in list(response_d["source_documents"])
                     ]
-            response=  response_d ["answer"]+"\n来源:"+json.dumps(output_sources)
-            if(response):yield response+'///'
+            output_sources = [ i['source'].replace("txt_out\\","") for i in output_sources]
+            # print(output_sources)
+            prompt=  response_d ["answer"]
+            footer=  "\n来源：\n"+('\n').join(output_sources)+'///'
+        yield str(len(prompt))+'字正在计算///'
+        
+        print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m")
+        try:
+            for response, history in model.stream_chat(tokenizer, prompt, history_formatted, max_length=max_length, top_p=top_p,temperature=temperature):
+                当前用户=[IP,prompt,response]
+                if(response):yield response+footer
         except Exception as e:
             # pass
             print("错误",str(e),e)
             response=''
+        torch.cuda.empty_cache() 
     if response=='':
             yield "发生错误，正在重新加载模型"+'///'
             os._exit(0)
@@ -111,42 +112,19 @@ def api_chat_pdf():
             jl = 记录(时间=datetime.datetime.now(),IP=IP,问= prompt,答=response)
             session.add(jl)
             session.commit()
-    print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m\n{response}")
+    print(response)
     yield "/././"
 model=None
 tokenizer=None
 from langchain.llms.base import LLM
-from langchain.llms.utils import enforce_stop_tokens
 from typing import Optional, List
 class ChatGLM_G(LLM):
-    history = []
     @property
     def _llm_type(self) -> str:
         return "ChatGLM_G"
-
     def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
-        print("prompt: ", prompt)
-        print("history: ", self.history)
-        response, updated_history = model.chat(
-            tokenizer, prompt, history=self.history, max_length=10000
-        )
-        if stop is not None:
-            response = enforce_stop_tokens(response, stop)
-        # self.history = updated_history
-        return response
+        return prompt
 
-    def __call__(self, prompt: str, stop: Optional[List[str]] = None) -> str:
-        print("prompt: ", prompt)
-        print("history: ", self.history)
-        response, updated_history = model.chat(
-            tokenizer, prompt, history=self.history, max_length=10000
-        )
-
-        if stop is not None:
-            response = enforce_stop_tokens(response, stop)
-        # self.history = updated_history
-
-        return response
 def load_model():
     global model,tokenizer,当前用户
     mutex.acquire()
@@ -162,12 +140,12 @@ def load_model():
 thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()
 
+model_name = "sentence-transformers/simcse-chinese-roberta-wwm-ext"
+# model_name = "ACGVoc2vec"
+from langchain.embeddings import HuggingFaceEmbeddings
+embeddings = HuggingFaceEmbeddings(model_name=model_name)
 
-from langchain.embeddings import HuggingFaceInstructEmbeddings
-model_name = "hkunlp/instructor-large"
-embeddings = HuggingFaceInstructEmbeddings(model_name=model_name)
 def init_agent(index_dir):
-
     from langchain.vectorstores.faiss import FAISS
     from langchain.prompts.prompt import PromptTemplate
     from langchain.prompts.chat import (
@@ -177,8 +155,7 @@ def init_agent(index_dir):
     )
     from langchain.chains import ChatVectorDBChain
     vectorstore = FAISS.load_local(index_dir, embeddings=embeddings)
-    system_template = """使用以下文段, 简洁和专业的来回答用户的问题。
-如果无法从中得到答案，请说 "不知道" 或 "没有足够的相关信息". 不要试图编造答案。 答案请使用中文.
+    system_template = """使用以下文段, 回答用中文用户问题。如果无法从中得到答案，请说"没有足够的相关信息"。
 ----------------
 {context}
 ----------------
@@ -188,13 +165,12 @@ def init_agent(index_dir):
         HumanMessagePromptTemplate.from_template("{question}"),
     ]
     prompt = ChatPromptTemplate.from_messages(messages)
+    print(prompt)
     condese_propmt_template = """任务: 给一段对话和一个后续问题，将后续问题改写成一个独立的问题。(确保问题是完整的, 没有模糊的指代)
 聊天记录：
 {chat_history}
 ###
-
 后续问题：{question}
-
 改写后的独立, 完整的问题："""
     new_question_prompt = PromptTemplate.from_template(condese_propmt_template)
     # print(new_question_prompt)
@@ -205,8 +181,8 @@ def init_agent(index_dir):
         condense_question_prompt=new_question_prompt,
     )
     qa.return_source_documents = True
-    qa.top_k_docs_for_context = 3
+    qa.top_k_docs_for_context = 1
     return qa
-qa=init_agent('fy')
-# bottle.debug(True)
+qa=init_agent('xw')
+bottle.debug(True)
 bottle.run(server='paste',port=17860,quiet=True)
