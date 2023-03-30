@@ -12,7 +12,7 @@ app = new Vue({
             描述: "输入问题",
             问题: "",
         },
-        chatPDF:false,
+        chatPDF: false,
         temperature: 0.9,
         max_length: 2048,
         top_p: 0.3,
@@ -76,7 +76,7 @@ signal = controller.signal;
                 top_p: app.top_p,
                 max_length: app.max_length,
                 history: QA_history,
-                pdf:app.chatPDF
+                pdf: app.chatPDF
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -114,4 +114,17 @@ read_now = async () => {
         alert(await response.text())
         setTimeout(read_now, 3000)
     }
+}
+
+find = async (s) => {
+    response = await fetch("/api/find", {
+        method: 'post',
+        body: JSON.stringify({
+            prompt: s
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    console.table(await response.json())
 }

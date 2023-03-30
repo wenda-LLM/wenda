@@ -1,4 +1,4 @@
-import threading,os
+import threading,os,json
 import datetime
 from bottle import route, response, request,static_file,hook
 import bottle
@@ -47,6 +47,11 @@ def api_chat_stream():
     except Exception as e:
         print(e)
     return '2'
+@route('/api/find', method='POST')
+def api_find():
+    data = request.json
+    prompt = data.get('prompt')
+    return json.dumps(find(prompt))
 @route('/api/chat_stream', method='POST')
 def api_chat_stream():
     data = request.json
@@ -140,21 +145,31 @@ def load_model():
 thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()
 
-model_name = "sentence-transformers/simcse-chinese-roberta-wwm-ext"
+model_name = "sentence-transformers/text2vec-base-chinese"
+# model_name = "sentence-transformers/simcse-chinese-roberta-wwm-ext"
 # model_name = "ACGVoc2vec"
 from langchain.embeddings import HuggingFaceEmbeddings
 embeddings = HuggingFaceEmbeddings(model_name=model_name)
 
-def init_agent(index_dir):
-    from langchain.vectorstores.faiss import FAISS
-    from langchain.prompts.prompt import PromptTemplate
-    from langchain.prompts.chat import (
-        ChatPromptTemplate,
-        SystemMessagePromptTemplate,
-        HumanMessagePromptTemplate,
-    )
-    from langchain.chains import ChatVectorDBChain
-    vectorstore = FAISS.load_local(index_dir, embeddings=embeddings)
+from langchain.vectorstores.faiss import FAISS
+from langchain.prompts.prompt import PromptTemplate
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
+from langchain.chains import ChatVectorDBChain
+vectorstore = FAISS.load_local('xw', embeddings=embeddings)
+def find(s):
+    return [document_to_dict(d) for d in vectorstore.similarity_search(s)]
+
+
+def document_to_dict(d):
+    return {'c':d.page_content,'s':d.metadata['source']}
+
+
+
+def init_agent():
     system_template = """使用以下文段, 回答用中文用户问题。如果无法从中得到答案，请说"没有足够的相关信息"。
 ----------------
 {context}
@@ -165,7 +180,6 @@ def init_agent(index_dir):
         HumanMessagePromptTemplate.from_template("{question}"),
     ]
     prompt = ChatPromptTemplate.from_messages(messages)
-    print(prompt)
     condese_propmt_template = """任务: 给一段对话和一个后续问题，将后续问题改写成一个独立的问题。(确保问题是完整的, 没有模糊的指代)
 聊天记录：
 {chat_history}
@@ -181,8 +195,8 @@ def init_agent(index_dir):
         condense_question_prompt=new_question_prompt,
     )
     qa.return_source_documents = True
-    qa.top_k_docs_for_context = 1
+    qa.top_k_docs_for_context = 2
     return qa
-qa=init_agent('xw')
+qa=init_agent()
 bottle.debug(True)
 bottle.run(server='paste',port=17860,quiet=True)
