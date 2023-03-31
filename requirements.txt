@@ -6,5 +6,5 @@ faiss-cpu
 sentence_transformers
 InstructorEmbedding
 tiktoken
-jieba
+nltk
 unstructured

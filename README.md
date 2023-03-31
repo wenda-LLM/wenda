@@ -1,5 +1,6 @@
 # 闻达：一个大型语言模型调用平台
 目前支持chatGLM-6B、chatRWKV、chatYuan。
+在chatGLM-6B模型实现chatPDF功能
 ---
 chatRWKV生成小说
 ![chatRWKV生成小说](imgs/novel.png)
@@ -22,8 +23,8 @@ sqlalchemy_utils
 ```
 ### 2.日志功能
 打开功能，需要打开相应模型API文件，改第六行`logging=False`为`logging=True`。
-## chatPDF功能(仅限chatGLM-6B模型）
-下载[hkunlp/instructor-large](https://huggingface.co/hkunlp/instructor-large/tree/main)，放在hkunlp/instructor-large。
+## chatPDF功能(在chatGLM-6B模型实现）
+下载[simcse-chinese-roberta-wwm-ext](https://huggingface.co/cyclone/simcse-chinese-roberta-wwm-ext)，放在sentence-transformers\simcse-chinese-roberta-wwm-ext。
 完整安装requirements.txt
 ## chatGLM-6B
 GLM6BAPI.py 
