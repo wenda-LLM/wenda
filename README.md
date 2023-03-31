@@ -1,6 +1,12 @@
 # 闻达：一个大型语言模型调用平台
-目前支持chatGLM-6B、chatRWKV、chatYuan。
-在chatGLM-6B模型实现chatPDF功能
+主要功能：
+1. 目前支持模型：chatGLM-6B、chatRWKV、chatYuan。
+2. 在chatGLM-6B模型实现chatPDF功能
+3. 支持参数在线调整
+4. 支持chatGLM-6B流式输出和输出过程中中断
+5. 自动保存对话历史至浏览器（多用户同时使用不会冲突）
+6. 删除单条对话历史
+7. 支持局域网、内网部署和多用户同时使用。多用户同时使用中会自动排队，并显示当前用户。（内网部署需手动将前段静态资源切换成本地）
 ---
 chatRWKV生成小说
 ![chatRWKV生成小说](imgs/novel.png)
