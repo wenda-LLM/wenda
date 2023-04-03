@@ -111,7 +111,7 @@ def api_chat_stream():
         torch.cuda.empty_cache() 
     if response=='':
             yield "发生错误，正在重新加载模型"+'///'
-            os._exit(0)
+            #os._exit(0)
     if logging:
         with session_maker() as session:
             jl = 记录(时间=datetime.datetime.now(),IP=IP,问= prompt,答=response)

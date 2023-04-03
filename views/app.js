@@ -12,7 +12,7 @@ app = new Vue({
             描述: "输入问题",
             问题: "",
         },
-        chatPDF: false,
+        chatPDF: true,
         temperature: 0.9,
         max_length: 2048,
         top_p: 0.3,
