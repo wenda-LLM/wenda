@@ -49,14 +49,20 @@ controller = new AbortController();
 signal = controller.signal;
 提交 = async () => {
     app.loading = true
+    if(app.问题=="") 
+    {
+        alert("empty")
+        app.loading = false
+        return
+    }
     let QA_history
     if (app.历史对话) {
         QA_history = app.对话
-        // if (app.对话.length > 6) {
-        //     alert("历史信息过长，将仅保留最后3次对话记忆")
+        if (app.对话.length > 6) {
+            alert("历史信息过长，将仅保留最后3次对话记忆")
 
-        //     QA_history = app.对话.slice(app.对话.length - 6)
-        // }
+            QA_history = app.对话.slice(app.对话.length - 6)
+        }
     }
     else {
         QA_history = []
@@ -105,6 +111,13 @@ signal = controller.signal;
     app.loading = false
     已排队到 = true
     保存()
+}
+清除历史 = async () => {
+    app.loading = true
+    localStorage["对话历史"]=[]
+    app.历史对话=false
+    app.对话=[]
+    app.loading = false
 }
 read_now = async () => {
     if (!已排队到) {

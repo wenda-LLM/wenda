@@ -147,7 +147,7 @@ thread_load_model.start()
 
 #model_name = "cyclone/simcse-chinese-roberta-wwm-ext"
 # model_name = "sentence-transformers/simcse-chinese-roberta-wwm-ext"
-model_name = "./cyclone_simcse-chinese-roberta-wwm-ext"
+model_name = "shibing624_text2vec-base-chinese"
 from langchain.embeddings import HuggingFaceEmbeddings
 embeddings = HuggingFaceEmbeddings(model_name=model_name)
 
@@ -195,7 +195,7 @@ def init_agent():
         condense_question_prompt=new_question_prompt,
     )
     qa.return_source_documents = True
-    qa.top_k_docs_for_context = 3
+    qa.top_k_docs_for_context = 1
     return qa
 qa=init_agent()
 bottle.debug(True)

@@ -1,7 +1,7 @@
 <html>
 
 <head>
-	<title>闻达</title>
+	<title>巴山GPT</title>
 	<meta charset="utf-8">
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="mobile-web-app-capable" content="yes" />
@@ -100,11 +100,11 @@
 			</v-navigation-drawer>
 			<v-toolbar dark style="width: 100%;top: 0;position: fixed;">
 				<v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-				<v-toolbar-title>闻达</v-toolbar-title>
+				<v-toolbar-title>巴山GPT</v-toolbar-title>
 				<v-spacer></v-spacer>
-				<v-switch hide-details color="purple" inset v-model="chatPDF" label="chatPDF"></v-switch>
+				<v-switch hide-details color="purple" inset v-model="chatPDF" label="本地数据" :value="true"></v-switch>
 				&nbsp;&nbsp;&nbsp;&nbsp;
-				<v-switch hide-details color="purple" inset v-model="历史对话" label="历史"></v-switch>
+				<v-switch hide-details color="purple" inset v-model="历史对话" label="历史" ></v-switch>
 			</v-toolbar>
 			<v-container>
 				<br><br><br>
@@ -142,6 +142,11 @@
 					<v-btn style="margin: 10px 0;" color="purple" rounded="lg" dark size="x-large" @click="提交()"
 						:loading="loading">
 						发送
+					</v-btn>
+					<br>
+					<v-btn style="margin: 10px 0;" color="purple" rounded="lg" dark size="x-large" @click="清除历史()"
+						:loading="loading">
+						清除历史
 					</v-btn>
 					<br>
 					<v-expand-transition>
