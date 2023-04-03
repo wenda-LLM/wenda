@@ -135,7 +135,7 @@ def load_model():
     mutex.acquire()
     当前用户=['模型加载中','','']
     from transformers import AutoModel, AutoTokenizer
-    model_path="model/chatglm-6b-int4"
+    model_path="chatglm-6b-int4"
     tokenizer = AutoTokenizer.from_pretrained(model_path, local_files_only=True, trust_remote_code=True)
     model = AutoModel.from_pretrained(model_path, local_files_only=True, trust_remote_code=True)
     model = model.half()
@@ -145,9 +145,9 @@ def load_model():
 thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()
 
-model_name = "sentence-transformers/text2vec-base-chinese"
+#model_name = "cyclone/simcse-chinese-roberta-wwm-ext"
 # model_name = "sentence-transformers/simcse-chinese-roberta-wwm-ext"
-# model_name = "ACGVoc2vec"
+model_name = "./cyclone_simcse-chinese-roberta-wwm-ext"
 from langchain.embeddings import HuggingFaceEmbeddings
 embeddings = HuggingFaceEmbeddings(model_name=model_name)
 
@@ -187,7 +187,7 @@ def init_agent():
 后续问题：{question}
 改写后的独立, 完整的问题："""
     new_question_prompt = PromptTemplate.from_template(condese_propmt_template)
-    # print(new_question_prompt)
+    print(new_question_prompt)
     qa = ChatVectorDBChain.from_llm(
         llm=ChatGLM_G(),
         vectorstore=vectorstore,
@@ -195,8 +195,8 @@ def init_agent():
         condense_question_prompt=new_question_prompt,
     )
     qa.return_source_documents = True
-    qa.top_k_docs_for_context = 1
+    qa.top_k_docs_for_context = 3
     return qa
 qa=init_agent()
 bottle.debug(True)
-bottle.run(server='paste',port=17860,quiet=True)
+bottle.run(server='paste',port=17860,quiet=True,host="0.0.0.0")

@@ -8,3 +8,5 @@ InstructorEmbedding
 tiktoken
 nltk
 unstructured
+langchain
+bs4

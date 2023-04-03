@@ -21,3 +21,6 @@ txt
 ACGVoc2vec
 *.txt
 txt_out
+cyclone_simcse-chinese-roberta-wwm-ext/
+chatglm-6b-int4-qe
+chatglm-6b-int4
