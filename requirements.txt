@@ -11,3 +11,4 @@ tiktoken
 nltk
 unstructured
 icetk
+cpm_kernels
