@@ -1,5 +1,5 @@
 @echo off
-set PYTHON=%~dp0\py310\\python.exe
+call settings.bat
 %PYTHON% gen_data.py
 pause
 exit /b

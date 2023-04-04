@@ -7,7 +7,12 @@ logging=True
 if logging:
     from defineSQL import session_maker, 记录
 mutex = threading.Lock()
-
+glm_path=os.environ.get('glm_path')
+print('glm模型地址',glm_path)
+embeddings_path =os.environ.get('embeddings_path')
+print('embeddings模型地址',embeddings_path)
+vectorstore_path =os.environ.get('vectorstore_path')
+print('vectorstore保存地址',vectorstore_path)
 @route('/static/:name')
 def staticjs(name='-'):
     return static_file(name, root="views\static")
@@ -135,21 +140,16 @@ def load_model():
     mutex.acquire()
     当前用户=['模型加载中','','']
     from transformers import AutoModel, AutoTokenizer
-    model_path="model/chatglm-6b-int4"
-    tokenizer = AutoTokenizer.from_pretrained(model_path, local_files_only=True, trust_remote_code=True)
-    model = AutoModel.from_pretrained(model_path, local_files_only=True, trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(glm_path, local_files_only=True, trust_remote_code=True)
+    model = AutoModel.from_pretrained(glm_path, local_files_only=True, trust_remote_code=True)
     model = model.half()
     model = model.cuda()
     model = model.eval()
     mutex.release()
 thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()
-
-model_name = "sentence-transformers/text2vec-base-chinese"
-# model_name = "sentence-transformers/simcse-chinese-roberta-wwm-ext"
-# model_name = "ACGVoc2vec"
 from langchain.embeddings import HuggingFaceEmbeddings
-embeddings = HuggingFaceEmbeddings(model_name=model_name)
+embeddings = HuggingFaceEmbeddings(model_name=embeddings_path)
 
 from langchain.vectorstores.faiss import FAISS
 from langchain.prompts.prompt import PromptTemplate
@@ -159,15 +159,13 @@ from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
 )
 from langchain.chains import ChatVectorDBChain
-vectorstore = FAISS.load_local('xw', embeddings=embeddings)
+vectorstore = FAISS.load_local(vectorstore_path, embeddings=embeddings)
 def find(s):
     return [document_to_dict(d) for d in vectorstore.similarity_search(s)]
 
 
 def document_to_dict(d):
     return {'c':d.page_content,'s':d.metadata['source']}
-
-
 
 def init_agent():
     system_template = """使用以下文段, 回答用中文用户问题。如果无法从中得到答案，请说"没有足够的相关信息"。

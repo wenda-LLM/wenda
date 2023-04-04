@@ -4,6 +4,10 @@ import sys
 from langchain.vectorstores.faiss import FAISS
 from langchain.document_loaders import DirectoryLoader
 from langchain.text_splitter import TokenTextSplitter,CharacterTextSplitter
+embeddings_path =os.environ.get('embeddings_path')
+print('embeddings模型地址',embeddings_path)
+vectorstore_path =os.environ.get('vectorstore_path')
+print('vectorstore保存地址',vectorstore_path)
 floder='txt'
 files=os.listdir(floder)
 def replaceall(mul,str):
@@ -22,18 +26,17 @@ for file in files:
     with open(cut_file, 'w',encoding='utf-8') as f:   
         f.write(data)
         f.close()
+print("开始读取数据")
 loader = DirectoryLoader('txt_out',glob='**/*.txt')
 docs = loader.load()
 # text_splitter = TokenTextSplitter(chunk_size=500, chunk_overlap=15)
 text_splitter = CharacterTextSplitter(chunk_size=800, chunk_overlap=20,separator='\n')
 doc_texts = text_splitter.split_documents(docs)
 # print(doc_texts)
-model_name = "sentence-transformers/text2vec-base-chinese"
-# model_name = "sentence-transformers/simcse-chinese-roberta-wwm-ext"
-# model_name = "ACGVoc2vec"
 from langchain.embeddings import HuggingFaceEmbeddings
-embeddings = HuggingFaceEmbeddings(model_name=model_name)
+embeddings = HuggingFaceEmbeddings(model_name=embeddings_path)
 
 vectorstore = FAISS.from_documents(doc_texts, embeddings)
-vectorstore.save_local('xw')
-print(1)
+print("处理完成")
+vectorstore.save_local(vectorstore_path)
+print("保存完成")
