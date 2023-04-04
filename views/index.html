@@ -69,6 +69,10 @@
 			min-height: 100%;
 		}
 
+		.float {
+			position: absolute !important;
+		}
+
 		[v-cloak] {
 			display: none;
 		}
@@ -104,7 +108,17 @@
 				<v-spacer></v-spacer>
 				<v-switch hide-details color="purple" inset v-model="chatPDF" label="chatPDF"></v-switch>
 				&nbsp;&nbsp;&nbsp;&nbsp;
-				<v-switch hide-details color="purple" inset v-model="历史对话" label="历史"></v-switch>
+				<v-hover v-slot="{ hover }">
+					<div>
+						<v-switch hide-details color="purple" inset v-model="历史对话" label="历史"></v-switch>
+						<v-expand-transition>
+							<v-btn class="float" v-if="hover" color="purple" rounded="lg" dark size="x-large"
+								@click="对话=[]" :loading="loading">
+								清除历史
+							</v-btn>
+						</v-expand-transition>
+					</div>
+				</v-hover>
 			</v-toolbar>
 			<v-container>
 				<br><br><br>
@@ -117,7 +131,7 @@
 								<span>{{ {user:"问",AI:'答'}[当前对话.role] }}</span>
 							</v-avatar>
 							<v-expand-x-transition>
-								<v-icon v-if="hover" large text @click="删除 (当前对话)">mdi-delete</v-icon>
+								<v-icon class="float" v-if="hover" large text @click="删除 (当前对话)">mdi-delete</v-icon>
 							</v-expand-x-transition>
 						</div>
 					</v-hover>
