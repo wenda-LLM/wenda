@@ -19,5 +19,5 @@ rem vectorstore保存位置
 
 set rwkv_path=..\RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048.pth
 rem rwkv模型位置
-set rwkv_strategy=cuda fp16i8 *20 -> cpu fp32
+set "rwkv_strategy=cuda fp16i8 *20 -> cpu fp32"
 rem rwkv模型参数
