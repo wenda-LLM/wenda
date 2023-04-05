@@ -49,6 +49,6 @@ YuanAPI.py
 模型默认位置：ChatYuan-large-v2
 ## TODO
 ### 1.详细说明和教程
-### 2.chatRWKV历史对话支持
+### 2.chatRWKV历史对话支持(已支持，但所有用户共享state不能独立，未完待续）
 ### 3.chatYuan在线参数调整支持
 

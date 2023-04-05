@@ -35,6 +35,10 @@ def api_chat_stream():
     temperature = data.get('temperature')
     if temperature is None:
         temperature = 0.9
+    history = data.get('history')
+    global state
+    if history is None:
+        state=None
     response=''
     # print(request.environ)
     IP=request.environ.get('HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
@@ -61,7 +65,7 @@ def api_chat_stream():
         out_last = 0
         out_str = ''
         occurrence = {}
-        state = None
+        print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m\n")
         for i in range(int(token_count)):
             out, state = model.forward(pipeline.encode(ctx)[-ctx_limit:] if i == 0 else [token], state)
             for n in args.token_ban:
@@ -79,6 +83,9 @@ def api_chat_stream():
                 occurrence[token] += 1
             
             tmp = pipeline.decode(all_tokens[out_last:])
+            print(tmp,end='')
+            if tmp =='\n':
+                break
             if '\ufffd' not in tmp:
                 out_str += tmp
                 yield out_str.strip()+'///'
@@ -92,12 +99,13 @@ def api_chat_stream():
             jl = 记录(时间=datetime.datetime.now(),IP=IP,问= prompt,答=response)
             session.add(jl)
             session.commit()
-    print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m\n{response}")
+   
     yield "/././"
 pipeline=None
 PIPELINE_ARGS=None
 model=None
 ctx_limit = 1024
+state = None
 def load_model():
     global pipeline,PIPELINE_ARGS,model
     mutex.acquire()
