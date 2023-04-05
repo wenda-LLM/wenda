@@ -8,6 +8,18 @@ if settings.logging:
     from defineSQL import session_maker, 记录
 mutex = threading.Lock()
 
+interface = ":"
+user = "Bob"
+bot = "Alice"
+
+init_prompt = f'''
+The following is a coherent verbose detailed conversation between a Chinese girl named {bot} and her friend {user}. \
+{bot} is very intelligent, creative and friendly. \
+{bot} likes to tell {user} a lot about herself and her opinions. \
+{bot} usually gives {user} kind, helpful and informative advices.
+
+'''
+
 @route('/static/:name')
 def staticjs(name='-'):
     return static_file(name, root="views\static")
@@ -60,7 +72,7 @@ def api_chat_stream():
         else:
             ctx = f'\n{ctx.strip()}'
 
-
+        ctx = f"{user}{interface} {ctx}\n\n{bot}{interface}"
         all_tokens = []
         out_last = 0
         out_str = ''
@@ -84,10 +96,11 @@ def api_chat_stream():
             
             tmp = pipeline.decode(all_tokens[out_last:])
             print(tmp,end='')
-            if tmp =='\n':
-                break
             if '\ufffd' not in tmp:
                 out_str += tmp
+                if '\n\n' in out_str or f'{user}{interface}' in out_str or f'{bot}{interface}' in out_str:
+                    out_str = out_str.removesuffix('\n\n').removesuffix(f'{user}{interface}').removesuffix(f'{bot}{interface}')
+                    break
                 yield out_str.strip()+'///'
                 out_last = i + 1
         yield out_str.strip()+'///'
@@ -136,5 +149,5 @@ thread_load_model.start()
 
 
 # bottle.debug(True)
-bottle.run(server='paste',port=17860,quiet=True)
+bottle.run(server='paste',host="0.0.0.0",port=17860,quiet=True)
 
