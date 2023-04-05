@@ -49,7 +49,7 @@ def api_chat_stream():
         temperature = 0.9
     history = data.get('history')
     global state
-    if history is None:
+    if len(history) <=2:
         state=None
     response=''
     # print(request.environ)
