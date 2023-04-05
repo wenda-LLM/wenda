@@ -2,17 +2,12 @@ import threading,os,json
 import datetime
 from bottle import route, response, request,static_file,hook
 import bottle
+import settings
 import torch
-logging=True
-if logging:
+if settings.logging:
     from defineSQL import session_maker, 记录
 mutex = threading.Lock()
 glm_path=os.environ.get('glm_path')
-print('glm模型地址',glm_path)
-embeddings_path =os.environ.get('embeddings_path')
-print('embeddings模型地址',embeddings_path)
-vectorstore_path =os.environ.get('vectorstore_path')
-print('vectorstore保存地址',vectorstore_path)
 @route('/static/:name')
 def staticjs(name='-'):
     return static_file(name, root="views\static")
@@ -117,7 +112,7 @@ def api_chat_stream():
     if response=='':
             yield "发生错误，正在重新加载模型"+'///'
             os._exit(0)
-    if logging:
+    if settings.logging:
         with session_maker() as session:
             jl = 记录(时间=datetime.datetime.now(),IP=IP,问= prompt,答=response)
             session.add(jl)
@@ -140,8 +135,8 @@ def load_model():
     mutex.acquire()
     当前用户=['模型加载中','','']
     from transformers import AutoModel, AutoTokenizer
-    tokenizer = AutoTokenizer.from_pretrained(glm_path, local_files_only=True, trust_remote_code=True)
-    model = AutoModel.from_pretrained(glm_path, local_files_only=True, trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(settings.glm_path, local_files_only=True, trust_remote_code=True)
+    model = AutoModel.from_pretrained(settings.glm_path, local_files_only=True, trust_remote_code=True)
     model = model.half()
     model = model.cuda()
     model = model.eval()
@@ -149,7 +144,7 @@ def load_model():
 thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()
 from langchain.embeddings import HuggingFaceEmbeddings
-embeddings = HuggingFaceEmbeddings(model_name=embeddings_path)
+embeddings = HuggingFaceEmbeddings(model_name=settings.embeddings_path)
 
 from langchain.vectorstores.faiss import FAISS
 from langchain.prompts.prompt import PromptTemplate
@@ -159,7 +154,7 @@ from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
 )
 from langchain.chains import ChatVectorDBChain
-vectorstore = FAISS.load_local(vectorstore_path, embeddings=embeddings)
+vectorstore = FAISS.load_local(settings.vectorstore_path, embeddings=embeddings)
 def find(s):
     return [document_to_dict(d) for d in vectorstore.similarity_search(s)]
 

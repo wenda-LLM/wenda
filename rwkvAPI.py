@@ -1,10 +1,10 @@
 import threading
+import settings
 import datetime
 from bottle import route, response, request,static_file
 import bottle
 
-logging=False
-if logging:
+if settings.logging:
     from defineSQL import session_maker, 记录
 mutex = threading.Lock()
 
@@ -87,7 +87,7 @@ def api_chat_stream():
         # except Exception as e:
         #     # pass
         #     print("错误",str(e),e)
-    if logging:
+    if settings.logging:
         with session_maker() as session:
             jl = 记录(时间=datetime.datetime.now(),IP=IP,问= prompt,答=response)
             session.add(jl)
@@ -108,8 +108,8 @@ def load_model():
     os.environ["RWKV_CUDA_ON"] = '0' # '1' to compile CUDA kernel (10x faster), requires c++ compiler & cuda libraries
 
     from rwkv.model import RWKV # pip install rwkv
-    model = RWKV(model='RWKV-4-Pile-7B-EngChn-test5-20230326.pth',
-     strategy='cuda fp16i8 *20 -> cpu fp32')
+    model = RWKV(model=settings.rwkv_path,
+     strategy=settings.rwkv_strategy)
 
     out, state = model.forward([187, 510, 1563, 310, 247], None)
     print(out.detach().cpu().numpy())                   # get logits
@@ -121,8 +121,6 @@ def load_model():
 
     from rwkv.utils import PIPELINE, PIPELINE_ARGS
     pipeline = PIPELINE(model, "20B_tokenizer.json")
-
-
     mutex.release()
     print("模型加载完成")
 thread_load_model = threading.Thread(target=load_model)
