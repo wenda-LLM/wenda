@@ -9,13 +9,13 @@
 7. 支持局域网、内网部署和多用户同时使用。（内网部署需手动将前段静态资源切换成本地）
 8. 多用户同时使用中会自动排队，并显示当前用户。
 
-*欢迎同学们制作教学视频、懒人包等，做好请和我联系，我会把相关链接加到readme里*
+**欢迎同学们制作教学视频、懒人包等，做好请和我联系，我会把相关链接加到readme里**
 ---
 
 设置和预设功能
-![设置和预设功能](imgs/setting.png)
+![](imgs/setting.png)
 预设功能使用
-![预设功能使用](imgs/func.png)
+![](imgs/func.png)
 
 ## 懒人包
 链接：https://pan.baidu.com/s/105nOsldGt5mEPoT2np1ZoA?pwd=lyqz 
@@ -44,8 +44,10 @@ chatGLM-6B正常使用中，勾选右上角chatPDF
 运行`run_rwkv.bat`
 模型位置等参数：修改`settings.bat`
 默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢
-chatRWKV生成小说
-![chatRWKV生成小说](imgs/novel.png)
+生成小说
+![](imgs/novel.png)
+文字冒险游戏
+![](imgs/wzmx.png)
 ## chatYuan
 YuanAPI.py
 模型默认位置：ChatYuan-large-v2
