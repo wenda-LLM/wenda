@@ -19,14 +19,20 @@
 
 ## 懒人包
 链接：https://pan.baidu.com/s/105nOsldGt5mEPoT2np1ZoA?pwd=lyqz 
+
 提取码：lyqz
-旧版包含程序主体和chatGLM-6B、chatYuan，分部是独立的压缩文件。chatRWKV模型更新频繁，请去官方链接下最新的。不支持chatPDF功能
-新版只有chatGLM-6B，重新制作，体积更新，包含各种优化，含chatPDF功能，推荐使用
+
+默认参数在GTX1660Ti（6G显存）上运行良好。
+1. 旧版包含程序主体和chatGLM-6B、chatYuan，分别是独立的压缩文件。
+2. chatRWKV模型更新频繁，请去官方链接下最新的。暂不支持chatPDF功能，很快就加上。
+3. 新版暂时只有chatGLM-6B，但重新制作，体积更新，包含各种优化，集成知识库功能，推荐使用。
 ## 安装
 ### 1.安装库
 ```pip install -r requirements.txt```
 ### 2.下载模型
-根据需要，下载对应模型。建议使用chatRWKV的RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048（截止4月6日效果较好），或chatGLM-6B。
+根据需要，下载对应模型。
+
+建议使用chatRWKV的RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048（截止4月6日效果较好），或chatGLM-6B。
 ## 知识库功能(当前在chatGLM-6B模型实现）
 ### 准备
 #### 1.下载中文sentence transformers模型
@@ -37,13 +43,13 @@
 ### 使用
 chatGLM-6B正常使用中，勾选右上角chatPDF
 ## chatGLM-6B
-运行`run_GLM6B.bat`
-模型位置等参数：修改`settings.bat`
-默认参数在GTX1660Ti（6G显存）上运行良好
+运行：`run_GLM6B.bat`。
+模型位置等参数：修改`settings.bat`。
+默认参数在GTX1660Ti（6G显存）上运行良好。
 ## chatRWKV
-运行`run_rwkv.bat`
-模型位置等参数：修改`settings.bat`
-默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢
+运行：`run_rwkv.bat`。
+模型位置等参数：修改`settings.bat`。
+默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢。
 ### 生成小说
 ![](imgs/novel.png)
 #### 文字冒险游戏
