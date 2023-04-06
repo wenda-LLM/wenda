@@ -51,11 +51,10 @@ def api_chat_stream():
     if history is not None:
         tmp = []
         for i, old_chat in enumerate(history):
-            if len(tmp) == 0 and old_chat['role'] == "user":
+            if old_chat['role'] == "user":
                 tmp.append("Bob:"+old_chat['content'])
             elif old_chat['role'] == "AI":
                 tmp.append("Alice:"+old_chat['content'])
-                tmp = []
             else:
                 continue
         history='\n'.join(tmp)
@@ -76,10 +75,10 @@ def api_chat_stream():
                     token_ban = [], # ban the generation of some tokens
                     token_stop = [0]) # stop generation whenever you see any token here
         ctx = prompt.strip(' ')
-        ctx = history+f"Bob:{ctx}\nAlice:"
+        ctx = history+f"\nBob:{ctx}\nAlice:"
         all_tokens = []
         out_last = 0
-        out_str = ''
+        response = ''
         occurrence = {}
         print( f"\033[1;32m{IP}:\033[1;31m{ctx}\033[1;37m",end='')
         for i in range(int(token_count)):
@@ -100,14 +99,14 @@ def api_chat_stream():
             
             tmp = pipeline.decode(all_tokens[out_last:])
             if '\ufffd' not in tmp:
-                out_str += tmp
-                if  out_str.endswith('\n\n'):
-                    out_str = out_str.removesuffix('\n\n')
+                response += tmp
+                if  response.endswith('\n\n'):
+                    response = response.removesuffix('\n\n')
                     break
                 print(tmp,end='')
-                yield out_str.strip()+'///'
+                yield response.strip()+'///'
                 out_last = i + 1
-        yield out_str.strip()+'///'
+        yield response.strip()+'///'
         # except Exception as e:
         #     # pass
         #     print("错误",str(e),e)

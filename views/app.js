@@ -51,7 +51,7 @@ signal = controller.signal;
     app.loading = true
     let QA_history
     if (app.历史对话) {
-        QA_history = app.对话
+        QA_history = app.对话.concat()
         // if (app.对话.length > 6) {
         //     alert("历史信息过长，将仅保留最后3次对话记忆")
 
