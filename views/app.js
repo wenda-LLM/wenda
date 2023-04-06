@@ -12,7 +12,7 @@ app = new Vue({
             描述: "输入问题",
             问题: "",
         },
-        chatPDF: false,
+        zhishiku: false,
         temperature: 0.9,
         max_length: 2048,
         top_p: 0.3,
@@ -76,7 +76,7 @@ signal = controller.signal;
                 top_p: app.top_p,
                 max_length: app.max_length,
                 history: QA_history,
-                pdf: app.chatPDF
+                zhishiku: app.zhishiku
             }),
             headers: {
                 'Content-Type': 'application/json'

@@ -8,8 +8,10 @@ print('embeddings模型地址',embeddings_path)
 vectorstore_path =os.environ.get('vectorstore_path')
 print('vectorstore保存地址',vectorstore_path)
 
-chunk_size =os.environ.get('chunk_size')
+chunk_size =int(os.environ.get('chunk_size'))
 print('chunk_size',chunk_size)
+chunk_count =int(os.environ.get('chunk_count'))
+print('chunk_count',chunk_count)
 
 rwkv_path =os.environ.get('rwkv_path')
 print('rwkv模型地址',rwkv_path)

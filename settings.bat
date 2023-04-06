@@ -16,8 +16,11 @@ set embeddings_path=model\simcse-chinese-roberta-wwm-ext
 rem embeddings模型位置
 set vectorstore_path=xw
 rem vectorstore保存位置
-set chunk_size=800
+set chunk_size=600
 rem chunk_size
+set chunk_count=1
+rem chunk_count
+
 
 set rwkv_path=..\RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048.pth
 rem rwkv模型位置

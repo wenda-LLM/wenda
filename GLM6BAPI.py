@@ -51,7 +51,7 @@ def api_chat_stream():
 def api_find():
     data = request.json
     prompt = data.get('prompt')
-    return json.dumps(find(prompt))
+    return json.dumps(zhishiku.find(prompt))
 @route('/api/chat_stream', method='POST')
 def api_chat_stream():
     data = request.json
@@ -65,9 +65,9 @@ def api_chat_stream():
     temperature = data.get('temperature')
     if temperature is None:
         temperature = 0.9
-    pdf = data.get('pdf')
-    if pdf is None:
-        pdf = False
+    use_zhishiku = data.get('zhishiku')
+    if use_zhishiku is None:
+        use_zhishiku = False
     history = data.get('history')
     history_formatted = None
     if history is not None:
@@ -88,8 +88,8 @@ def api_chat_stream():
     global 当前用户
     with mutex:
         footer='///'
-        if pdf:
-            response_d=qa({"question": prompt, "chat_history": []})
+        if use_zhishiku:
+            response_d=zhishiku.qa({"question": prompt, "chat_history": []})
             output_sources = [
                         c.metadata for c in list(response_d["source_documents"])
                     ]
@@ -121,15 +121,6 @@ def api_chat_stream():
     yield "/././"
 model=None
 tokenizer=None
-from langchain.llms.base import LLM
-from typing import Optional, List
-class ChatGLM_G(LLM):
-    @property
-    def _llm_type(self) -> str:
-        return "ChatGLM_G"
-    def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
-        return prompt
-
 def load_model():
     global model,tokenizer,当前用户
     mutex.acquire()
@@ -141,55 +132,9 @@ def load_model():
     model = model.cuda()
     model = model.eval()
     mutex.release()
+    print("模型加载完成")
 thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()
-from langchain.embeddings import HuggingFaceEmbeddings
-embeddings = HuggingFaceEmbeddings(model_name=settings.embeddings_path)
-
-from langchain.vectorstores.faiss import FAISS
-from langchain.prompts.prompt import PromptTemplate
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-)
-from langchain.chains import ChatVectorDBChain
-vectorstore = FAISS.load_local(settings.vectorstore_path, embeddings=embeddings)
-def find(s):
-    return [document_to_dict(d) for d in vectorstore.similarity_search(s)]
-
-
-def document_to_dict(d):
-    return {'c':d.page_content,'s':d.metadata['source']}
-
-def init_agent():
-    system_template = """使用以下文段, 回答用中文用户问题。如果无法从中得到答案，请说"没有足够的相关信息"。
-----------------
-{context}
-----------------
-"""
-    messages = [
-        SystemMessagePromptTemplate.from_template(system_template),
-        HumanMessagePromptTemplate.from_template("{question}"),
-    ]
-    prompt = ChatPromptTemplate.from_messages(messages)
-    condese_propmt_template = """任务: 给一段对话和一个后续问题，将后续问题改写成一个独立的问题。(确保问题是完整的, 没有模糊的指代)
-聊天记录：
-{chat_history}
-###
-后续问题：{question}
-改写后的独立, 完整的问题："""
-    new_question_prompt = PromptTemplate.from_template(condese_propmt_template)
-    # print(new_question_prompt)
-    qa = ChatVectorDBChain.from_llm(
-        llm=ChatGLM_G(),
-        vectorstore=vectorstore,
-        qa_prompt=prompt,
-        condense_question_prompt=new_question_prompt,
-    )
-    qa.return_source_documents = True
-    qa.top_k_docs_for_context = 1
-    return qa
-qa=init_agent()
+import zhishiku
 bottle.debug(True)
 bottle.run(server='paste',port=17860,quiet=True)

@@ -1,7 +1,7 @@
 # 闻达：一个大型语言模型调用平台
 ## 简介
 1. 目前支持模型：chatGLM-6B、chatRWKV、chatYuan。
-2. 在chatGLM-6B模型实现类chatPDF功能
+2. 知识库自动查找
 3. 支持参数在线调整
 4. 支持chatGLM-6B流式输出和输出过程中中断
 5. 自动保存对话历史至浏览器（多用户同时使用不会冲突）
@@ -11,8 +11,7 @@
 
 *欢迎同学们制作教学视频、懒人包等，做好请和我联系，我会把相关链接加到readme里*
 ---
-chatRWKV生成小说
-![chatRWKV生成小说](imgs/novel.png)
+
 设置和预设功能
 ![设置和预设功能](imgs/setting.png)
 预设功能使用
@@ -26,9 +25,9 @@ chatRWKV生成小说
 ## 安装
 ### 1.安装库
 ```pip install -r requirements.txt```
-### 2.日志功能
-打开功能，需要打开相应模型API文件，改第六行`logging=False`为`logging=True`。
-## chatPDF功能(在chatGLM-6B模型实现）
+### 2.下载模型
+根据需要，下载对应模型。建议使用chatRWKV的RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048（截止4月6日效果较好），或chatGLM-6B。
+## 知识库功能(当前在chatGLM-6B模型实现）
 ### 准备
 #### 1.下载中文sentence transformers模型
 下载[simcse-chinese-roberta-wwm-ext](https://huggingface.co/cyclone/simcse-chinese-roberta-wwm-ext)，放在`model\simcse-chinese-roberta-wwm-ext`。
@@ -39,11 +38,14 @@ chatRWKV生成小说
 chatGLM-6B正常使用中，勾选右上角chatPDF
 ## chatGLM-6B
 运行`run_GLM6B.bat`
-修改参数：修改`settings.bat`
-模型默认位置：model\chatglm-6b-int4
+模型位置等参数：修改`settings.bat`
+默认参数在GTX1660Ti（6G显存）上运行良好
 ## chatRWKV
-rwkvAPI.py 
-模型默认位置：RWKV-4-Pile-7B-EngChn-testNovel-2119-ctx2048-20230313.pth
+运行`run_rwkv.bat`
+模型位置等参数：修改`settings.bat`
+默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢
+chatRWKV生成小说
+![chatRWKV生成小说](imgs/novel.png)
 ## chatYuan
 YuanAPI.py
 模型默认位置：ChatYuan-large-v2
