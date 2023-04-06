@@ -11,3 +11,7 @@ txt
 cpu
 新建文件夹
 txt1
+
+# virtual environment
+/venv/
+venv.bat
