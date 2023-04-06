@@ -4,10 +4,7 @@ import sys
 from langchain.vectorstores.faiss import FAISS
 from langchain.document_loaders import DirectoryLoader
 from langchain.text_splitter import TokenTextSplitter,CharacterTextSplitter
-embeddings_path =os.environ.get('embeddings_path')
-print('embeddings模型地址',embeddings_path)
-vectorstore_path =os.environ.get('vectorstore_path')
-print('vectorstore保存地址',vectorstore_path)
+import settings
 floder='txt'
 files=os.listdir(floder)
 def replaceall(mul,str):
@@ -30,13 +27,13 @@ print("开始读取数据")
 loader = DirectoryLoader('txt_out',glob='**/*.txt')
 docs = loader.load()
 # text_splitter = TokenTextSplitter(chunk_size=500, chunk_overlap=15)
-text_splitter = CharacterTextSplitter(chunk_size=800, chunk_overlap=20,separator='\n')
+text_splitter = CharacterTextSplitter(chunk_size=settings.chunk_size, chunk_overlap=20,separator='\n')
 doc_texts = text_splitter.split_documents(docs)
 # print(doc_texts)
 from langchain.embeddings import HuggingFaceEmbeddings
-embeddings = HuggingFaceEmbeddings(model_name=embeddings_path)
+embeddings = HuggingFaceEmbeddings(model_name=settings.embeddings_path)
 
 vectorstore = FAISS.from_documents(doc_texts, embeddings)
 print("处理完成")
-vectorstore.save_local(vectorstore_path)
+vectorstore.save_local(settings.vectorstore_path)
 print("保存完成")
