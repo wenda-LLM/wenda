@@ -77,7 +77,7 @@ def api_chat_stream():
         out_last = 0
         out_str = ''
         occurrence = {}
-        print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m\n")
+        print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m",end='')
         for i in range(int(token_count)):
             out, state = model.forward(pipeline.encode(ctx)[-ctx_limit:] if i == 0 else [token], state)
             for n in args.token_ban:
@@ -131,13 +131,6 @@ def load_model():
     from rwkv.model import RWKV # pip install rwkv
     model = RWKV(model=settings.rwkv_path,
      strategy=settings.rwkv_strategy)
-
-    out, state = model.forward([187, 510, 1563, 310, 247], None)
-    print(out.detach().cpu().numpy())                   # get logits
-    out, state = model.forward([187, 510], None)
-    out, state = model.forward([1563], state)           # RNN has state (use deepcopy to clone states)
-    out, state = model.forward([310, 247], state)
-    print(out.detach().cpu().numpy())                   # same result as above
 
 
     from rwkv.utils import PIPELINE, PIPELINE_ARGS
