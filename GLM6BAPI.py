@@ -20,7 +20,7 @@ def index():
 当前用户=None
 @route('/api/chat_now', method='GET')
 def api_chat_now():
-    return '当前用户：'+当前用户[0]+"\n问题："+当前用户[1]+"\n回答："+当前用户[2]+''
+    return '当前状态：'+当前用户[0]
 @hook('before_request')
 def validate():
     REQUEST_METHOD = request.environ.get('REQUEST_METHOD')
@@ -56,6 +56,7 @@ def api_find():
 def api_chat_stream():
     data = request.json
     prompt = data.get('prompt')
+    keyword = data.get('keyword')
     max_length = data.get('max_length')
     if max_length is None:
         max_length = 2048
@@ -88,13 +89,17 @@ def api_chat_stream():
     global 当前用户
     with mutex:
         footer='///'
+        yield str(len(prompt))+'字正在计算///'
         if use_zhishiku:
-            response_d=zhishiku.find(prompt)
+            if keyword is None:
+                keyword=prompt
+            print(keyword)
+            response_d=zhishiku.find(keyword)
             output_sources = [i['title'] for i in response_d]
             results ='\n---\n'.join([i['content'] for i in response_d])
             prompt=  f'system:根据以下资料, 用中文回答问题\n\n'+results+'\nuser:'+prompt
             footer=  "\n来源：\n"+('\n').join(output_sources)+'///'
-        yield str(len(prompt))+'字正在计算///'
+        yield footer
         
         print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m")
         try:

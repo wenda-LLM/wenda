@@ -18,7 +18,7 @@ rem rwkv模型位置
 set "rwkv_strategy=cuda fp16i8 *18+"
 rem rwkv模型参数
 
-set chunk_size=100
+set chunk_size=200
 rem chunk_size
-set chunk_count=3
+set chunk_count=1
 rem chunk_count
