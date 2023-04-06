@@ -72,7 +72,7 @@ def api_chat_stream():
         else:
             ctx = f'\n{ctx.strip()}'
 
-        ctx = f"{user}{interface} {ctx}\n\n{bot}{interface}"
+        ctx = f"User:{ctx}\n\nBot:"
         all_tokens = []
         out_last = 0
         out_str = ''
@@ -97,8 +97,8 @@ def api_chat_stream():
             tmp = pipeline.decode(all_tokens[out_last:])
             if '\ufffd' not in tmp:
                 out_str += tmp
-                if '\n\n' in out_str or f'{user}{interface}' in out_str or f'{bot}{interface}' in out_str:
-                    out_str = out_str.removesuffix('\n\n').removesuffix(f'{user}{interface}').removesuffix(f'{bot}{interface}')
+                if  out_str.endswith('\n\n'):
+                    out_str = out_str.removesuffix('\n\n')
                     break
                 print(tmp,end='')
                 yield out_str.strip()+'///'

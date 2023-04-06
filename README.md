@@ -44,18 +44,26 @@
 chatGLM-6B正常使用中，勾选右上角chatPDF
 ## chatGLM-6B
 运行：`run_GLM6B.bat`。
+
 模型位置等参数：修改`settings.bat`。
+
 默认参数在GTX1660Ti（6G显存）上运行良好。
+
 ## chatRWKV
 运行：`run_rwkv.bat`。
+
 模型位置等参数：修改`settings.bat`。
+
 默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢。
+
 ### 生成小说
 ![](imgs/novel.png)
 #### 文字冒险游戏
 ![](imgs/wzmx.png)
 ## chatYuan
 YuanAPI.py
+
 模型默认位置：ChatYuan-large-v2
+
 这个最轻量，是电脑都能跑，但是智力差点
 

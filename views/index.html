@@ -130,9 +130,10 @@
 							<v-avatar :color="当前对话.role == 'user' ? 'indigo': 'purple'" size="36" class="头像">
 								<span>{{ {user:"问",AI:'答'}[当前对话.role] }}</span>
 							</v-avatar>
-							<v-expand-x-transition>
+							<br>
+							<v-expand-transition>
 								<v-icon class="float" v-if="hover" large text @click="删除 (当前对话)">mdi-delete</v-icon>
-							</v-expand-x-transition>
+							</v-expand-transition>
 						</div>
 					</v-hover>
 
