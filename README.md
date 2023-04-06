@@ -1,4 +1,4 @@
-# 闻达：一个大型语言模型调用平台
+# 闻达：一个大规模语言模型调用平台
 ## 简介
 1. 目前支持模型：`chatGLM-6B`、`chatRWKV`、`chatYuan`。
 2. 知识库自动查找
@@ -6,7 +6,7 @@
 4. 支持`chatGLM-6B`、`chatRWKV`流式输出和输出过程中中断
 5. 自动保存对话历史至浏览器（多用户同时使用不会冲突）
 6. 对话历史管理（删除单条、清空）
-7. 支持局域网、内网部署和多用户同时使用。（内网部署需手动将前段静态资源切换成本地）
+7. 支持局域网、内网部署和多用户同时使用。（内网部署需手动将前端静态资源切换成本地）
 8. 多用户同时使用中会自动排队，并显示当前用户。
 
 **欢迎同学们制作教学视频、懒人包等，做好请和我联系，我会把相关链接加到readme里**
@@ -33,15 +33,20 @@
 根据需要，下载对应模型。
 
 建议使用chatRWKV的RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048（截止4月6日效果较好），或chatGLM-6B。
-## 知识库功能(当前在chatGLM-6B模型实现）
-### 准备
-#### 1.下载中文sentence transformers模型
-下载[simcse-chinese-roberta-wwm-ext](https://huggingface.co/cyclone/simcse-chinese-roberta-wwm-ext)，放在`model\simcse-chinese-roberta-wwm-ext`。
-#### 2.索引语料
+## 知识库
+
+
+####  chatGLM-6B模型
+![](imgs/zsk-glm.png)
+
+
+#### chatRWKV模型
+![](imgs/zsk-rwkv.png)
+### 1.索引语料
 把自己的txt格式的文档放在名为txt的文件夹里，运行:
 ```run_data_processing.bat```
-### 使用
-chatGLM-6B正常使用中，勾选右上角chatPDF
+### 2.使用
+正常使用中，勾选右上角知识库
 ## chatGLM-6B
 运行：`run_GLM6B.bat`。
 

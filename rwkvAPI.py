@@ -75,13 +75,10 @@ def api_chat_stream():
                     token_ban = [], # ban the generation of some tokens
                     token_stop = [0]) # stop generation whenever you see any token here
         if use_zhishiku:
-            response_d=zhishiku.qa({"question": prompt, "chat_history": []})
-            output_sources = [
-                        c.metadata for c in list(response_d["source_documents"])
-                    ]
-            output_sources = [ i['source'].replace("txt_out\\","") for i in output_sources]
-            # print(output_sources)
-            ctx=  response_d ["answer"].replace("Human",user)+f"\n{bot}{interface}"
+            response_d=zhishiku.find(prompt)
+            output_sources = [i['title'] for i in response_d]
+            results ='\n---\n'.join([i['content'] for i in response_d])
+            ctx=   f'system:根据以下资料, 用中文回答问题\n\n'+results+f"\n{user}{interface}{prompt}\n{bot}{interface}"
             footer=  "\n来源：\n"+('\n').join(output_sources)+'///'
             yield '正在计算'+footer
             torch.cuda.empty_cache() 

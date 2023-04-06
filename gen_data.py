@@ -1,16 +1,22 @@
-import os
-import sys
-# sys.setrecursionlimit(3000)
-from langchain.vectorstores.faiss import FAISS
-from langchain.document_loaders import DirectoryLoader
-from langchain.text_splitter import TokenTextSplitter,CharacterTextSplitter
+
 import settings
+import threading,os
+mutex = threading.Lock()
 floder='txt'
 files=os.listdir(floder)
-def replaceall(mul,str):
-    while str.find(mul) > -1:
-        str = str.replace(mul,'')
-    return str
+from whoosh.fields import *
+from jieba.analyse import ChineseAnalyzer
+from whoosh.filedb.filestore import FileStorage
+analyzer = ChineseAnalyzer()
+schema = Schema(title=TEXT(stored=True), content=TEXT(stored=True, analyzer=analyzer))
+storage = FileStorage('sy')
+if not os.path.exists('sy'):
+    os.mkdir('sy')
+    ix = storage.create_index(schema)
+else:
+    ix = storage.open_index()
+
+writer = ix.writer()
 for file in files:
     try:
         with open(floder+'/'+file,"r",encoding='utf-16') as f:  
@@ -18,22 +24,7 @@ for file in files:
     except:
             with open(floder+'/'+file,"r",encoding='utf-8') as f:  
                 data = f.read()
-    # data=replaceall('\n',data)
-    cut_file=f"txt_out/{file}"
-    with open(cut_file, 'w',encoding='utf-8') as f:   
-        f.write(data)
-        f.close()
-print("开始读取数据")
-loader = DirectoryLoader('txt_out',glob='**/*.txt')
-docs = loader.load()
-# text_splitter = TokenTextSplitter(chunk_size=500, chunk_overlap=15)
-text_splitter = CharacterTextSplitter(chunk_size=settings.chunk_size, chunk_overlap=20,separator='\n')
-doc_texts = text_splitter.split_documents(docs)
-# print(doc_texts)
-from langchain.embeddings import HuggingFaceEmbeddings
-embeddings = HuggingFaceEmbeddings(model_name=settings.embeddings_path)
+    # print(file,data)
+    writer.add_document(title=file, content=data)
 
-vectorstore = FAISS.from_documents(doc_texts, embeddings)
-print("处理完成")
-vectorstore.save_local(settings.vectorstore_path)
-print("保存完成")
+writer.commit()  # 提交

@@ -89,13 +89,10 @@ def api_chat_stream():
     with mutex:
         footer='///'
         if use_zhishiku:
-            response_d=zhishiku.qa({"question": prompt, "chat_history": []})
-            output_sources = [
-                        c.metadata for c in list(response_d["source_documents"])
-                    ]
-            output_sources = [ i['source'].replace("txt_out\\","") for i in output_sources]
-            # print(output_sources)
-            prompt=  response_d ["answer"]
+            response_d=zhishiku.find(prompt)
+            output_sources = [i['title'] for i in response_d]
+            results ='\n---\n'.join([i['content'] for i in response_d])
+            prompt=  f'system:根据以下资料, 用中文回答问题\n\n'+results+'\nuser:'+prompt
             footer=  "\n来源：\n"+('\n').join(output_sources)+'///'
         yield str(len(prompt))+'字正在计算///'
         

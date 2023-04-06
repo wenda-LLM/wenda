@@ -3,12 +3,6 @@ paste
 sqlalchemy
 sqlalchemy_utils
 faiss-cpu
-sentence_transformers
-langchain
 transformers==4.26.1
-InstructorEmbedding
-tiktoken
-nltk
-unstructured
-icetk
-cpm_kernels
+jieba
+whoosh
