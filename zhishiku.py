@@ -39,10 +39,8 @@ def document_to_dict(d):
     return {'c':d.page_content,'s':d.metadata['source']}
 
 def init_agent():
-    system_template = """使用以下文段, 回答用中文用户问题。如果无法从中得到答案，请说"没有足够的相关信息"。
-----------------
+    system_template = """使用以下文段, 用中文回答用户问题。如果无法从中得到答案，请说"没有足够的相关信息"。
 {context}
-----------------
 """
     messages = [
         SystemMessagePromptTemplate.from_template(system_template),

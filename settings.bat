@@ -24,5 +24,5 @@ rem chunk_count
 
 set rwkv_path=..\RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048.pth
 rem rwkv模型位置
-set "rwkv_strategy=cuda fp16i8 *20+"
+set "rwkv_strategy=cuda fp16i8 *16+"
 rem rwkv模型参数

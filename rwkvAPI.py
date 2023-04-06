@@ -3,6 +3,7 @@ import settings
 import datetime
 from bottle import route, response, request,static_file
 import bottle
+import torch
 
 if settings.logging:
     from defineSQL import session_maker, 记录
@@ -12,13 +13,6 @@ interface = ":"
 user = "Bob"
 bot = "Alice"
 
-init_prompt = f'''
-The following is a coherent verbose detailed conversation between a Chinese girl named {bot} and her friend {user}. \
-{bot} is very intelligent, creative and friendly. \
-{bot} likes to tell {user} a lot about herself and her opinions. \
-{bot} usually gives {user} kind, helpful and informative advices.
-
-'''
 
 @route('/static/:name')
 def staticjs(name='-'):
@@ -34,6 +28,7 @@ def index():
 def api_chat_now():
     return '当前用户：'+当前用户[0]+"\n问题："+当前用户[1]+"\n回答："+当前用户[2]+''
 
+
 @route('/api/chat_stream', method='POST')
 def api_chat_stream():
     data = request.json
@@ -47,20 +42,25 @@ def api_chat_stream():
     temperature = data.get('temperature')
     if temperature is None:
         temperature = 0.9
+    global state
     history = data.get('history')
-    if history is not None:
-        tmp = []
-        for i, old_chat in enumerate(history):
-            if old_chat['role'] == "user":
-                tmp.append("Bob:"+old_chat['content'])
-            elif old_chat['role'] == "AI":
-                tmp.append("Alice:"+old_chat['content'])
-            else:
-                continue
-        history='\n'.join(tmp)
+    if history is not None and  len(history)>0:
+        pass
+    else:
+        state=None
+        # tmp = []
+        # for i, old_chat in enumerate(history):
+        #     if old_chat['role'] == "user":
+        #         tmp.append(f"{user}{interface}"+old_chat['content'])
+        #     elif old_chat['role'] == "AI":
+        #         tmp.append(f"{bot}{interface}"+old_chat['content'])
+        #     else:
+        #         continue
+        # history='\n'.join(tmp)
+    use_zhishiku = data.get('zhishiku')
+    if use_zhishiku is None:
+        use_zhishiku = False
     response=''
-    state = None
-    # print(request.environ)
     IP=request.environ.get('HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
     global 当前用户
     with mutex:
@@ -74,8 +74,20 @@ def api_chat_stream():
                     alpha_presence = presencePenalty,
                     token_ban = [], # ban the generation of some tokens
                     token_stop = [0]) # stop generation whenever you see any token here
-        ctx = prompt.strip(' ')
-        ctx = history+f"\nBob:{ctx}\nAlice:"
+        if use_zhishiku:
+            response_d=zhishiku.qa({"question": prompt, "chat_history": []})
+            output_sources = [
+                        c.metadata for c in list(response_d["source_documents"])
+                    ]
+            output_sources = [ i['source'].replace("txt_out\\","") for i in output_sources]
+            # print(output_sources)
+            ctx=  response_d ["answer"].replace("Human",user)+f"\n{bot}{interface}"
+            footer=  "\n来源：\n"+('\n').join(output_sources)+'///'
+            yield '正在计算'+footer
+            torch.cuda.empty_cache() 
+        else:
+            footer=  '///'
+            ctx = f"\n{user}{interface}{prompt}\n{bot}{interface}"
         all_tokens = []
         out_last = 0
         response = ''
@@ -100,13 +112,13 @@ def api_chat_stream():
             tmp = pipeline.decode(all_tokens[out_last:])
             if '\ufffd' not in tmp:
                 response += tmp
-                if  response.endswith('\n\n'):
-                    response = response.removesuffix('\n\n')
+                if  response.endswith('\n\n') or response.endswith(f"{user}{interface}"):
+                    response = response.removesuffix(f"{user}{interface}").removesuffix('\n').removesuffix('\n')
                     break
                 print(tmp,end='')
-                yield response.strip()+'///'
+                yield response.strip()+footer
                 out_last = i + 1
-        yield response.strip()+'///'
+        yield response.strip()+footer
         # except Exception as e:
         #     # pass
         #     print("错误",str(e),e)
@@ -121,6 +133,7 @@ pipeline=None
 PIPELINE_ARGS=None
 model=None
 ctx_limit = 1024
+state = None
 def load_model():
     global pipeline,PIPELINE_ARGS,model
     mutex.acquire()
@@ -141,7 +154,7 @@ def load_model():
     print("模型加载完成")
 thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()
-
+import zhishiku
 
 # bottle.debug(True)
 bottle.run(server='paste',host="0.0.0.0",port=17860,quiet=True)
