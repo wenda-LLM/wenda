@@ -8,9 +8,9 @@ if settings.logging:
     from defineSQL import session_maker, 记录
 mutex = threading.Lock()
 glm_path=os.environ.get('glm_path')
-@route('/static/:name')
-def staticjs(name='-'):
-    return static_file(name, root="views\static")
+@route('/static/<path:path>')
+def staticjs(path='-'):
+    return static_file(path, root="views/static/")
 @route('/:name')
 def static(name='-'):
     return static_file(name, root="views")
