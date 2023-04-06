@@ -77,7 +77,7 @@ def api_chat_stream():
         out_last = 0
         out_str = ''
         occurrence = {}
-        print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m",end='')
+        print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m")
         for i in range(int(token_count)):
             out, state = model.forward(pipeline.encode(ctx)[-ctx_limit:] if i == 0 else [token], state)
             for n in args.token_ban:
@@ -95,12 +95,12 @@ def api_chat_stream():
                 occurrence[token] += 1
             
             tmp = pipeline.decode(all_tokens[out_last:])
-            print(tmp,end='')
             if '\ufffd' not in tmp:
                 out_str += tmp
                 if '\n\n' in out_str or f'{user}{interface}' in out_str or f'{bot}{interface}' in out_str:
                     out_str = out_str.removesuffix('\n\n').removesuffix(f'{user}{interface}').removesuffix(f'{bot}{interface}')
                     break
+                print(tmp,end='')
                 yield out_str.strip()+'///'
                 out_last = i + 1
         yield out_str.strip()+'///'
