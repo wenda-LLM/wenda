@@ -48,10 +48,19 @@ def api_chat_stream():
     if temperature is None:
         temperature = 0.9
     history = data.get('history')
-    global state
-    if len(history) <=2:
-        state=None
+    if history is not None:
+        tmp = []
+        for i, old_chat in enumerate(history):
+            if len(tmp) == 0 and old_chat['role'] == "user":
+                tmp.append("Bob:"+old_chat['content'])
+            elif old_chat['role'] == "AI":
+                tmp.append("Alice:"+old_chat['content'])
+                tmp = []
+            else:
+                continue
+        history='\n'.join(tmp)
     response=''
+    state = None
     # print(request.environ)
     IP=request.environ.get('HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
     global 当前用户
@@ -64,20 +73,15 @@ def api_chat_stream():
         args = PIPELINE_ARGS(temperature = max(0.2, float(temperature)), top_p = float(top_p),
                     alpha_frequency = countPenalty,
                     alpha_presence = presencePenalty,
-                    token_ban = [0], # ban the generation of some tokens
-                    token_stop = []) # stop generation whenever you see any token here
+                    token_ban = [], # ban the generation of some tokens
+                    token_stop = [0]) # stop generation whenever you see any token here
         ctx = prompt.strip(' ')
-        if ctx.endswith('\n'):
-            ctx = f'\n{ctx.strip()}\n'
-        else:
-            ctx = f'\n{ctx.strip()}'
-
-        ctx = f"User:{ctx}\n\nBot:"
+        ctx = history+f"Bob:{ctx}\nAlice:"
         all_tokens = []
         out_last = 0
         out_str = ''
         occurrence = {}
-        print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m")
+        print( f"\033[1;32m{IP}:\033[1;31m{ctx}\033[1;37m",end='')
         for i in range(int(token_count)):
             out, state = model.forward(pipeline.encode(ctx)[-ctx_limit:] if i == 0 else [token], state)
             for n in args.token_ban:
@@ -118,7 +122,6 @@ pipeline=None
 PIPELINE_ARGS=None
 model=None
 ctx_limit = 1024
-state = None
 def load_model():
     global pipeline,PIPELINE_ARGS,model
     mutex.acquire()

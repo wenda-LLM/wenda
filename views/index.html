@@ -132,7 +132,7 @@
 							</v-avatar>
 							<br>
 							<v-expand-transition>
-								<v-icon class="float" v-if="hover" large text @click="删除 (当前对话)">mdi-delete</v-icon>
+								<v-icon class="float" v-if="hover&&!loading" large text @click="删除 (当前对话)">mdi-delete</v-icon>
 							</v-expand-transition>
 						</div>
 					</v-hover>
