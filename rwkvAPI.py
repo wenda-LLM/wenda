@@ -14,9 +14,9 @@ user = "Bob"
 bot = "Alice"
 
 
-@route('/static/:name')
-def staticjs(name='-'):
-    return static_file(name, root="views\static")
+@route('/static/<path:path>')
+def staticjs(path='-'):
+    return static_file(path, root="views/static/")
 @route('/:name')
 def static(name='-'):
     return static_file(name, root="views")
