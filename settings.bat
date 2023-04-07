@@ -1,6 +1,5 @@
 @echo off
-rem set WINPYDIR=%~dp0\..\WPy64-31090\python-3.10.9.amd64
-set WINPYDIR=%~dp0\WPy64-31090\python-3.10.9.amd64
+set WINPYDIR=%~dp0\WPy64-38100\python-3.8.10.amd64
 set "PATH=%WINPYDIR%\;%WINPYDIR%\DLLs;%WINPYDIR%\Scripts;%PATH%;"
 
 set logging=True

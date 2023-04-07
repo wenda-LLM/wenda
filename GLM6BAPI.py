@@ -97,11 +97,11 @@ def api_chat_stream():
             response_d=zhishiku.find(keyword)
             output_sources = [i['title'] for i in response_d]
             results ='\n---\n'.join([i['content'] for i in response_d])
-            prompt=  f'system:根据以下资料, 用中文回答问题\n\n'+results+'\nuser:'+prompt
+            prompt=  'system:根据以下资料, 用中文回答问题\n\n'+results+'\nuser:'+prompt
             footer=  "\n来源：\n"+('\n').join(output_sources)+'///'
         yield footer
         
-        print( f"\033[1;32m{IP}:\033[1;31m{prompt}\033[1;37m")
+        print( "\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
         try:
             for response, history in model.stream_chat(tokenizer, prompt, history_formatted, max_length=max_length, top_p=top_p,temperature=temperature):
                 当前用户=[IP,prompt,response]
@@ -134,6 +134,7 @@ def load_model():
     model = model.cuda()
     model = model.eval()
     mutex.release()
+    torch.cuda.empty_cache() 
     print("模型加载完成")
 thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()

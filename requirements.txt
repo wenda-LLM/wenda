@@ -5,4 +5,5 @@ sqlalchemy_utils
 transformers==4.26.1
 jieba
 whoosh
-icetk
+cpm_kernels
+sentencepiece
