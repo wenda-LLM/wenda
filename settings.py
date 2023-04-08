@@ -11,6 +11,21 @@ print('rwkv模型参数',rwkv_strategy)
 logging =bool(os.environ.get('logging'))
 print('日志记录',logging)
 
+zsk_type =os.environ.get('zsk_type')
+print('知识库类型',zsk_type)
+if zsk_type=='x':
+    embeddings_path =os.environ.get('embeddings_path')
+    print('embeddings模型地址',embeddings_path)
+    vectorstore_path =os.environ.get('vectorstore_path')
+    print('vectorstore保存地址',vectorstore_path)
+    def load_zsk():
+        import zhishiku_x
+        return zhishiku_x
+else:
+    def load_zsk():
+        import zhishiku_s
+        return zhishiku_s
+
 chunk_size =int(os.environ.get('chunk_size'))
 print('chunk_size',chunk_size)
 chunk_count =int(os.environ.get('chunk_count'))

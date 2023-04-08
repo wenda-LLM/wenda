@@ -97,7 +97,7 @@ def api_chat_stream():
             response_d=zhishiku.find(keyword)
             output_sources = [i['title'] for i in response_d]
             results ='\n---\n'.join([i['content'] for i in response_d])
-            prompt=  'system:根据以下资料, 用中文回答问题\n\n'+results+'\nuser:'+prompt
+            prompt=  'system:结合以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n\n'+results+'\nuser:'+prompt
             footer=  "\n来源：\n"+('\n').join(output_sources)+'///'
         yield footer
         
@@ -105,6 +105,7 @@ def api_chat_stream():
         try:
             for response, history in model.stream_chat(tokenizer, prompt, history_formatted, max_length=max_length, top_p=top_p,temperature=temperature):
                 当前用户=[IP,prompt,response]
+                # print(history)
                 if(response):yield response+footer
         except Exception as e:
             # pass
@@ -138,6 +139,6 @@ def load_model():
     print("模型加载完成")
 thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()
-import zhishiku
+zhishiku=settings.load_zsk()
 bottle.debug(True)
 bottle.run(server='paste',host="0.0.0.0",port=17860,quiet=True)
