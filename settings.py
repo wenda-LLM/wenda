@@ -18,13 +18,13 @@ if zsk_type=='x':
     print('embeddings模型地址',embeddings_path)
     vectorstore_path =os.environ.get('vectorstore_path')
     print('vectorstore保存地址',vectorstore_path)
-    def load_zsk():
-        import zhishiku_x
-        return zhishiku_x
-else:
-    def load_zsk():
-        import zhishiku_s
-        return zhishiku_s
+def load_zsk():
+    try:
+        from importlib import import_module
+        zhishiku = import_module('zhishiku_'+zsk_type)
+        return zhishiku
+    except:
+        print("知识库加载失败，请阅读说明：https://github.com/l15y/wenda")
 
 chunk_size =int(os.environ.get('chunk_size'))
 print('chunk_size',chunk_size)
