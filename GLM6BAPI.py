@@ -2,10 +2,10 @@ import threading,os,json
 import datetime
 from bottle import route, response, request,static_file,hook
 import bottle
-import settings
+from plugins import settings
 import torch
 if settings.logging:
-    from defineSQL import session_maker, 记录
+    from plugins.defineSQL import session_maker, 记录
 mutex = threading.Lock()
 glm_path=os.environ.get('glm_path')
 @route('/static/<path:path>')
@@ -139,6 +139,12 @@ def load_model():
     print("模型加载完成")
 thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()
-zhishiku=settings.load_zsk()
+zhishiku=None
+def load_zsk():
+    global zhishiku
+    zhishiku=settings.load_zsk()
+    print("知识库加载完成")
+thread_load_zsk = threading.Thread(target=load_zsk)
+thread_load_zsk.start()
 bottle.debug(True)
 bottle.run(server='paste',host="0.0.0.0",port=17860,quiet=True)

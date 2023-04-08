@@ -1,12 +1,11 @@
 import threading
-import settings
 import datetime
 from bottle import route, response, request,static_file
 import bottle
+from plugins import settings
 import torch
-
 if settings.logging:
-    from defineSQL import session_maker, 记录
+    from plugins.defineSQL import session_maker, 记录
 mutex = threading.Lock()
 
 interface = ":"

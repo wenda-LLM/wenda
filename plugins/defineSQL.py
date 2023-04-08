@@ -7,7 +7,7 @@ from contextlib import contextmanager
 
 # 创建对象的基类:
 Base = declarative_base()
-engine = create_engine("sqlite:///testdb.db?check_same_thread=False")
+engine = create_engine("sqlite:///record.db?check_same_thread=False")
 import sqlalchemy_utils
 if not sqlalchemy_utils.database_exists(engine.url):
     sqlalchemy_utils.create_database(engine.url)

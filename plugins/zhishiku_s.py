@@ -1,4 +1,5 @@
-import  settings
+
+from plugins import settings
 from whoosh  import highlight
 from whoosh.filedb.filestore import FileStorage
 storage = FileStorage('sy')

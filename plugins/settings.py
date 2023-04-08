@@ -21,10 +21,11 @@ if zsk_type=='x':
 def load_zsk():
     try:
         from importlib import import_module
-        zhishiku = import_module('zhishiku_'+zsk_type)
+        zhishiku = import_module('plugins.zhishiku_'+zsk_type)
         return zhishiku
-    except:
-        print("知识库加载失败，请阅读说明：https://github.com/l15y/wenda")
+    except  Exception as e:
+        print("知识库加载失败，请阅读说明：https://github.com/l15y/wenda",e)
+
 
 chunk_size =int(os.environ.get('chunk_size'))
 print('chunk_size',chunk_size)
