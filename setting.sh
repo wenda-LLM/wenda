@@ -8,6 +8,8 @@ export PYTHON="venv/Pytorch_2.1/bin/python"
 export glm_path="model/chatglm-6b-int4"
 # glm模型位置
 
+export glm_lora_path=""
+# glm模型微调权重目录路径  为空则不加载LoRA
 
 export rwkv_path="model/RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048.pth"
 # rwkv模型位置
