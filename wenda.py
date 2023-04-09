@@ -75,6 +75,7 @@ def api_chat_stream():
     # print(request.environ)
     IP=request.environ.get('HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
     global 当前用户
+    error=""
     with mutex:
         footer='///'
         yield str(len(prompt))+'字正在计算'
@@ -95,11 +96,12 @@ def api_chat_stream():
             for response in LLM.chat_one(prompt,history_formatted,max_length,top_p,temperature,zhishiku=use_zhishiku):
                 if(response):yield response+footer
         except Exception as e:
-            print("错误",str(e),e)
+            error=str(e)
+            print("错误",settings.red,error,settings.white,e)
             response=''
         torch.cuda.empty_cache() 
     if response=='':
-            yield "发生错误，正在重新加载模型"+'///'
+            yield "发生错误，正在重新加载模型"+error+'///'
             os._exit(0)
     if settings.logging:
         with session_maker() as session:
@@ -117,14 +119,14 @@ def load_model():
     LLM.load_model()
     mutex.release()
     torch.cuda.empty_cache() 
-    print("模型加载完成")
+    print(settings.green,"模型加载完成",settings.white)
 thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()
 zhishiku=None
 def load_zsk():
     global zhishiku
     zhishiku=settings.load_zsk()
-    print("知识库加载完成")
+    print(settings.green,"知识库加载完成",settings.white)
 thread_load_zsk = threading.Thread(target=load_zsk)
 thread_load_zsk.start()
 bottle.debug(True)
