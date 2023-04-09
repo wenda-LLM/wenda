@@ -14,7 +14,7 @@ def chat_init(history):
             else:
                 continue
     return history_formatted
-def chat_one(prompt,history_formatted,max_length,top_p,temperature):
+def chat_one(prompt,history_formatted,max_length,top_p,temperature,zhishiku=False):
     for response, history in model.stream_chat(tokenizer, prompt, history_formatted,
      max_length=max_length, top_p=top_p,temperature=temperature):
         yield response

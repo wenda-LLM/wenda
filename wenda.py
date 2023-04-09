@@ -83,6 +83,7 @@ def api_chat_stream():
                 keyword=prompt
             # print(keyword)
             response_d=zhishiku.find(keyword)
+            torch.cuda.empty_cache() 
             output_sources = [i['title'] for i in response_d]
             results ='\n---\n'.join([i['content'] for i in response_d])
             prompt=  'system:结合以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n\n'+results+'\nuser:'+prompt
@@ -91,7 +92,7 @@ def api_chat_stream():
         
         print( "\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
         try:
-            for response in LLM.chat_one(prompt,history_formatted,max_length,top_p,temperature):
+            for response in LLM.chat_one(prompt,history_formatted,max_length,top_p,temperature,zhishiku=use_zhishiku):
                 if(response):yield response+footer
         except Exception as e:
             print("错误",str(e),e)
