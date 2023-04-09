@@ -1,4 +1,5 @@
 from plugins import settings
+import os
 def chat_init(history):
     history_formatted = None
     if history is not None:
