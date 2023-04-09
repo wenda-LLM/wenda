@@ -29,7 +29,7 @@ def load_model():
         print('glm_lora_path模型地址',settings.glm_lora_path)
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, settings.glm_lora_path)
-    if bool(os.environ.get('glm_int_four')):
+    if os.environ.get('glm_int_four')!="0":
         print("glm int4量化中，如果已经是量化模型或不需要量化，不要开启")
         model = model.quantize(4)
     model = model.half()
