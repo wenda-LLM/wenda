@@ -8,6 +8,9 @@ export PYTHON="venv/pytorch_2.1/bin/python"
 export glm_path="model/chatglm-6b"
 # glm模型位置
 
+export glm_int_four=False
+# glm int4量化，如果已经是量化模型或不需要量化，不要开启
+
 export glm_lora_path=""
 # glm模型lora微调权重目录路径  为空则不加载LoRA
 
@@ -23,7 +26,7 @@ export rwkv_lora_path=""
 export rwkv_lora_alpha="16"
 # rwkv模型lora微调权重alpha  和训练时所用值挂钩
 
-export llm_type=glm6b
+export llm_type="glm6b"
 # LLM模型类型:glm6b、rwkv
 
 export zsk_type="x"
