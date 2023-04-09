@@ -16,11 +16,10 @@ def static(name='-'):
     return static_file(name, root="views")
 @route('/')
 def index():
-    response.setHeader( "Pragma", "no-cache" ); 
-    response.addHeader( "Cache-Control", "must-revalidate" ); 
-    response.addHeader( "Cache-Control", "no-cache" ); 
-    response.addHeader( "Cache-Control", "no-store" ); 
-    response.setDateHeader("Expires", 0); 
+    response.set_header( "Pragma", "no-cache" ); 
+    response.add_header( "Cache-Control", "must-revalidate" ); 
+    response.add_header( "Cache-Control", "no-cache" ); 
+    response.add_header( "Cache-Control", "no-store" ); 
     return static_file("index.html", root="views")
 当前用户=None
 @route('/api/chat_now', method='GET')
