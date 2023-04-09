@@ -29,7 +29,8 @@
 3. 新版暂时只有chatGLM-6B，但重新制作，体积更新，包含各种优化，集成知识库功能，推荐使用。
 ## 自行安装
 ### 1.安装库
-```pip install -r requirements.txt```
+知识库索引模式：```pip install -r requirements-sy.txt```
+知识库语义模式：```pip install -r requirements-yy.txt```
 ### 2.下载模型
 根据需要，下载对应模型。
 
