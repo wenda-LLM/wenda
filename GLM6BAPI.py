@@ -131,6 +131,7 @@ def load_model():
     from transformers import AutoModel, AutoTokenizer
     tokenizer = AutoTokenizer.from_pretrained(settings.glm_path, local_files_only=True, trust_remote_code=True)
     model = AutoModel.from_pretrained(settings.glm_path, local_files_only=True, trust_remote_code=True)
+    glm_lora_path = os.environ.get('glm_lora_path')
     if not glm_lora_path == '':
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, glm_lora_path)
