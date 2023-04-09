@@ -25,6 +25,15 @@ def load_zsk():
         return zhishiku
     except  Exception as e:
         print("知识库加载失败，请阅读说明：https://github.com/l15y/wenda",e)
+llm_type =os.environ.get('llm_type')
+print('LLM模型类型',llm_type)
+def load_LLM():
+    try:
+        from importlib import import_module
+        LLM = import_module('plugins.llm_'+llm_type)
+        return LLM
+    except  Exception as e:
+        print("LLM模型加载失败，请阅读说明：https://github.com/l15y/wenda",e)
 
 
 chunk_size =int(os.environ.get('chunk_size'))
