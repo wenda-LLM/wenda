@@ -1,11 +1,11 @@
 @echo off
-set WINPYDIR=%~dp0\WPy64-38100\python-3.8.10.amd64
+set "WINPYDIR=%~dp0\WPy64-38100\python-3.8.10.amd64"
 set "PATH=%WINPYDIR%\;%WINPYDIR%\DLLs;%WINPYDIR%\Scripts;%PATH%;"
 
 set logging=True
 rem 日志
 
-set PYTHON=%WINPYDIR%\python.exe 
+set "PYTHON=%WINPYDIR%\python.exe "
 rem python程序位置，不使用改为本地路径
 
 set glm_path=model\chatglm-6b-int4
