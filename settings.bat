@@ -11,10 +11,13 @@ rem python程序位置，不使用懒人包可留空
 set glm_path=model\chatglm-6b-int4
 rem glm模型位置
 
+set glm_lora_path=
+rem glm模型微调权重目录路径
+
 set zsk_type=s
 rem  知识库类型:s->传统索引；x->基于Sentence  Transformer 的向量数据库
 set llm_type=glm6b
-rem  LLM模型类型:glm6b
+rem  LLM模型类型:glm6b、glm6b_lora、rwkv
 
 set rwkv_path=..\RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048.pth
 rem rwkv模型位置
