@@ -75,8 +75,7 @@ def load_model():
 
     from rwkv.model import RWKV # pip install rwkv
     model = RWKV(model=settings.rwkv_path,strategy=settings.rwkv_strategy)
-    rwkv_lora_path = os.environ.get('rwkv_lora_path')
-    # if rwkv_lora_path == '':
+    # if settings.rwkv_lora_path == '':
     # else:
     #     with torch.no_grad():
 

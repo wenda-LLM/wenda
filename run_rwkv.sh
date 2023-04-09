@@ -1,7 +1,8 @@
 # /bin/bash
 source setting.sh
+export llm_type="rwkv"
 if [ -z "$PYTHON" ]; then
-    python rwkvAPI.py
+    CUDA_VISIBLE_DEVICES=0 python wenda.py
 else
-    $PYTHON rwkvAPI.py
+    CUDA_VISIBLE_DEVICES=0 $PYTHON wenda.py
 fi

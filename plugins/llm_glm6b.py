@@ -24,11 +24,10 @@ def load_model():
     from transformers import AutoModel, AutoTokenizer
     tokenizer = AutoTokenizer.from_pretrained(settings.glm_path, local_files_only=True, trust_remote_code=True)
     model = AutoModel.from_pretrained(settings.glm_path, local_files_only=True, trust_remote_code=True)
-    glm6b_lora_path=os.environ.get('glm6b_lora_path')
-    if not glm6b_lora_path == '':
-        print('glm_lora_path模型地址',glm6b_lora_path)
+    if not settings.glm_lora_path == '':
+        print('glm_lora_path模型地址',settings.glm_lora_path)
         from peft import PeftModel
-        model = PeftModel.from_pretrained(model, glm6b_lora_path)
+        model = PeftModel.from_pretrained(model, settings.glm_lora_path)
     model = model.half()
     model = model.cuda()
     model = model.eval()

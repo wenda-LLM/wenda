@@ -2,10 +2,10 @@
 export logging=True
 # 日志
 
-export PYTHON="venv/Pytorch_2.1/bin/python"
+export PYTHON="venv/pytorch_2.1/bin/python"
 # python程序位置，可搭配一键包或是省去每次切换环境
 
-export glm_path="model/chatglm-6b-int4"
+export glm_path="model/chatglm-6b"
 # glm模型位置
 
 export glm_lora_path=""
@@ -14,7 +14,7 @@ export glm_lora_path=""
 export rwkv_path="model/RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048.pth"
 # rwkv模型位置
 
-export rwkv_strategy="cuda fp16i8 *18+"
+export rwkv_strategy="cuda fp16"
 # rwkv模型参数
 
 export rwkv_lora_path=""
@@ -35,7 +35,7 @@ export embeddings_path="model/simcse-chinese-roberta-wwm-ext"
 export vectorstore_path="xw"
 # vectorstore保存位置
 
-export chunk_size=200
+export chunk_size=400
 # chunk_size
 
 export chunk_count=3
