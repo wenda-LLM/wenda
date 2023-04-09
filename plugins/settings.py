@@ -18,8 +18,6 @@ if 'int4' in glm_path:
         exit()
 
 glm_lora_path = os.environ.get('glm_lora_path')
-
-glm_lora_path = os.environ.get('glm_lora_path')
 if not (glm_lora_path == '' or glm_lora_path == None):
     print('glm LoRA 微调启用: ', glm_lora_path)
 
