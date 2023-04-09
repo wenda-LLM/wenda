@@ -1,5 +1,5 @@
 # /bin/bash
-export logging=True
+export logging="True"
 # 日志
 
 export PYTHON="venv/pytorch_2.1/bin/python"
@@ -8,7 +8,7 @@ export PYTHON="venv/pytorch_2.1/bin/python"
 export glm_path="model/chatglm-6b"
 # glm模型位置
 
-export glm_int_four=False
+export glm_int_four="False"
 # glm int4量化，如果已经是量化模型或不需要量化，不要开启
 
 export glm_lora_path=""
