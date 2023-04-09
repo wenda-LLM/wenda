@@ -135,4 +135,4 @@ def load_zsk():
 thread_load_zsk = threading.Thread(target=load_zsk)
 thread_load_zsk.start()
 bottle.debug(True)
-bottle.run(server='paste',host="0.0.0.0",port=17860,quiet=True)
+bottle.run(server='paste',host="0.0.0.0",port=settings.port,quiet=True)
