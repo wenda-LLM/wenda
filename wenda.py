@@ -3,11 +3,11 @@ import datetime
 from bottle import route, response, request,static_file,hook
 import bottle
 from plugins import settings
+LLM=settings.load_LLM()
 import torch
 if settings.logging:
     from plugins.defineSQL import session_maker, 记录
 mutex = threading.Lock()
-glm_path=os.environ.get('glm_path')
 @route('/static/<path:path>')
 def staticjs(path='-'):
     return static_file(path, root="views/static/")
@@ -70,26 +70,14 @@ def api_chat_stream():
     if use_zhishiku is None:
         use_zhishiku = False
     history = data.get('history')
-    history_formatted = None
-    if history is not None:
-        history_formatted = []
-        tmp = []
-        for i, old_chat in enumerate(history):
-            if len(tmp) == 0 and old_chat['role'] == "user":
-                tmp.append(old_chat['content'])
-            elif old_chat['role'] == "AI":
-                tmp.append(old_chat['content'])
-                history_formatted.append(tuple(tmp))
-                tmp = []
-            else:
-                continue
+    history_formatted = LLM.chat_init(history)
     response=''
     # print(request.environ)
     IP=request.environ.get('HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
     global 当前用户
     with mutex:
         footer='///'
-        yield str(len(prompt))+'字正在计算///'
+        yield str(len(prompt))+'字正在计算'
         if use_zhishiku:
             if keyword is None:
                 keyword=prompt
@@ -103,12 +91,9 @@ def api_chat_stream():
         
         print( "\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
         try:
-            for response, history in model.stream_chat(tokenizer, prompt, history_formatted, max_length=max_length, top_p=top_p,temperature=temperature):
-                当前用户=[IP,prompt,response]
-                # print(history)
+            for response in LLM.chat_one(prompt,history_formatted,max_length,top_p,temperature):
                 if(response):yield response+footer
         except Exception as e:
-            # pass
             print("错误",str(e),e)
             response=''
         torch.cuda.empty_cache() 
@@ -125,15 +110,10 @@ def api_chat_stream():
 model=None
 tokenizer=None
 def load_model():
-    global model,tokenizer,当前用户
+    global 当前用户
     mutex.acquire()
     当前用户=['模型加载中','','']
-    from transformers import AutoModel, AutoTokenizer
-    tokenizer = AutoTokenizer.from_pretrained(settings.glm_path, local_files_only=True, trust_remote_code=True)
-    model = AutoModel.from_pretrained(settings.glm_path, local_files_only=True, trust_remote_code=True)
-    model = model.half()
-    model = model.cuda()
-    model = model.eval()
+    LLM.load_model()
     mutex.release()
     torch.cuda.empty_cache() 
     print("模型加载完成")
