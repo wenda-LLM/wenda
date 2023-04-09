@@ -8,8 +8,15 @@ export PYTHON="venv/pytorch_2.1/bin/python"
 export glm_path="model/chatglm-6b"
 # glm模型位置
 
-export glm_int_four="False"
-# glm int4量化，如果已经是量化模型或不需要量化，不要开启
+export glm_strategy="cuda fp16"
+# glm 模型参数  支持：
+# "cuda fp16"  所有glm模型 要直接跑在gpu上都可以使用这个参数
+# "cpu fp32"  所有glm模型 要直接跑在cpu上都可以使用这个参数
+# "cuda fp16i8"  fp16原生模型 要自行量化为int8跑在gpu上可以使用这个参数
+# "cpu fp16i8" fp16原生模型 要自行量化为int8跑在cpu上可以使用这个参数
+# "cuda fp16i4"  fp16原生模型 要自行量化为int4跑在gpu上可以使用这个参数
+# "cpu fp16i4" fp16原生模型要 自行量化为int4跑在cpu上可以使用这个参数
+    
 
 export glm_lora_path=""
 # glm模型lora微调权重目录路径  为空则不加载LoRA

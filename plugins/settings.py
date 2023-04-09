@@ -8,6 +8,14 @@ green="\033[1;31m"
 white="\033[1;37m"
 glm_path=os.environ.get('glm_path')
 print('glm模型地址',glm_path)
+glm_strategy =os.environ.get('glm_strategy')
+print('glm模型参数',glm_strategy)
+if 'int4' in glm_path:
+    # 判断glm_strategy是否以'i4'或'i8'结尾
+    if glm_strategy.endswith('i4') or glm_strategy.endswith('i8'):
+        # 报错并退出程序
+        print('Error: 请不要使用预量化的模型再设置开始量化参数')
+        exit()
 
 glm_lora_path = os.environ.get('glm_lora_path')
 if not (glm_lora_path == '' or glm_lora_path == None):
