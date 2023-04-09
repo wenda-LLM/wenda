@@ -1,7 +1,8 @@
 # /bin/bash
 source setting.sh
+export llm_type="glm6b"
 if [ -z "$PYTHON" ]; then
-    python GLM6BAPI.py
+    python wenda.py
 else
-    $PYTHON GLM6BAPI.py
+    $PYTHON wenda.py
 fi

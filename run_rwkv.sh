@@ -1,7 +1,8 @@
 # /bin/bash
 source setting.sh
+export llm_type="rwkv"
 if [ -z "$PYTHON" ]; then
-    python rwkvAPI.py
+    python wenda.py
 else
-    $PYTHON rwkvAPI.py
+    $PYTHON wenda.py
 fi
