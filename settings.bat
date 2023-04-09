@@ -5,6 +5,9 @@ set "PATH=%WINPYDIR%\;%WINPYDIR%\DLLs;%WINPYDIR%\Scripts;%PATH%;"
 set logging=True
 rem 日志
 
+set PORT="17860"
+rem WebUI 默认启动端口号
+
 set PYTHON=%WINPYDIR%\python.exe 
 rem python程序位置，不使用改为本地路径
 
