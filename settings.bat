@@ -11,7 +11,7 @@ rem python程序位置，不使用改为本地路径
 set glm_path=model\chatglm-6b-int4
 rem glm模型位置
 
-set glm_int_four=false
+set glm_int_four=False
 rem glm int4量化，如果已经是量化模型或不需要量化，不要开启
 
 set glm_lora_path=
