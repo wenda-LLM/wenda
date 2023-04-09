@@ -6,7 +6,7 @@ set logging=True
 rem 日志
 
 set PYTHON=%WINPYDIR%\python.exe 
-rem python程序位置，不使用懒人包可留空
+rem python程序位置，不使用改为本地路径
 
 set glm_path=model\chatglm-6b-int4
 rem glm模型位置
@@ -30,7 +30,7 @@ set llm_type=glm6b
 rem  LLM模型类型:glm6b、rwkv
 
 set zsk_type=s
-rem  知识库类型:s->传统索引；x->基于Sentence  Transformer 的向量数据库
+rem  知识库类型:s→传统索引；x→基于Sentence  Transformer 的向量数据库
 
 set embeddings_path=model\simcse-chinese-roberta-wwm-ext
 rem embeddings模型位置
