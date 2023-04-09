@@ -100,6 +100,10 @@
 						<v-slider :min="0" :max="1" :step="0.1" v-model="top_p" thumb-color="purple" label="top_p"
 							thumb-label></v-slider>
 					</v-list-item>
+					<v-list-item>
+						<v-slider :min="0" :max="4" :step="1" v-model="历史对话轮数限制" thumb-color="purple" label="对话轮数限制"
+							thumb-label></v-slider>
+					</v-list-item>
 				</v-list>
 			</v-navigation-drawer>
 			<v-toolbar dark style="width: 100%;top: 0;position: fixed;">
@@ -225,11 +229,6 @@
 				描述: "",
 				问题: "你是一个擅长思考的助手，你会把一个主题拆解成相关的多个子主题。请你使用中文，针对下列主题，提供相关的子主题。直接输出结果，不需要额外的声明：",
 			},
-			// {
-			//     名称: "周报",
-			//     描述: "",
-			//     问题: "使用下面提供的文本作为中文周报的基础，生成一个条目式的摘要，突出最重要的内容。",
-			// },
 			{
 				名称: "内容总结",
 				描述: "将文本内容总结为 100 字。",
@@ -241,9 +240,6 @@
 				问题: "使用清晰、简洁、易读的语言写一篇新闻，主题为",
 			},
 		]
-	</script>
-	<script>
-
 		app = new Vue({
 			el: '#app',
 			vuetify: new Vuetify(),
@@ -251,6 +247,7 @@
 				问题: '',
 				对话: JSON.parse(localStorage["对话历史"] || "[]"),
 				历史对话: false,
+				历史对话轮数限制:3,
 				功能菜单: 功能,
 				会话模式: {
 					名称: "常规模式",
@@ -297,11 +294,11 @@
 			let QA_history
 			if (app.历史对话) {
 				QA_history = app.对话.concat()
-				// if (app.对话.length > 6) {
-				//     alert("历史信息过长，将仅保留最后3次对话记忆")
+				if (app.历史对话轮数限制!=0&&app.对话.length > app.历史对话轮数限制) {
+				    alert(`历史信息过长，将仅保留最后${app.历史对话轮数限制}次对话记忆。设置为0不限制`)
 
-				//     QA_history = app.对话.slice(app.对话.length - 6)
-				// }
+				    QA_history = app.对话.slice(app.对话.length -app.历史对话轮数限制*2)
+				}
 			}
 			else {
 				QA_history = []
