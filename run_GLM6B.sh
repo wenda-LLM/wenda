@@ -1,3 +1,7 @@
 # /bin/bash
 source setting.sh
-python GLM6BAPI.py
+if [ -z "$PYTHON" ]; then
+    python GLM6BAPI.py
+else
+    $PYTHON GLM6BAPI.py
+fi
