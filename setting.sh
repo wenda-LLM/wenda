@@ -2,6 +2,9 @@
 export logging=True
 # 日志
 
+export PYTHON="venv/Pytorch_2.1/bin/python"
+# python程序位置，可搭配一键包或是省去每次切换环境
+
 export glm_path="model/chatglm-6b-int4"
 # glm模型位置
 

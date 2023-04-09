@@ -1,3 +1,7 @@
 # /bin/bash
 source setting.sh
-python rwkvAPI.py
+if [ -z "$PYTHON" ]; then
+    python rwkvAPI.py
+else
+    $PYTHON rwkvAPI.py
+fi
