@@ -4,7 +4,7 @@ glm_path=os.environ.get('glm_path')
 print('glm模型地址',glm_path)
 
 glm_lora_path = os.environ.get('glm_lora_path')
-if not glm_lora_path == '':
+if not (glm_lora_path == '' or glm_lora_path == None):
     print('glm LoRA 微调启用: ', glm_lora_path)
 
 rwkv_path =os.environ.get('rwkv_path')
@@ -13,7 +13,7 @@ rwkv_strategy =os.environ.get('rwkv_strategy')
 print('rwkv模型参数',rwkv_strategy)
 
 rwkv_lora_path = os.environ.get('rwkv_lora_path')
-if not rwkv_lora_path == '':
+if not (rwkv_lora_path == '' or rwkv_lora_path == None):
     print('rwkv LoRA 微调启用: ', rwkv_lora_path)
     rwkv_lora_alpha = os.environ.get('rwkv_lora_alpha')
 logging =bool(os.environ.get('logging'))
