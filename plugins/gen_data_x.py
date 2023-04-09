@@ -10,6 +10,10 @@ def replaceall(mul,str):
     while str.find(mul) > -1:
         str = str.replace(mul,'')
     return str
+def replace_all_double_n(str):
+    while str.find('\n\n') > -1:
+        str = str.replace('\n\n','\n')
+    return str
 if not os.path.exists('txt_out'):
     os.mkdir('txt_out')
 for file in files:
@@ -19,7 +23,7 @@ for file in files:
     except:
             with open(floder+'/'+file,"r",encoding='utf-8') as f:  
                 data = f.read()
-    # data=replaceall('\n',data)
+    data=replace_all_double_n(data)
     cut_file=f"txt_out/{file}"
     with open(cut_file, 'w',encoding='utf-8') as f:   
         f.write(data)

@@ -93,7 +93,7 @@ def api_chat_stream():
         if use_zhishiku:
             if keyword is None:
                 keyword=prompt
-            print(keyword)
+            # print(keyword)
             response_d=zhishiku.find(keyword)
             output_sources = [i['title'] for i in response_d]
             results ='\n---\n'.join([i['content'] for i in response_d])
