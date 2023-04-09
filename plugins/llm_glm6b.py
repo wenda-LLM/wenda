@@ -29,7 +29,6 @@ def load_model():
         print('glm_lora_path模型地址',settings.glm_lora_path)
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, settings.glm_lora_path)
-    
     device, precision = settings.glm_strategy.split()
     # 根据设备执行不同的操作
     if device == 'cpu':
@@ -59,5 +58,4 @@ def load_model():
         # 如果是其他精度，报错并退出程序
         print('Error: 不受支持的精度')
         exit()
-        
-    model = model.eval()
+model = model.eval()
