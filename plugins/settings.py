@@ -3,6 +3,9 @@ import os
 port=os.environ.get('PORT')
 print('WebUI 端口号',port)
 
+red="\033[1;32m"
+green=":\033[1;31m"
+white="\033[1;37m"
 glm_path=os.environ.get('glm_path')
 print('glm模型地址',glm_path)
 

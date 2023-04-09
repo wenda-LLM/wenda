@@ -26,7 +26,7 @@ def chat_one(prompt,history_formatted,max_length,top_p,temperature,zhishiku=Fals
                 token_stop = [0]) # stop generation whenever you see any token here
     
     if zhishiku:
-        ctx+=f"\n{bot}{interface}"
+        ctx=prompt+f"\n{bot}{interface}"
     else:
         ctx = f"\n{user}{interface}{prompt}\n{bot}{interface}"
     all_tokens = []
@@ -53,12 +53,19 @@ def chat_one(prompt,history_formatted,max_length,top_p,temperature,zhishiku=Fals
         if '\ufffd' not in tmp:
             response += tmp
             if  response.endswith('\n\n') or response.endswith(f"{user}{interface}"):
-                response = response.removesuffix(f"{user}{interface}").removesuffix('\n').removesuffix('\n')
+                response = remove_suffix(
+                    remove_suffix(
+                        remove_suffix(response,f"{user}{interface}"),
+                        '\n'),
+                        '\n')
                 break
             print(tmp,end='')
             out_last = i + 1
             yield response.strip()
-
+def remove_suffix(input_string, suffix):#兼容python3.8
+    if suffix and input_string.endswith(suffix):
+        return input_string[:-len(suffix)]
+    return input_string
 interface = ":"
 user = "Bob"
 bot = "Alice"
