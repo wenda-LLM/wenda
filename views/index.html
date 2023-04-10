@@ -19,6 +19,7 @@
 	<script src="static/vue.js"></script>
 	<script src="static/vuetify.min.js"></script>
 
+	<script src="static/markdown-it.min.js"></script>
 
 	<style>
 		.v-navigation-drawer__content::-webkit-scrollbar {
@@ -42,7 +43,11 @@
 		}
 
 		/* 滑轨两头的监听按钮颜色 */
-
+		th,
+		td {
+			outline: 1px solid;
+			padding: 2px;
+		}
 
 		.ask,
 		.answer {
@@ -54,6 +59,7 @@
 			margin: 0 10px;
 			word-break: break-word;
 		}
+
 		.ask {
 			background: #bcffb0aa;
 			margin-left: auto;
@@ -69,7 +75,7 @@
 		.v-application--wrap {
 			background: transparent;
 			min-height: 100%;
-			    background: #cecece0a;
+			background: #cecece0a;
 		}
 
 		.float {
@@ -145,7 +151,7 @@
 						</div>
 					</v-hover>
 
-					<span v-if="当前对话.role != 'user'" class="answer" v-text="当前对话.content"></span>
+					<span v-if="当前对话.role != 'user'" class="answer" v-html="md2html(当前对话.content)"></span>
 				</div>
 				<br><br><br><br><br><br><br><br><br>
 			</v-container>
@@ -378,7 +384,10 @@
 			})
 			console.table(await response.json())
 		}
-
+		function md2html(conent) {
+			let md = new markdownit();
+			return md.render(conent).replace(/<a /g,'<a target="_blank"')
+		}
 
 	</script>
 </body>

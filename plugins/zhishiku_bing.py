@@ -31,5 +31,5 @@ def find(search_query):
         tmp = re.sub('^.*?>','', i).replace('\n', '').strip()
         tmp2 = re.sub('<[^<]+?>', '', tmp).replace('\n', '').strip()
         clear_title.append(tmp2)
-    return [{'title':link[i][1]+":"+clear_title[i],'content':clear_brief[i]}
+    return [{'title':"["+clear_title[i]+"]("+link[i][1]+")",'content':clear_brief[i]}
  for i in range(min(settings.chunk_count, len(brief)))]
