@@ -58,4 +58,4 @@ def load_model():
         # 如果是其他精度，报错并退出程序
         print('Error: 不受支持的精度')
         exit()
-model = model.eval()
+    model = model.eval()
