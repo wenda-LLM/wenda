@@ -26,7 +26,7 @@ def chat_one(prompt,history_formatted,max_length,top_p,temperature,zhishiku=Fals
                 token_stop = [0]) # stop generation whenever you see any token here
     
     if zhishiku:
-        ctx=prompt+f"\n{bot}{interface}"
+        ctx=prompt+f"\n\n{bot}{interface}"
     else:
         ctx = f"\n{user}{interface}{prompt}\n{bot}{interface}"
     all_tokens = []
