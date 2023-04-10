@@ -29,33 +29,30 @@ def load_model():
         print('glm_lora_path模型地址',settings.glm_lora_path)
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, settings.glm_lora_path)
-    device, precision = settings.glm_strategy.split()
-    # 根据设备执行不同的操作
-    if device == 'cpu':
-        # 如果是cpu，不做任何操作
-        pass
-    elif device == 'cuda':
-        # 如果是gpu，把模型移动到显卡
-        model = model.cuda()
-    else:
-        # 如果是其他设备，报错并退出程序
-        print('Error: 不受支持的设备')
-        exit()
-    # 根据精度执行不同的操作
-    if precision == 'fp16':
-        # 如果是fp16，把模型转化为半精度
-        model = model.half()
-    elif precision == 'fp32':
-        # 如果是fp32，把模型转化为全精度
-        model = model.float()
-    elif precision.startswith('fp16i'):
-        # 如果是fp16i开头，把模型转化为指定的精度
-        # 从字符串中提取精度的数字部分
-        bits = int(precision[5:])
-        # 调用quantize方法，传入精度参数
-        model = model.quantize(bits)
-    else:
-        # 如果是其他精度，报错并退出程序
-        print('Error: 不受支持的精度')
-        exit()
+    for strategy in settings.glm_strategy.split():
+        # 根据设备执行不同的操作
+        if strategy == 'cpu':
+            # 如果是cpu，不做任何操作
+            pass
+        elif strategy == 'cuda':
+            # 如果是gpu，把模型移动到显卡
+            model = model.cuda()
+        else:
+            # 根据精度执行不同的操作
+            if strategy == 'fp16':
+                # 如果是fp16，把模型转化为半精度
+                model = model.half()
+            elif strategy == 'fp32':
+                # 如果是fp32，把模型转化为全精度
+                model = model.float()
+            elif strategy.startswith('fp16i'):
+                # 如果是fp16i开头，把模型转化为指定的精度
+                # 从字符串中提取精度的数字部分
+                bits = int(strategy[5:])
+                # 调用quantize方法，传入精度参数
+                model = model.quantize(bits)
+            else:
+                # 如果是其他精度，报错并退出程序
+                print('参数错误：',strategy)
+                exit()
     model = model.eval()
