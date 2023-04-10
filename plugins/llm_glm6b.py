@@ -51,6 +51,7 @@ def load_model():
                 bits = int(strategy[5:])
                 # 调用quantize方法，传入精度参数
                 model = model.quantize(bits)
+                model = model.half()
             else:
                 # 如果是其他精度，报错并退出程序
                 print('参数错误：',strategy)
