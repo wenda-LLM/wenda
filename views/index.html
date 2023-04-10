@@ -42,10 +42,7 @@
 		}
 
 		/* 滑轨两头的监听按钮颜色 */
-		.ask {
-			background: #bcffb0aa;
-			margin-left: auto;
-		}
+
 
 		.ask,
 		.answer {
@@ -55,6 +52,11 @@
 			white-space: pre-line;
 			max-width: 80%;
 			margin: 0 10px;
+			word-break: break-word;
+		}
+		.ask {
+			background: #bcffb0aa;
+			margin-left: auto;
 		}
 
 		.头像 {
@@ -67,6 +69,7 @@
 		.v-application--wrap {
 			background: transparent;
 			min-height: 100%;
+			    background: #cecece0a;
 		}
 
 		.float {
@@ -128,7 +131,7 @@
 				<br><br><br>
 				<div v-for="(当前对话, index) in 对话" :key="index"
 					:class="['d-flex flex-row align-center my-2', 当前对话.role == 'user' ? 'justify-end': null]">
-					<span v-if="当前对话.role == 'user'" class="ask" contenteditable="true" v-text="当前对话.content"></span>
+					<span v-if="当前对话.role == 'user'" class="ask" v-text="当前对话.content"></span>
 					<v-hover v-slot="{ hover }">
 						<div>
 							<v-avatar :color="当前对话.role == 'user' ? 'indigo': 'purple'" size="36" class="头像">
@@ -142,7 +145,7 @@
 						</div>
 					</v-hover>
 
-					<span v-if="当前对话.role != 'user'" class="answer" contenteditable="true" v-text="当前对话.content"></span>
+					<span v-if="当前对话.role != 'user'" class="answer" v-text="当前对话.content"></span>
 				</div>
 				<br><br><br><br><br><br><br><br><br>
 			</v-container>
@@ -247,7 +250,7 @@
 				问题: '',
 				对话: JSON.parse(localStorage["对话历史"] || "[]"),
 				历史对话: false,
-				历史对话轮数限制:3,
+				历史对话轮数限制: 3,
 				功能菜单: 功能,
 				会话模式: {
 					名称: "常规模式",
@@ -294,10 +297,10 @@
 			let QA_history
 			if (app.历史对话) {
 				QA_history = app.对话.concat()
-				if (app.历史对话轮数限制!=0&&app.对话.length > app.历史对话轮数限制) {
-				    alert(`历史信息过长，将仅保留最后${app.历史对话轮数限制}次对话记忆。设置为0不限制`)
+				if (app.历史对话轮数限制 != 0 && app.对话.length > app.历史对话轮数限制) {
+					alert(`历史信息过长，将仅保留最后${app.历史对话轮数限制}次对话记忆。设置为0不限制`)
 
-				    QA_history = app.对话.slice(app.对话.length -app.历史对话轮数限制*2)
+					QA_history = app.对话.slice(app.对话.length - app.历史对话轮数限制 * 2)
 				}
 			}
 			else {
