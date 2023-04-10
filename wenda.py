@@ -91,7 +91,7 @@ def api_chat_stream():
             torch.cuda.empty_cache() 
             output_sources = [i['title'] for i in response_d]
             results ='\n---\n'.join([i['content'] for i in response_d])
-            prompt=  'system:结合以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n\n'+results+'\nuser:'+prompt
+            prompt=  'system:学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n\n'+results+'\nuser:'+prompt
             footer=  "\n来源：\n"+('\n').join(output_sources)+'///'
         yield footer
         
