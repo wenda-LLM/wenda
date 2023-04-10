@@ -62,3 +62,6 @@ chunk_size =int(os.environ.get('chunk_size'))
 print('chunk_size',chunk_size)
 chunk_count =int(os.environ.get('chunk_count'))
 print('chunk_count',chunk_count)
+
+zhishiku_folder_name =os.environ.get('zsk_folder', "txt")
+print('知识库文件夹名称为:', zhishiku_folder_name)

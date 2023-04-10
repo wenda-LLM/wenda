@@ -5,8 +5,8 @@ from langchain.vectorstores.faiss import FAISS
 from langchain.document_loaders import DirectoryLoader
 from langchain.text_splitter import TokenTextSplitter,CharacterTextSplitter
 
-source_folder = 'txt'
-target_folder = 'txt_out'
+source_folder = settings.zhishiku_folder_name
+target_folder = source_folder + '_out'
 source_folder_path = os.path.join(os.getcwd(), source_folder)
 target_folder_path = os.path.join(os.getcwd(), target_folder)
 
@@ -22,7 +22,6 @@ def replace_all_double_n(str):
         str = str.replace('\n\n','\n')
     return str
 
-print(f'source_folder_path is: {source_folder_path}')
 root_path_list = source_folder_path.split(os.sep)
 
 for root, dirs, files in os.walk(source_folder_path):
@@ -46,7 +45,7 @@ for root, dirs, files in os.walk(source_folder_path):
             f.close()
 
 print("开始读取数据")
-loader = DirectoryLoader('txt_out',glob='**/*.txt')
+loader = DirectoryLoader(target_folder, glob='**/*.txt')
 docs = loader.load()
 # text_splitter = TokenTextSplitter(chunk_size=500, chunk_overlap=15)
 text_splitter = CharacterTextSplitter(chunk_size=settings.chunk_size, chunk_overlap=20,separator='\n')
