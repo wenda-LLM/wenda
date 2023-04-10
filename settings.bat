@@ -46,8 +46,8 @@ rem rwkv模型lora微调权重alpha  和训练时所用值挂钩
 set llm_type=glm6b
 rem  LLM模型类型:glm6b、rwkv
 
-set zsk_type=s
-rem  知识库类型:s→传统索引；x→基于Sentence  Transformer 的向量数据库
+set zsk_type=bing
+rem  知识库类型:s→传统索引；x→基于Sentence  Transformer 的向量数据库；bing→bing搜索
 
 set embeddings_path=model\simcse-chinese-roberta-wwm-ext
 rem embeddings模型位置
@@ -58,5 +58,5 @@ rem vectorstore保存位置
 set chunk_size=200
 rem chunk_size
 
-set chunk_count=3
+set chunk_count=5
 rem chunk_count
