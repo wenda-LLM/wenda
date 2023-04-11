@@ -3,60 +3,65 @@ set "WINPYDIR=%~dp0\WPy64-38100\python-3.8.10.amd64"
 set "PATH=%WINPYDIR%\;%WINPYDIR%\DLLs;%WINPYDIR%\Scripts;%PATH%;"
 
 set logging=1
-rem ÈÕÖ¾
+rem æ—¥å¿—
 
 set PORT=17860
-rem WebUI Ä¬ÈÏÆô¶¯¶Ë¿ÚºÅ
+rem WebUI é»˜è®¤å¯åŠ¨ç«¯å£å·
 
 set "PYTHON=%WINPYDIR%\python.exe "
-rem python³ÌĞòÎ»ÖÃ£¬²»Ê¹ÓÃ¸ÄÎª±¾µØÂ·¾¶
+rem pythonç¨‹åºä½ç½®ï¼Œä¸ä½¿ç”¨æ”¹ä¸ºæœ¬åœ°è·¯å¾„
 
 set glm_path=model\chatglm-6b-int4
-rem glmÄ£ĞÍÎ»ÖÃ
+rem glmæ¨¡å‹ä½ç½®
 
 
 set "glm_strategy=cuda fp16"
 
 
-rem glm Ä£ĞÍ²ÎÊı  Ö§³Ö£º
-rem "cuda fp16"  ËùÓĞglmÄ£ĞÍ ÒªÖ±½ÓÅÜÔÚgpuÉÏ¶¼¿ÉÒÔÊ¹ÓÃÕâ¸ö²ÎÊı
-rem "cuda fp16i8"  fp16Ô­ÉúÄ£ĞÍ Òª×ÔĞĞÁ¿»¯Îªint8ÅÜÔÚgpuÉÏ¿ÉÒÔÊ¹ÓÃÕâ¸ö²ÎÊı
-rem "cuda fp16i4"  fp16Ô­ÉúÄ£ĞÍ Òª×ÔĞĞÁ¿»¯Îªint4ÅÜÔÚgpuÉÏ¿ÉÒÔÊ¹ÓÃÕâ¸ö²ÎÊı
-rem "fp16i4 cuda " ÏÈÁ¿»¯ÔÙcuda£¬½â¾öÏÔ´æ²»¹»ÎÊÌâ
-rem "fp16i8 cuda "  ÏÈÁ¿»¯ÔÙcuda£¬½â¾öÏÔ´æ²»¹»ÎÊÌâ
-rem "cpu fp32"  ËùÓĞglmÄ£ĞÍ ÒªÖ±½ÓÅÜÔÚcpuÉÏ¶¼¿ÉÒÔÊ¹ÓÃÕâ¸ö²ÎÊı
-rem "cpu fp16i8" fp16Ô­ÉúÄ£ĞÍ Òª×ÔĞĞÁ¿»¯Îªint8ÅÜÔÚcpuÉÏ¿ÉÒÔÊ¹ÓÃÕâ¸ö²ÎÊı
-rem "cpu fp16i4" fp16Ô­ÉúÄ£ĞÍÒª ×ÔĞĞÁ¿»¯Îªint4ÅÜÔÚcpuÉÏ¿ÉÒÔÊ¹ÓÃÕâ¸ö²ÎÊı
+rem glm æ¨¡å‹å‚æ•°  æ”¯æŒï¼š
+rem "cuda fp16"  æ‰€æœ‰glmæ¨¡å‹ è¦ç›´æ¥è·‘åœ¨gpuä¸Šéƒ½å¯ä»¥ä½¿ç”¨è¿™ä¸ªå‚æ•°
+rem "cuda fp16i8"  fp16åŸç”Ÿæ¨¡å‹ è¦è‡ªè¡Œé‡åŒ–ä¸ºint8è·‘åœ¨gpuä¸Šå¯ä»¥ä½¿ç”¨è¿™ä¸ªå‚æ•°
+rem "cuda fp16i4"  fp16åŸç”Ÿæ¨¡å‹ è¦è‡ªè¡Œé‡åŒ–ä¸ºint4è·‘åœ¨gpuä¸Šå¯ä»¥ä½¿ç”¨è¿™ä¸ªå‚æ•°
+rem "fp16i4 cuda " å…ˆé‡åŒ–å†cudaï¼Œè§£å†³æ˜¾å­˜ä¸å¤Ÿé—®é¢˜
+rem "fp16i8 cuda "  å…ˆé‡åŒ–å†cudaï¼Œè§£å†³æ˜¾å­˜ä¸å¤Ÿé—®é¢˜
+rem "cpu fp32"  æ‰€æœ‰glmæ¨¡å‹ è¦ç›´æ¥è·‘åœ¨cpuä¸Šéƒ½å¯ä»¥ä½¿ç”¨è¿™ä¸ªå‚æ•°
+rem "cpu fp16i8" fp16åŸç”Ÿæ¨¡å‹ è¦è‡ªè¡Œé‡åŒ–ä¸ºint8è·‘åœ¨cpuä¸Šå¯ä»¥ä½¿ç”¨è¿™ä¸ªå‚æ•°
+rem "cpu fp16i4" fp16åŸç”Ÿæ¨¡å‹è¦ è‡ªè¡Œé‡åŒ–ä¸ºint4è·‘åœ¨cpuä¸Šå¯ä»¥ä½¿ç”¨è¿™ä¸ªå‚æ•°
     
 set glm_lora_path=
-rem glmÄ£ĞÍÎ¢µ÷È¨ÖØÄ¿Â¼Â·¾¶  Îª¿ÕÔò²»¼ÓÔØLoRA
+rem glmæ¨¡å‹å¾®è°ƒæƒé‡ç›®å½•è·¯å¾„  ä¸ºç©ºåˆ™ä¸åŠ è½½LoRA
 
 set rwkv_path=..\RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048.pth
-rem rwkvÄ£ĞÍÎ»ÖÃ
+rem rwkvæ¨¡å‹ä½ç½®
 
 set "rwkv_strategy=cuda fp16i8 *18+"
-rem rwkvÄ£ĞÍ²ÎÊı
+rem rwkvæ¨¡å‹å‚æ•°
 
 set rwkv_lora_path=""
-rem rwkvÄ£ĞÍloraÎ¢µ÷È¨ÖØÄ¿Â¼Â·¾¶  Îª¿ÕÔò²»¼ÓÔØLoRA
+rem rwkvæ¨¡å‹loraå¾®è°ƒæƒé‡ç›®å½•è·¯å¾„  ä¸ºç©ºåˆ™ä¸åŠ è½½LoRA
 
 set rwkv_lora_alpha="16"
-rem rwkvÄ£ĞÍloraÎ¢µ÷È¨ÖØalpha  ºÍÑµÁ·Ê±ËùÓÃÖµ¹Ò¹³
+rem rwkvæ¨¡å‹loraå¾®è°ƒæƒé‡alpha  å’Œè®­ç»ƒæ—¶æ‰€ç”¨å€¼æŒ‚é’©
 
 set llm_type=glm6b
-rem  LLMÄ£ĞÍÀàĞÍ:glm6b¡¢rwkv
+rem  LLMæ¨¡å‹ç±»å‹:glm6bã€rwkv
 
-set zsk_type=s
-rem  ÖªÊ¶¿âÀàĞÍ:s¡ú´«Í³Ë÷Òı£»x¡ú»ùÓÚSentence  Transformer µÄÏòÁ¿Êı¾İ¿â£»bing¡úbingËÑË÷
+set zsk_type=bing
+rem  çŸ¥è¯†åº“ç±»å‹:
+rem  sâ†’ä¼ ç»Ÿç´¢å¼•
+rem  xâ†’åŸºäºSentence  Transformer çš„å‘é‡æ•°æ®åº“
+rem  bingâ†’cn.bingæœç´¢ï¼Œä»…å›½å†…å¯ç”¨
+rem  bingxsâ†’cn.bingå­¦æœ¯æœç´¢ï¼Œä»…å›½å†…å¯ç”¨
+
 
 set zsk_folder=zsk
-rem  ÖªÊ¶¿âµÄÎÄ¼ş¼ĞÄ¿Â¼Ãû³Æ£¬ÈôÁô¿ÕÔòÎªtxt
+rem  çŸ¥è¯†åº“çš„æ–‡ä»¶å¤¹ç›®å½•åç§°ï¼Œè‹¥ç•™ç©ºåˆ™ä¸ºtxt
 
 set embeddings_path=model\simcse-chinese-roberta-wwm-ext
-rem embeddingsÄ£ĞÍÎ»ÖÃ
+rem embeddingsæ¨¡å‹ä½ç½®
 
 set vectorstore_path=xw
-rem vectorstore±£´æÎ»ÖÃ
+rem vectorstoreä¿å­˜ä½ç½®
 
 set chunk_size=200
 rem chunk_size
