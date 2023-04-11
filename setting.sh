@@ -1,4 +1,4 @@
-# /bin/bash
+#!/bin/bash
 export logging="True"
 # 日志
 
@@ -34,7 +34,11 @@ export rwkv_lora_alpha="16"
 # rwkv模型lora微调权重alpha  和训练时所用值挂钩
 
 export llm_type="glm6b"
-# LLM模型类型:glm6b、rwkv
+#  知识库类型:
+#  s→传统索引
+#  x→基于Sentence  Transformer 的向量数据库
+#  bing→cn.bing搜索，仅国内可用
+#  bingxs→cn.bing学术搜索，仅国内可用
 
 export zsk_type="x"
 # 知识库类型:s->传统索引；x->基于Sentence  Transformer 的向量数据库
