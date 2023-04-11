@@ -3,9 +3,9 @@ import re
 from plugins import settings
 session=requests.Session()
 # 正则提取摘要和链接
-title_pattern = re.compile('<a.target=..blank..target..(.*?)</a>')
-brief_pattern = re.compile('K=.SERP(.*?)</p>')
-link_pattern = re.compile('(?<=(a.target=._blank..target=._blank..href=.))(.*?)(?=(..h=))')
+title_pattern = re.compile('<li class="aca_algo"><h2 class=""><a(.*?)</a>')
+brief_pattern = re.compile('<div class="caption_abstract"><p>(.*?)</p>')
+link_pattern = re.compile('<li class="aca_algo"><h2 class=""><a href="(.*?)" h="')
  
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36 Edg/94.0.992.31'}
  
@@ -31,5 +31,6 @@ def find(search_query):
         tmp = re.sub('^.*?>','', i).replace('\n', '').strip()
         tmp2 = re.sub('<[^<]+?>', '', tmp).replace('\n', '').strip()
         clear_title.append(tmp2)
-    return [{'title':"["+clear_title[i]+"]("+link[i][1]+")",'content':clear_brief[i]}
+    # print(clear_title,link,clear_brief)
+    return [{'title':"["+clear_title[i]+"]("+link[i]+")",'content':clear_brief[i]}
  for i in range(min(settings.chunk_count, len(brief)))]
