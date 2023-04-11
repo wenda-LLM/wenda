@@ -45,6 +45,8 @@ rem rwkv模型lora微调权重目录路径  为空则不加载LoRA
 set rwkv_lora_alpha="16"
 rem rwkv模型lora微调权重alpha  和训练时所用值挂钩
 
+set llama_path=
+rem rwkv模型位置
 
 set zsk_type=bingsite
 rem  知识库类型:
