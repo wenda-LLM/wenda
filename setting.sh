@@ -49,6 +49,9 @@ export zsk_type="bing"
 export site="www.12371.cn"
 #  共产党员网
 
+export zsk_show_soucre=0
+#  知识库显示来源
+
 export zsk_folder="zsk"
 #  知识库的文件夹目录名称，若留空则为txt
 
