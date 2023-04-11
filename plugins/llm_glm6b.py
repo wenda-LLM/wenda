@@ -10,7 +10,7 @@ def chat_init(history):
         for i, old_chat in enumerate(history):
             if len(tmp) == 0 and old_chat['role'] == "user":
                 tmp.append(old_chat['content'])
-            elif old_chat['role'] == "AI":
+            elif old_chat['role'] == "AI" or old_chat['role'] == 'assistant':
                 tmp.append(old_chat['content'])
                 history_formatted.append(tuple(tmp))
                 tmp = []
