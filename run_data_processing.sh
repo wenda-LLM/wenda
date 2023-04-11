@@ -1,4 +1,4 @@
-# /bin/bash
+#!/bin/bash
 source setting.sh
 if [ -z "$PYTHON" ]; then
     python plugins/gen_data_${zsk_type}.py
