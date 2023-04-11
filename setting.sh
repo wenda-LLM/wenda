@@ -39,6 +39,9 @@ export llm_type="glm6b"
 export zsk_type="x"
 # 知识库类型:s->传统索引；x->基于Sentence  Transformer 的向量数据库
 
+export zsk_folder="zsk"
+#  知识库的文件夹目录名称，若留空则为txt
+
 export embeddings_path="model/simcse-chinese-roberta-wwm-ext"
 # embeddings模型位置
 
