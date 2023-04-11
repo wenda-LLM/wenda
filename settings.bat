@@ -11,6 +11,10 @@ rem WebUI 默认启动端口号
 set "PYTHON=%WINPYDIR%\python.exe "
 rem python程序位置，不使用改为本地路径
 
+set llm_type=llama
+rem  LLM模型类型:glm6b、rwkv、llama
+
+
 set glm_path=model\chatglm-6b-int4
 rem glm模型位置
 
@@ -41,8 +45,6 @@ rem rwkv模型lora微调权重目录路径  为空则不加载LoRA
 set rwkv_lora_alpha="16"
 rem rwkv模型lora微调权重alpha  和训练时所用值挂钩
 
-set llm_type=glm6b
-rem  LLM模型类型:glm6b、rwkv
 
 set zsk_type=bingsite
 rem  知识库类型:
