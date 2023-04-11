@@ -2,6 +2,9 @@
 export logging="True"
 # 日志
 
+export PORT=17860
+# WebUI 端口
+
 export PYTHON="venv/pytorch_2.1/bin/python"
 # python程序位置，可搭配一键包或是省去每次切换环境
 
