@@ -5,31 +5,27 @@ import os
 def chat_init(history):
     history_formatted = None
     if history is not None:
-        history_formatted = []
-        tmp = []
+        history_formatted = ""
         for i, old_chat in enumerate(history):
             if len(tmp) == 0 and old_chat['role'] == "user":
-                tmp.append(old_chat['content'])
+                history_formatted+="Q: "+old_chat['content']
             elif old_chat['role'] == "AI" or old_chat['role'] == 'assistant':
-                tmp.append(old_chat['content'])
-                history_formatted.append(tuple(tmp))
-                tmp = []
+                history_formatted+=" A: "+old_chat['content']
             else:
                 continue
-    return history_formatted
+    return history_formatted+" "
 
 
 def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
-    stream = model("Q: %s A: "%prompt, stop=["Q:", "\n"],stream=True)
+    stream = model(history_formatted+"Q: %s A: "%prompt, stop=["Q:", "\n"], max_tokens=max_length, temperature=temperature, top_p=top_p,stream=True)
     # print(output['choices'])
-    response=""
+    text=""
     for output in stream:
-        response+=output["choices"][0]["text"]
-        yield response
-
+        text+=output["choices"][0]["text"]
+        yield text
 
 def load_model():
     global model
     from llama_cpp import Llama
-    model = Llama(model_path=settings.llama_path)
+    model = Llama(model_path=settings.llama_path,use_mlock=True)
 
