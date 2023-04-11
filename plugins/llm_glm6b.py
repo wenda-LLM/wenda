@@ -43,6 +43,7 @@ def load_model():
         pass
     elif device == 'cuda':
         # 如果是gpu，把模型移动到显卡
+        import torch
         if not (precision.startswith('fp16i') and torch.cuda.get_device_properties(0).total_memory < 1.4e+10):
             model = model.cuda()
     else:
