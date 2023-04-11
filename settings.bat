@@ -22,8 +22,6 @@ rem glm 模型参数  支持：
 rem "cuda fp16"  所有glm模型 要直接跑在gpu上都可以使用这个参数
 rem "cuda fp16i8"  fp16原生模型 要自行量化为int8跑在gpu上可以使用这个参数
 rem "cuda fp16i4"  fp16原生模型 要自行量化为int4跑在gpu上可以使用这个参数
-rem "fp16i4 cuda " 先量化再cuda，解决显存不够问题
-rem "fp16i8 cuda "  先量化再cuda，解决显存不够问题
 rem "cpu fp32"  所有glm模型 要直接跑在cpu上都可以使用这个参数
 rem "cpu fp16i8" fp16原生模型 要自行量化为int8跑在cpu上可以使用这个参数
 rem "cpu fp16i4" fp16原生模型要 自行量化为int4跑在cpu上可以使用这个参数
