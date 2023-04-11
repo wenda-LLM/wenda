@@ -63,9 +63,9 @@ def load_model():
         bits = int(precision[5:])
         # 调用quantize方法，传入精度参数
         model = model.quantize(bits)
-        # model = model.half()
         if device == 'cuda':
             model = model.cuda()
+        model = model.half()
     else:
         # 如果是其他精度，报错并退出程序
         print('Error: 不受支持的精度')
