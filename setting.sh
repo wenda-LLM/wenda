@@ -36,7 +36,7 @@ export rwkv_lora_alpha="16"
 export llm_type="glm6b"
 #  LLM模型类型:glm6b、rwkv
 
-export zsk_type="x"
+export zsk_type="bing"
 #  知识库类型:
 #  s→传统索引
 #  x→基于Sentence  Transformer 的向量数据库
