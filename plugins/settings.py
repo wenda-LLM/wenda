@@ -44,6 +44,10 @@ if llm_type == "rwkv":
     if not (rwkv_lora_path == '' or rwkv_lora_path == None):
         print('rwkv LoRA 微调启用: ', rwkv_lora_path)
         rwkv_lora_alpha = os.environ.get('rwkv_lora_alpha')
+
+if llm_type == "llama":
+    llama_path = os.environ.get('llama_path')
+    print('llama模型地址', llama_path)
 logging = os.environ.get('logging') != "0"
 print('日志记录', logging)
 

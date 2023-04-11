@@ -19,3 +19,4 @@ record.db
 # virtual environment
 /venv/
 venv.bat
+*.bin

@@ -31,5 +31,5 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku
 def load_model():
     global model
     from llama_cpp import Llama
-    model = Llama(model_path="C:\\Users\\cly\\Downloads\\alpaca-win-x86-64\\ggml-vicuna-13b-4bit-rev1.bin")
+    model = Llama(model_path=settings.llama_path)
 

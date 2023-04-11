@@ -39,13 +39,13 @@ rem rwkv模型位置
 set "rwkv_strategy=cuda fp16i8 *18+"
 rem rwkv模型参数
 
-set rwkv_lora_path=""
+set rwkv_lora_path=
 rem rwkv模型lora微调权重目录路径  为空则不加载LoRA
 
 set rwkv_lora_alpha="16"
 rem rwkv模型lora微调权重alpha  和训练时所用值挂钩
 
-set llama_path=
+set llama_path=ggml-vicuna-13b-4bit-rev1.bin
 rem rwkv模型位置
 
 set zsk_type=bingsite
