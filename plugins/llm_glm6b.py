@@ -66,6 +66,15 @@ def load_model():
         if device == 'cuda':
             model = model.cuda()
         model = model.half()
+    elif precision.startswith('fp32i'):
+        # 如果是fp32i开头，把模型转化为指定的精度
+        # 从字符串中提取精度的数字部分
+        bits = int(precision[5:])
+        # 调用quantize方法，传入精度参数
+        model = model.quantize(bits)
+        if device == 'cuda':
+            model = model.cuda()
+        model = model.float()
     else:
         # 如果是其他精度，报错并退出程序
         print('Error: 不受支持的精度')
