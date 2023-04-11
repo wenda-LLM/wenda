@@ -10,12 +10,12 @@ export glm_path="model/chatglm-6b"
 
 export glm_strategy="cuda fp16"
 # glm 模型参数  支持：
-# "cuda fp16"  所有glm模型 要直接跑在gpu上都可以使用这个参数
 # "cpu fp32"  所有glm模型 要直接跑在cpu上都可以使用这个参数
+# "cpu fp32i8" fp16原生模型 要自行量化为int8跑在cpu上可以使用这个参数
+# "cpu fp32i4" fp16原生模型要 自行量化为int4跑在cpu上可以使用这个参数
+# "cuda fp16"  所有glm模型 要直接跑在gpu上都可以使用这个参数
 # "cuda fp16i8"  fp16原生模型 要自行量化为int8跑在gpu上可以使用这个参数
-# "cpu fp16i8" fp16原生模型 要自行量化为int8跑在cpu上可以使用这个参数
 # "cuda fp16i4"  fp16原生模型 要自行量化为int4跑在gpu上可以使用这个参数
-# "cpu fp16i4" fp16原生模型要 自行量化为int4跑在cpu上可以使用这个参数
     
 
 export glm_lora_path=""
