@@ -79,11 +79,57 @@ def api_find():
     return json.dumps(zhishiku.find(prompt))
 
 
+@route('/chat/completions', method='POST')
+def api_chat_box():
+    response.content_type = "text/event-stream"
+    response.add_header("Connection", "keep-alive")
+    response.add_header("Cache-Control", "no-cache")
+    data = request.json
+    max_length = data.get('max_tokens')
+    if max_length is None:
+        max_length = 2048
+    top_p = data.get('top_p')
+    if top_p is None:
+        top_p = 0.2
+    temperature = data.get('temperature')
+    if temperature is None:
+        temperature = 0.8
+    use_zhishiku = data.get('zhishiku')
+    if use_zhishiku is None:
+        use_zhishiku = False
+    messages = data.get('messages')
+    prompt = messages[-1]['content']
+    # print(messages)
+    history_formatted = LLM.chat_init(messages)
+    response_text = ''
+    # print(request.environ)
+    IP = request.environ.get(
+        'HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
+    global 当前用户
+    error = ""
+    with mutex:
+        yield "data: %s\n\n" %json.dumps({"response": (str(len(prompt))+'字正在计算')})
+
+        print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
+        try:
+            for response_text in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=use_zhishiku):
+                if (response_text):
+                    # yield "data: %s\n\n" %response_text
+                    yield "data: %s\n\n" %json.dumps({"response": response_text})
+            
+            yield "data: %s\n\n" %"[DONE]"
+        except Exception as e:
+            error = str(e)
+            print("错误", settings.red, error, settings.white, e)
+            response_text = ''
+        torch.cuda.empty_cache()
+    if response_text == '':
+        yield "data: %s\n\n" %json.dumps({"response": ("发生错误，正在重新加载模型"+error)})
+        os._exit(0)
 @route('/api/chat_stream', method='POST')
 def api_chat_stream():
     data = request.json
     prompt = data.get('prompt')
-    keyword = data.get('keyword')
     max_length = data.get('max_length')
     if max_length is None:
         max_length = 2048
@@ -108,10 +154,8 @@ def api_chat_stream():
         footer = '///'
         yield str(len(prompt))+'字正在计算'
         if use_zhishiku:
-            if keyword is None:
-                keyword = prompt
             # print(keyword)
-            response_d = zhishiku.find(keyword)
+            response_d = zhishiku.find(prompt)
             torch.cuda.empty_cache()
             output_sources = [i['title'] for i in response_d]
             results = '\n---\n'.join([i['content'] for i in response_d])
