@@ -34,14 +34,20 @@ export rwkv_lora_alpha="16"
 # rwkv模型lora微调权重alpha  和训练时所用值挂钩
 
 export llm_type="glm6b"
+#  LLM模型类型:glm6b、rwkv
+
+export zsk_type="bing"
 #  知识库类型:
 #  s→传统索引
 #  x→基于Sentence  Transformer 的向量数据库
 #  bing→cn.bing搜索，仅国内可用
 #  bingxs→cn.bing学术搜索，仅国内可用
-
-export zsk_type="x"
-# 知识库类型:s->传统索引；x->基于Sentence  Transformer 的向量数据库
+#  bingsite→cn.bing站内搜索，仅国内可用，需设置网址：
+# cn.bing站内搜索网址:
+# export site=www.jianbiaoku.com
+#  建标库
+export site="www.12371.cn"
+#  共产党员网
 
 export zsk_folder="zsk"
 #  知识库的文件夹目录名称，若留空则为txt

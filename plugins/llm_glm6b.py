@@ -43,6 +43,7 @@ def load_model():
         pass
     elif device == 'cuda':
         # 如果是gpu，把模型移动到显卡
+        import torch
         if not (precision.startswith('fp16i') and torch.cuda.get_device_properties(0).total_memory < 1.4e+10):
             model = model.cuda()
     else:
@@ -62,9 +63,9 @@ def load_model():
         bits = int(precision[5:])
         # 调用quantize方法，传入精度参数
         model = model.quantize(bits)
-        # model = model.half()
         if device == 'cuda':
             model = model.cuda()
+        model = model.half()
     else:
         # 如果是其他精度，报错并退出程序
         print('Error: 不受支持的精度')
