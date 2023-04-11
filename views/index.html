@@ -43,8 +43,8 @@
 		}
 
 		/* 滑轨两头的监听按钮颜色 */
-		th,
-		td {
+		.answer th,
+		.answer td {
 			outline: 1px solid;
 			padding: 2px;
 		}
@@ -85,6 +85,22 @@
 		[v-cloak] {
 			display: none;
 		}
+
+		.v-application p {
+			margin-bottom: 0;
+		}
+
+		.v-tabs-bar {
+			background-color: #272727 !important;
+		}
+
+		.v-tabs-items {
+			height: 100%;
+		}
+
+		.v-window-item.v-window-item--active {
+			margin: 20px;
+		}
 	</style>
 </head>
 
@@ -97,25 +113,9 @@
 						<v-list-item-title v-text="功能.名称">
 						</v-list-item-title>
 					</v-list-item>
-					<v-list-item>
-						<v-slider :min="1000" :max="4000" :step="10" v-model="max_length" thumb-color="purple"
-							label="max_length" thumb-label></v-slider>
-					</v-list-item>
-					<v-list-item>
-						<v-slider :min="0" :max="1" :step="0.1" v-model="temperature" thumb-color="purple"
-							label="temperature" thumb-label></v-slider>
-					</v-list-item>
-					<v-list-item>
-						<v-slider :min="0" :max="1" :step="0.1" v-model="top_p" thumb-color="purple" label="top_p"
-							thumb-label></v-slider>
-					</v-list-item>
-					<v-list-item>
-						<v-slider :min="0" :max="4" :step="1" v-model="历史对话轮数限制" thumb-color="purple" label="对话轮数限制"
-							thumb-label></v-slider>
-					</v-list-item>
 				</v-list>
 			</v-navigation-drawer>
-			<v-toolbar dark style="width: 100%;top: 0;position: fixed;">
+			<v-toolbar flat dark>
 				<v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 				<v-toolbar-title>闻达</v-toolbar-title>
 				<v-spacer></v-spacer>
@@ -133,55 +133,100 @@
 					</div>
 				</v-hover>
 			</v-toolbar>
-			<v-container>
-				<br><br><br>
-				<div v-for="(当前对话, index) in 对话" :key="index"
-					:class="['d-flex flex-row align-center my-2', 当前对话.role == 'user' ? 'justify-end': null]">
-					<span v-if="当前对话.role == 'user'" class="ask" v-text="当前对话.content"></span>
-					<v-hover v-slot="{ hover }">
-						<div>
-							<v-avatar :color="当前对话.role == 'user' ? 'indigo': 'purple'" size="36" class="头像">
-								<span>{{ {user:"问",AI:'答'}[当前对话.role] }}</span>
-							</v-avatar>
-							<br>
-							<v-expand-transition>
-								<v-icon class="float" v-if="hover&&!loading" large text @click="删除 (当前对话)">mdi-delete
-								</v-icon>
-							</v-expand-transition>
-						</div>
-					</v-hover>
+			<v-tabs v-model="tab" dark>
+				<v-tabs-slider color="yellow"></v-tabs-slider>
+				<v-tab v-for="item in ['对话','知识库','设置']" :key="item">
+					{{ item }}
+				</v-tab>
+			</v-tabs>
 
-					<span v-if="当前对话.role != 'user'" class="answer" v-html="md2html(当前对话.content)"></span>
-				</div>
-				<br><br><br><br><br><br><br><br><br>
-			</v-container>
-			<v-footer fixed>
-				<v-textarea :loading="loading" :disabled="loading" no-resize :label="会话模式.描述" :placeholder="会话模式.问题"
-					@keypress.enter="提交()" v-model="问题" height="120">
-				</v-textarea>
-				<div>
-					<v-expand-transition>
-						<div v-if="loading">
-							<v-btn color="purple" rounded="lg" dark size="x-large" @click="中断()">
-								中断
+			<v-tabs-items v-model="tab">
+				<v-tab-item key="对话">
+					<div v-for="(当前对话, index) in 对话" :key="index"
+						:class="['d-flex flex-row align-center my-2', 当前对话.role == 'user' ? 'justify-end': null]">
+						<span v-if="当前对话.role == 'user'" class="ask" v-text="当前对话.content"></span>
+						<v-hover v-slot="{ hover }">
+							<div>
+								<v-avatar :color="当前对话.role == 'user' ? 'indigo': 'purple'" size="36" class="头像">
+									<span>{{ {user:"问",AI:'答'}[当前对话.role] }}</span>
+								</v-avatar>
+								<br>
+								<v-expand-transition>
+									<v-icon class="float" v-if="hover&&!loading" large text @click="删除 (当前对话)">
+										mdi-delete
+									</v-icon>
+								</v-expand-transition>
+							</div>
+						</v-hover>
+
+						<span v-if="当前对话.role != 'user'" class="answer" v-html="md2html(当前对话.content)"></span>
+					</div>
+					<br><br><br><br><br><br><br><br><br>
+					<v-footer fixed>
+						<v-textarea :loading="loading" :disabled="loading" no-resize :label="会话模式.描述"
+							:placeholder="会话模式.问题" @keypress.enter="提交()" v-model="问题" height="120">
+						</v-textarea>
+						<div>
+							<v-expand-transition>
+								<div v-if="loading">
+									<v-btn color="purple" rounded="lg" dark size="x-large" @click="中断()">
+										中断
+									</v-btn>
+									<br>
+								</div>
+							</v-expand-transition>
+							<v-btn style="margin: 10px 0;" color="purple" rounded="lg" dark size="x-large" @click="提交()"
+								:loading="loading">
+								发送
 							</v-btn>
 							<br>
-						</div>
-					</v-expand-transition>
-					<v-btn style="margin: 10px 0;" color="purple" rounded="lg" dark size="x-large" @click="提交()"
-						:loading="loading">
-						发送
-					</v-btn>
-					<br>
-					<v-expand-transition>
-						<v-chip v-if="会话模式.名称!='常规模式'" color="purple" outlined close
-							@click:close='会话模式={名称: "常规模式",描述: "输入问题",问题: ""}'>
-							{{会话模式.名称}}
-						</v-chip>
-					</v-expand-transition>
+							<v-expand-transition>
+								<v-chip v-if="会话模式.名称!='常规模式'" color="purple" outlined close
+									@click:close='会话模式={名称: "常规模式",描述: "输入问题",问题: ""}'>
+									{{会话模式.名称}}
+								</v-chip>
+							</v-expand-transition>
 
-				</div>
-			</v-footer>
+						</div>
+					</v-footer>
+				</v-tab-item>
+				<v-tab-item key="知识库">
+					<v-btn color="purple" dark size="x-large" @click="find(prompt())">
+						测试
+					</v-btn>
+					<v-data-table :headers="[{ text: '来源', value: 'title' },{ text: '内容', value: 'content' },]"
+						:items="知识库" hide-default-header hide-default-footer></v-data-table>
+				</v-tab-item>
+				<v-tab-item key="设置">
+					<br>
+					<v-form>
+						<v-slider :min="1000" :max="4000" :step="10" v-model="max_length" thumb-color="purple"
+							label="max_length" thumb-label><template v-slot:append>
+								<v-text-field v-model="max_length" class="mt-0 pt-0" type="number" style="width: 60px">
+								</v-text-field>
+							</template>
+						</v-slider>
+						<v-slider :min="0" :max="1" :step="0.1" v-model="temperature" thumb-color="purple"
+							label="temperature" thumb-label><template v-slot:append>
+								<v-text-field v-model="temperature" class="mt-0 pt-0" type="number" style="width: 60px">
+								</v-text-field>
+							</template>
+						</v-slider>
+						<v-slider :min="0" :max="1" :step="0.1" v-model="top_p" thumb-color="purple" label="top_p"
+							thumb-label><template v-slot:append>
+								<v-text-field v-model="top_p" class="mt-0 pt-0" type="number" style="width: 60px">
+								</v-text-field>
+							</template>
+						</v-slider>
+						<v-slider :min="0" :max="4" :step="1" v-model="历史对话轮数限制" thumb-color="purple" label="对话轮数限制"
+							thumb-label><template v-slot:append>
+								<v-text-field v-model="历史对话轮数限制" class="mt-0 pt-0" type="number" style="width: 60px">
+								</v-text-field>
+							</template></v-slider>
+					</v-form>
+				</v-tab-item>
+			</v-tabs-items>
+			<br><br><br>
 			<v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line;">{{snackbar_text}}</v-snackbar>
 		</v-app>
 	</div>
@@ -263,6 +308,8 @@
 					描述: "输入问题",
 					问题: "",
 				},
+				知识库: [],
+				tab: '对话',
 				zhishiku: false,
 				temperature: 0.9,
 				max_length: 2048,
@@ -329,7 +376,6 @@
 						prompt: app.会话模式.问题 + app.问题,
 						temperature: app.temperature,
 						top_p: app.top_p,
-						keyword: app.问题.replace(/[(某部)(组织)(为什么)(是什么)(怎么)(如何)]/g, ''),
 						max_length: app.max_length,
 						history: QA_history,
 						zhishiku: app.zhishiku
@@ -382,11 +428,13 @@
 					'Content-Type': 'application/json'
 				}
 			})
-			console.table(await response.json())
+			let json = await response.json()
+			console.table(json)
+			app.知识库 = json
 		}
 		function md2html(conent) {
 			let md = new markdownit();
-			return md.render(conent).replace(/<a /g,'<a target="_blank"')
+			return md.render(conent).replace(/<a /g, '<a target="_blank"')
 		}
 
 	</script>
