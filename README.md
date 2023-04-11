@@ -16,6 +16,7 @@
 ##  截图
 #### 设置和预设功能
 ![](imgs/setting.png)
+![](imgs/setting2.png)
 #### 预设功能使用
 ![](imgs/func.png)
 
@@ -32,6 +33,7 @@
 ### 1.安装库
 知识库索引模式：```pip install -r requirements-sy.txt```
 知识库语义模式：```pip install -r requirements-yy.txt```
+
 ### 2.下载模型
 根据需要，下载对应模型。
 
@@ -46,12 +48,15 @@
 s模式、x模式首先要把txt目录下的文件喂给一个类似搜索引擎的东西，然后在对话过程中去查询这个搜索引擎获得提示信息；bing模式、bingxs模式则直进行搜索获取答案。
 搜索后在回答之前插入提示信息，知识库的数据就被模型知道了。
 为防止爆显存，插入的数据不能太长，所以有字数限制。
+知识库在线模式：```pip install -r requirements-bing.txt```
 主要是有以下几种方案：
 1.    s模式，基于 whoosh 搜索引擎，生成提示语。
  2.   x模式，基于 model/simcse-chinese-roberta-wwm-ext 模型，去生成提示语
  3.   bing模式，cn.bing搜索，仅国内可用
  4.   bingxs模式，cn.bing学术搜索，仅国内可用
 
+####  调试工具
+![](imgs/zsk-test.png)
 ####  chatGLM-6B模型
 ![](imgs/zsk-glm.png)
 

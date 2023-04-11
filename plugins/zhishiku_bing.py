@@ -10,11 +10,12 @@ link_pattern = re.compile(
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36 Edg/94.0.992.31'}
+proxies = {"http": None,"https": None,}
 
 
 def find(search_query):
     url = 'https://cn.bing.com/search?q={}'.format(search_query)
-    res = session.get(url, headers=headers)
+    res = session.get(url, headers=headers, proxies=proxies)
     r = res.text
 
     title = title_pattern.findall(r)
