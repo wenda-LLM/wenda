@@ -54,6 +54,7 @@ s模式、x模式首先要把txt目录下的文件喂给一个类似搜索引擎
  2.   x模式，基于 model/simcse-chinese-roberta-wwm-ext 模型，去生成提示语
  3.   bing模式，cn.bing搜索，仅国内可用
  4.   bingxs模式，cn.bing学术搜索，仅国内可用
+ 5.   bingsite模式，bing站内搜索，需设置网址
 
 ####  调试工具
 ![](imgs/zsk-test.png)
