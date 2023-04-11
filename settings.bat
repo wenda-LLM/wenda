@@ -57,6 +57,8 @@ rem  建标库
 set site=www.12371.cn
 rem  共产党员网
 
+set zsk_show_soucre=0
+rem  知识库显示来源
 
 set zsk_folder=zsk
 rem  知识库的文件夹目录名称，若留空则为txt

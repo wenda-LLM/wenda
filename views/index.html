@@ -101,6 +101,12 @@
 		.v-window-item.v-window-item--active {
 			margin: 20px;
 		}
+
+		.v-tab.v-tab {
+			color: inherit;
+			font-weight: bold;
+			font-size: large;
+		}
 	</style>
 </head>
 
@@ -224,6 +230,7 @@
 								</v-text-field>
 							</template></v-slider>
 					</v-form>
+					https://github.com/l15y/wenda
 				</v-tab-item>
 			</v-tabs-items>
 			<br><br><br>
@@ -433,8 +440,9 @@
 			app.知识库 = json
 		}
 		function md2html(conent) {
-			let md = new markdownit();
-			return md.render(conent).replace(/<a /g, '<a target="_blank"')
+			return  conent
+			// let md = new markdownit();
+			// return md.render(conent).replace(/<a /g, '<a target="_blank"')
 		}
 
 	</script>
