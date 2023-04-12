@@ -60,6 +60,9 @@ if zsk_type == 'x':
     print('embeddings模型地址', embeddings_path)
     vectorstore_path = os.environ.get('vectorstore_path')
     print('vectorstore保存地址', vectorstore_path)
+if zsk_type == 'rh':
+    zsk_strategy = os.environ.get('zsk_strategy')
+    print('知识库融合参数', zsk_strategy)
 
 
 def load_zsk():
