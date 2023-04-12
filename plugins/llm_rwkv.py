@@ -32,7 +32,7 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku
     if zhishiku:
         ctx = prompt+f"\n\n{bot}{interface}"
     else:
-        ctx = f"\n{user}{interface}{prompt}\n{bot}{interface}"
+        ctx = f"\n{user}{interface}{prompt}\n\n{bot}{interface}"
     all_tokens = []
     out_last = 0
     response = ''
@@ -59,12 +59,14 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku
         tmp = pipeline.decode(all_tokens[out_last:])
         if '\ufffd' not in tmp:
             response += tmp
-            if response.endswith('\n\n') or response.endswith(f"{user}{interface}"):
+            if response.endswith('\n\n') or response.endswith(f"{user}{interface}") or response.endswith(f"{bot}{interface}"):
                 response = remove_suffix(
                     remove_suffix(
-                        remove_suffix(response, f"{user}{interface}"),
-                        '\n'),
-                    '\n')
+                        remove_suffix(
+                            remove_suffix(response, f"{user}{interface}")
+                        , f"{bot}{interface}"),
+                    '\n'),
+                '\n')
                 break
             print(tmp, end='')
             out_last = i + 1
