@@ -24,7 +24,7 @@ export glm_strategy="cuda fp16"
 export glm_lora_path=""
 # glm模型lora微调权重目录路径  为空则不加载LoRA
 
-export rwkv_path="model/RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048.pth"
+export rwkv_path="model/RWKV-4-Raven-7B-v8-Eng49%-Chn50%-Other1%-20230412-ctx4096.pth"
 # rwkv模型位置
 
 export rwkv_strategy="cuda fp16"
