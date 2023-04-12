@@ -7,7 +7,7 @@ def chat_init(history):
     if history is not None:
         history_formatted = ""
         for i, old_chat in enumerate(history):
-            if len(tmp) == 0 and old_chat['role'] == "user":
+            if old_chat['role'] == "user":
                 history_formatted+="Q: "+old_chat['content']
             elif old_chat['role'] == "AI" or old_chat['role'] == 'assistant':
                 history_formatted+=" A: "+old_chat['content']

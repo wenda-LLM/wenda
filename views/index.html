@@ -79,9 +79,20 @@
 		}
 
 		.float {
-			position: absolute !important;
+			position: absolute!important;
 		}
-
+		header {
+			position: fixed!important;
+			top: 0;
+			z-index: 1;
+			width: 100%;
+		}
+		.v-tabs{
+			position: fixed!important;
+			top: 64px;
+			z-index: 1;
+			width: 100%;
+		}
 		[v-cloak] {
 			display: none;
 		}
@@ -121,7 +132,7 @@
 					</v-list-item>
 				</v-list>
 			</v-navigation-drawer>
-			<v-toolbar flat dark>
+			<v-toolbar float dark>
 				<v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 				<v-toolbar-title>闻达</v-toolbar-title>
 				<v-spacer></v-spacer>
@@ -145,6 +156,7 @@
 					{{ item }}
 				</v-tab>
 			</v-tabs>
+			<br><br><br><br>
 
 			<v-tabs-items v-model="tab">
 				<v-tab-item key="对话">
@@ -440,7 +452,7 @@
 			app.知识库 = json
 		}
 		function md2html(conent) {
-			return  conent
+			return conent
 			// let md = new markdownit();
 			// return md.render(conent).replace(/<a /g, '<a target="_blank"')
 		}
