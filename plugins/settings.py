@@ -55,14 +55,14 @@ zsk_type = os.environ.get('zsk_type')
 print('知识库类型', zsk_type)
 zsk_show_soucre = os.environ.get('zsk_show_soucre')!="0"
 print('知识库显示来源', zsk_show_soucre)
-if zsk_type == 'x':
-    embeddings_path = os.environ.get('embeddings_path')
-    print('embeddings模型地址', embeddings_path)
-    vectorstore_path = os.environ.get('vectorstore_path')
-    print('vectorstore保存地址', vectorstore_path)
 if zsk_type == 'rh':
     zsk_strategy = os.environ.get('zsk_strategy')
     print('知识库融合参数', zsk_strategy)
+embeddings_path = os.environ.get('embeddings_path')
+vectorstore_path = os.environ.get('vectorstore_path')
+if zsk_type == 'x':
+    print('embeddings模型地址', embeddings_path)
+    print('vectorstore保存地址', vectorstore_path)
 
 
 def load_zsk():
