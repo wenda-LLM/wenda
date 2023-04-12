@@ -1,7 +1,7 @@
 # 闻达：一个大规模语言模型调用平台
 ## 简介
 一个LLM调用平台。旨在通过使用为小模型外挂知识库查找的方式，实现近似于大模型的生成能力。
-1. 目前支持模型：`chatGLM-6B`、`chatRWKV`、`chatYuan`。
+1. 目前支持模型：`chatGLM-6B`、`chatRWKV`、`chatYuan`、`llama`。
 2. 知识库自动查找
 3. 支持参数在线调整
 4. 支持`chatGLM-6B`、`chatRWKV`流式输出和输出过程中中断
@@ -88,6 +88,10 @@ s模式、x模式首先要把txt目录下的文件喂给一个类似搜索引擎
 ![](imgs/novel.png)
 #### 文字冒险游戏
 ![](imgs/wzmx.png)
+## llama
+运行：`run_llama.bat`。
+模型位置等参数：修改`settings.bat`。
+当前（4月12日）库对中文实现有bug，用plugins文件夹下的llama.py替换库中文件。
 ## chatYuan
 YuanAPI.py
 
