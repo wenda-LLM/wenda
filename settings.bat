@@ -18,10 +18,7 @@ rem  LLM模型类型:glm6b、rwkv、llama
 set glm_path=model\chatglm-6b-int4
 rem glm模型位置
 
-
 set "glm_strategy=cuda fp16"
-
-
 rem glm 模型参数  支持：
 rem "cuda fp16"  所有glm模型 要直接跑在gpu上都可以使用这个参数
 rem "cuda fp16i8"  fp16原生模型 要自行量化为int8跑在gpu上可以使用这个参数
@@ -46,7 +43,7 @@ set rwkv_lora_alpha="16"
 rem rwkv模型lora微调权重alpha  和训练时所用值挂钩
 
 set llama_path=ggml-vicuna-13b-4bit-rev1.bin
-rem rwkv模型位置
+rem llama模型位置
 
 set zsk_type=rh
 rem  知识库类型:
