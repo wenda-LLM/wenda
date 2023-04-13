@@ -1,9 +1,0 @@
-bottle
-paste
-sqlalchemy
-sqlalchemy_utils
-transformers==4.26.1
-jieba
-whoosh
-cpm_kernels
-sentencepiece

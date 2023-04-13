@@ -71,7 +71,8 @@ def load_zsk():
         zhishiku = import_module('plugins.zhishiku_'+zsk_type)
         return zhishiku
     except Exception as e:
-        print("知识库加载失败，请阅读说明：https://github.com/l15y/wenda", e)
+        print("知识库加载失败，请阅读说明：https://github.com/l15y/wenda")
+        raise  e
 
 
 chunk_size = int(os.environ.get('chunk_size'))
