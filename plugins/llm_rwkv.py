@@ -32,7 +32,7 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku
     if zhishiku:
         ctx = prompt+f"\n\n{bot}{interface}"
     else:
-        ctx = f"\n{user}{interface}{prompt}\n\n{bot}{interface}"
+        ctx = f"\n{user}{interface} {prompt}\n\n{bot}{interface}"
     all_tokens = []
     out_last = 0
     response = ''
