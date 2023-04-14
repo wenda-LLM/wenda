@@ -107,14 +107,23 @@
                 <description>Fess搜索引擎的部署地址</description>
             </property>
         </Fess>
-        <Fess>
-        <property>
-            <name>Path</name>
-            <value>zsk</value>
-            <description>知识库的文件夹目录名称，若留空则为txt</description>
-        </property>
+        <Knowledge_Graph>
+            <property>
+                <name>Knowledge Path</name>
+                <value></value>
+                <description>知识库的文件夹目录名称，若留空则为txt</description>
+            </property>
+            <property>
+                <name>Graph Host</name>
+                <value></value>
+                <description>图数据库部署地址</description>
+            </property>
+            <property>
+                <name>Model Path</name>
+                <value></value>
+                <description>信息抽取模型所在路径</description>
+            </property>
+        <Knowledge_Graph>
     </Library>
-
-    <!-- more categories here -->
 
 </configuration>
