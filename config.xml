@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <General>
+        <property>
+            <name>Logging</name>
+            <value>1</value>
+            <description>日志</description>
+        </property>
+        <property>
+            <name>Port</name>
+            <value>17860</value>
+            <description>WebUI 默认启动端口号</description>
+        </property>
+        <property>
+            <name>Type</name>
+            <value>rwkv</value>
+            <description>LLM模型类型:glm6b、rwkv、llama</description>
+        </property>
+    </General>
+    <Models>
+        <RWKV>
+            <property>
+                <name>Path</name>
+                <value>model/RWKV-4-Raven-7B-v8-Eng49%-Chn50%-Other1%-20230412-ctx4096.pth</value>
+                <description>rwkv模型位置</description>
+            </property>
+            <property>
+                <name>Strategy</name>
+                <value>cuda fp16i8 *18+</value>
+                <description>rwkv模型参数</description>
+            </property>
+        </RWKV>
+        <GLM>
+            <property>
+                <name>Path</name>
+                <value>model/chatglm-6b-int4</value>
+                <description>glm模型位置</description>
+            </property>
+            <property>
+                <name>Strategy</name>
+                <value>cuda fp16i4</value>
+                <description>glm 模型参数  支持：
+                    "cuda fp16"  所有glm模型 要直接跑在gpu上都可以使用这个参数
+                    "cuda fp16i8"  fp16原生模型 要自行量化为int8跑在gpu上可以使用这个参数
+                    "cuda fp16i4"  fp16原生模型 要自行量化为int4跑在gpu上可以使用这个参数
+                    "cpu fp32"  所有glm模型 要直接跑在cpu上都可以使用这个参数
+                    "cpu fp16i8" fp16原生模型 要自行量化为int8跑在cpu上可以使用这个参数
+                    "cpu fp16i4" fp16原生模型要 自行量化为int4跑在cpu上可以使用这个参数
+                </description>
+            </property>
+        </GLM>
+        <LLAMA>
+            <property>
+                <name>Path</name>
+                <value>model/ggml-vicuna-13b-4bit-rev1.bin</value>
+                <description>llama模型位置</description>
+            </property>
+            <property>
+                <name>Strategy</name>
+                <value></value>
+                <description>llama模型参数 暂时不用</description>
+            </property>
+        </LLAMA>
+    </Models>
+    <Library>
+        <property>
+            <name>Type</name>
+            <value>fess</value>
+            <description>知识库类型:
+                bing→cn.bing搜索，仅国内可用
+                bingxs→cn.bing学术搜索，仅国内可用
+                bingsite→cn.bing站内搜索，仅国内可用，需设置网址：
+                rh→ 知识库融合,需设置参数
+            </description>
+        </property>
+        <property>
+            <name>Site</name>
+            <value>www.12371.cn</value>
+            <description>cn.bing站内搜索网址: 共产党员网</description>
+        </property>
+        <property>
+            <name>Strategy</name>
+            <value>bing:3 fess:2</value>
+            <description>知识库融合参数</description>
+        </property>
+        <property>
+            <name>Show Soucre</name>
+            <value>0</value>
+            <description>知识库显示来源</description>
+        </property>
+        <property>
+            <name>Path</name>
+            <value>zsk</value>
+            <description>知识库的文件夹目录名称，若留空则为txt</description>
+        </property>
+        <property>
+            <name>Size</name>
+            <value>200</value>
+            <description>知识库长度</description>
+        </property>
+        <property>
+            <name>Count</name>
+            <value>5</value>
+            <description>知识库抽取数量</description>
+        </property>
+    </Library>
+
+    <!-- more categories here -->
+
+</configuration>
