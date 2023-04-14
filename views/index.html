@@ -52,7 +52,7 @@
 		.ask,
 		.answer {
 			padding: 1em;
-			background: #cececeaa;
+			background: #fff;
 			border-radius: 16px;
 			white-space: pre-line;
 			max-width: 80%;
@@ -129,15 +129,19 @@
 		.bot-avatar {
 			background-image: linear-gradient(#b53f9c, #5a0071)
 		}
+
+		.theme--light.v-tabs-items {
+			background-image: linear-gradient(to right, #9e9e9e, #7d7d7d);
+		}
 	</style>
 </head>
 
 <body>
 	<div id="app" v-cloak>
 		<v-app>
-			<v-btn class="float" color="purple" rounded="lg" dark size="x-large" 
-			style="z-index: 1111;position: fixed!important;right: 10px;top: 64px;"
-			 @click="对话=[]"	:loading="loading">
+			<v-btn class="float" color="purple" rounded="lg" dark size="x-large"
+				style="z-index: 1111;position: fixed!important;right: 10px;top: 64px;" @click="对话=[]"
+				:loading="loading">
 				清除历史
 			</v-btn>
 			<v-navigation-drawer width="350" v-model="drawer" style="height: 100%;position: fixed;" temporary dark>
