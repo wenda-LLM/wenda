@@ -12,7 +12,7 @@
             <description>WebUI 默认启动端口号</description>
         </property>
         <property>
-            <name>Type</name>
+            <name>LLM_Type</name>
             <value>rwkv</value>
             <description>LLM模型类型:glm6b、rwkv、llama</description>
         </property>
