@@ -52,7 +52,7 @@
 		.ask,
 		.answer {
 			padding: 1em;
-			background: #fff;
+			background: #0003;
 			border-radius: 16px;
 			white-space: pre-line;
 			max-width: 80%;
@@ -61,7 +61,6 @@
 		}
 
 		.ask {
-			background: #bcffb0aa;
 			margin-left: auto;
 		}
 
@@ -88,11 +87,13 @@
 			z-index: 1;
 			width: 100%;
 		}
-
+		footer{
+			padding-bottom: 54px!important;
+		}
 		.v-tabs {
 			position: fixed !important;
-			top: 64px;
-			z-index: 1;
+			bottom: 0;
+			z-index: 100;
 			width: 100%;
 		}
 
@@ -123,27 +124,19 @@
 		}
 
 		.user-avatar {
-			background-image: linear-gradient(#3f51b5, #000071);
+			background-color:  #0000a0;
 		}
 
 		.bot-avatar {
-			background-image: linear-gradient(#b53f9c, #5a0071)
+			background-color:  #7a0099
 		}
 
-		.theme--light.v-tabs-items {
-			background-image: linear-gradient(to right, #9e9e9e, #7d7d7d);
-		}
 	</style>
 </head>
 
 <body>
 	<div id="app" v-cloak>
 		<v-app>
-			<v-btn class="float" color="purple" rounded="lg" dark size="x-large"
-				style="z-index: 1111;position: fixed!important;right: 10px;top: 64px;" @click="对话=[]"
-				:loading="loading">
-				清除历史
-			</v-btn>
 			<v-navigation-drawer width="350" v-model="drawer" style="height: 100%;position: fixed;" temporary dark>
 				<v-list>
 					<v-list-item>
@@ -173,17 +166,14 @@
 				<v-switch hide-details color="purple" inset v-model="zhishiku" label="知识库"></v-switch>
 				&nbsp;&nbsp;&nbsp;&nbsp;
 				<v-switch hide-details color="purple" inset v-model="历史对话" label="历史"></v-switch>
-
-
-				</v-hover>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<v-btn color="#555"  dark size="x-large"
+				 @click="对话=[]"
+				:loading="loading">
+				清除历史
+			</v-btn>
 			</v-toolbar>
-			<v-tabs v-model="tab" dark>
-				<v-tabs-slider color="yellow"></v-tabs-slider>
-				<v-tab v-for="item in ['对话','知识库','设置']" :key="item">
-					{{ item }}
-				</v-tab>
-			</v-tabs>
-			<br><br><br><br>
+			<br><br><br>
 
 			<v-tabs-items v-model="tab">
 				<v-tab-item key="对话">
@@ -274,6 +264,12 @@
 					https://github.com/l15y/wenda
 				</v-tab-item>
 			</v-tabs-items>
+			<v-tabs v-model="tab" dark>
+				<v-tabs-slider color="purple"></v-tabs-slider>
+				<v-tab v-for="item in ['对话','知识库','设置']" :key="item">
+					{{ item }}
+				</v-tab>
+			</v-tabs>
 			<br><br><br>
 			<v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line;">{{snackbar_text}}</v-snackbar>
 		</v-app>
