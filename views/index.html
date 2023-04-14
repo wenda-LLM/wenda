@@ -79,20 +79,23 @@
 		}
 
 		.float {
-			position: absolute!important;
+			position: absolute !important;
 		}
+
 		header {
-			position: fixed!important;
+			position: fixed !important;
 			top: 0;
 			z-index: 1;
 			width: 100%;
 		}
-		.v-tabs{
-			position: fixed!important;
+
+		.v-tabs {
+			position: fixed !important;
 			top: 64px;
 			z-index: 1;
 			width: 100%;
 		}
+
 		[v-cloak] {
 			display: none;
 		}
@@ -384,7 +387,7 @@
 			已排队到 = false
 			setTimeout(read_now, 3000)
 			app.问题 = s.replace(/\n+/g, '\n')
-			app.对话.push({ role: "user", content: app.问题})
+			app.对话.push({ role: "user", content: app.问题 })
 			let 当前会话 = { role: "AI", content: '……' }
 			app.对话.push(当前会话)
 			setTimeout(() =>
@@ -426,7 +429,7 @@
 					if (done) break
 				}
 			} catch { }
-			
+
 			app.loading = false
 			已排队到 = true
 			保存()
@@ -461,7 +464,12 @@
 			// let md = new markdownit();
 			// return md.render(conent).replace(/<a /g, '<a target="_blank"')
 		}
-
+		zsk = (b) => {
+			app.zhishiku = b
+		}
+		lsdh = (b) => {
+			app.历史对话 = b
+		}
 	</script>
 </body>
 
