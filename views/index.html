@@ -121,10 +121,12 @@
 			font-weight: bold;
 			font-size: large;
 		}
-		.user-avatar{
+
+		.user-avatar {
 			background-image: linear-gradient(#3f51b5, #000071);
 		}
-		.bot-avatar{
+
+		.bot-avatar {
 			background-image: linear-gradient(#b53f9c, #5a0071)
 		}
 	</style>
@@ -133,22 +135,27 @@
 <body>
 	<div id="app" v-cloak>
 		<v-app>
+			<v-btn class="float" color="purple" rounded="lg" dark size="x-large" 
+			style="z-index: 1111;position: fixed!important;right: 10px;top: 64px;"
+			 @click="对话=[]"	:loading="loading">
+				清除历史
+			</v-btn>
 			<v-navigation-drawer width="350" v-model="drawer" style="height: 100%;position: fixed;" temporary dark>
 				<v-list>
 					<v-list-item>
 						<v-list-item-content>
-						  <v-list-item-title class="text-h6">
-							闻达 Auto
-						  </v-list-item-title>
-						  <br>
-						  <v-list-item-subtitle>
-							功能选择
-						  </v-list-item-subtitle>
+							<v-list-item-title class="text-h6">
+								闻达 Auto
+							</v-list-item-title>
+							<br>
+							<v-list-item-subtitle>
+								功能选择
+							</v-list-item-subtitle>
 						</v-list-item-content>
-					  </v-list-item>
-				
-					  <v-divider></v-divider>
-				
+					</v-list-item>
+
+					<v-divider></v-divider>
+
 					<v-list-item v-for="功能 in 功能菜单" @click.stop="载入功能(功能)">
 						<v-list-item-title v-text="功能.名称">
 						</v-list-item-title>
@@ -161,16 +168,9 @@
 				<v-spacer></v-spacer>
 				<v-switch hide-details color="purple" inset v-model="zhishiku" label="知识库"></v-switch>
 				&nbsp;&nbsp;&nbsp;&nbsp;
-				<v-hover v-slot="{ hover }">
-					<div>
-						<v-switch hide-details color="purple" inset v-model="历史对话" label="历史"></v-switch>
-						<v-expand-transition>
-							<v-btn class="float" v-if="hover" color="purple" rounded="lg" dark size="x-large"
-								@click="对话=[]" :loading="loading">
-								清除历史
-							</v-btn>
-						</v-expand-transition>
-					</div>
+				<v-switch hide-details color="purple" inset v-model="历史对话" label="历史"></v-switch>
+
+
 				</v-hover>
 			</v-toolbar>
 			<v-tabs v-model="tab" dark>
@@ -188,7 +188,8 @@
 						<span v-if="当前对话.role == 'user'" class="ask" v-text="当前对话.content"></span>
 						<v-hover v-slot="{ hover }">
 							<div>
-								<v-avatar :class="当前对话.role == 'user' ? 'user-avatar': 'bot-avatar'" size="36" class="头像">
+								<v-avatar :class="当前对话.role == 'user' ? 'user-avatar': 'bot-avatar'" size="36"
+									class="头像">
 									<span>{{ {user:"问",AI:'答'}[当前对话.role] }}</span>
 								</v-avatar>
 								<br>
@@ -254,7 +255,8 @@
 							</template>
 						</v-slider>
 						<v-slider :min="0" :max="1" :step="0.1" v-model="top_p" thumb-color="purple" label="top_p"
-							thumb-label><template v-slot:append>
+							thumb-label>
+							<template v-slot:append>
 								<v-text-field v-model="top_p" class="mt-0 pt-0" type="number" style="width: 60px">
 								</v-text-field>
 							</template>
@@ -327,15 +329,15 @@
 				问题: async () => {
 					zsk(false)//关闭知识库
 					lsdh(false)//关闭历史对话
-					let Q=app.问题
+					let Q = app.问题
 					resp = await send("根据以下主题，写一篇论文提纲：" +
-					Q )
+						Q)
 					app.max_length = 4096
-					resps=resp.split("\n\n")
+					resps = resp.split("\n\n")
 					for (i in resps) {
-						await send("根据主题：" + Q+ 
-						"\n提纲：" +resp+ 
-						"\n对提纲中的下列段落进行撰写：" + resps[i])
+						await send("根据主题：" + Q +
+							"\n提纲：" + resp +
+							"\n对提纲中的下列段落进行撰写：" + resps[i])
 					}
 				},
 			},
