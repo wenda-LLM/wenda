@@ -121,6 +121,12 @@
 			font-weight: bold;
 			font-size: large;
 		}
+		.user-avatar{
+			background-image: linear-gradient(#3f51b5, #000071);
+		}
+		.bot-avatar{
+			background-image: linear-gradient(#b53f9c, #5a0071)
+		}
 	</style>
 </head>
 
@@ -182,7 +188,7 @@
 						<span v-if="当前对话.role == 'user'" class="ask" v-text="当前对话.content"></span>
 						<v-hover v-slot="{ hover }">
 							<div>
-								<v-avatar :color="当前对话.role == 'user' ? 'indigo': 'purple'" size="36" class="头像">
+								<v-avatar :class="当前对话.role == 'user' ? 'user-avatar': 'bot-avatar'" size="36" class="头像">
 									<span>{{ {user:"问",AI:'答'}[当前对话.role] }}</span>
 								</v-avatar>
 								<br>
