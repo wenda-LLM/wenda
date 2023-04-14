@@ -55,6 +55,26 @@ fess模式、bing模式、bingxs模式、 bingsite模式均调用搜索引擎搜
 4.   bingxs模式，cn.bing学术搜索，仅国内可用
 5.   bingsite模式，bing站内搜索，需设置网址
 4.   fess模式，本地部署的[fess搜索](https://github.com/codelibs/fess)，效果好于已删除的s、x模式，并使用[letiantian/TextRank4ZH](https://github.com/letiantian/TextRank4ZH)进行了关键词提取
+### win系统fess使用
+1. 懒人包中下载fess-14.7.0-with-jdk.7z
+2. 解压到平时放软件的盘
+3. 打开解压出来的fess-14.7.0-with-jdk\bin目录
+4. 双击fess.in.bat
+5. 双击fess.bat. 弹出命令行运行框. 将其最小化
+6. 打开浏览器. 打开网址http://localhost:8080/
+7. 点击右上角log in  输入账号:admin 密码：wenda 进行登录
+8. 点击侧边栏中的Crawler. 点击File System
+9. 点击右上角的Create New
+10. Name输入便于记忆的资料库的名字
+11. Paths输入资料库的地址（格式示例：file:///E:/pdf）
+12. 其余选项保持默认. 下滚至最下方点击Create
+13. 自动返回File System页面. 点击刚才创建的选项（自己输入的Name）
+14. 点击Create new job. 点击Create
+15. 进入侧边栏的System内的Scheduler. 可以看到很多任务
+16. 目录的前面可以看到刚刚创建的job（示例：File Crawler - pdf search）. 点击进入
+17. 点击Start now. 刷新界面即可看到该任务正在运行. running
+18. 此时fess就在爬取文件的名字和内容. 可以在资源管理器看到cpu有负载
+19. 挂机。等待爬取完成即可尝试搜索关键词
 
 ####  调试工具
 ![](imgs/zsk-test.png)
