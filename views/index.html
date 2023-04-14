@@ -52,7 +52,7 @@
 		.ask,
 		.answer {
 			padding: 1em;
-			background: #cececeaa;
+			background: #0003;
 			border-radius: 16px;
 			white-space: pre-line;
 			max-width: 80%;
@@ -61,7 +61,6 @@
 		}
 
 		.ask {
-			background: #bcffb0aa;
 			margin-left: auto;
 		}
 
@@ -79,20 +78,25 @@
 		}
 
 		.float {
-			position: absolute!important;
+			position: absolute !important;
 		}
+
 		header {
-			position: fixed!important;
+			position: fixed !important;
 			top: 0;
 			z-index: 1;
 			width: 100%;
 		}
-		.v-tabs{
-			position: fixed!important;
-			top: 64px;
-			z-index: 1;
+		footer{
+			padding-bottom: 54px!important;
+		}
+		.v-tabs {
+			position: fixed !important;
+			bottom: 0;
+			z-index: 100;
 			width: 100%;
 		}
+
 		[v-cloak] {
 			display: none;
 		}
@@ -118,6 +122,15 @@
 			font-weight: bold;
 			font-size: large;
 		}
+
+		.user-avatar {
+			background-color:  #0000a0;
+		}
+
+		.bot-avatar {
+			background-color:  #7a0099
+		}
+
 	</style>
 </head>
 
@@ -126,6 +139,20 @@
 		<v-app>
 			<v-navigation-drawer width="350" v-model="drawer" style="height: 100%;position: fixed;" temporary dark>
 				<v-list>
+					<v-list-item>
+						<v-list-item-content>
+							<v-list-item-title class="text-h6">
+								闻达 Auto
+							</v-list-item-title>
+							<br>
+							<v-list-item-subtitle>
+								功能选择
+							</v-list-item-subtitle>
+						</v-list-item-content>
+					</v-list-item>
+
+					<v-divider></v-divider>
+
 					<v-list-item v-for="功能 in 功能菜单" @click.stop="载入功能(功能)">
 						<v-list-item-title v-text="功能.名称">
 						</v-list-item-title>
@@ -138,25 +165,15 @@
 				<v-spacer></v-spacer>
 				<v-switch hide-details color="purple" inset v-model="zhishiku" label="知识库"></v-switch>
 				&nbsp;&nbsp;&nbsp;&nbsp;
-				<v-hover v-slot="{ hover }">
-					<div>
-						<v-switch hide-details color="purple" inset v-model="历史对话" label="历史"></v-switch>
-						<v-expand-transition>
-							<v-btn class="float" v-if="hover" color="purple" rounded="lg" dark size="x-large"
-								@click="对话=[]" :loading="loading">
-								清除历史
-							</v-btn>
-						</v-expand-transition>
-					</div>
-				</v-hover>
+				<v-switch hide-details color="purple" inset v-model="历史对话" label="历史"></v-switch>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<v-btn color="#555"  dark size="x-large"
+				 @click="对话=[]"
+				:loading="loading">
+				清除历史
+			</v-btn>
 			</v-toolbar>
-			<v-tabs v-model="tab" dark>
-				<v-tabs-slider color="yellow"></v-tabs-slider>
-				<v-tab v-for="item in ['对话','知识库','设置']" :key="item">
-					{{ item }}
-				</v-tab>
-			</v-tabs>
-			<br><br><br><br>
+			<br><br><br>
 
 			<v-tabs-items v-model="tab">
 				<v-tab-item key="对话">
@@ -165,7 +182,8 @@
 						<span v-if="当前对话.role == 'user'" class="ask" v-text="当前对话.content"></span>
 						<v-hover v-slot="{ hover }">
 							<div>
-								<v-avatar :color="当前对话.role == 'user' ? 'indigo': 'purple'" size="36" class="头像">
+								<v-avatar :class="当前对话.role == 'user' ? 'user-avatar': 'bot-avatar'" size="36"
+									class="头像">
 									<span>{{ {user:"问",AI:'答'}[当前对话.role] }}</span>
 								</v-avatar>
 								<br>
@@ -182,7 +200,7 @@
 					<br><br><br><br><br><br><br><br><br>
 					<v-footer fixed>
 						<v-textarea :loading="loading" :disabled="loading" no-resize :label="会话模式.描述"
-							:placeholder="会话模式.问题" @keypress.enter="提交()" v-model="问题" height="120">
+							@keypress.enter="提交()" v-model="问题" height="120">
 						</v-textarea>
 						<div>
 							<v-expand-transition>
@@ -231,7 +249,8 @@
 							</template>
 						</v-slider>
 						<v-slider :min="0" :max="1" :step="0.1" v-model="top_p" thumb-color="purple" label="top_p"
-							thumb-label><template v-slot:append>
+							thumb-label>
+							<template v-slot:append>
 								<v-text-field v-model="top_p" class="mt-0 pt-0" type="number" style="width: 60px">
 								</v-text-field>
 							</template>
@@ -245,17 +264,29 @@
 					https://github.com/l15y/wenda
 				</v-tab-item>
 			</v-tabs-items>
+			<v-tabs v-model="tab" dark>
+				<v-tabs-slider color="purple"></v-tabs-slider>
+				<v-tab v-for="item in ['对话','知识库','设置']" :key="item">
+					{{ item }}
+				</v-tab>
+			</v-tabs>
 			<br><br><br>
 			<v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line;">{{snackbar_text}}</v-snackbar>
 		</v-app>
 	</div>
 	<script>
-
 		功能 = [
 			{
 				名称: "材料改写",
 				描述: "对指定内容进行多个版本的改写，以避免文本重复",
-				问题: "用中文改写以下段落，可以提到相同或类似的内容,但不必重复使用。可以使用一些修辞手法来增强文本的美感,例如比喻、拟人、排比等。可以添加更多的细节来丰富文本的内容和形象,例如描述人物、场景、事件等。可以通过逻辑推导来得出结论或观点,例如通过推理、分析、比较等方式。可以无中生有地提到一些内容,以增加细节和丰富性,例如通过虚构、猜测等方式。在修改段落时,需要确保文本的含义不发生变化,可以重新排列句子、改变表达方式。",
+				问题: async () => {
+					zsk(false)//关闭知识库
+					lsdh(false)//关闭历史对话
+					resp = await send(
+						"用中文改写以下段落，可以提到相同或类似的内容,但不必重复使用。可以使用一些修辞手法来增强文本的美感,例如比喻、拟人、排比等。可以添加更多的细节来丰富文本的内容和形象,例如描述人物、场景、事件等。可以通过逻辑推导来得出结论或观点,例如通过推理、分析、比较等方式。可以无中生有地提到一些内容,以增加细节和丰富性,例如通过虚构、猜测等方式。在修改段落时,需要确保文本的含义不发生变化,可以重新排列句子、改变表达方式。" +
+						app.问题)
+				}
+				,
 			},
 			{
 				名称: "翻译",
@@ -295,7 +326,20 @@
 			{
 				名称: "写论文",
 				描述: "根据主题撰写内容翔实、有信服力的论文",
-				问题: "写一篇高度详细的文章，包括引言、主体和结论段落，以回应以下内容：",
+				问题: async () => {
+					zsk(false)//关闭知识库
+					lsdh(false)//关闭历史对话
+					let Q = app.问题
+					resp = await send("根据以下主题，写一篇论文提纲：" +
+						Q)
+					app.max_length = 4096
+					resps = resp.split("\n\n")
+					for (i in resps) {
+						await send("根据主题：" + Q +
+							"\n提纲：" + resp +
+							"\n对提纲中的下列段落进行撰写：" + resps[i])
+					}
+				},
 			},
 			{
 				名称: "写提纲",
@@ -365,6 +409,14 @@
 		controller = new AbortController();
 		signal = controller.signal;
 		提交 = async () => {
+			if (typeof app.会话模式.问题 == 'function') {
+				app.会话模式.问题()
+			} else {
+
+				send(app.问题, app.会话模式.问题)
+			}
+		}
+		send = async (s, 会话模式 = "") => {
 			app.loading = true
 			let QA_history
 			if (app.历史对话) {
@@ -380,7 +432,7 @@
 			}
 			已排队到 = false
 			setTimeout(read_now, 3000)
-			app.问题 = app.问题.replace(/\n+/g, '\n')
+			app.问题 = s.replace(/\n+/g, '\n')
 			app.对话.push({ role: "user", content: app.问题 })
 			let 当前会话 = { role: "AI", content: '……' }
 			app.对话.push(当前会话)
@@ -392,7 +444,8 @@
 					signal: signal,
 					method: 'post',
 					body: JSON.stringify({
-						prompt: app.会话模式.问题 + app.问题,
+						prompt: 会话模式 + app.问题,
+						keyword: app.问题,
 						temperature: app.temperature,
 						top_p: app.top_p,
 						max_length: app.max_length,
@@ -423,9 +476,11 @@
 					if (done) break
 				}
 			} catch { }
+
 			app.loading = false
 			已排队到 = true
 			保存()
+			return 当前会话.content
 		}
 		read_now = async () => {
 			if (!已排队到) {
@@ -456,7 +511,12 @@
 			// let md = new markdownit();
 			// return md.render(conent).replace(/<a /g, '<a target="_blank"')
 		}
-
+		zsk = (b) => {
+			app.zhishiku = b
+		}
+		lsdh = (b) => {
+			app.历史对话 = b
+		}
 	</script>
 </body>
 

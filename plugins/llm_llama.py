@@ -8,17 +8,21 @@ def chat_init(history):
         history_formatted = ""
         for i, old_chat in enumerate(history):
             if old_chat['role'] == "user":
-                history_formatted+="Q: "+old_chat['content']
+                history_formatted+="Q: "+old_chat['content']+'\n'
             elif old_chat['role'] == "AI" or old_chat['role'] == 'assistant':
-                history_formatted+=" A: "+old_chat['content']
+                history_formatted+=" A: "+old_chat['content']+'\n'
             else:
                 continue
     return history_formatted+" "
 
 
 def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
-    stream = model(history_formatted+"Q: %s A: "%prompt, 
-    stop=["Q:", "\n"], temperature=temperature,max_tokens=max_length, top_p=top_p,stream=True)
+    if zhishiku:
+        prompt=history_formatted+"%s\nA: "%prompt
+    else:
+        prompt=history_formatted+"Q: %s\nA: "%prompt
+    stream = model(prompt,
+    stop=["Q:", "\n\n"], temperature=temperature,max_tokens=max_length, top_p=top_p,stream=True)
     # print(output['choices'])
     text=""
     for output in stream:

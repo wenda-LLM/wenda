@@ -47,8 +47,6 @@ rem llama模型位置
 
 set zsk_type=rh
 rem  知识库类型:
-rem  s→传统索引
-rem  x→基于Sentence  Transformer 的向量数据库
 rem  bing→cn.bing搜索，仅国内可用
 rem  bingxs→cn.bing学术搜索，仅国内可用
 rem  bingsite→cn.bing站内搜索，仅国内可用，需设置网址：
@@ -60,7 +58,7 @@ rem  建标库
 set site=www.12371.cn
 rem  共产党员网
 
-set "zsk_strategy=bing:3 bingxs:2"
+set "zsk_strategy=bing:3 fess:2"
 rem 知识库融合参数
 
 set zsk_show_soucre=0

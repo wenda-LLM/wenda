@@ -142,6 +142,9 @@ def api_chat_stream():
     use_zhishiku = data.get('zhishiku')
     if use_zhishiku is None:
         use_zhishiku = False
+    keyword = data.get('keyword')
+    if keyword is None:
+        keyword = prompt
     history = data.get('history')
     history_formatted = LLM.chat_init(history)
     response = ''
@@ -155,7 +158,7 @@ def api_chat_stream():
         yield str(len(prompt))+'字正在计算'
         if use_zhishiku:
             # print(keyword)
-            response_d = zhishiku.find(prompt)
+            response_d = zhishiku.find(keyword)
             torch.cuda.empty_cache()
             output_sources = [i['title'] for i in response_d]
             results = '\n---\n'.join([i['content'] for i in response_d])
