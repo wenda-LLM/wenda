@@ -365,6 +365,9 @@
 		controller = new AbortController();
 		signal = controller.signal;
 		提交 = async () => {
+			send(app.问题)
+		}
+		send = async (s) => {
 			app.loading = true
 			let QA_history
 			if (app.历史对话) {
@@ -380,8 +383,8 @@
 			}
 			已排队到 = false
 			setTimeout(read_now, 3000)
-			app.问题 = app.问题.replace(/\n+/g, '\n')
-			app.对话.push({ role: "user", content: app.问题 })
+			app.问题 = s.replace(/\n+/g, '\n')
+			app.对话.push({ role: "user", content: app.问题})
 			let 当前会话 = { role: "AI", content: '……' }
 			app.对话.push(当前会话)
 			setTimeout(() =>
@@ -423,9 +426,11 @@
 					if (done) break
 				}
 			} catch { }
+			
 			app.loading = false
 			已排队到 = true
 			保存()
+			return 当前会话.content
 		}
 		read_now = async () => {
 			if (!已排队到) {

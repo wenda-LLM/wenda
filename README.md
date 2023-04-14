@@ -110,12 +110,10 @@ fess模式、bing模式、bingxs模式、 bingsite模式均调用搜索引擎搜
 运行：`run_llama.bat`。
 模型位置等参数：修改`settings.bat`。
 当前（4月12日）库对中文实现有bug，用plugins文件夹下的llama.py替换库中文件。
-## chatYuan
-YuanAPI.py
-
-模型默认位置：ChatYuan-large-v2
-
-这个最轻量，是电脑都能跑，但是智力差点
+## 二次开发
+1. 兼容chatbox的api：http://127.0.0.1:17860/chat/completions
+2. 浏览器前端用于开发类似autoGPT功能的api：
+![](imgs/autogpt.png)
 ## TODO
 实现以下知识库模组：
 ```
