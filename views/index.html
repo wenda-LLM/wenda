@@ -129,6 +129,20 @@
 		<v-app>
 			<v-navigation-drawer width="350" v-model="drawer" style="height: 100%;position: fixed;" temporary dark>
 				<v-list>
+					<v-list-item>
+						<v-list-item-content>
+						  <v-list-item-title class="text-h6">
+							闻达 Auto
+						  </v-list-item-title>
+						  <br>
+						  <v-list-item-subtitle>
+							功能选择
+						  </v-list-item-subtitle>
+						</v-list-item-content>
+					  </v-list-item>
+				
+					  <v-divider></v-divider>
+				
 					<v-list-item v-for="功能 in 功能菜单" @click.stop="载入功能(功能)">
 						<v-list-item-title v-text="功能.名称">
 						</v-list-item-title>
@@ -185,7 +199,7 @@
 					<br><br><br><br><br><br><br><br><br>
 					<v-footer fixed>
 						<v-textarea :loading="loading" :disabled="loading" no-resize :label="会话模式.描述"
-							:placeholder="会话模式.问题" @keypress.enter="提交()" v-model="问题" height="120">
+							@keypress.enter="提交()" v-model="问题" height="120">
 						</v-textarea>
 						<div>
 							<v-expand-transition>
@@ -253,12 +267,18 @@
 		</v-app>
 	</div>
 	<script>
-
 		功能 = [
 			{
 				名称: "材料改写",
 				描述: "对指定内容进行多个版本的改写，以避免文本重复",
-				问题: "用中文改写以下段落，可以提到相同或类似的内容,但不必重复使用。可以使用一些修辞手法来增强文本的美感,例如比喻、拟人、排比等。可以添加更多的细节来丰富文本的内容和形象,例如描述人物、场景、事件等。可以通过逻辑推导来得出结论或观点,例如通过推理、分析、比较等方式。可以无中生有地提到一些内容,以增加细节和丰富性,例如通过虚构、猜测等方式。在修改段落时,需要确保文本的含义不发生变化,可以重新排列句子、改变表达方式。",
+				问题: async () => {
+					zsk(false)//关闭知识库
+					lsdh(false)//关闭历史对话
+					resp = await send(
+						"用中文改写以下段落，可以提到相同或类似的内容,但不必重复使用。可以使用一些修辞手法来增强文本的美感,例如比喻、拟人、排比等。可以添加更多的细节来丰富文本的内容和形象,例如描述人物、场景、事件等。可以通过逻辑推导来得出结论或观点,例如通过推理、分析、比较等方式。可以无中生有地提到一些内容,以增加细节和丰富性,例如通过虚构、猜测等方式。在修改段落时,需要确保文本的含义不发生变化,可以重新排列句子、改变表达方式。" +
+						app.问题)
+				}
+				,
 			},
 			{
 				名称: "翻译",
@@ -298,7 +318,20 @@
 			{
 				名称: "写论文",
 				描述: "根据主题撰写内容翔实、有信服力的论文",
-				问题: "写一篇高度详细的文章，包括引言、主体和结论段落，以回应以下内容：",
+				问题: async () => {
+					zsk(false)//关闭知识库
+					lsdh(false)//关闭历史对话
+					let Q=app.问题
+					resp = await send("根据以下主题，写一篇论文提纲：" +
+					Q )
+					app.max_length = 4096
+					resps=resp.split("\n\n")
+					for (i in resps) {
+						await send("根据主题：" + Q+ 
+						"\n提纲：" +resp+ 
+						"\n对提纲中的下列段落进行撰写：" + resps[i])
+					}
+				},
 			},
 			{
 				名称: "写提纲",
@@ -368,9 +401,14 @@
 		controller = new AbortController();
 		signal = controller.signal;
 		提交 = async () => {
-			send(app.问题)
+			if (typeof app.会话模式.问题 == 'function') {
+				app.会话模式.问题()
+			} else {
+
+				send(app.问题, app.会话模式.问题)
+			}
 		}
-		send = async (s) => {
+		send = async (s, 会话模式 = "") => {
 			app.loading = true
 			let QA_history
 			if (app.历史对话) {
@@ -398,7 +436,8 @@
 					signal: signal,
 					method: 'post',
 					body: JSON.stringify({
-						prompt: app.会话模式.问题 + app.问题,
+						prompt: 会话模式 + app.问题,
+						keyword: app.问题,
 						temperature: app.temperature,
 						top_p: app.top_p,
 						max_length: app.max_length,
