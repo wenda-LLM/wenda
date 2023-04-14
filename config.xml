@@ -12,7 +12,7 @@
             <description>WebUI 默认启动端口号</description>
         </property>
         <property>
-            <name>LLM_Type</name>
+            <name>Type</name>
             <value>rwkv</value>
             <description>LLM模型类型:glm6b、rwkv、llama</description>
         </property>
@@ -74,11 +74,6 @@
             </description>
         </property>
         <property>
-            <name>Site</name>
-            <value>www.12371.cn</value>
-            <description>cn.bing站内搜索网址: 共产党员网</description>
-        </property>
-        <property>
             <name>Strategy</name>
             <value>bing:3 fess:2</value>
             <description>知识库融合参数</description>
@@ -89,11 +84,6 @@
             <description>知识库显示来源</description>
         </property>
         <property>
-            <name>Path</name>
-            <value>zsk</value>
-            <description>知识库的文件夹目录名称，若留空则为txt</description>
-        </property>
-        <property>
             <name>Size</name>
             <value>200</value>
             <description>知识库长度</description>
@@ -102,6 +92,26 @@
             <name>Count</name>
             <value>5</value>
             <description>知识库抽取数量</description>
+        </property>
+        <Bing>
+            <property>
+                <name>Site</name>
+                <value>www.12371.cn</value>
+                <description>cn.bing站内搜索网址: 共产党员网</description>
+            </property>
+        </Bing>
+        <Fess>
+            <property>
+                <name>Host</name>
+                <value>127.0.0.1:8080</value>
+                <description>Fess搜索引擎的部署地址</description>
+            </property>
+        </Fess>
+        <Fess>
+        <property>
+            <name>Path</name>
+            <value>zsk</value>
+            <description>知识库的文件夹目录名称，若留空则为txt</description>
         </property>
     </Library>
 
