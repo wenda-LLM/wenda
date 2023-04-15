@@ -3,7 +3,7 @@ zsk=[]
 input_list = settings.library.mix.Strategy.split(" ")
 for item in input_list:
     item=item.split(":")
-    print(item)
+    # print(item)
     from importlib import import_module
     zhishiku = import_module('plugins.zhishiku_'+item[0])
     zsk.append({'zsk':zhishiku,"count":int(item[1])})

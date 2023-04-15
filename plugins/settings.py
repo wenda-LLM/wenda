@@ -82,15 +82,17 @@ def setting(xml_path=str):
 settings = setting(wenda_Config)
 
 
-settings['red'] = "\033[1;32m"
-settings['green'] = "\033[1;31m"
-settings['white'] = "\033[1;37m"
 
 settings_str=json.dumps(settings,indent=4)
 settings_str_toprint=re.sub(r':', ":"+"\033[1;32m", settings_str)
-settings_str_toprint=re.sub(r',', ""+"\033[1;31m", settings_str_toprint)
-settings_str_toprint=re.sub(r'["\{\}]', "", settings_str_toprint)
-print("\033[1;31m")
-print(settings_str_toprint)
+settings_str_toprint=re.sub(r'[",]', "", settings_str_toprint)
+settings_str_toprint=re.sub(r'\s+\}', "", settings_str_toprint)
+settings_str_toprint=re.sub(r'\n', "\n\033[1;31m", settings_str_toprint)
+settings_str_toprint=re.sub(r'\{', "\033[1;31m", settings_str_toprint)
+print("\033[1;31m",end="")
+print(settings_str_toprint,end="")
 print("\033[1;37m")
 settings = json.loads(settings_str, object_hook=object_hook)
+settings.red = "\033[1;32m"
+settings.green = "\033[1;31m"
+settings.white = "\033[1;37m"
