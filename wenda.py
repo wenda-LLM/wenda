@@ -45,6 +45,9 @@ def staticjs(path='-'):
 @route('/:name')
 def static(name='-'):
     return static_file(name, root="views")
+@route('/readconfig')
+def readconfig():
+    return static_file(os.environ['wenda_'+'Config'], root="")
 
 
 @route('/')
@@ -241,7 +244,7 @@ def load_zsk():
         print(settings.green, "知识库加载完成", settings.white)
     except Exception as e:
         print("知识库加载失败，请阅读说明：https://github.com/l15y/wenda")
-        raise  e
+        raise e
 
 
 thread_load_zsk = threading.Thread(target=load_zsk)

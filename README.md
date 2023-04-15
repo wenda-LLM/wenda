@@ -44,14 +44,20 @@
 将txt格式的语料放到txt文件夹中，运行`run_data_processing.bat`。
 ## 知识库
 知识库最终效果是生成一些提示信息，会插入到对话里面。
+
 fess模式、bing模式、bingxs模式、 bingsite模式均调用搜索引擎搜索获取答案。
+
 搜索后在回答之前插入提示信息，知识库的数据就被模型知道了。
+
 为防止爆显存，插入的数据不能太长，所以有字数限制。
+
 知识库在线模式：```pip install -r requirements-bing.txt```
-主要是有以下几种方案：
+
+是有以下几种方案：
 1.   bing模式，cn.bing搜索，仅国内可用
 4.   bingxs模式，cn.bing学术搜索，仅国内可用
 5.   bingsite模式，bing站内搜索，需设置网址
+5.   mix模式，融合
 4.   fess模式，本地部署的[fess搜索](https://github.com/codelibs/fess)，效果好于已删除的s、x模式，并使用[letiantian/TextRank4ZH](https://github.com/letiantian/TextRank4ZH)进行了关键词提取
 ### win系统fess使用
 1. 懒人包中下载fess-14.7.0-with-jdk.7z
@@ -84,7 +90,9 @@ fess模式、bing模式、bingxs模式、 bingsite模式均调用搜索引擎搜
 ![](imgs/zsk-rwkv.png)
 ### 1.索引语料
 把自己的txt格式的文档放在名为txt的文件夹里，运行:
+
 ```run_data_processing.bat```
+
 需要注意的是，索引语料至针对s、x模式，在线知识库（bing模式等）不需要索引，运行索引会直接报错。
 ### 2.使用
 正常使用中，勾选右上角知识库
@@ -108,7 +116,11 @@ fess模式、bing模式、bingxs模式、 bingsite模式均调用搜索引擎搜
 ![](imgs/wzmx.png)
 ## llama
 运行：`run_llama.bat`。
-注意库最好使用我修改的：[llama-cpp-python](https://github.com/l15y/llama-cpp-python)，才可以正常使用中文（截止4月15日）。编译好的：https://github.com/l15y/llama-cpp-python/releases
+
+注意库最好使用我修改的：[llama-cpp-python](https://github.com/l15y/llama-cpp-python)，才可以正常使用中文（截止4月15日）。
+
+编译好的：https://github.com/l15y/llama-cpp-python/releases
+
 模型位置等参数：修改`settings.bat`。
 ## 二次开发
 1. 兼容chatbox的api：http://127.0.0.1:17860/chat/completions
