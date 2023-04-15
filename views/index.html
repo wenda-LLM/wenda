@@ -87,9 +87,11 @@
 			z-index: 1;
 			width: 100%;
 		}
-		footer{
-			padding-bottom: 54px!important;
+
+		footer {
+			padding-bottom: 54px !important;
 		}
+
 		.v-tabs {
 			position: fixed !important;
 			bottom: 0;
@@ -124,13 +126,12 @@
 		}
 
 		.user-avatar {
-			background-color:  #0000a0;
+			background-color: #0000a0;
 		}
 
 		.bot-avatar {
-			background-color:  #7a0099
+			background-color: #7a0099
 		}
-
 	</style>
 </head>
 
@@ -143,7 +144,12 @@
 						<v-list-item-content>
 							<v-list-item-title class="text-h6">
 								闻达 Auto
+								<v-btn color="#555" style="right: 1em;position: fixed;" dark size="x-large"
+									@click="对话=[]" :loading="loading">
+									清除历史
+								</v-btn>
 							</v-list-item-title>
+
 							<br>
 							<v-list-item-subtitle>
 								功能选择
@@ -166,12 +172,8 @@
 				<v-switch hide-details color="purple" inset v-model="zhishiku" label="知识库"></v-switch>
 				&nbsp;&nbsp;&nbsp;&nbsp;
 				<v-switch hide-details color="purple" inset v-model="历史对话" label="历史"></v-switch>
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<v-btn color="#555"  dark size="x-large"
-				 @click="对话=[]"
-				:loading="loading">
-				清除历史
-			</v-btn>
+
+
 			</v-toolbar>
 			<br><br><br>
 
@@ -402,6 +404,7 @@
 			localStorage["对话历史"] = JSON.stringify(app.对话)
 		}
 		中断 = () => {
+			auto_stoped = true
 			controller.abort()
 			controller = new AbortController();
 			signal = controller.signal;
@@ -417,6 +420,7 @@
 			}
 		}
 		send = async (s, 会话模式 = "") => {
+			auto_stoped = false
 			app.loading = true
 			let QA_history
 			if (app.历史对话) {
@@ -480,7 +484,12 @@
 			app.loading = false
 			已排队到 = true
 			保存()
+			if (auto_stoped)
+				throw new MyException("已中断")
 			return 当前会话.content
+		}
+		function MyException(message) {
+			this.message = message;
 		}
 		read_now = async () => {
 			if (!已排队到) {
