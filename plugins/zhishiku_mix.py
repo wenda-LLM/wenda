@@ -1,4 +1,4 @@
-from plugins import settings
+from plugins.settings import settings
 zsk=[]
 input_list = settings.library.mix.Strategy.split(" ")
 for item in input_list:
