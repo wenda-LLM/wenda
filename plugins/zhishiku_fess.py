@@ -1,6 +1,6 @@
 import requests
 import re,json
-from plugins import settings
+from plugins.settings import settings
 from plugins.textrank4zh import TextRank4Keyword, TextRank4Sentence
 
 tr4w = TextRank4Keyword()

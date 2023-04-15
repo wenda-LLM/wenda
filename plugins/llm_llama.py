@@ -1,4 +1,4 @@
-from plugins import settings
+from plugins.settings import settings
 import os
 
 
