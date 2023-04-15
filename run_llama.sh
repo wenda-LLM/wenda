@@ -5,9 +5,9 @@ PYTHON=""
 while true
 do
     if [ -z "$PYTHON" ]; then
-        python wenda.py -t glm6b
+        python wenda.py -t llama
     else
-        $PYTHON wenda.py -t glm6b
+        $PYTHON wenda.py -t llama
     fi
 sleep 1
 done
