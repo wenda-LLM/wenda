@@ -58,7 +58,7 @@
 			max-width: 80%;
 			margin: 0 10px;
 			word-break: break-word;
-			line-height: 1;
+			line-height: 1.2;
 		}
 
 		.ask {
@@ -104,9 +104,6 @@
 			display: none;
 		}
 
-		.v-application p {
-			margin-bottom: 0;
-		}
 
 		.v-tabs-bar {
 			background-color: #272727 !important;
@@ -134,8 +131,22 @@
 			background-color: #7a0099
 		}
 
-		li {
-			line-height: 0.1;
+		.v-application p {
+			margin-bottom: -1em;
+		}
+
+		.v-application li {
+			/* line-height: 0.2; */
+			margin-bottom: -1em;
+		}
+
+		.v-application ul {
+			margin-top: -1.2em;
+		}
+
+		.v-application a {
+			line-height: 1.3;
+			padding-left: 24px;
 		}
 	</style>
 </head>
@@ -180,9 +191,9 @@
 
 
 			</v-toolbar>
-			<br><br><br>
+			
 
-			<v-tabs-items v-model="tab">
+			<v-tabs-items v-model="tab" style="margin-top: 3em;">
 				<v-tab-item key="对话">
 					<div v-for="(当前对话, index) in 对话" :key="index"
 						:class="['d-flex flex-row align-center my-2', 当前对话.role == 'user' ? 'justify-end': null]">
