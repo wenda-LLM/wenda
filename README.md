@@ -108,8 +108,8 @@ fess模式、bing模式、bingxs模式、 bingsite模式均调用搜索引擎搜
 ![](imgs/wzmx.png)
 ## llama
 运行：`run_llama.bat`。
+注意库最好使用我修改的：[llama-cpp-python](https://github.com/l15y/llama-cpp-python)，才可以正常使用中文（截止4月15日）。编译好的：https://github.com/l15y/llama-cpp-python/releases
 模型位置等参数：修改`settings.bat`。
-当前（4月12日）库对中文实现有bug，用plugins文件夹下的llama.py替换库中文件。
 ## 二次开发
 1. 兼容chatbox的api：http://127.0.0.1:17860/chat/completions
 2. 浏览器前端闻达Auto开发函数：
