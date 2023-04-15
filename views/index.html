@@ -191,9 +191,9 @@
 
 
 			</v-toolbar>
-			<br><br><br>
+			
 
-			<v-tabs-items v-model="tab">
+			<v-tabs-items v-model="tab" style="margin-top: 3em;">
 				<v-tab-item key="对话">
 					<div v-for="(当前对话, index) in 对话" :key="index"
 						:class="['d-flex flex-row align-center my-2', 当前对话.role == 'user' ? 'justify-end': null]">
