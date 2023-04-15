@@ -11,20 +11,18 @@
 // ==/UserScript==
 
 功能.push({
-    名称: "写论文",
+    名称: "写论文-rwkv",
     描述: "根据主题撰写内容翔实、有信服力的论文",
     问题: async () => {
+        app.对话=[]//清除历史对话
         zsk(false)//关闭知识库
-        lsdh(false)//关闭历史对话
+        lsdh(true)//打开历史对话
         let Q = app.问题
-        resp = await send("根据以下主题，写一篇论文提纲：" +
-                          Q)
         app.max_length = 4096
-        resps = resp.split("\n\n")
-        for (i in resps) {
-            await send("根据主题：" + Q +
-                       "\n提纲：" + resp +
-                       "\n对提纲中的下列段落进行撰写：" + resps[i])
+        resp = await send("根据以下主题，写一篇论文，包含摘要、提纲、正文：" +
+                          Q)
+        while (1) {
+            await send("继续")
         }
     },
 })
