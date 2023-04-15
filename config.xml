@@ -12,7 +12,7 @@
             <description>WebUI 默认启动端口号</description>
         </property>
         <property>
-            <name>Type</name>
+            <name>LLM_Type</name>
             <value>rwkv</value>
             <description>LLM模型类型:glm6b、rwkv、llama</description>
         </property>
@@ -30,7 +30,7 @@
                 <description>rwkv模型参数</description>
             </property>
         </RWKV>
-        <GLM>
+        <GLM6B>
             <property>
                 <name>Path</name>
                 <value>model/chatglm-6b-int4</value>
@@ -48,7 +48,7 @@
                     "cpu fp16i4" fp16原生模型要 自行量化为int4跑在cpu上可以使用这个参数
                 </description>
             </property>
-        </GLM>
+        </GLM6B>
         <LLAMA>
             <property>
                 <name>Path</name>
@@ -67,63 +67,79 @@
             <name>Type</name>
             <value>fess</value>
             <description>知识库类型:
-                bing→cn.bing搜索，仅国内可用
-                bingxs→cn.bing学术搜索，仅国内可用
-                bingsite→cn.bing站内搜索，仅国内可用，需设置网址：
-                rh→ 知识库融合,需设置参数
+                bing → cn.bing搜索，仅国内可用
+                fess → fess搜索引擎
+                mix → 知识库融合,需设置参数
+                kg → 知识图谱,暂未启用
             </description>
         </property>
         <property>
-            <name>Strategy</name>
-            <value>bing:3 fess:2</value>
-            <description>知识库融合参数</description>
-        </property>
-        <property>
-            <name>Show Soucre</name>
-            <value>0</value>
+            <name>Show_Soucre</name>
+            <value>False</value>
             <description>知识库显示来源</description>
         </property>
         <property>
             <name>Size</name>
             <value>200</value>
-            <description>知识库长度</description>
+            <description>知识库最大长度</description>
         </property>
-        <property>
-            <name>Count</name>
-            <value>5</value>
-            <description>知识库抽取数量</description>
-        </property>
-        <Bing>
+        <MIX>
             <property>
-                <name>Site</name>
-                <value>www.12371.cn</value>
-                <description>cn.bing站内搜索网址: 共产党员网</description>
+                <name>Strategy</name>
+                <value>bing:3 fess:2</value>
+                <description>知识库融合参数</description>
             </property>
-        </Bing>
-        <Fess>
+        </MIX>
+        <BING>
             <property>
-                <name>Host</name>
+                <name>Count</name>
+                <value>5</value>
+                <description>知识库抽取数量</description>
+            </property>
+            <property>
+                <name>Academic</name>
+                <value>True</value>
+                <description>是否使用必应学术</description>
+            </property>
+            <property>
+                <name>Searc_Site</name>
+                <value>www.12371.cn</value>
+                <description>cn.bing站内搜索网址: 共产党员网,留空不使用</description>
+            </property>
+        </BING>
+        <FESS>
+            <property>
+                <name>Count</name>
+                <value>5</value>
+                <description>知识库抽取数量</description>
+            </property>
+            <property>
+                <name>Fess_Host</name>
                 <value>127.0.0.1:8080</value>
                 <description>Fess搜索引擎的部署地址</description>
             </property>
-        </Fess>
-        <Knowledge_Graph>
+        </FESS>
+        <KG>
             <property>
-                <name>Knowledge Path</name>
+                <name>Count</name>
+                <value>5</value>
+                <description>知识库抽取数量</description>
+            </property>
+            <property>
+                <name>Knowledge_Path</name>
                 <value></value>
                 <description>知识库的文件夹目录名称，若留空则为txt</description>
             </property>
             <property>
-                <name>Graph Host</name>
+                <name>Graph_Host</name>
                 <value></value>
                 <description>图数据库部署地址</description>
             </property>
             <property>
-                <name>Model Path</name>
+                <name>Model_Path</name>
                 <value></value>
                 <description>信息抽取模型所在路径</description>
             </property>
-        <Knowledge_Graph>
+        </KG>
     </Library>
-
 </configuration>

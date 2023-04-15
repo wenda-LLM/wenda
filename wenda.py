@@ -5,10 +5,34 @@ import json
 import datetime
 from bottle import route, response, request, static_file, hook
 import bottle
+import argparse
+parser = argparse.ArgumentParser(description='Wenda config')
+parser.add_argument('-c', type=str, dest="Config", default='config.xml', help="配置文件")
+parser.add_argument('-p', type=int, dest="Port", help="使用端口号")
+parser.add_argument('-l', type=bool, dest="Logging", help="是否开启日志")
+parser.add_argument('-t', type=str, dest="LLM_Type", choices=["rwkv", "glm6b", "llama"], help="选择使用的大模型")
+args = parser.parse_args()
+print(args)
+os.environ['wenda_'+'Config'] = args.Config 
+os.environ['wenda_'+'Port'] = str(args.Port)
+os.environ['wenda_'+'Logging'] = str(args.Logging)
+os.environ['wenda_'+'LLM_Type'] = str(args.LLM_Type) 
 
-from plugins import settings
-LLM = settings.load_LLM()
-if settings.logging:
+from plugins.settings import settings 
+
+
+def load_LLM():
+    try:
+        from importlib import import_module
+        LLM = import_module('plugins.llm_'+settings.LLM_Type)
+        return LLM
+    except Exception as e:
+        print("LLM模型加载失败，请阅读说明：https://github.com/l15y/wenda", e)
+
+
+LLM = load_LLM()
+
+if settings.Logging:
     from plugins.defineSQL import session_maker, 记录
 mutex = threading.Lock()
 
@@ -164,8 +188,10 @@ def api_chat_stream():
             results = '\n---\n'.join([i['content'] for i in response_d])
             prompt = 'system:学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n\n' + \
                 results+'\nuser:'+prompt
-            if settings.zsk_show_soucre:
+               
+            if settings.library.Show_Soucre:
                 footer = "\n### 来源：\n"+('\n').join(output_sources)+'///'
+
         yield footer
 
         print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
@@ -208,14 +234,18 @@ thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()
 zhishiku = None
 
-
 def load_zsk():
-    global zhishiku
-    zhishiku = settings.load_zsk()
-    print(settings.green, "知识库加载完成", settings.white)
+    try:
+        from importlib import import_module
+        global zhishiku
+        zhishiku = import_module('plugins.zhishiku_'+settings.library.Type)
+        print(settings.green, "知识库加载完成", settings.white)
+    except Exception as e:
+        print("知识库加载失败，请阅读说明：https://github.com/l15y/wenda")
+        raise  e
 
 
 thread_load_zsk = threading.Thread(target=load_zsk)
 thread_load_zsk.start()
 bottle.debug(True)
-bottle.run(server='paste', host="0.0.0.0", port=settings.port, quiet=True)
+bottle.run(server='paste', host="0.0.0.0", port=settings.Port, quiet=True)
