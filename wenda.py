@@ -31,8 +31,8 @@ def load_LLM():
 
 
 LLM = load_LLM()
-
-if bool(settings.Logging == 'True'):
+Logging=bool(settings.Logging == 'True')
+if Logging:
     from plugins.defineSQL import session_maker, 记录
 mutex = threading.Lock()
 
@@ -206,7 +206,7 @@ def api_chat_stream():
     if response == '':
         yield "发生错误，正在重新加载模型"+error+'///'
         os._exit(0)
-    if settings.Logging:
+    if Logging:
         with session_maker() as session:
             jl = 记录(时间=datetime.datetime.now(), IP=IP, 问=prompt, 答=response)
             session.add(jl)
