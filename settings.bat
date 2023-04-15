@@ -61,7 +61,7 @@ rem  共产党员网
 set "zsk_strategy=fess:2 bing:5"
 rem 知识库融合参数
 
-set zsk_show_soucre=0
+set zsk_show_soucre=1
 rem  知识库显示来源
 
 set zsk_folder=zsk
