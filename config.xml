@@ -70,7 +70,7 @@
     <Library>
         <property>
             <name>Type</name>
-            <value>fess</value>
+            <value>mix</value>
             <description>知识库类型:
                 bing → cn.bing搜索，仅国内可用
                 fess → fess搜索引擎
@@ -91,7 +91,7 @@
         <MIX>
             <property>
                 <name>Strategy</name>
-                <value>bing:3 fess:2</value>
+                <value>fess:2 bing:5</value>
                 <description>知识库融合参数</description>
             </property>
         </MIX>

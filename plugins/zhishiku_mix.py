@@ -1,6 +1,6 @@
 from plugins.settings import settings
 zsk=[]
-input_list = settings.zsk_strategy.split(" ")
+input_list = settings.library.mix.Strategy.split(" ")
 for item in input_list:
     item=item.split(":")
     print(item)
