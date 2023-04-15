@@ -165,7 +165,7 @@ def api_chat_stream():
             prompt = 'system:学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n\n' + \
                 results+'\nuser:'+prompt
             if settings.zsk_show_soucre:
-                footer = "\n来源：\n"+('\n').join(output_sources)+'///'
+                footer = "\n### 来源：\n"+('\n').join(output_sources)+'///'
         yield footer
 
         print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
