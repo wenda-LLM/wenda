@@ -3,7 +3,7 @@
     <General>
         <property>
             <name>Logging</name>
-            <value>1</value>
+            <value>False</value>
             <description>日志</description>
         </property>
         <property>
