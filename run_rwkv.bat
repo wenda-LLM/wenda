@@ -1,8 +1,7 @@
 @echo off
 call settings.bat
-set llm_type=rwkv
 :a
-%PYTHON% wenda.py
+%PYTHON% wenda.py -t rwkv
 goto a
 pause
 exit /b
