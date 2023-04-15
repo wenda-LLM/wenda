@@ -58,7 +58,7 @@ rem  建标库
 set site=www.12371.cn
 rem  共产党员网
 
-set "zsk_strategy=bing:3 fess:2"
+set "zsk_strategy=fess:2 bing:5"
 rem 知识库融合参数
 
 set zsk_show_soucre=0
