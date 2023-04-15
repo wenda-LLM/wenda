@@ -18,11 +18,11 @@ def chat_init(history):
 
 def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
     if zhishiku:
-        prompt=history_formatted+"%s\nA: "%prompt
+        prompt=history_formatted+"%s\nAssistant: "%prompt
     else:
-        prompt=history_formatted+"Q: %s\nA: "%prompt
+        prompt=history_formatted+"Human: %s\nAssistant: "%prompt
     stream = model(prompt,
-    stop=["Q:", "\n\n"], temperature=temperature,max_tokens=max_length, top_p=top_p,stream=True)
+    stop=["Human:","### Hum",], temperature=temperature,max_tokens=max_length, top_p=top_p,stream=True)
     # print(output['choices'])
     text=""
     for output in stream:
