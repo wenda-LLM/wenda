@@ -32,7 +32,7 @@ def load_LLM():
 
 LLM = load_LLM()
 
-if settings.Logging:
+if bool(settings.Logging == 'True'):
     from plugins.defineSQL import session_maker, 记录
 mutex = threading.Lock()
 
@@ -188,8 +188,7 @@ def api_chat_stream():
             results = '\n---\n'.join([i['content'] for i in response_d])
             prompt = 'system:学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n\n' + \
                 results+'\nuser:'+prompt
-               
-            if settings.library.Show_Soucre:
+            if bool(settings.library.Show_Soucre == 'True'):
                 footer = "\n### 来源：\n"+('\n').join(output_sources)+'///'
 
         yield footer
