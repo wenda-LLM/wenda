@@ -94,6 +94,11 @@
                 <value>fess:2 bing:5</value>
                 <description>知识库融合参数</description>
             </property>
+            <property>
+                <name>Count</name>
+                <value>5</value>
+                <description>知识库抽取数量</description>
+            </property>
         </MIX>
         <BING>
             <property>

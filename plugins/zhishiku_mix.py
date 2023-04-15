@@ -11,5 +11,5 @@ def find(s):
     result=[]
     for item in zsk:
         result+=item['zsk'].find(s)[:item['count']]
-    return result
+    return result[:int(settings.library.mix.Count)]
 
