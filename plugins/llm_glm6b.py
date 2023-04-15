@@ -1,6 +1,4 @@
 from plugins.settings import settings
-import os
-
 
 def chat_init(history):
     history_formatted = None
@@ -29,14 +27,14 @@ def load_model():
     global model, tokenizer
     from transformers import AutoModel, AutoTokenizer
     tokenizer = AutoTokenizer.from_pretrained(
-        settings.glm_path, local_files_only=True, trust_remote_code=True)
+        settings.Path, local_files_only=True, trust_remote_code=True)
     model = AutoModel.from_pretrained(
-        settings.glm_path, local_files_only=True, trust_remote_code=True)
-    if not (settings.glm_lora_path == '' or settings.glm_lora_path == None):
-        print('glm_lora_path模型地址', settings.glm_lora_path)
+        settings.Path, local_files_only=True, trust_remote_code=True)
+    if not (settings.Lora == '' or settings.Lora == None):
+        print('Lora模型地址', settings.Lora)
         from peft import PeftModel
-        model = PeftModel.from_pretrained(model, settings.glm_lora_path)
-    device, precision = settings.glm_strategy.split()
+        model = PeftModel.from_pretrained(model, settings.Lora)
+    device, precision = settings.Strategy.split()
     # 根据设备执行不同的操作
     if device == 'cpu':
         # 如果是cpu，不做任何操作
