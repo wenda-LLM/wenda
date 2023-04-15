@@ -45,9 +45,34 @@ def staticjs(path='-'):
 @route('/:name')
 def static(name='-'):
     return static_file(name, root="views")
+from plugins.settings import xml2json,json2xml
+import json
 @route('/readconfig')
 def readconfig():
-    return static_file(os.environ['wenda_'+'Config'], root="")
+    with open(os.environ['wenda_'+'Config'],encoding = "utf-8") as f:
+        j=xml2json(f.read(),True,1,1)
+        # print(j)
+        return json.dumps(j)
+@route('/writeconfig', method='POST')
+def readconfig():
+    data = request.json
+    s=json2xml(data).decode("utf-8")
+    with open(os.environ['wenda_'+'Config']+"_",'w',encoding = "utf-8") as f:
+        f.write(s)
+        # print(j)
+        return s
+@route('/readxml')
+def readxml():
+    with open(os.environ['wenda_'+'Config'],encoding = "utf-8") as f:
+        return f.read()
+# @route('/writexml', method='POST')
+# def writexml():
+    # data = request.json
+    # s=json2xml(data).decode("utf-8")
+    # with open(os.environ['wenda_'+'Config']+"_",'w',encoding = "utf-8") as f:
+    #     f.write(s)
+    #     # print(j)
+    #     return s
 
 
 @route('/')
@@ -244,8 +269,6 @@ def load_zsk():
         print(settings.green, "知识库加载完成", settings.white)
     except Exception as e:
         print("知识库加载失败，请阅读说明：https://github.com/l15y/wenda")
-        raise e
-
 
 thread_load_zsk = threading.Thread(target=load_zsk)
 thread_load_zsk.start()

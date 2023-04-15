@@ -19,6 +19,7 @@
 	<script src="static/vue.js"></script>
 	<script src="static/vuetify.min.js"></script>
 
+	<script src="static/xml-js.min.js"></script>
 	<script src="static/markdown-it.min.js"></script>
 
 	<style>
@@ -191,7 +192,7 @@
 
 
 			</v-toolbar>
-			
+
 
 			<v-tabs-items v-model="tab" style="margin-top: 3em;">
 				<v-tab-item key="对话">
@@ -279,6 +280,7 @@
 								</v-text-field>
 							</template></v-slider>
 					</v-form>
+
 					https://github.com/l15y/wenda
 				</v-tab-item>
 			</v-tabs-items>
@@ -293,6 +295,14 @@
 		</v-app>
 	</div>
 	<script>
+		// fetch("readconfig").then(r=>r.json()).then(r=>app.设置=JSON.parse(r))
+		// response =  fetch("/writeconfig", {
+		// 	method: 'post',
+		// 	body: JSON.stringify(app.设置),
+		// 	headers: {
+		// 		'Content-Type': 'application/json'
+		// 	}
+		// });
 		功能 = [
 			{
 				名称: "材料改写",
@@ -390,6 +400,7 @@
 					问题: "",
 				},
 				知识库: [],
+				设置: {},
 				tab: '对话',
 				zhishiku: false,
 				temperature: 0.9,
