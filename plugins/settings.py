@@ -1,6 +1,6 @@
 import os
 import xml.etree.ElementTree as ET
-import pprint
+import re
 import json
 
 
@@ -86,7 +86,11 @@ settings['red'] = "\033[1;32m"
 settings['green'] = "\033[1;31m"
 settings['white'] = "\033[1;37m"
 
-pp=pprint.PrettyPrinter(indent=2)
-pp.pprint(settings)
-
-settings = json.loads(json.dumps(settings), object_hook=object_hook)
+settings_str=json.dumps(settings,indent=4)
+settings_str_toprint=re.sub(r':', ":"+"\033[1;32m", settings_str)
+settings_str_toprint=re.sub(r',', ""+"\033[1;31m", settings_str_toprint)
+settings_str_toprint=re.sub(r'["\{\}]', "", settings_str_toprint)
+print("\033[1;31m")
+print(settings_str_toprint)
+print("\033[1;37m")
+settings = json.loads(settings_str, object_hook=object_hook)
