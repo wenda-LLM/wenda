@@ -38,7 +38,7 @@
             </property>
             <property>
                 <name>Strategy</name>
-                <value>cuda fp16i4</value>
+                <value>cuda fp16</value>
                 <description>glm 模型参数  支持：
                     "cuda fp16"  所有glm模型 要直接跑在gpu上都可以使用这个参数
                     "cuda fp16i8"  fp16原生模型 要自行量化为int8跑在gpu上可以使用这个参数
@@ -47,6 +47,11 @@
                     "cpu fp16i8" fp16原生模型 要自行量化为int8跑在cpu上可以使用这个参数
                     "cpu fp16i4" fp16原生模型要 自行量化为int4跑在cpu上可以使用这个参数
                 </description>
+            </property>
+            <property>
+                <name>Lora</name>
+                <value></value>
+                <description>glm-lora模型位置</description>
             </property>
         </GLM6B>
         <LLAMA>
