@@ -1,4 +1,4 @@
-from plugins.settings import settings
+from plugins import settings
 
 
 def chat_init(history):
@@ -98,7 +98,7 @@ def load_model():
         # '1' to compile CUDA kernel (10x faster), requires c++ compiler & cuda libraries
 
     from rwkv.model import RWKV  # pip install rwkv
-    model = RWKV(model=settings.Path, strategy=settings.Strategy)
+    model = RWKV(model=settings.rwkv_path, strategy=settings.rwkv_strategy)
     # if settings.rwkv_lora_path == '':
     # else:
     #     with torch.no_grad():

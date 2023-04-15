@@ -1,4 +1,4 @@
-from plugins.settings import settings
+from plugins import settings
 zsk=[]
 input_list = settings.zsk_strategy.split(" ")
 for item in input_list:

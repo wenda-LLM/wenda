@@ -1,6 +1,6 @@
 import requests
 import re
-from plugins.settings import settings
+from plugins import settings
 session = requests.Session()
 # 正则提取摘要和链接
 title_pattern = re.compile('<li class="aca_algo"><h2 class=""><a(.*?)</a>')
