@@ -82,6 +82,43 @@ fess模式、bing模式、bingxs模式、 bingsite模式均调用搜索引擎搜
 18. 此时fess就在爬取文件的名字和内容. 可以在资源管理器看到cpu有负载
 19. 挂机。等待爬取完成即可尝试搜索关键词
 
+### linux系统fess使用
+1. 安装JDK 
+```
+wget https://download.java.net/java/17/latest/jdk-17_linux-x64_bin.tar.gz
+sudo tar xvf jdk-17_linux-x64_bin.tar.gz -C /usr/local/
+```
+解压后，JDK 17 将被安装在 /usr/local/jdk-17 目录中。
+
+配置环境变量。要在系统中使用 JDK 17，您需要将其添加到 PATH 环境变量中。您可以使用以下命令将其添加到 /etc/profile 文件中：
+
+```
+ rm -f /etc/alternatives/java
+ ln -s /usr/local/jdk-17.0.6/bin/java /etc/alternatives/java
+     echo export JAVA_HOME=/usr/local/jdk-17.0.6 >>/etc/profile
+     echo export PATH='$PATH':'$JAVA_HOME'/bin >>/etc/profile
+     echo export CLASSPATH=.:'$JAVA_HOME'/lib/dt.jar:'$JAVA_HOME'/lib/tools.jar >>/etc/profile
+     source /etc/profile
+```
+确认安装。您可以使用以下命令检查 JDK 17 是否已成功安装：
+```
+java -version
+```
+如果一切正常，您应该会看到类似以下内容的输出：
+
+openjdk version "17.0.1" 2021-10-19
+OpenJDK Runtime Environment (build 17.0.1+12-39)
+OpenJDK 64-Bit Server VM (build 17.0.1+12-39, mixed mode, sharing)
+
+2. 安装fess
+下载fess
+解压fess
+```
+unzip fess-14.7.0.zip
+cd bin
+ ./fess -d
+```
+
 ####  调试工具
 ![](imgs/zsk-test.png)
 ####  chatGLM-6B模型

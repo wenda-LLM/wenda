@@ -18,6 +18,7 @@ def chat_init(history):
             else:
                 continue
         history='\n'.join(tmp)
+        state = None
         return history
 
 
