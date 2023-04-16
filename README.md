@@ -21,6 +21,8 @@
 ## 懒人包
 链接：https://pan.baidu.com/s/105nOsldGt5mEPoT2np1ZoA?pwd=lyqz 
 
+视频教程：https://www.bilibili.com/video/BV1aX4y1z7ar/?vd_source=629edb00375d46ad4097acdc7cbc0ca3
+
 提取码：lyqz
 
 默认参数在GTX1660Ti（6G显存）上运行良好。
