@@ -147,7 +147,6 @@
 
 		.v-application a {
 			line-height: 1.3;
-			padding-left: 24px;
 		}
 	</style>
 </head>
@@ -542,6 +541,7 @@
 			let json = await response.json()
 			console.table(json)
 			app.知识库 = json
+			return json
 		}
 		function md2html(conent) {
 			// return conent
