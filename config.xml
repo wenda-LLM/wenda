@@ -91,7 +91,7 @@
         <MIX>
             <property>
                 <name>Strategy</name>
-                <value>fess:2 bing:5</value>
+                <value>fess:5 bing:5</value>
                 <description>知识库融合参数</description>
             </property>
             <property>
