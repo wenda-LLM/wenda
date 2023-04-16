@@ -154,10 +154,14 @@ cd bin
 编译好的：https://github.com/l15y/llama-cpp-python/releases
 
 模型位置等参数：修改`config.xml`。
+## 闻达Auto
+![](imgs/autogpt.png)[闻达auto油猴脚本形式示例](https://github.com/l15y/wenda/tree/main/%E9%97%BB%E8%BE%BEauto%E6%B2%B9%E7%8C%B4%E8%84%9A%E6%9C%AC%E5%BD%A2%E5%BC%8F%E7%A4%BA%E4%BE%8B)
+
+特别推荐：[rwkv写论文脚本升级版-作者：FIGHTZERO.user.js](https://github.com/l15y/wenda/blob/main/%E9%97%BB%E8%BE%BEauto%E6%B2%B9%E7%8C%B4%E8%84%9A%E6%9C%AC%E5%BD%A2%E5%BC%8F%E7%A4%BA%E4%BE%8B/rwkv%E5%86%99%E8%AE%BA%E6%96%87%E8%84%9A%E6%9C%AC%E5%8D%87%E7%BA%A7%E7%89%88-%E4%BD%9C%E8%80%85%EF%BC%9AFIGHTZERO.user.js)
+
+结果展示：[rwkv写论文生成效果.txt](https://github.com/l15y/wenda/blob/main/%E9%97%BB%E8%BE%BEauto%E6%B2%B9%E7%8C%B4%E8%84%9A%E6%9C%AC%E5%BD%A2%E5%BC%8F%E7%A4%BA%E4%BE%8B/rwkv写论文生成效果.txt)
 ## 二次开发
-1. 兼容chatbox的api：http://127.0.0.1:17860/chat/completions
-2. 浏览器前端闻达Auto开发函数：
-![](imgs/autogpt.png)
+兼容chatbox的api：http://127.0.0.1:17860/chat/completions
 ## TODO
 实现以下知识库模组：
 ```
