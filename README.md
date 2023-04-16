@@ -5,7 +5,7 @@
 2. 知识库扩展模型能力
 3. 支持参数在线调整
 4. 支持`chatGLM-6B`、`chatRWKV`、`llama系列`流式输出和输出过程中中断
-5. 自动保存对话历史至浏览器（多用户同时使用不会冲突，`chatRWKV`暂不支持）
+5. 自动保存对话历史至浏览器（多用户同时使用不会冲突，`chatRWKV`历史消息实现方式需使用string）
 6. 对话历史管理（删除单条、清空）
 7. 支持局域网、内网部署和多用户同时使用。
 8. 多用户同时使用中会自动排队，并显示当前用户。
@@ -41,11 +41,11 @@
 建议使用chatRWKV的RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048（截止4月6日效果较好），或chatGLM-6B。
 
 ### 3.参数设置
-根据`settings.bat`中说明，填写你的模型下载位置等信息
+根据`config.xml`中说明，填写你的模型下载位置等信息
 ### 4.生成知识库
 将txt格式的语料放到txt文件夹中，运行`run_data_processing.bat`。
 ## 知识库
-知识库最终效果是生成一些提示信息，会插入到对话里面。
+知识库原理是生成一些提示信息，会插入到对话里面。
 
 fess模式、bing模式、bingxs模式、 bingsite模式均调用搜索引擎搜索获取答案。
 
@@ -87,28 +87,21 @@ fess模式、bing模式、bingxs模式、 bingsite模式均调用搜索引擎搜
 ####  chatGLM-6B模型
 ![](imgs/zsk-glm.png)
 
-
 #### chatRWKV模型
 ![](imgs/zsk-rwkv.png)
-### 1.索引语料
-把自己的txt格式的文档放在名为txt的文件夹里，运行:
-
-```run_data_processing.bat```
-
-需要注意的是，索引语料至针对s、x模式，在线知识库（bing模式等）不需要索引，运行索引会直接报错。
-### 2.使用
+### 使用
 正常使用中，勾选右上角知识库
 ## chatGLM-6B
 运行：`run_GLM6B.bat`。
 
-模型位置等参数：修改`settings.bat`。
+模型位置等参数：修改`config.xml`。
 
 默认参数在GTX1660Ti（6G显存）上运行良好。
 
 ## chatRWKV
 运行：`run_rwkv.bat`。
 
-模型位置等参数：修改`settings.bat`。
+模型位置等参数：修改`config.xml`。
 
 默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢。
 
@@ -123,7 +116,7 @@ fess模式、bing模式、bingxs模式、 bingsite模式均调用搜索引擎搜
 
 编译好的：https://github.com/l15y/llama-cpp-python/releases
 
-模型位置等参数：修改`settings.bat`。
+模型位置等参数：修改`config.xml`。
 ## 二次开发
 1. 兼容chatbox的api：http://127.0.0.1:17860/chat/completions
 2. 浏览器前端闻达Auto开发函数：

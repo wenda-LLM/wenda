@@ -29,6 +29,11 @@
                 <value>cuda fp16i8 *18+</value>
                 <description>rwkv模型参数</description>
             </property>
+            <property>
+                <name>HistoryMode</name>
+                <value>string</value>
+                <description>rwkv历史记录实现方式：state、string</description>
+            </property>
         </RWKV>
         <GLM6B>
             <property>

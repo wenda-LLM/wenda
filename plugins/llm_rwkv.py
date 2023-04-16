@@ -3,22 +3,25 @@ from plugins.settings import settings
 
 def chat_init(history):
     global state
-    if history is not None and len(history) > 0:
-        pass
+    if settings.HistoryMode!='string':
+        if history is not None and len(history) > 0:
+            pass
+        else:
+            state = None
     else:
-        state = None
-        # tmp = []
-        # for i, old_chat in enumerate(history):
-        #     if old_chat['role'] == "user":
-        #         tmp.append(f"{user}{interface}"+old_chat['content'])
-        #     elif old_chat['role'] == "AI":
-        #         tmp.append(f"{bot}{interface}"+old_chat['content'])
-        #     else:
-        #         continue
-        # history='\n'.join(tmp)
+        tmp = []
+        for i, old_chat in enumerate(history):
+            if old_chat['role'] == "user":
+                tmp.append(f"\n\n{user}{interface}"+old_chat['content'])
+            elif old_chat['role'] == "AI":
+                tmp.append(f"\n\n{bot}{interface}"+old_chat['content'])
+            else:
+                continue
+        history='\n'.join(tmp)
+        return history
 
 
-def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
+def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
     global state
     token_count = max_length
     presencePenalty = 0.5
@@ -30,16 +33,18 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku
                          token_stop=[0])  # stop generation whenever you see any token here
 
     if zhishiku:
-        ctx = prompt+f"\n\n{bot}{interface}"
+        ctx = "\n\n"+prompt+f"\n\n{bot}{interface}"
     else:
-        ctx = f"\n{user}{interface} {prompt}\n\n{bot}{interface}"
+        ctx = f"\n\n{user}{interface} {prompt}\n\n{bot}{interface}"
+    if settings.HistoryMode=='string':
+        ctx=history+ctx
     all_tokens = []
     out_last = 0
     response = ''
     occurrence = {}
     for i in range(int(token_count)):
         out, state = model.forward(pipeline.encode(
-            ctx)[-ctx_limit:] if i == 0 else [token], state)
+            ctx) if i == 0 else [token], state)
         for n in args.token_ban:
             out[n] = -float('inf')
         for n in occurrence:
@@ -85,7 +90,6 @@ bot = "Alice"
 pipeline = None
 PIPELINE_ARGS = None
 model = None
-ctx_limit = 1024
 state = None
 
 
