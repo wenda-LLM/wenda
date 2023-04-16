@@ -268,7 +268,7 @@ def load_zsk():
         zhishiku = import_module('plugins.zhishiku_'+settings.library.Type)
         print(settings.green, "知识库加载完成", settings.white)
     except Exception as e:
-        print("知识库加载失败，请阅读说明：https://github.com/l15y/wenda")
+        print("知识库加载失败，请阅读说明：https://github.com/l15y/wenda",e)
 
 thread_load_zsk = threading.Thread(target=load_zsk)
 thread_load_zsk.start()
