@@ -27,11 +27,11 @@
             app.对话.push({ "role": "AI", "content": "查询中：" + resp[i] })
             kownladge = await find(resp[i])
             // app.对话.push({ "role": "AI", "content": JSON.stringify(kownladge) })
-            let prompt = "学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n" +
+            let prompt = "学习以下文段,总结其中与问题相关的内容。\n" +
                 kownladge.map(i => i.content).join('\n') + "\n问题：" + Q
             result.push(await send(prompt))
         }
-        let prompt = "学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n" +
+        let prompt = "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。\n" +
             result.join('\n') + "\n问题：" + Q
         await send(prompt)
         //app.会话模式={名称: "常规模式",描述: "输入问题",问题: ""}

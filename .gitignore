@@ -22,3 +22,4 @@ record.db
 /venv/
 venv.bat
 *.bin
+views/plugins/00测试.js

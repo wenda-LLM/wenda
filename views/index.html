@@ -53,7 +53,6 @@
 			padding: 1em;
 			background: #0003;
 			border-radius: 16px;
-			white-space: pre-line;
 			max-width: 80%;
 			margin: 0 10px;
 			word-break: break-word;
@@ -130,12 +129,7 @@
 			background-color: #7a0099
 		}
 
-		.v-application p {
-			margin-bottom: -15px;
-		}
-
 		.v-application li {
-			/* line-height: 0.2; */
 			margin-bottom: -1em;
 		}
 
@@ -466,6 +460,7 @@
 			// return conent
 			conent = String(conent)
 			let md = new markdownit();
+			md.disable([ 'link', 'image' ])
 			return md.render(conent).replace(/<a /g, '<a target="_blank"')
 		}
 		zsk = (b) => {
