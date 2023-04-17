@@ -131,7 +131,7 @@
 		}
 
 		.v-application p {
-			margin-bottom: -1em;
+			margin-bottom: -15px;
 		}
 
 		.v-application li {
@@ -145,6 +145,11 @@
 
 		.v-application a {
 			line-height: 1.3;
+		}
+
+		.v-input.v-textarea.v-text-field {
+			padding-top: 0;
+			margin-top: 0;
 		}
 	</style>
 </head>
@@ -215,20 +220,16 @@
 					</div>
 					<br><br><br><br><br><br><br><br><br>
 					<v-footer fixed>
-						<v-textarea :loading="loading" :disabled="loading" no-resize :label="会话模式.描述"
-							@keypress.enter="提交()" v-model="问题" height="120">
+						<v-textarea autofocus hide-details no-resize rows="3" :loading="loading" :placeholder="会话模式.描述"
+							@keypress.enter="提交()" v-model="问题">
 						</v-textarea>
 						<div>
-							<v-expand-transition>
-								<div v-if="loading">
-									<v-btn color="purple" rounded="lg" dark size="x-large" @click="中断()">
-										中断
-									</v-btn>
-									<br>
-								</div>
-							</v-expand-transition>
-							<v-btn style="margin: 10px 0;" color="purple" rounded="lg" dark size="x-large" @click="提交()"
-								:loading="loading">
+							<v-btn style="margin-bottom: 10px;margin-top: 0;" v-if="loading" color="purple" rounded="lg"
+								dark size="x-large" @click="中断()">
+								中断
+							</v-btn>
+							<v-btn style="margin-bottom: 10px;margin-top: 0;" color="purple" rounded="lg" dark
+								size="x-large" @click="提交()" v-if="!loading">
 								发送
 							</v-btn>
 							<br>
@@ -462,7 +463,7 @@
 		}
 		function md2html(conent) {
 			// return conent
-			conent=String(conent)
+			conent = String(conent)
 			let md = new markdownit();
 			return md.render(conent).replace(/<a /g, '<a target="_blank"')
 		}
