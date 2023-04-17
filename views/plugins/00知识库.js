@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         闻达 Auto 示例：知识库直读
+// @name         闻达 Auto 示例：知识库增强
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  先根据不同关键词搜索结果给出粗略回答，再提炼各次回答给出最终回答
@@ -11,11 +11,15 @@
 // ==/UserScript==
 
 功能.push({
-    名称: "知识库直读",
+    名称: "知识库增强",
     问题: async () => {
         let Q = app.问题
         app.对话 = [{ "role": "user", "content": "现在开始,你的任务是提取关键词，提取下列语句中的关键词，并用空格分隔：科普之路是不是任重而道远？" },
-        { "role": "AI", "content": '科普 道路 任重 道远' }]
+        { "role": "AI", "content": '科普 道路 任重 道远' },
+        { "role": "user", "content": "提取下列语句中的关键词：退休后医疗保险年限不够，可以继续参保吗？" },
+        { "role": "AI", "content": '退休 医疗保险 年限 继续参保' },
+        { "role": "user", "content": "提取下列语句中的关键词：为什么我的电子社保卡参保地是错的？" },
+        { "role": "AI", "content": '电子社保卡 参保地 错误' }]
         zsk(false)
         lsdh(true)//打开历史对话
         resp = await send("提取下列语句中的关键词：" + Q)
