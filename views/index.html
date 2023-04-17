@@ -186,7 +186,8 @@
 			</v-navigation-drawer>
 			<v-toolbar float dark>
 				<v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-				<v-toolbar-title>闻达</v-toolbar-title>
+				<v-toolbar-title><a style="text-decoration: none;color: white;"
+					href="https://github.com/l15y/wenda">闻达</a></v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-switch hide-details color="purple" inset v-model="zhishiku" label="知识库"></v-switch>
 				&nbsp;&nbsp;&nbsp;&nbsp;
@@ -322,7 +323,7 @@
 				zhishiku: false,
 				temperature: 0.8,
 				max_length: 2048,
-				top_p: 0.6,
+				top_p: 0.8,
 				snackbar: false,
 				snackbar_text: '',
 				loading: false,
