@@ -67,6 +67,10 @@ def readxml():
         return f.read()
 @route('/plugins')
 def read_auto_plugins():
+    response.set_header("Pragma", "no-cache")
+    response.add_header("Cache-Control", "must-revalidate")
+    response.add_header("Cache-Control", "no-cache")
+    response.add_header("Cache-Control", "no-store")
     plugins=[]
     for root, dirs, files in os.walk("views/plugins"):
         for file in files:
@@ -96,9 +100,12 @@ def index():
 
 当前用户 = None
 
-
 @route('/api/chat_now', method='GET')
 def api_chat_now():
+    response.set_header("Pragma", "no-cache")
+    response.add_header("Cache-Control", "must-revalidate")
+    response.add_header("Cache-Control", "no-cache")
+    response.add_header("Cache-Control", "no-store")
     return '当前状态：'+当前用户[0]
 
 
