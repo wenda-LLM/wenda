@@ -264,7 +264,7 @@
 								</v-text-field>
 							</template>
 						</v-slider>
-						<v-slider :min="0" :max="4" :step="1" v-model="历史对话轮数限制" thumb-color="purple" label="对话轮数限制"
+						<v-slider :min="0" :max="10" :step="1" v-model="历史对话轮数限制" thumb-color="purple" label="对话轮数限制"
 							thumb-label><template v-slot:append>
 								<v-text-field v-model="历史对话轮数限制" class="mt-0 pt-0" type="number" style="width: 60px">
 								</v-text-field>
@@ -301,7 +301,7 @@
 				问题: '',
 				对话: JSON.parse(localStorage["对话历史"] || "[]"),
 				历史对话: false,
-				历史对话轮数限制: 3,
+				历史对话轮数限制: 5,
 				功能菜单: 功能,
 				会话模式: {
 					名称: "常规模式",
