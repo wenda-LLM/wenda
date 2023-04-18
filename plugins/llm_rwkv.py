@@ -34,7 +34,7 @@ def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
                          token_stop=[0])  # stop generation whenever you see any token here
 
     if zhishiku:
-        ctx = "\n\n"+prompt+f"\n\n{bot}{interface}"
+        ctx = "\n\n"+prompt.replace('system',user).replace('\n\n',"\n").replace('user:',"问:")+f"\n\n{bot}{interface}"
     else:
         ctx = f"\n\n{user}{interface} {prompt}\n\n{bot}{interface}"
     if settings.HistoryMode=='string':

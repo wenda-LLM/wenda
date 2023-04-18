@@ -21,7 +21,7 @@
         <RWKV>
             <property>
                 <name>Path</name>
-                <value>model/RWKV-4-Raven-7B-v9x-i8.pth</value>
+                <value>model/RWKV-4-Raven-7B-v9-i8.pth</value>
                 <description>rwkv模型位置</description>
             </property>
             <property>
@@ -75,7 +75,7 @@
     <Library>
         <property>
             <name>Type</name>
-            <value>st</value>
+            <value>mix</value>
             <description>知识库类型:
                 bing → cn.bing搜索，仅国内可用
                 fess → fess搜索引擎
@@ -97,7 +97,7 @@
         <MIX>
             <property>
                 <name>Strategy</name>
-                <value>fess:5 bing:5</value>
+                <value>st:5 fess:5 bing:5</value>
                 <description>知识库融合参数</description>
             </property>
             <property>
