@@ -1,12 +1,28 @@
 
 from langchain.embeddings import HuggingFaceEmbeddings
 import re
-import os
+import os,sys
+os.chdir(sys.path[0][:-8])
 from langchain.vectorstores.faiss import FAISS
 from langchain.document_loaders import DirectoryLoader
 from langchain.text_splitter import TokenTextSplitter, CharacterTextSplitter
 import sentence_transformers
-from plugins.settings import settings
+
+import argparse
+parser = argparse.ArgumentParser(description='Wenda config')
+parser.add_argument('-c', type=str, dest="Config", default='config.xml', help="配置文件")
+parser.add_argument('-p', type=int, dest="Port", help="使用端口号")
+parser.add_argument('-l', type=bool, dest="Logging", help="是否开启日志")
+parser.add_argument('-t', type=str, dest="LLM_Type", choices=["rwkv", "glm6b", "llama"], help="选择使用的大模型")
+args = parser.parse_args()
+print(args)
+os.environ['wenda_'+'Config'] = args.Config 
+os.environ['wenda_'+'Port'] = str(args.Port)
+os.environ['wenda_'+'Logging'] = str(args.Logging)
+os.environ['wenda_'+'LLM_Type'] = str(args.LLM_Type) 
+
+
+from settings import settings
 source_folder = settings.library.st.Path
 target_folder = source_folder + '_out'
 source_folder_path = os.path.join(os.getcwd(), source_folder)
