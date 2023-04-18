@@ -222,19 +222,18 @@ def api_chat_stream():
         'HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
     global 当前用户
     error = ""
+    footer = '///'
+    yield str(len(prompt))+'字正在计算'
+    if use_zhishiku:
+        # print(keyword)
+        response_d = zhishiku.find(keyword)
+        output_sources = [i['title'] for i in response_d]
+        results = '\n---\n'.join([i['content'] for i in response_d])
+        prompt = 'system:学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n\n' + \
+            results+'\nuser:'+prompt
+        if bool(settings.library.Show_Soucre == 'True'):
+            footer = "\n### 来源：\n"+('\n').join(output_sources)+'///'
     with mutex:
-        footer = '///'
-        yield str(len(prompt))+'字正在计算'
-        if use_zhishiku:
-            # print(keyword)
-            response_d = zhishiku.find(keyword)
-            torch.cuda.empty_cache()
-            output_sources = [i['title'] for i in response_d]
-            results = '\n---\n'.join([i['content'] for i in response_d])
-            prompt = 'system:学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n\n' + \
-                results+'\nuser:'+prompt
-            if bool(settings.library.Show_Soucre == 'True'):
-                footer = "\n### 来源：\n"+('\n').join(output_sources)+'///'
 
         yield footer
 
