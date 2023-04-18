@@ -137,9 +137,29 @@
         </FESS>
         <ST>
             <property>
+                <name>Path</name>
+                <value>txt</value>
+                <description>知识库文本路径</description>
+            </property>
+            <property>
+                <name>Size</name>
+                <value>80</value>
+                <description>分块大小</description>
+            </property>
+            <property>
+                <name>Overlap</name>
+                <value>10</value>
+                <description>分块重叠长度</description>
+            </property>
+            <property>
                 <name>Count</name>
                 <value>5</value>
-                <description>知识库抽取数量(TODO)</description>
+                <description>知识库抽取数量</description>
+            </property>
+            <property>
+                <name>Device</name>
+                <value>cpu</value>
+                <description>faiss运行设备</description>
             </property>
         </ST>
         <KG>
