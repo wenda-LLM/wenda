@@ -66,8 +66,8 @@ text_splitter = CharacterTextSplitter(
 doc_texts = text_splitter.split_documents(docs)
 # print(doc_texts)
 embeddings = HuggingFaceEmbeddings(model_name='')
-embeddings.client = sentence_transformers.SentenceTransformer('model/text2vec-large-chinese',
-                                                                           device='cuda')
+embeddings.client = sentence_transformers.SentenceTransformer(settings.library.st.Model_Path,
+                                                                           device=settings.library.st.Device)
 vectorstore = FAISS.from_documents(doc_texts, embeddings)
 print("处理完成")
 vectorstore.save_local('vectorstore_path')

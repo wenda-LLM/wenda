@@ -41,7 +41,7 @@ def find(s):
         return []
 
 embeddings = HuggingFaceEmbeddings(model_name='')
-embeddings.client = sentence_transformers.SentenceTransformer('model/text2vec-large-chinese',
+embeddings.client = sentence_transformers.SentenceTransformer(settings.library.st.Model_Path,
                                                                         device=settings.library.st.Device)
 vectorstore = FAISS.load_local(
     'vectorstore_path', embeddings=embeddings)

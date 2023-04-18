@@ -157,6 +157,11 @@
                 <description>知识库抽取数量</description>
             </property>
             <property>
+                <name>Model_Path</name>
+                <value>model/text2vec-large-chinese</value>
+                <description>向量模型存储路径</description>
+            </property>
+            <property>
                 <name>Device</name>
                 <value>cpu</value>
                 <description>faiss运行设备</description>
