@@ -6,7 +6,8 @@ from langchain.vectorstores.faiss import FAISS
 from langchain.document_loaders import DirectoryLoader
 from langchain.text_splitter import TokenTextSplitter, CharacterTextSplitter
 import sentence_transformers
-source_folder = "txt"
+from plugins.settings import settings
+source_folder = settings.library.st.Path
 target_folder = source_folder + '_out'
 source_folder_path = os.path.join(os.getcwd(), source_folder)
 target_folder_path = os.path.join(os.getcwd(), target_folder)
@@ -45,7 +46,7 @@ loader = DirectoryLoader(target_folder, glob='**/*.txt')
 docs = loader.load()
 # text_splitter = TokenTextSplitter(chunk_size=500, chunk_overlap=15)
 text_splitter = CharacterTextSplitter(
-    chunk_size=80, chunk_overlap=10, separator='\n')
+    chunk_size=int(settings.library.st.Size), chunk_overlap=int(settings.library.st.Overlap), separator='\n')
 doc_texts = text_splitter.split_documents(docs)
 # print(doc_texts)
 embeddings = HuggingFaceEmbeddings(model_name='')

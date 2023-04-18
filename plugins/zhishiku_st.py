@@ -3,6 +3,7 @@ from langchain.embeddings import HuggingFaceEmbeddings
 import sentence_transformers
 import numpy as np
 import re
+from plugins.settings import settings
 divider=''
 
 def get_doc_by_id(id):
@@ -28,7 +29,7 @@ def get_doc(id,score):
 def find(s):
     try:
         embedding = vectorstore.embedding_function(s)
-        scores, indices = vectorstore.index.search(np.array([embedding], dtype=np.float32), 3)
+        scores, indices = vectorstore.index.search(np.array([embedding], dtype=np.float32), int(settings.library.st.Count))
         docs = []
         for j, i in enumerate(indices[0]):
             if i == -1:
@@ -41,6 +42,6 @@ def find(s):
 
 embeddings = HuggingFaceEmbeddings(model_name='')
 embeddings.client = sentence_transformers.SentenceTransformer('model/text2vec-large-chinese',
-                                                                        device='cpu')
+                                                                        device=settings.library.st.Device)
 vectorstore = FAISS.load_local(
     'vectorstore_path', embeddings=embeddings)
