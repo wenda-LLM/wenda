@@ -33,6 +33,7 @@ if not os.path.exists(target_folder_path):
 
 root_path_list = source_folder_path.split(os.sep)
 
+print("预处理数据")
 for root, dirs, files in os.walk(source_folder_path):
     path_list = root.split(os.sep)
     for file in files:
@@ -57,7 +58,6 @@ for root, dirs, files in os.walk(source_folder_path):
             f.write(data)
             f.close()
 
-print("开始读取数据")
 loader = DirectoryLoader(target_folder, glob='**/*.txt')
 docs = loader.load()
 # text_splitter = TokenTextSplitter(chunk_size=500, chunk_overlap=15)
@@ -68,6 +68,7 @@ doc_texts = text_splitter.split_documents(docs)
 embeddings = HuggingFaceEmbeddings(model_name='')
 embeddings.client = sentence_transformers.SentenceTransformer('model/text2vec-large-chinese',
                                                                            device='cuda')
+print("开始处理数据")
 vectorstore = FAISS.from_documents(doc_texts, embeddings)
 print("处理完成")
 vectorstore.save_local('vectorstore_path')

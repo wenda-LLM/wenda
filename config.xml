@@ -21,7 +21,7 @@
         <RWKV>
             <property>
                 <name>Path</name>
-                <value>model/RWKV-4-Raven-7B-v9.pth</value>
+                <value>model/RWKV-4-Raven-7B-v9x-i8.pth</value>
                 <description>rwkv模型位置</description>
             </property>
             <property>

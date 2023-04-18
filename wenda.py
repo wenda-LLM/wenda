@@ -61,10 +61,10 @@ def readconfig():
         f.write(s)
         # print(j)
         return s
-@route('/readxml')
-def readxml():
-    with open(os.environ['wenda_'+'Config'],encoding = "utf-8") as f:
-        return f.read()
+# @route('/readxml')
+# def readxml():
+#     with open(os.environ['wenda_'+'Config'],encoding = "utf-8") as f:
+#         return f.read()
 @route('/plugins')
 def read_auto_plugins():
     response.set_header("Pragma", "no-cache")

@@ -1,9 +1,11 @@
 __pycache__
 model
 WPy64-38100
+txt2
 testdb.db
 *.baiduyun.uploading.cfg
 *.7z
+vectorstore_path
 sy
 *.tmp
 xw
