@@ -22,7 +22,7 @@ def remove_stopwords(search_query):
         except:
             search_query_without_stopwords.append(i)
     return search_query_without_stopwords
-def find(search_query):
+def find(search_query,step = 0):
     try:
         search_query=jieba.cut(search_query)
         search_query=remove_stopwords(search_query)
