@@ -41,20 +41,22 @@ mutex = threading.Lock()
 def staticjs(path='-'):
     return static_file(path, root="views/static/")
 
-
 @route('/:name')
 def static(name='-'):
     return static_file(name, root="views")
+
 from plugins.settings import xml2json,json2xml
 import json
 @route('/readconfig')
 def readconfig():
+    allowCROS()
     with open(os.environ['wenda_'+'Config'],encoding = "utf-8") as f:
         j=xml2json(f.read(),True,1,1)
         # print(j)
         return json.dumps(j)
 @route('/writeconfig', method='POST')
 def readconfig():
+    allowCROS()
     data = request.json
     s=json2xml(data).decode("utf-8")
     with open(os.environ['wenda_'+'Config']+"_",'w',encoding = "utf-8") as f:
@@ -67,10 +69,8 @@ def readconfig():
 #         return f.read()
 @route('/plugins')
 def read_auto_plugins():
-    response.set_header("Pragma", "no-cache")
-    response.add_header("Cache-Control", "must-revalidate")
-    response.add_header("Cache-Control", "no-cache")
-    response.add_header("Cache-Control", "no-store")
+    noCache()
+    allowCROS()
     plugins=[]
     for root, dirs, files in os.walk("views/plugins"):
         for file in files:
@@ -87,14 +87,20 @@ def read_auto_plugins():
     #     f.write(s)
     #     # print(j)
     #     return s
-
-
-@route('/')
-def index():
+def noCache():
     response.set_header("Pragma", "no-cache")
     response.add_header("Cache-Control", "must-revalidate")
     response.add_header("Cache-Control", "no-cache")
     response.add_header("Cache-Control", "no-store")
+    
+def allowCROS():
+    response.set_header('Access-Control-Allow-Origin', '*')
+    response.add_header('Access-Control-Allow-Methods', 'POST,OPTIONS')
+    response.add_header('Access-Control-Allow-Headers',
+                        'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token')
+@route('/')
+def index():
+    noCache()
     return static_file("index.html", root="views")
 
 
@@ -121,10 +127,7 @@ def validate():
 @route('/api/save_news', method='OPTIONS')
 @route('/api/save_news', method='POST')
 def api_chat_stream():
-    response.set_header('Access-Control-Allow-Origin', '*')
-    response.add_header('Access-Control-Allow-Methods', 'POST,OPTIONS')
-    response.add_header('Access-Control-Allow-Headers',
-                        'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token')
+    allowCROS()
     try:
         data = request.json
         if not data:
@@ -143,6 +146,7 @@ def api_chat_stream():
 
 @route('/api/find', method='POST')
 def api_find():
+    allowCROS()
     data = request.json
     prompt = data.get('prompt')
     step = data.get('step')
@@ -200,6 +204,7 @@ def api_chat_box():
         os._exit(0)
 @route('/api/chat_stream', method='POST')
 def api_chat_stream():
+    allowCROS()
     data = request.json
     prompt = data.get('prompt')
     max_length = data.get('max_length')
