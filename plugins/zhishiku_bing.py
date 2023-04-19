@@ -13,7 +13,7 @@ headers = {
 proxies = {"http": None,"https": None,}
 
 
-def find(search_query):
+def find(search_query,step = 0):
     url = 'https://cn.bing.com/search?q={}'.format(search_query)
     res = session.get(url, headers=headers, proxies=proxies)
     r = res.text
