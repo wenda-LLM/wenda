@@ -21,7 +21,7 @@
         <RWKV>
             <property>
                 <name>Path</name>
-                <value>model/RWKV-4-Raven-7B-v9-i8.pth</value>
+                <value>model/RWKV-4-Raven-7B-v9x-i8.pth</value>
                 <description>rwkv模型位置</description>
             </property>
             <property>
@@ -97,7 +97,7 @@
         <MIX>
             <property>
                 <name>Strategy</name>
-                <value>st:5 fess:5 bing:5</value>
+                <value>st:5 bing:5</value>
                 <description>知识库融合参数</description>
             </property>
             <property>
@@ -143,17 +143,17 @@
             </property>
             <property>
                 <name>Size</name>
-                <value>80</value>
+                <value>50</value>
                 <description>分块大小</description>
             </property>
             <property>
                 <name>Overlap</name>
-                <value>10</value>
+                <value>0</value>
                 <description>分块重叠长度</description>
             </property>
             <property>
                 <name>Count</name>
-                <value>5</value>
+                <value>3</value>
                 <description>知识库抽取数量</description>
             </property>
             <property>

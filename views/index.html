@@ -129,9 +129,13 @@
 			background-color: #7a0099
 		}
 
+		.v-application p {
+			margin-bottom: 10px;
+			white-space: break-spaces;
+		}
 
 		.v-application ul {
-			margin-top: -1.2em;
+			margin-top: -0.5em;
 		}
 
 		.v-application a {
@@ -178,7 +182,7 @@
 			<v-toolbar float dark>
 				<v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 				<v-toolbar-title><a style="text-decoration: none;color: white;"
-					href="https://github.com/l15y/wenda">闻达</a></v-toolbar-title>
+						href="https://github.com/l15y/wenda">闻达</a></v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-switch hide-details color="purple" inset v-model="zhishiku" label="知识库"></v-switch>
 				&nbsp;&nbsp;&nbsp;&nbsp;
@@ -457,7 +461,7 @@
 			// return conent
 			conent = String(conent)
 			let md = new markdownit();
-			md.disable([ 'link', 'image' ])
+			md.disable(['link', 'image'])
 			return md.render(conent).replace(/<a /g, '<a target="_blank"')
 		}
 		zsk = (b) => {
