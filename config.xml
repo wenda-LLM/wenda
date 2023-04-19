@@ -75,7 +75,7 @@
     <Library>
         <property>
             <name>Type</name>
-            <value>mix</value>
+            <value>st</value>
             <description>知识库类型:
                 bing → cn.bing搜索，仅国内可用
                 fess → fess搜索引擎
@@ -126,7 +126,7 @@
         <FESS>
             <property>
                 <name>Count</name>
-                <value>5</value>
+                <value>1</value>
                 <description>知识库抽取数量</description>
             </property>
             <property>
@@ -143,12 +143,12 @@
             </property>
             <property>
                 <name>Size</name>
-                <value>50</value>
+                <value>250</value>
                 <description>分块大小</description>
             </property>
             <property>
                 <name>Overlap</name>
-                <value>0</value>
+                <value>100</value>
                 <description>分块重叠长度</description>
             </property>
             <property>

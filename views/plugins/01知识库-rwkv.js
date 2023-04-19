@@ -34,7 +34,7 @@
         result = []
         for (let i in resp) {
             app.对话.push({ "role": "AI", "content": "查询中：" + resp[i] })
-            kownladge = await find(resp[i])
+            kownladge = await find(resp[i],1)
             // app.对话.push({ "role": "AI", "content": JSON.stringify(kownladge) })
             let prompt = "学习以下文段,总结其中与问题相关的内容。\n" +
                 kownladge.map(i => i.content).join('\n') + "\n问题：" + Q
