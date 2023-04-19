@@ -4,10 +4,23 @@ import sentence_transformers
 import numpy as np
 import re
 from plugins.settings import settings
-divider=''
+divider='\n'
 
 def get_doc_by_id(id):
     return vectorstore.docstore.search(vectorstore.index_to_docstore_id[id])
+
+def process_strings(A, C, B):
+    # find the longest common suffix of A and prefix of B
+    common = ""
+    for i in range(1, min(len(A), len(B)) + 1):
+        if A[-i:] == B[:i]:
+            common = A[-i:]
+    # if there is a common substring, replace one of them with C and concatenate
+    if common:
+        return A[:-len(common)] + C + B
+    # otherwise, just return A + B
+    else:
+        return A + B
 
 def get_doc(id,score,step):
     doc = get_doc_by_id(id)
@@ -17,13 +30,13 @@ def get_doc(id,score,step):
             try:
                 doc_before=get_doc_by_id(id-i)
                 if doc_before.metadata['source']==doc.metadata['source']:
-                    final_content=doc_before.page_content+divider+final_content
+                    final_content=process_strings(doc_before.page_content,divider,final_content)
             except:
                 pass
             try:
                 doc_after=get_doc_by_id(id+i)
                 if doc_after.metadata['source']==doc.metadata['source']:
-                    final_content=final_content+divider+doc_after.page_content
+                    final_content=process_strings(final_content,divider,doc_after.page_content)
             except:
                 pass
     return {'title': doc.metadata['source'],'content':re.sub(r'\n+', "\n", final_content)}
