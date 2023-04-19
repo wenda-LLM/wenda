@@ -145,7 +145,10 @@ def api_chat_stream():
 def api_find():
     data = request.json
     prompt = data.get('prompt')
-    return json.dumps(zhishiku.find(prompt))
+    step = data.get('step')
+    if step is None:
+        step = 1
+    return json.dumps(zhishiku.find(prompt,int(step)))
 
 
 @route('/chat/completions', method='POST')

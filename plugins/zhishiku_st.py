@@ -29,6 +29,7 @@ def get_doc(id,score,step):
     return {'title': doc.metadata['source'],'content':re.sub(r'\n+', "\n", final_content)}
 
 def find(s,step = 0):
+    print(step)
     try:
         embedding = vectorstore.embedding_function(s)
         scores, indices = vectorstore.index.search(np.array([embedding], dtype=np.float32), int(settings.library.st.Count))
