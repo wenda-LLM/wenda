@@ -11,7 +11,7 @@
 
 // V2版本 优化了非提纲内容导致生成失败的问题，优化了小提纲没有主题的问题，在论文前加入了提纲，让论文结构更清晰
 
-const RomanNumerals_Map = {
+let RomanNumerals_Map = {
     'III': 3,
     'II': 2,
     'IV': 4,

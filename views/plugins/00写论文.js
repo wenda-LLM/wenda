@@ -9,7 +9,7 @@
 // @grant        none
 // ==/UserScript==
 
-const RomanNumeralsMap = {
+let RomanNumeralsMap = {
     'III': 3,
     'II': 2,
     'IV': 4,
