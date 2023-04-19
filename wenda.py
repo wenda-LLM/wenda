@@ -67,10 +67,14 @@ def readconfig():
 # def readxml():
 #     with open(os.environ['wenda_'+'Config'],encoding = "utf-8") as f:
 #         return f.read()
+@route('/llm')
+def llm_js():
+    noCache()
+    return static_file('llm_'+settings.LLM_Type+".js", root="plugins")
+    
 @route('/plugins')
 def read_auto_plugins():
     noCache()
-    allowCROS()
     plugins=[]
     for root, dirs, files in os.walk("views/plugins"):
         for file in files:
@@ -234,7 +238,7 @@ def api_chat_stream():
     yield str(len(prompt))+'字正在计算'
     if use_zhishiku:
         # print(keyword)
-        response_d = zhishiku.find(keyword)
+        response_d = zhishiku.find(keyword,2)
         output_sources = [i['title'] for i in response_d]
         results = '\n---\n'.join([i['content'] for i in response_d])
         prompt = 'system:学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n' + \

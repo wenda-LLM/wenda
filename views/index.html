@@ -266,7 +266,7 @@
 								</v-text-field>
 							</template>
 						</v-slider>
-						<v-slider :min="0" :max="1" :step="0.1" v-model="temperature" thumb-color="purple"
+						<v-slider :min="0" :max="2" :step="0.1" v-model="temperature" thumb-color="purple"
 							label="temperature" thumb-label><template v-slot:append>
 								<v-text-field v-model="temperature" class="mt-0 pt-0" type="number" style="width: 60px">
 								</v-text-field>
@@ -332,6 +332,7 @@
 				temperature: 0.8,
 				max_length: 2048,
 				top_p: 0.8,
+				llm_type: "",
 				snackbar: false,
 				snackbar_text: '',
 				loading: false,
@@ -486,6 +487,7 @@
 		}
 	</script>
 	<script src="plugins"></script>
+	<script src="llm"></script>
 </body>
 
 </html>

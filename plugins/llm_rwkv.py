@@ -25,8 +25,8 @@ def chat_init(history):
 def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
     global state
     token_count = max_length
-    presencePenalty = 0.5
-    countPenalty = 0.5
+    presencePenalty = 0.2
+    countPenalty = 0.2
     args = PIPELINE_ARGS(temperature=max(0.2, float(temperature)), top_p=float(top_p),
                          alpha_frequency=countPenalty,
                          alpha_presence=presencePenalty,
