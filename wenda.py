@@ -240,7 +240,7 @@ def api_chat_stream():
     yield str(len(prompt))+'字正在计算'
     if use_zhishiku:
         # print(keyword)
-        response_d = zhishiku.find(keyword,0)
+        response_d = zhishiku.find(keyword,2)
         output_sources = [i['title'] for i in response_d]
         results = '\n---\n'.join([i['content'] for i in response_d])
         prompt = 'system:学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n' + \
