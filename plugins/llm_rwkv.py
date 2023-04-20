@@ -12,12 +12,13 @@ def chat_init(history):
         tmp = []
         for i, old_chat in enumerate(history):
             if old_chat['role'] == "user":
-                tmp.append(f"\n\n{user}{interface}"+old_chat['content'])
+                tmp.append(f"{user}{interface} "+old_chat['content'])
             elif old_chat['role'] == "AI":
-                tmp.append(f"\n\n{bot}{interface}"+old_chat['content'])
+                tmp.append(f"{bot}{interface} "+old_chat['content'])
             else:
                 continue
-        history='\n'.join(tmp)
+        history='\n\n'.join(tmp)
+        print(history)
         state = None
         return history
 
