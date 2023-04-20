@@ -49,14 +49,14 @@ def static(name='-'):
 
 from plugins.settings import xml2json,json2xml
 import json
-@route('/readconfig')
+@route('/readconfig', method=("POST","OPTIONS"))
 def readconfig():
     allowCROS()
     with open(os.environ['wenda_'+'Config'],encoding = "utf-8") as f:
         j=xml2json(f.read(),True,1,1)
         # print(j)
         return json.dumps(j)
-@route('/writeconfig', method='POST')
+@route('/writeconfig', method=("POST","OPTIONS"))
 def readconfig():
     allowCROS()
     data = request.json
@@ -85,7 +85,7 @@ def read_auto_plugins():
                 with open(file_path, "r", encoding='utf-8') as f:
                     plugins.append( f.read())
     return "\n".join(plugins)
-# @route('/writexml', method='POST')
+# @route('/writexml', method=("POST","OPTIONS"))
 # def writexml():
     # data = request.json
     # s=json2xml(data).decode("utf-8")
@@ -112,8 +112,9 @@ def index():
 
 当前用户 = None
 
-@route('/api/chat_now', method='GET')
+@route('/api/chat_now', method=('GET',"OPTIONS"))
 def api_chat_now():
+    allowCROS()
     response.set_header("Pragma", "no-cache")
     response.add_header("Cache-Control", "must-revalidate")
     response.add_header("Cache-Control", "no-cache")
@@ -130,8 +131,7 @@ def validate():
         request.environ['REQUEST_METHOD'] = HTTP_ACCESS_CONTROL_REQUEST_METHOD
 
 
-@route('/api/save_news', method='OPTIONS')
-@route('/api/save_news', method='POST')
+@route('/api/save_news', method=("POST","OPTIONS"))
 def api_chat_stream():
     allowCROS()
     try:
@@ -150,7 +150,7 @@ def api_chat_stream():
     return '2'
 
 
-@route('/api/find', method='POST')
+@route('/api/find', method=("POST","OPTIONS"))
 def api_find():
     allowCROS()
     data = request.json
@@ -161,7 +161,7 @@ def api_find():
     return json.dumps(zhishiku.find(prompt,int(step)))
 
 
-@route('/chat/completions', method='POST')
+@route('/chat/completions', method=("POST","OPTIONS"))
 def api_chat_box():
     response.content_type = "text/event-stream"
     response.add_header("Connection", "keep-alive")
@@ -208,7 +208,7 @@ def api_chat_box():
     if response_text == '':
         yield "data: %s\n\n" %json.dumps({"response": ("发生错误，正在重新加载模型"+error)})
         os._exit(0)
-@route('/api/chat_stream', method='POST')
+@route('/api/chat_stream', method=("POST","OPTIONS"))
 def api_chat_stream():
     allowCROS()
     data = request.json
