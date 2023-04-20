@@ -224,7 +224,7 @@
 								语音<br>输入
 							</v-btn>
 							<v-btn style="margin: auto;display: flex;" color="purple" fab dark size="x-large"
-								@click="recognition.stop()" :loading="loading" v-if="语音输入中">
+								@click="stop_listen" :loading="loading" v-if="语音输入中">
 								停止<br>输入
 							</v-btn>
 						</div>
@@ -349,7 +349,7 @@
 				test_zsk_step: 1,
 				知识库: [],
 				设置: {},
-				tab: '对话',
+				tab: 0,
 				zhishiku: false,
 				temperature: 0.8,
 				max_length: 2048,
@@ -517,6 +517,10 @@
 			msg.text = s;
 			msg.volume = 1;
 			speechSynthesis.speak(msg)
+		}
+		stop_listen=()=>{
+			recognition.stop()
+			app.loading=true
 		}
 		listen = () => {
 			recognition = new window.webkitSpeechRecognition;

@@ -66,7 +66,7 @@ function onResults(results) {
             // drawingUtils.drawConnectors(canvasCtx, landmarks, mpFaceMesh.FACEMESH_LIPS, { color: '#E0E0E0', lineWidth: 1 });
             let isOpenMouse = openMouse(landmarks)
             // console.log(isOpenMouse)
-            parent.postMessage( {from:'面部识别模组',data:isOpenMouse},'/');
+            parent.postMessage( {from:'面部识别',data:isOpenMouse},'/');
             drawingUtils.drawConnectors(canvasCtx, landmarks, [[13, 14], [308, 78]], { color: isOpenMouse>0.2 ? '#FF0000' : '#00FF00' });
 
         }
@@ -81,7 +81,7 @@ faceMesh.onResults(onResults);
 new controls
     .ControlPanel(controlsElement, solutionOptions)
     .add([
-        new controls.StaticText({ title: '面部识别模组' }),
+        new controls.StaticText({ title: '面部识别' }),
         fpsControl,
         // new controls.Toggle({ title: 'Selfie Mode', field: 'selfieMode' }),
         new controls.SourcePicker({
