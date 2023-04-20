@@ -542,9 +542,11 @@
 					}
 				}
 			};
-			recognition.onerror = function () {
+			recognition.onerror = function (e) {
 				console.log(final_transcript);
-				console.log('======================' + "error" + '======================');
+				alert('语音识别识别提示')
+				app.语音输入中 = false
+				console.log('======================' + "error" + '======================',e);
 			};
 			recognition.onend = function () {
 				console.log(final_transcript);
