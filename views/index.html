@@ -112,7 +112,7 @@
 		}
 
 		.v-window-item.v-window-item--active {
-			margin: 20px;
+			margin: 30px;
 		}
 
 		.v-tab.v-tab {
@@ -216,6 +216,17 @@
 					</div>
 					<br><br><br><br><br><br><br><br><br>
 					<v-footer fixed>
+						<div style="position: fixed;bottom: 120px;width: 100%;z-index: 20;" v-if="语音">
+
+							<v-btn style="margin: auto;display: flex;" color="purple" fab dark size="x-large"
+								@click="listen()" :loading="loading" v-if="!语音输入中">
+								语音<br>输入
+							</v-btn>
+							<v-btn style="margin: auto;display: flex;" color="purple" fab dark size="x-large"
+								@click="recognition.stop()" :loading="loading" v-if="语音输入中">
+								停止<br>输入
+							</v-btn>
+						</div>
 						<v-textarea autofocus hide-details no-resize rows="3" :loading="loading" :placeholder="会话模式.描述"
 							@keypress.enter="提交()" v-model="问题">
 						</v-textarea>
@@ -285,6 +296,7 @@
 								</v-text-field>
 							</template></v-slider>
 					</v-form>
+					<v-switch hide-details color="purple" inset v-model="语音" label="语音"></v-switch>
 
 					https://github.com/l15y/wenda
 				</v-tab-item>
@@ -323,6 +335,8 @@
 					描述: "输入问题",
 					问题: "",
 				},
+				语音: false,
+				语音输入中: false,
 				test_zsk_prompt: "",
 				test_zsk_step: 1,
 				知识库: [],
@@ -415,9 +429,9 @@
 						'Content-Type': 'application/json'
 					}
 				})
+				let buffer = ''
 				app.问题 = ''
 				const reader = response.body.getReader();
-				let buffer = ''
 				while (true) {
 					const { value, done } = await reader.read();
 					已排队到 = true
@@ -435,6 +449,8 @@
 					if (done) break
 				}
 			} catch { }
+			if (app.语音)
+				speak(当前会话.content)
 
 			app.loading = false
 			已排队到 = true
@@ -484,6 +500,49 @@
 		}
 		lsdh = (b) => {
 			app.历史对话 = b
+		}
+
+		speak = (s) => {
+			msg = new SpeechSynthesisUtterance();
+			msg.rate = 1;
+			msg.pitch = 10;
+			msg.text = s;
+			msg.volume = 1;
+			speechSynthesis.speak(msg)
+		}
+		listen = () => {
+			recognition = new window.webkitSpeechRecognition;
+			let final_transcript = '';
+			recognition.continuous = true;
+			recognition.interimResults = true;
+			recognition.onstart = function () {
+			};
+			recognition.onresult = function (event) {
+				let interim_transcript = '';
+				for (var i = event.resultIndex; i < event.results.length; ++i) {
+					if (event.results[i].isFinal) {
+						final_transcript += event.results[i][0].transcript;
+						console.log(final_transcript);
+						app.问题 = final_transcript
+					} else {
+
+						interim_transcript += event.results[i][0].transcript;
+					}
+				}
+			};
+			recognition.onerror = function () {
+				console.log(final_transcript);
+				console.log('======================' + "error" + '======================');
+			};
+			recognition.onend = function () {
+				console.log(final_transcript);
+				app.语音输入中 = false
+				提交()
+				console.log('======================' + "end" + '======================');
+			}
+			recognition.lang = "zh-CN";
+			recognition.start()
+			app.语音输入中 = true
 		}
 	</script>
 	<script src="plugins"></script>

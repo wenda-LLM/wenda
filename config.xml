@@ -97,7 +97,7 @@
         <MIX>
             <property>
                 <name>Strategy</name>
-                <value>st:3 bing:5</value>
+                <value>st:1 bing:5</value>
                 <description>知识库融合参数</description>
             </property>
             <property>
@@ -143,7 +143,7 @@
             </property>
             <property>
                 <name>Size</name>
-                <value>250</value>
+                <value>200</value>
                 <description>分块大小</description>
             </property>
             <property>
