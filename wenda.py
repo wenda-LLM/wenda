@@ -49,14 +49,14 @@ def static(name='-'):
 
 from plugins.settings import xml2json,json2xml
 import json
-@route('/readconfig', method=("POST","OPTIONS"))
+@route('/api/readconfig', method=("POST","OPTIONS"))
 def readconfig():
     allowCROS()
     with open(os.environ['wenda_'+'Config'],encoding = "utf-8") as f:
         j=xml2json(f.read(),True,1,1)
         # print(j)
         return json.dumps(j)
-@route('/writeconfig', method=("POST","OPTIONS"))
+@route('/api/writeconfig', method=("POST","OPTIONS"))
 def readconfig():
     allowCROS()
     data = request.json
@@ -69,16 +69,16 @@ def readconfig():
 # def readxml():
 #     with open(os.environ['wenda_'+'Config'],encoding = "utf-8") as f:
 #         return f.read()
-@route('/llm')
+@route('/api/llm')
 def llm_js():
     noCache()
     return static_file('llm_'+settings.LLM_Type+".js", root="plugins")
     
-@route('/plugins')
+@route('/api/plugins')
 def read_auto_plugins():
     noCache()
     plugins=[]
-    for root, dirs, files in os.walk("views/plugins"):
+    for root, dirs, files in os.walk("autos"):
         for file in files:
             if(file.endswith(".js")):
                 file_path = os.path.join(root, file)

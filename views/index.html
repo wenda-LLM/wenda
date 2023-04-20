@@ -158,7 +158,7 @@
 					<v-list-item>
 						<v-list-item-content>
 							<v-list-item-title class="text-h6">
-								闻达 Auto
+								Auto
 								<v-btn color="#555" style="right: 1em;position: fixed;z-index: 1;" dark size="x-large"
 									@click="对话=[];保存()" :loading="loading">
 									清除历史
@@ -414,7 +414,7 @@
 			已排队到 = false
 			setTimeout(read_now, 3000)
 			app.问题 = s.replace(/\n+/g, '\n')
-			app.对话.push({ role: "user", content: app.问题.replace(/[\r\n]+/,'\n') })
+			app.对话.push({ role: "user", content: app.问题.replace(/[\r\n]+/, '\n') })
 			let 当前会话 = { role: "AI", content: '……' }
 			app.对话.push(当前会话)
 			setTimeout(() =>
@@ -518,9 +518,9 @@
 			msg.volume = 1;
 			speechSynthesis.speak(msg)
 		}
-		stop_listen=()=>{
+		stop_listen = () => {
 			recognition.stop()
-			app.loading=true
+			app.loading = true
 		}
 		listen = () => {
 			recognition = new window.webkitSpeechRecognition;
@@ -546,7 +546,7 @@
 				console.log(final_transcript);
 				alert('语音识别识别提示')
 				app.语音输入中 = false
-				console.log('======================' + "error" + '======================',e);
+				console.log('======================' + "error" + '======================', e);
 			};
 			recognition.onend = function () {
 				console.log(final_transcript);
@@ -561,8 +561,8 @@
 			app.语音输入中 = true
 		}
 	</script>
-	<script src="plugins"></script>
-	<script src="llm"></script>
+	<script src="api/plugins"></script>
+	<script src="api/llm"></script>
 </body>
 
 </html>
