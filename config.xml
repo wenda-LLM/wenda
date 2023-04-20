@@ -94,6 +94,11 @@
             <value>200</value>
             <description>知识库最大长度</description>
         </property>
+        <property>
+            <name>Step</name>
+            <value>2</value>
+            <description>知识库默认上下文步长</description>
+        </property>
         <MIX>
             <property>
                 <name>Strategy</name>
