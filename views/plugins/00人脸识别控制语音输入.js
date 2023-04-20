@@ -25,7 +25,7 @@ let tab_index = app.plugins.push({ name: "面部识别", url: "static/mp/index.h
 
 //     })
 let 上次闭嘴时间 = -1
-app.语音 = true
+// app.语音 = true
 window.addEventListener('message', function (e) {
     if (e.data.from == '面部识别') {
         let 张嘴幅度 = e.data.data

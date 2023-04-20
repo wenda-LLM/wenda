@@ -10,6 +10,7 @@ def chat_init(history):
             state = None
     else:
         tmp = []
+        # print(history)
         for i, old_chat in enumerate(history):
             if old_chat['role'] == "user":
                 tmp.append(f"{user}{interface} "+old_chat['content'])
@@ -18,7 +19,6 @@ def chat_init(history):
             else:
                 continue
         history='\n\n'.join(tmp)
-        print(history)
         state = None
         return history
 
@@ -40,6 +40,7 @@ def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
         ctx = f"\n\n{user}{interface} {prompt}\n\n{bot}{interface}"
     if settings.HistoryMode=='string':
         ctx=history+ctx
+    print(ctx)
     all_tokens = []
     out_last = 0
     response = ''
@@ -75,7 +76,7 @@ def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
                     '\n'),
                 '\n')
                 break
-            print(tmp, end='')
+            # print(tmp, end='')
             out_last = i + 1
             yield response.strip()
 

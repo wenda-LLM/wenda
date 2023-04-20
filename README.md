@@ -25,6 +25,8 @@
 
 提取码：lyqz
 
+[网友制作的autodl整合包](https://www.codewithgpu.com/i/l15y/wenda/Wenda-ChatGLM-Vincuna)
+
 默认参数在GTX1660Ti（6G显存）上运行良好。
 1. 旧版包含程序主体和chatGLM-6B、chatYuan，分别是独立的压缩文件。
 2. chatRWKV模型更新频繁，请去官方链接下最新的。暂不支持chatPDF功能，很快就加上。
