@@ -75,6 +75,8 @@
 根据`config.xml`中说明，填写你的模型下载位置等信息
 ## 知识库
 知识库原理是生成一些提示信息，会插入到对话里面。
+![](imgs/zsk1.jpg)
+![](imgs/zsk2.jpg)
 
 fess模式、bing模式、bingxs模式、 bingsite模式均调用搜索引擎搜索获取答案。
 

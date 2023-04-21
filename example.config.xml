@@ -102,7 +102,7 @@
         <MIX>
             <property>
                 <name>Strategy</name>
-                <value>st:1 bing:5</value>
+                <value>st:2 bing:5</value>
                 <description>知识库融合参数</description>
             </property>
             <property>
@@ -148,17 +148,17 @@
             </property>
             <property>
                 <name>Size</name>
-                <value>200</value>
+                <value>20</value>
                 <description>分块大小</description>
             </property>
             <property>
                 <name>Overlap</name>
-                <value>100</value>
+                <value>0</value>
                 <description>分块重叠长度</description>
             </property>
             <property>
                 <name>Count</name>
-                <value>3</value>
+                <value>5</value>
                 <description>知识库抽取数量</description>
             </property>
             <property>
