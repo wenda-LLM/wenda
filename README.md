@@ -16,16 +16,16 @@
          * [chatGLM-6B模型](#chatglm-6b模型)
          * [chatRWKV模型](#chatrwkv模型)
       * [使用](#使用)
-   * [chatGLM-6B](#chatglm-6b)
-   * [chatRWKV](#chatrwkv)
-      * [生成小说](#生成小说)
+   * [模型配置](#模型配置)
+      * [chatGLM-6B](#chatglm-6b)
+      * [chatRWKV](#chatrwkv)
+         * [生成小说](#生成小说)
          * [文字冒险游戏](#文字冒险游戏)
-   * [llama](#llama)
+      * [llama](#llama)
    * [Auto](#auto)
-   * [TODO](#todo)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Apr 21 11:10:49 UTC 2023 -->
+<!-- Added by: runner, at: Fri Apr 21 11:14:42 UTC 2023 -->
 
 <!--te-->
 ## 简介
