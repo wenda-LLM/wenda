@@ -26,3 +26,4 @@ venv.bat
 *.bin
 views/plugins/00测试.js
 vectorstore_path*
+config.xml
