@@ -168,25 +168,26 @@ cd bin
 ![](imgs/zsk-rwkv.png)
 ### 使用
 正常使用中，勾选右上角知识库
-## chatGLM-6B
+##  模型配置
+### chatGLM-6B
 运行：`run_GLM6B.bat`。
 
 模型位置等参数：修改`config.xml`。
 
 默认参数在GTX1660Ti（6G显存）上运行良好。
 
-## chatRWKV
+### chatRWKV
 运行：`run_rwkv.bat`。
 
 模型位置等参数：修改`config.xml`。
 
 默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢。
 
-### 生成小说
+#### 生成小说
 ![](imgs/novel.png)
 #### 文字冒险游戏
 ![](imgs/wzmx.png)
-## llama
+### llama
 运行：`run_llama.bat`。
 
 注意库最好使用我修改的：[llama-cpp-python](https://github.com/l15y/llama-cpp-python)，才可以正常使用中文（截止4月15日）。
@@ -201,11 +202,3 @@ cd bin
 
 [auto例程](https://github.com/l15y/wenda/tree/main/autos)
 
-## TODO
-实现以下知识库模组：
-```
-知识图谱
-```
-实现以下模型模组：
-```
-```
