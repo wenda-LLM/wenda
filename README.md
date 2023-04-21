@@ -43,7 +43,6 @@
 
 **交流QQ群：162451840（已满）；241773574**
 ##  截图
-#### 设置和预设功能
 ![](imgs/setting.png)
 ![](imgs/setting2.png)
 
@@ -89,13 +88,19 @@ fess模式、bing模式、bingxs模式、 bingsite模式均调用搜索引擎搜
 1.   bing模式，cn.bing搜索，仅国内可用
 2.   bingxs模式，cn.bing学术搜索，仅国内可用
 3.   bingsite模式，bing站内搜索，需设置网址
-4.   st模式，sentence_transformers+faiss进行索引、匹配，并连同上下文返回，相当于原先x模式升级版。
+4.   st模式，sentence_transformers+faiss进行索引
+5.   mix模式，融合
+6.   fess模式，本地部署的[fess搜索](https://github.com/codelibs/fess)，效果好于已删除的s、x模式，并使用[letiantian/TextRank4ZH](https://github.com/letiantian/TextRank4ZH)进行了关键词提取
+### st模式
+sentence_transformers+faiss进行索引、匹配，并连同上下文返回，相当于原先x模式升级版。
+
 构建索引运行：plugins/buils_ST_data.bat。
+
 Linux直接使用wenda环境执行```python plugins/gen_data_st.py```
+
 需下载模型[GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)置于model文件夹，并将txt格式语料置于txt文件夹。
+
 TODO：在线语料上传、根据字数灵活提供上下文、根据上下文相关性提供上下文。
-6.   mix模式，融合
-7.   fess模式，本地部署的[fess搜索](https://github.com/codelibs/fess)，效果好于已删除的s、x模式，并使用[letiantian/TextRank4ZH](https://github.com/letiantian/TextRank4ZH)进行了关键词提取
 ### win系统fess使用
 1. 懒人包中下载fess-14.7.0-with-jdk.7z
 2. 解压到平时放软件的盘
