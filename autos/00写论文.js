@@ -47,7 +47,7 @@ function find_RomanNumerals(str) {
         Q = app.问题
         app.max_length = 4096
         app.对话 = []
-        resp = (await send("根据以下主题，写一篇高度凝练的论文提纲：" + Q, Q))
+        resp = (await send("根据以下主题，写一篇高度凝练且全面的论文提纲：" + Q, Q))
             .replace(/\n- /g, '\n1.')//兼容不同格式
             .split("\n")
         content = [resp.join("\n\n"), "------------------------------正文------------------------------"]
@@ -62,7 +62,7 @@ function find_RomanNumerals(str) {
             let num = find_RomanNumerals(line[0])
             if (num <= 0 || num == 100) {
                 content.push(await send("根据主题：" + Q +
-                    "\n对下列段落进行撰写：" + line[1], line[1]) + "\n\n")
+                    "\n对下列段落进行详细的撰写：" + line[1], line[1]) + "\n\n")
             }
         }
         content = content.join("\n\n")
@@ -71,7 +71,7 @@ function find_RomanNumerals(str) {
         console.log(content)
 
         navigator.permissions.query({ name: "clipboard-write" }).then(result => {
-            if (result.state === "granted" || result.state == "prompt") {
+            if (result.state == "granted" || result.state == "prompt") {
                 navigator.clipboard.writeText(content)
                     .then(() => {
                         console.log('文本已经成功复制到剪切板');
