@@ -29,7 +29,7 @@
         lsdh(true)//打开历史对话
         resp = await send("请提取关键词，使用逗号分隔。")
         lsdh(false)
-        resp = resp.replace(/关键词提取/g, '').replace(/[：，]/g, ' ').trim().split(' ')
+        resp = resp.replace(/关键词提取/g, '').replace(/[：,]/g, ' ').trim().split(' ')
         app.对话.push({ "role": "AI", "content": "识别结果" + JSON.stringify(resp) })
         result = []
         for (let i in resp) {
