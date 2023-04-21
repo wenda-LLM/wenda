@@ -17,13 +17,13 @@
         let Q = app.问题
         app.对话 = [ { "role": "AI", "content": '科普之路是不是任重而道远？' },
        { "role": "user", "content": "请提取关键词，使用逗号分隔。" },
-        { "role": "AI", "content": '科普,道路,任重,道远' },
+        { "role": "AI", "content": '科普，道路，任重，道远' },
         { "role": "AI", "content": "退休后医疗保险年限不够，可以继续参保吗？" },
         { "role": "user", "content": "请提取关键词，使用逗号分隔。" },
-        { "role": "AI", "content": '退休,医疗保险,年限,继续参保' },
+        { "role": "AI", "content": '退休，医疗保险，年限，继续参保' },
         { "role": "AI", "content": "为什么我的电子社保卡参保地是错的？" },
         { "role": "user", "content": "请提取关键词，使用逗号分隔。" },
-        { "role": "AI", "content": '电子社保卡,参保地,错误' },
+        { "role": "AI", "content": '电子社保卡，参保地，错误' },
         { "role": "AI", "content": Q }]
         zsk(false)
         lsdh(true)//打开历史对话
