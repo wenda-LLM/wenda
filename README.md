@@ -41,7 +41,7 @@
 ### 2.下载模型
 根据需要，下载对应模型。
 
-建议使用chatRWKV的RWKV-4-Raven-7B-v7-ChnEng-20230404-ctx2048（截止4月6日效果较好），或chatGLM-6B。
+建议使用chatRWKV的RWKV-4-Raven-7B-v10，或chatGLM-6B。
 
 ### 3.参数设置
 根据`config.xml`中说明，填写你的模型下载位置等信息
