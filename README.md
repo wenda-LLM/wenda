@@ -3,13 +3,13 @@
 * [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
    * [简介](#简介)
    * [截图](#截图)
-         * [设置和预设功能](#设置和预设功能)
    * [懒人包](#懒人包)
    * [自行安装](#自行安装)
       * [1.安装库](#1安装库)
       * [2.下载模型](#2下载模型)
       * [3.参数设置](#3参数设置)
    * [知识库](#知识库)
+      * [st模式](#st模式)
       * [win系统fess使用](#win系统fess使用)
       * [linux系统fess使用](#linux系统fess使用)
          * [调试工具](#调试工具)
@@ -25,7 +25,7 @@
    * [TODO](#todo)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Apr 21 11:07:36 UTC 2023 -->
+<!-- Added by: runner, at: Fri Apr 21 11:10:49 UTC 2023 -->
 
 <!--te-->
 ## 简介
