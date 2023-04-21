@@ -55,9 +55,14 @@ def find(s,step = 1):
     except Exception as e:
         print(e)
         return []
-
-embeddings = HuggingFaceEmbeddings(model_name='')
-embeddings.client = sentence_transformers.SentenceTransformer(settings.library.st.Model_Path,
-                                                                        device=settings.library.st.Device)
-vectorstore = FAISS.load_local(
-    'vectorstore_path', embeddings=embeddings)
+try:
+    embeddings = HuggingFaceEmbeddings(model_name='')
+    embeddings.client = sentence_transformers.SentenceTransformer(settings.library.st.Model_Path,
+                                                                            device=settings.library.st.Device)
+except Exception  as e:
+    print("embedding加载失败，请下载相应模型")
+try:
+    vectorstore = FAISS.load_local(
+        'vectorstore_path', embeddings=embeddings)
+except Exception  as e:
+    print("vectorstore加载失败，请先构建索引")
