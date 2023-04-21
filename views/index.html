@@ -457,8 +457,13 @@
 					if (done) break
 				}
 			} catch { }
-			if (app.语音)
-				speak(当前会话.content)
+			if (app.语音) {
+				if (app.zhishiku)
+					speak(当前会话.content.replace(/###[\s\S]*/,''))
+				else
+					speak(当前会话.content)
+			}
+				
 
 			app.loading = false
 			已排队到 = true

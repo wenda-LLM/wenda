@@ -157,7 +157,7 @@ def api_find():
     prompt = data.get('prompt')
     step = data.get('step')
     if step is None:
-        step = 1
+        step = int(settings.library.Step)
     return json.dumps(zhishiku.find(prompt,int(step)))
 
 
@@ -240,7 +240,7 @@ def api_chat_stream():
     yield str(len(prompt))+'字正在计算'
     if use_zhishiku:
         # print(keyword)
-        response_d = zhishiku.find(keyword,2)
+        response_d = zhishiku.find(keyword,int(settings.library.Step))
         output_sources = [i['title'] for i in response_d]
         results = '\n---\n'.join([i['content'] for i in response_d])
         prompt = 'system:学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n' + \
