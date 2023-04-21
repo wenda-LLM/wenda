@@ -260,6 +260,7 @@ def api_chat_stream():
             error = str(e)
             print("错误", settings.red, error, settings.white)
             response = ''
+            raise e
         torch.cuda.empty_cache()
     if response == '':
         yield "发生错误，正在重新加载模型"+error+'///'
