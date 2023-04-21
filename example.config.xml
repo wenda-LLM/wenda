@@ -169,7 +169,7 @@
             <property>
                 <name>Device</name>
                 <value>cpu</value>
-                <description>faiss运行设备</description>
+                <description>sentence_transformers运行设备:cpu、cuda。仅用于查找，索引强制使用cuda</description>
             </property>
         </ST>
         <QDRANT>
