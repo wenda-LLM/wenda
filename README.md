@@ -42,11 +42,13 @@
 **欢迎同学们制作教学视频、懒人包等，做好请和我联系，我会把相关链接加到readme里**
 
 **交流QQ群：162451840（已满）；241773574**
-##  截图
+
+建议在[论坛](https://github.com/l15y/wenda/discussions)中讨论
+
 ![](imgs/setting.png)
 ![](imgs/setting2.png)
-
-## 懒人包
+## 安装部署
+### 懒人包
 链接：https://pan.baidu.com/s/105nOsldGt5mEPoT2np1ZoA?pwd=lyqz 
 
 视频教程：https://www.bilibili.com/video/BV1aX4y1z7ar/?vd_source=629edb00375d46ad4097acdc7cbc0ca3
@@ -59,20 +61,25 @@
 1. 旧版包含程序主体和chatGLM-6B、chatYuan，分别是独立的压缩文件。
 2. chatRWKV模型更新频繁，请去官方链接下最新的。暂不支持chatPDF功能，很快就加上。
 3. 新版暂时只有chatGLM-6B，但重新制作，体积更新，包含各种优化，集成知识库功能，推荐使用。
-## 自行安装
-### 1.安装库
+### 自行安装
+#### 1.安装库
 通用依赖：```pip install -r requirements.txt```
-知识库bing模式：```pip install -r requirements-bing.txt```
-知识库fess模式：```pip install -r requirements-fess.txt```
-知识库sentence_transformers模式：```pip install -r requirements-st.txt```
+根据使用的 [知识库](#知识库)进行相应配置
 
-### 2.下载模型
+#### 2.下载模型
 根据需要，下载对应模型。
 
 建议使用chatRWKV的RWKV-4-Raven-7B-v10，或chatGLM-6B。
 
-### 3.参数设置
+#### 3.参数设置
 根据`config.xml`中说明，填写你的模型下载位置等信息
+## Auto
+![](imgs/auto1.jpg)
+![](imgs/auto2.jpg)
+![](imgs/auto3.jpg)
+
+[auto例程](https://github.com/l15y/wenda/tree/main/autos)
+
 ## 知识库
 知识库原理是生成一些提示信息，会插入到对话里面。
 ![](imgs/zsk1.jpg)
@@ -197,10 +204,4 @@ cd bin
 编译好的：https://github.com/l15y/llama-cpp-python/releases
 
 模型位置等参数：修改`config.xml`。
-## Auto
-![](imgs/auto1.jpg)
-![](imgs/auto2.jpg)
-![](imgs/auto3.jpg)
-
-[auto例程](https://github.com/l15y/wenda/tree/main/autos)
 
