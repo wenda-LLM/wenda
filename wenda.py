@@ -19,6 +19,8 @@ os.environ['wenda_'+'Logging'] = str(args.Logging)
 os.environ['wenda_'+'LLM_Type'] = str(args.LLM_Type) 
 
 from plugins.settings import settings 
+from plugins.settings import error_helper 
+from plugins.settings import success_print 
 
 
 def load_LLM():
@@ -285,7 +287,7 @@ def load_model():
     LLM.load_model()
     mutex.release()
     torch.cuda.empty_cache()
-    print(settings.green, "模型加载完成", settings.white)
+    success_print("模型加载完成")
 
 
 thread_load_model = threading.Thread(target=load_model)
@@ -297,9 +299,10 @@ def load_zsk():
         from importlib import import_module
         global zhishiku
         zhishiku = import_module('plugins.zhishiku_'+settings.library.Type)
-        print(settings.green, "知识库加载完成", settings.white)
+        success_print("知识库加载完成")
     except Exception as e:
-        print("知识库加载失败，请阅读说明：https://github.com/l15y/wenda",e)
+        error_helper("知识库加载失败，请阅读说明",r"https://github.com/l15y/wenda#%E7%9F%A5%E8%AF%86%E5%BA%93")
+        raise e
 
 thread_load_zsk = threading.Thread(target=load_zsk)
 thread_load_zsk.start()

@@ -4,6 +4,8 @@ import sentence_transformers
 import numpy as np
 import re
 from plugins.settings import settings
+from plugins.settings import error_helper 
+from plugins.settings import success_print 
 divider='\n'
 
 def get_doc_by_id(id):
@@ -60,9 +62,9 @@ try:
     embeddings.client = sentence_transformers.SentenceTransformer(settings.library.st.Model_Path,
                                                                             device=settings.library.st.Device)
 except Exception  as e:
-    print("embedding加载失败，请下载相应模型")
+    error_helper("embedding加载失败，请下载相应模型",r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
 try:
     vectorstore = FAISS.load_local(
         'vectorstore_path', embeddings=embeddings)
 except Exception  as e:
-    print("vectorstore加载失败，请先构建索引")
+    error_helper("vectorstore加载失败，请先构建索引",r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")

@@ -5,8 +5,6 @@ import json
 
 
 
-
-
 class obj:
   def __init__(self, dict1):
     self.__dict__.update(dict1)
@@ -93,13 +91,25 @@ print("\033[1;31m",end="")
 print(settings_str_toprint,end="")
 print("\033[1;37m")
 settings = json.loads(settings_str, object_hook=object_hook)
-settings.red = "\033[1;32m"
-settings.green = "\033[1;31m"
+settings.green = "\033[1;32m"
+settings.red = "\033[1;31m"
 settings.white = "\033[1;37m"
 
+import webbrowser
+def error_helper(e,doc_url):
+    error_print(e)
+    webbrowser.open_new(doc_url)
+def error_print(s):
+    print(settings.red,end="")
+    print(s)
+    print(settings.white,end="")
+def success_print(s):
+    print(settings.green,end="")
+    print(s)
+    print(settings.white,end="")
+    
+
 import json
-import optparse
-import sys
 import os
 from collections import OrderedDict
 
