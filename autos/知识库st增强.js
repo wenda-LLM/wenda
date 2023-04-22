@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         闻达 Auto ：知识库st增强
+// @name         闻达 Auto ：知识库增强
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  通过分次输入知识库查找条目，帮助模型提高注意力，再提炼各次回答给出最终回答，起到更准确的查询效果
