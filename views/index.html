@@ -215,7 +215,7 @@
 					</div>
 					<br><br><br><br><br><br><br><br><br>
 					<v-footer fixed>
-						<div style="position: fixed;bottom: 120px;width: 100%;z-index: 20;" v-if="语音">
+						<div style="position: fixed;bottom: 120px;width: 100%;z-index: 20;" v-if="语音输入">
 
 							<v-btn style="margin: auto;display: flex;" color="purple" fab dark size="x-large"
 								@click="listen()" :loading="loading" v-if="!语音输入中">
@@ -295,7 +295,8 @@
 								</v-text-field>
 							</template></v-slider>
 					</v-form>
-					<v-switch hide-details color="purple" inset v-model="语音" label="语音"></v-switch>
+					<v-switch hide-details color="purple" inset v-model="语音输入" label="语音输入"></v-switch>
+					<v-switch hide-details color="purple" inset v-model="语音播报" label="语音播报"></v-switch>
 
 					https://github.com/l15y/wenda
 				</v-tab-item>
@@ -341,7 +342,8 @@
 					问题: "",
 				},
 				plugins: [],
-				语音: false,
+				语音输入: false,
+				语音播报: false,
 				语音输入中: false,
 				test_zsk_prompt: "",
 				test_zsk_step: 1,
@@ -455,7 +457,7 @@
 					if (done) break
 				}
 			} catch { }
-			if (app.语音) {
+			if (app.语音播报) {
 				if (app.zhishiku)
 					speak(当前会话.content.replace(/###[\s\S]*/,''))
 				else
