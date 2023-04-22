@@ -1,0 +1,1 @@
+@nvidia-smi -l 3

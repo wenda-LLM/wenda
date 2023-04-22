@@ -136,9 +136,6 @@
 			white-space: break-spaces;
 		}
 
-		.v-application ul {
-			margin-top: -0.5em;
-		}
 
 		.v-application a {
 			line-height: 1.3;
@@ -415,7 +412,7 @@
 			已排队到 = false
 			setTimeout(read_now, 3000)
 			app.问题 = s.replace(/\n+/g, '\n')
-			app.对话.push({ role: "user", content: app.问题.replace(/[\r\n]+/, '\n') })
+			app.对话.push({ role: "user", content: app.问题.replace(/[\r\n]+/g, '\n') })
 			let 当前会话 = { role: "AI", content: '……' }
 			app.对话.push(当前会话)
 			setTimeout(() =>

@@ -37,7 +37,7 @@ function find_RomanNumerals(str) {
     }
     return number
 }
-if (app.llm_type == "glm6b")
+// if (app.llm_type == "glm6b")
 功能.push({
     名称: "提纲写论文",
     描述: "根据主题撰写内容翔实、有信服力的论文",
@@ -69,7 +69,7 @@ if (app.llm_type == "glm6b")
 
         navigator.permissions.query({ name: "clipboard-write" }).then(result => {
             if (result.state == "granted" || result.state == "prompt") {
-                navigator.clipboard.writeText(content)
+                navigator.clipboard.writeText(content.replace(/\n+/g,'\n'))
                     .then(() => {
                         console.log('文本已经成功复制到剪切板');
                     })
