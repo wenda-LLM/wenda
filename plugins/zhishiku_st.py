@@ -63,8 +63,10 @@ try:
                                                                             device=settings.library.st.Device)
 except Exception  as e:
     error_helper("embedding加载失败，请下载相应模型",r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
+    raise e
 try:
     vectorstore = FAISS.load_local(
         'vectorstore_path', embeddings=embeddings)
 except Exception  as e:
     error_helper("vectorstore加载失败，请先构建索引",r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
+    raise e
