@@ -27,12 +27,14 @@ def process_strings(A, C, B):
 def get_doc(id,score,step):
     doc = get_doc_by_id(id)
     final_content=doc.page_content
+    print("文段分数：",score,[doc.page_content])
     if step > 0:
         for i in range(1, step+1):
             try:
                 doc_before=get_doc_by_id(id-i)
                 if doc_before.metadata['source']==doc.metadata['source']:
                     final_content=process_strings(doc_before.page_content,divider,final_content)
+                    # print("上文分数：",score,doc.page_content)
             except:
                 pass
             try:
@@ -44,7 +46,6 @@ def get_doc(id,score,step):
     return {'title': doc.metadata['source'],'content':re.sub(r'\n+', "\n", final_content)}
 
 def find(s,step = 0):
-    print(step)
     try:
         embedding = vectorstore.embedding_function(s)
         scores, indices = vectorstore.index.search(np.array([embedding], dtype=np.float32), int(settings.library.st.Count))
@@ -53,6 +54,7 @@ def find(s,step = 0):
             if i == -1:
                 continue
             docs.append(get_doc(i,scores[0][j],step))
+
         return docs
     except Exception as e:
         print(e)
