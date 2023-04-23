@@ -111,7 +111,7 @@ Linux直接使用wenda环境执行```python plugins/gen_data_st.py```
 需下载模型[GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)置于model文件夹，并将txt格式语料置于txt文件夹。
 
 TODO：在线语料上传、根据字数灵活提供上下文、根据上下文相关性提供上下文。
-### fess使用
+### fess模式
 #### win系统
 1. 懒人包中下载fess-14.7.0-with-jdk.7z
 2. 解压到平时放软件的盘
@@ -170,12 +170,10 @@ cd bin
  ./fess -d
 ```
 
-####  调试工具
+###  调试工具
 ![](imgs/zsk-test.png)
-####  chatGLM-6B模型
 ![](imgs/zsk-glm.png)
 
-#### chatRWKV模型
 ![](imgs/zsk-rwkv.png)
 ### 使用
 正常使用中，勾选右上角知识库
