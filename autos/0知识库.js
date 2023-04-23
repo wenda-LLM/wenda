@@ -9,6 +9,30 @@
 // @run-at document-idle
 // @grant        none
 // ==/UserScript==
+功能.push({
+    名称: "知识库st增强",
+    问题: async () => {
+        let Q = app.问题
+        zsk(false)
+        lsdh(true)//打开历史对话
+        lsdh(false)
+        app.对话.push({ "role": "user", "content": "ST知识库增强查找：" + Q })
+        kownladge = await find(Q, 2)
+        app.对话.push({ "role": "AI", "content": "识别结果" + JSON.stringify(kownladge) })
+        result = []
+        for (let i in kownladge) {
+            if(i>3)continue
+            let prompt = "精炼地总结以下文段中与问题相关的信息为二十个字。\n" +
+            kownladge[i].content + "\n问题：" + Q
+            result.push(await send(prompt))
+        }
+        let prompt = "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。\n" +
+            result.join('\n') + "\n问题：" + Q
+        await send(prompt)
+        //app.会话模式={名称: "常规模式",描述: "输入问题",问题: ""}
+    },
+})
+
 if (app.llm_type == "rwkv")
 {
     功能.push({
@@ -78,3 +102,21 @@ else if(app.llm_type == "glm6b")
         },
     })
 }
+功能.push({
+    名称: "知识库step",
+    问题: async () => {
+        let Q = app.问题
+        app.对话.push({ "role": "user", "content": "步数为0" })
+        kownladge = await find(Q, 0)
+        kownladge=kownladge.map(i => i.content).join('\n\n').replace(/'/g,"")
+        app.对话.push({ "role": "AI", "content": kownladge })
+        app.对话.push({ "role": "user", "content": "步数为1" })
+        kownladge = await find(Q, 1)
+        kownladge=kownladge.map(i => i.content).join('\n\n').replace(/'/g,"")
+        app.对话.push({ "role": "AI", "content": kownladge })
+        app.对话.push({ "role": "user", "content": "步数为2" })
+        kownladge = await find(Q, 2)
+        kownladge=kownladge.map(i => i.content).join('\n\n').replace(/'/g,"")
+        app.对话.push({ "role": "AI", "content": kownladge })
+    },
+})
