@@ -11,12 +11,10 @@
    * [Auto](#auto)
    * [知识库](#知识库)
       * [st模式](#st模式)
-      * [fess使用](#fess使用)
+      * [fess模式](#fess模式)
          * [win系统](#win系统)
          * [linux系统](#linux系统)
-         * [调试工具](#调试工具)
-         * [chatGLM-6B模型](#chatglm-6b模型)
-         * [chatRWKV模型](#chatrwkv模型)
+      * [调试工具](#调试工具)
       * [使用](#使用)
    * [模型配置](#模型配置)
       * [chatGLM-6B](#chatglm-6b)
@@ -26,7 +24,7 @@
       * [llama](#llama)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Apr 23 12:52:25 UTC 2023 -->
+<!-- Added by: runner, at: Sun Apr 23 12:54:52 UTC 2023 -->
 
 <!--te-->
 ## 简介
