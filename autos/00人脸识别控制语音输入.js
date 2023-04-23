@@ -13,11 +13,11 @@ if (navigator != null && (window.location.toString().toUpperCase().indexOf("HTTP
 } else {
     alert("当前连接不安全，无法访问媒体")
 }
-const constrains = {
-    video: true,
-    audio: true
-}
-let tab_index = app.plugins.push({ name: "面部识别", url: "static/mp/index.html" })
+//  constrains = {
+//     video: true,
+//     audio: true
+// }
+ tab_index = app.plugins.push({ name: "面部识别", url: "static/mp/index.html" })
 // navigator.mediaDevices.getUserMedia(constrains)
 //     .then(stream => {
 //         console.log(tab_index)
