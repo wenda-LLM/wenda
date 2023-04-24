@@ -244,7 +244,7 @@ def api_chat_stream():
         # print(keyword)
         response_d = zhishiku.find(keyword,int(settings.library.Step))
         output_sources = [i['title'] for i in response_d]
-        results = '\n---\n'.join([i['content'] for i in response_d])
+        results = '\n'.join([str(i+1)+"."+response_d[i]['content'] for i in range(len(response_d))])
         prompt = 'system:学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n' + \
             results+'\nuser:'+prompt
         if bool(settings.library.Show_Soucre == 'True'):

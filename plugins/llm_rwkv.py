@@ -1,5 +1,5 @@
 from plugins.settings import settings
-
+import re
 
 def chat_init(history):
     global state
@@ -36,8 +36,10 @@ def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
 
     if zhishiku:
         ctx = "\n\n"+prompt.replace('system:学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。',
-                                    'Bob: Read the following input text carefully and memorize it so we can play trivia.')\
-            .replace('\n\n',"\n").replace('user:',"Now Answer this question: ")+f"\n\n{bot}{interface}"
+                                    'Bob: 请仔细阅读以下文字，然后根据文字回答问题。')\
+            .replace('\n\n',"\n").replace('user:',"问：")+f"\n\n{bot}{interface}"
+        ctx = re.sub('网页', '', ctx)
+        ctx = re.sub('原标题：', '', ctx)
     else:
         if prompt.startswith("raw!"):
             print("RWKV raw mode!")
