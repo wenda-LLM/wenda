@@ -113,11 +113,15 @@
 			height: 100%;
 		}
 
-		.v-window-item.v-window-item--active {
-			margin: 30px;
+		.v-window-item {
 			min-height: 100%;
+			margin: 30px;
 		}
 
+		.v-window-item:has(iframe) {
+			margin: 0;
+			
+		}
 		.v-tab.v-tab {
 			color: inherit;
 			font-weight: bold;
@@ -274,6 +278,7 @@
 					</v-btn>
 					<v-data-table :headers="[{ text: '来源', value: 'title' },{ text: '内容', value: 'content' },]"
 						:items="zhishiku" hide-default-header hide-default-footer></v-data-table>
+						
 				</v-tab-item>
 				<v-tab-item key="setting">
 					<br>
@@ -357,7 +362,7 @@
 				max_length: 2048,
 				top_p: 0.8,
 				llm_type: "",
-				tabs:['chat','zhishiku','setting'],
+				tabs: ['chat', 'zhishiku', 'setting'],
 				snackbar: false,
 				snackbar_text: '',
 				loading: false,
@@ -398,8 +403,8 @@
 			}
 		}
 		re_generate = () => {
-			let last_send=app.chat[app.chat.length-2]
-			app.chat.splice(app.chat.length-2, 2)
+			let last_send = app.chat[app.chat.length - 2]
+			app.chat.splice(app.chat.length - 2, 2)
 			send(last_send.content, last_send.keyword)
 		}
 		send = async (s, keyword = "") => {

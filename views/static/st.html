@@ -1,0 +1,74 @@
+<html>
+
+<head>
+	<title>闻达</title>
+	<meta charset="utf-8">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="mobile-web-app-capable" content="yes" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=400,  user-scalable=no">
+	<link rel="shortcut icon" href="#" />
+	<!-- <link href="https://npm.elemecdn.com/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
+	<link href="https://npm.elemecdn.com/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+	<script src="https://npm.elemecdn.com/vue@2.x/dist/vue.min.js"></script>
+	<script src="https://npm.elemecdn.com/vuetify@2.x/dist/vuetify.min.js"></script> -->
+
+	<link href="/static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet">
+
+	<link href="/static/vuetify.min.css" rel="stylesheet">
+	<script src="/static/vue.js"></script>
+	<script src="https://unpkg.com/vue-i18n@8"></script>
+	<script src="/static/vuetify.min.js"></script>
+	<script src="/static/markdown-it.min.js"></script>
+	<script src="/static/strings.js"></script>
+	<style>
+		.v-application--wrap {
+			display: unset;
+			margin: 30px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="app" v-cloak>
+		<v-app>
+			<v-row>
+				<v-col cols="12" sm="6">
+					<v-text-field v-model="title" outlined :label='$t("title")' clearable></v-text-field>
+				</v-col>
+				<v-col cols="12" sm="6">
+					<v-btn color="purple" dark size="x-large" @click="upload_st_zhishiku(title,content)">
+						{{$t("send")}}
+					</v-btn>
+				</v-col>
+				<v-textarea outlined :placeholder='$t("content")' v-model="content">
+				</v-textarea>
+			</v-row>
+
+		</v-app>
+	</div>
+	<script>
+		app = new Vue({
+			el: '#app',
+			vuetify: new Vuetify(),
+			i18n: i18n,
+			data: () => ({
+				content: '',
+				title: '',
+			}),
+			methods: {
+			}
+		})
+		upload_st_zhishiku = (title, txt) => {
+			fetch("/api/upload_st_zhishiku", {
+				method: 'post', body: JSON.stringify({
+					title: title,
+					txt: txt
+				}),
+				headers: { 'Content-Type': 'application/json' }
+			})
+		}
+	</script>
+</body>
+
+</html>
