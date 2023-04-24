@@ -35,9 +35,9 @@ def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
                          token_stop=[0])  # stop generation whenever you see any token here
 
     if zhishiku:
-        ctx = "\n\n"+prompt.replace('system:学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。',
-                                    'Bob: 请仔细阅读以下文字，然后根据文字回答问题。')\
-            .replace('\n\n',"\n").replace('user:',"请回答: ")+f"\n\n{bot}{interface}"
+        ctx = "\n\n"+prompt.replace('system:',
+                                    'Bob:')\
+            .replace('\n\n',"\n")+f"\n\n{bot}{interface}"
         ctx = re.sub('网页', '', ctx)
         ctx = re.sub('原标题：', '', ctx)
     else:
