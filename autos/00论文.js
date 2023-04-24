@@ -39,7 +39,7 @@ function find_RomanNumerals(str) {
 }
 
 功能.push({
-    名称: "写论文",
+    名称: "提纲写论文",
     描述: "根据主题撰写内容翔实、有信服力的论文",
     问题: async () => {
         zsk(true)
@@ -73,51 +73,6 @@ function find_RomanNumerals(str) {
         navigator.permissions.query({ name: "clipboard-write" }).then(result => {
             if (result.state == "granted" || result.state == "prompt") {
                 navigator.clipboard.writeText(content)
-                    .then(() => {
-                        console.log('文本已经成功复制到剪切板');
-                    })
-                    .catch(err => {
-                    });
-            }
-            else {
-                console.log("当前无操作权限。请使用最新版本Chrome浏览器，并在浏览器高级设置-页面设置中允许访问剪切板");
-            }
-        })
-
-    },
-})
-功能.push({
-    名称: "提纲写论文",
-    描述: "根据主题撰写内容翔实、有信服力的论文",
-    问题: async () => {
-        title = app.问题
-        app.max_length = 4096
-        app.对话 = []
-        resp =title.split("\n")
-        title=resp[0]
-        content = [resp.join("\n\n"), "------------------------------正文------------------------------"]
-        for (let i in resp) {
-            let line = resp[i]
-            if (line == "") continue
-            line = line.split(".")
-            if (line.length < 2) {
-                continue  // 判断非提纲内容
-            }
-            content.push(resp[i])   // 保存提纲
-            let num = find_RomanNumerals(line[0])
-            if (num <= 0 || num == 100) {
-                content.push(await send("根据主题：" + title +
-                    "。对下列段落进行详细的撰写：" + line[1], line[1]))
-            }
-        }
-        content = content.join("\n\n")
-        app.对话.push({ "role": "user", "content": title })
-        app.对话.push({ "role": "AI", "content": content })
-        console.log(content)
-
-        navigator.permissions.query({ name: "clipboard-write" }).then(result => {
-            if (result.state == "granted" || result.state == "prompt") {
-                navigator.clipboard.writeText(content.replace(/\n+/g,'\n'))
                     .then(() => {
                         console.log('文本已经成功复制到剪切板');
                     })
