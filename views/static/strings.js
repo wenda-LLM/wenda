@@ -1,18 +1,38 @@
 
 const messages = {
     en: {
-        wenda: 'Wenda'
+        wenda: 'Wenda',
+        history: 'History',
+        send: 'Send',
+        abord: 'Abort',
+        clear_history: 'Clear History',
+        chat: 'Chat',
+        setting: 'Settings',
+        feature_selection: 'Feature Selection'
     },
     'zh-CN': {
         wenda: '闻达',
         zhishiku: "知识库",
         history: "历史",
-        send:"发送",
-        abord:"中断",
-        clear_history:"清除历史",
-        chat:"对话",
-        setting:"设置",
-        feature_selection:"功能选择"
+        send: "发送",
+        abord: "中断",
+        clear_history: "清除历史",
+        chat: "对话",
+        setting: "设置",
+        feature_selection: "功能选择"
+    }
+    ,
+
+    'ja': {
+        wenda: 'ウェンダ',
+        zhishiku: '知識ベース',
+        history: '履歴',
+        send: '送信',
+        abord: '中止',
+        clear_history: '履歴を消去',
+        chat: 'チャット',
+        setting: '設定',
+        feature_selection: '機能選択'
     }
 }
 
