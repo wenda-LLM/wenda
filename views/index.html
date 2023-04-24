@@ -425,7 +425,7 @@
 			}
 			已排队到 = false
 			setTimeout(read_now, 3000)
-			app.问题 = s.replace(/[\r\n]+/g, '\n')
+			app.问题 = s.replace(/\r\n/g, '\n')
 			app.chat.push({ role: "user", content: app.问题, keyword: keyword })
 			let 当前会话 = { role: "AI", content: '……' }
 			app.chat.push(当前会话)
