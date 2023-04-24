@@ -72,3 +72,30 @@ try:
 except Exception  as e:
     error_helper("vectorstore加载失败，请先构建索引",r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
     raise e
+from langchain.docstore.document import Document
+from langchain.text_splitter import CharacterTextSplitter
+from bottle import route, response, request, static_file, hook
+import bottle
+@route('/api/upload_st_zhishiku', method=("POST","OPTIONS"))
+def upload_zhishiku():
+    try:
+        data = request.json
+        title=data.get("title")
+        data = re.sub(r'！', "！\n", data.get("txt"))
+        data = re.sub(r'：', "：\n", data)
+        data = re.sub(r'。', "。\n", data)
+        data = re.sub(r'[\n\r]+', "\n", data)
+        docs=[Document(page_content=data, metadata={"source":title })]
+        print(docs)
+        
+        text_splitter = CharacterTextSplitter(
+            chunk_size=int(settings.library.st.Size), chunk_overlap=int(settings.library.st.Overlap), separator='\n')
+        doc_texts = text_splitter.split_documents(docs)
+
+        texts = [d.page_content for d in doc_texts]
+        metadatas = [d.metadata for d in doc_texts]
+        vectorstore_new = FAISS.from_texts(texts, embeddings, metadatas=metadatas)
+        vectorstore.merge_from(vectorstore_new)
+        return '1'
+    except Exception as e:
+        raise e

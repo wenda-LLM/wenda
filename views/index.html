@@ -184,7 +184,7 @@
 				<v-toolbar-title><a style="text-decoration: none;color: white;"
 						href="https://github.com/l15y/wenda">{{$t("wenda") }}</a></v-toolbar-title>
 				<v-spacer></v-spacer>
-				<v-switch hide-details color="purple" inset v-model="zhishiku" :label='$t("zhishiku")'></v-switch>
+				<v-switch hide-details color="purple" inset v-model="zhishiku_on" :label='$t("zhishiku")'></v-switch>
 				&nbsp;&nbsp;&nbsp;&nbsp;
 				<v-switch hide-details color="purple" inset v-model="history_on" :label='$t("history")'></v-switch>
 
@@ -267,7 +267,6 @@
 						</v-col>
 						<v-col cols="12" sm="6">
 							<v-text-field v-model="test_zsk_step" outlined label="上下文数量" clearable></v-text-field>
-
 						</v-col>
 					</v-row>
 					<v-btn color="purple" dark size="x-large" @click="find(test_zsk_prompt,test_zsk_step)">
@@ -316,7 +315,7 @@
 			</v-tabs-items>
 			<v-tabs v-model="tab" dark>
 				<v-tabs-slider color="purple"></v-tabs-slider>
-				<v-tab v-for="item in ['chat','zhishiku','setting']" :key="item">
+				<v-tab v-for="item in tabs" :key="item">
 					{{ $t(item) }}
 				</v-tab>
 				<v-tab v-for="plugin in plugins" :key="plugin.name">
@@ -353,11 +352,12 @@
 				zhishiku: [],
 				setting: {},
 				tab: 0,
-				zhishiku: false,
+				zhishiku_on: false,
 				temperature: 0.8,
 				max_length: 2048,
 				top_p: 0.8,
 				llm_type: "",
+				tabs:['chat','zhishiku','setting'],
 				snackbar: false,
 				snackbar_text: '',
 				loading: false,
@@ -438,7 +438,7 @@
 						top_p: app.top_p,
 						max_length: app.max_length,
 						history: QA_history,
-						zhishiku: app.zhishiku
+						zhishiku: app.zhishiku_on
 					}),
 					headers: {
 						'Content-Type': 'application/json'
@@ -465,7 +465,7 @@
 				}
 			} catch { }
 			if (app.语音播报) {
-				if (app.zhishiku)
+				if (app.zhishiku_on)
 					speak(当前会话.content.replace(/###[\s\S]*/, ''))
 				else
 					speak(当前会话.content)
@@ -516,7 +516,7 @@
 			return md.render(conent).replace(/<a /g, '<a target="_blank"')
 		}
 		zsk = (b) => {
-			app.zhishiku = b
+			app.zhishiku_on = b
 		}
 		lsdh = (b) => {
 			app.history_on = b
