@@ -217,6 +217,11 @@
 						<span v-if="current_conversation.role != 'user'" class="answer"
 							v-html="md2html(current_conversation.content)"></span>
 					</div>
+					<div v-if="!loading&&chat.length>0">
+						<v-btn size="x-large" style="margin: auto;display: flex;" @click="re_generate()">
+							{{$t("re_generate")}}
+						</v-btn>
+					</div>
 					<br><br><br><br><br><br><br><br><br>
 					<v-footer fixed>
 						<div style="position: fixed;bottom: 120px;width: 100%;z-index: 20;" v-if="语音输入">
@@ -378,7 +383,7 @@
 			localStorage["wenda_chat_history"] = JSON.stringify(app.chat)
 		}
 		中断 = () => {
-			auto_stoped = true
+			is_abord = true
 			controller.abort()
 			controller = new AbortController();
 			signal = controller.signal;
@@ -389,13 +394,17 @@
 			if (typeof app.会话模式.问题 == 'function') {
 				app.会话模式.问题()
 			} else {
-
 				send(app.会话模式.问题 + app.问题, app.问题)
 			}
 		}
+		re_generate = () => {
+			let last_send=app.chat[app.chat.length-2]
+			app.chat.splice(app.chat.length-2, 2)
+			send(last_send.content, last_send.keyword)
+		}
 		send = async (s, keyword = "") => {
 			if (keyword == "") keyword = s
-			auto_stoped = false
+			is_abord = false
 			app.loading = true
 			let QA_history
 			if (app.history_on) {
@@ -411,8 +420,8 @@
 			}
 			已排队到 = false
 			setTimeout(read_now, 3000)
-			app.问题 = s.replace(/\n+/g, '\n')
-			app.chat.push({ role: "user", content: app.问题.replace(/[\r\n]+/g, '\n') })
+			app.问题 = s.replace(/[\r\n]+/g, '\n')
+			app.chat.push({ role: "user", content: app.问题, keyword: keyword })
 			let 当前会话 = { role: "AI", content: '……' }
 			app.chat.push(当前会话)
 			setTimeout(() =>
@@ -466,7 +475,7 @@
 			app.loading = false
 			已排队到 = true
 			保存()
-			if (auto_stoped)
+			if (is_abord)
 				throw new MyException("已中断")
 			return 当前会话.content
 		}

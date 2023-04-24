@@ -19,7 +19,8 @@ const messages = {
         clear_history: "清除历史",
         chat: "对话",
         setting: "设置",
-        feature_selection: "功能选择"
+        feature_selection: "功能选择",
+        re_generate:"重新生成"
     }
     ,
 
