@@ -14,7 +14,7 @@
         <property>
             <name>LLM_Type</name>
             <value>rwkv</value>
-            <description>LLM模型类型:glm6b、rwkv、llama</description>
+            <description>LLM模型类型:glm6b、rwkv、llama、chatglm</description>
         </property>
     </General>
     <Models>
@@ -69,6 +69,18 @@
                 <name>Strategy</name>
                 <value></value>
                 <description>llama模型参数 暂时不用</description>
+            </property>
+        </LLAMA>
+        <LLAMA>
+            <property>
+                <name>Api_key</name>
+                <value></value>
+                <description>智谱AI开放平台api key</description>
+            </property>
+            <property>
+                <name>Public_key</name>
+                <value></value>
+                <description>智谱AI开放平台public key</description>
             </property>
         </LLAMA>
     </Models>

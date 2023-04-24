@@ -1,9 +1,6 @@
 from wudao.api_request import executeEngine, getToken
-import os
-# 接口API KEY
-API_KEY = os.getenv("GLM_API_KEY")
-# 公钥
-PUBLIC_KEY = os.getenv("GLM_PUBLIC_KEY")
+from plugins.settings import settings
+
 # 能力类型
 ability_type = "chatGLM"
 # 引擎类型
@@ -30,7 +27,7 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku
     "requestTaskNo": "1542097269879345154",
     "history":history_formatted
     }
-    token_result = getToken(API_KEY, PUBLIC_KEY)
+    token_result = getToken(settings.Api_key, settings.Public_key)
     if token_result and token_result["code"] == 200:
         token = token_result["data"]
         resp = executeEngine(ability_type, engine_type, token, data)
