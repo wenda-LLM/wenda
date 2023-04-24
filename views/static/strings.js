@@ -26,7 +26,6 @@ const messages = {
 
     'ja': {
         wenda: 'ウェンダ',
-        zhishiku: '知識ベース',
         history: '履歴',
         send: '送信',
         abord: '中止',
