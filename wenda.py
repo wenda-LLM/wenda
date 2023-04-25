@@ -210,6 +210,7 @@ def api_chat_box():
     if response_text == '':
         yield "data: %s\n\n" %json.dumps({"response": ("发生错误，正在重新加载模型"+error)})
         os._exit(0)
+import re
 @route('/api/chat_stream', method=("POST","OPTIONS"))
 def api_chat_stream():
     allowCROS()
@@ -244,7 +245,7 @@ def api_chat_stream():
         # print(keyword)
         response_d = zhishiku.find(keyword,int(settings.library.Step))
         output_sources = [i['title'] for i in response_d]
-        results = '\n'.join([str(i+1)+". "+response_d[i]['content'] for i in range(len(response_d))])
+        results = '\n'.join([str(i+1)+". "+re.sub('\n', '', response_d[i]['content']) for i in range(len(response_d))])
         prompt = 'system: 请扮演一名专业分析师，根据以下内容回答问题：'+prompt + "\n"+ results
         if bool(settings.library.Show_Soucre == 'True'):
             footer = "\n### 来源：\n"+('\n').join(output_sources)+'///'
