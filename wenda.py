@@ -162,7 +162,6 @@ def api_find():
         step = int(settings.library.Step)
     return json.dumps(zhishiku.find(prompt,int(step)))
 
-
 @route('/chat/completions', method=("POST","OPTIONS"))
 def api_chat_box():
     response.content_type = "text/event-stream"

@@ -38,3 +38,22 @@ def find(search_query,step = 0):
     except Exception  as e:
         print("fess读取失败",e)
         return []
+
+from bottle import route, response, request, static_file, hook
+import bottle
+@route('/api/find_fess_zhishiku', method=("POST","OPTIONS"))
+def upload_zhishiku():
+    
+    data = request.json
+    prompt = data.get('prompt')
+    try:
+        url = 'http://' + settings.library.fess.Fess_Host + '/json/?q={}&num=10&sort=score.desc&lang=zh_CN'.format(prompt)
+        res = session.get(url, headers=headers, proxies=proxies)
+        r = res.json()
+        r=r["response"]['result']
+        # "<strong>""</strong>"
+        return json.dumps( [{'title': r[i]['title'], 'content':replace_strong(r[i]['content_description'])}
+                for i in range(min(int(settings.library.fess.Count), len(r)))])
+    except Exception  as e:
+        print("fess读取失败",e)
+        return json.dumps([])
