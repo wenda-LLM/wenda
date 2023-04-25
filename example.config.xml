@@ -184,6 +184,33 @@
                 <description>sentence_transformers运行设备:cpu、cuda。仅用于查找，索引强制使用cuda</description>
             </property>
         </ST>
+        <RTST>
+            <property>
+                <name>Size</name>
+                <value>20</value>
+                <description>分块大小</description>
+            </property>
+            <property>
+                <name>Overlap</name>
+                <value>0</value>
+                <description>分块重叠长度</description>
+            </property>
+            <property>
+                <name>Count</name>
+                <value>3</value>
+                <description>知识库抽取数量</description>
+            </property>
+            <property>
+                <name>Model_Path</name>
+                <value>model/text2vec-large-chinese</value>
+                <description>向量模型存储路径</description>
+            </property>
+            <property>
+                <name>Device</name>
+                <value>cpu</value>
+                <description>faiss运行设备</description>
+            </property>
+        </RTST>
         <QDRANT>
             <property>
                 <name>Path</name>
