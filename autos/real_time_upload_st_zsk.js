@@ -1,1 +1,1 @@
-app.plugins.push({ name:app.$t("real_time_upload_st_zsk"), url: "static/st.html" })
+app.plugins.push({ icon:'upload', url: "static/st.html" })

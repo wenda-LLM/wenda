@@ -22,8 +22,7 @@ const messages = {
         feature_selection: "功能选择",
         re_generate: "重新生成",
         title: "标题",
-        content: "内容",
-        real_time_upload_st_zsk:"实时上传ST"
+        content: "内容"
     }
     ,
 

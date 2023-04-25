@@ -8,4 +8,4 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
 // @grant        none
 // ==/UserScript==
-app.plugins.push({ name: "讨论", url: "static/tl.html" })
+app.plugins.push({ icon:"chat-alert-outline", url: "static/tl.html" })

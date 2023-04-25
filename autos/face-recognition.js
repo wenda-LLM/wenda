@@ -17,7 +17,7 @@ if (navigator != null && (window.location.toString().toUpperCase().indexOf("HTTP
 //     video: true,
 //     audio: true
 // }
- tab_index = app.plugins.push({ name: "面部识别", url: "static/mp/index.html" })
+ tab_index = app.plugins.push({ icon: "face-recognition", url: "static/mp/index.html" })
 // navigator.mediaDevices.getUserMedia(constrains)
 //     .then(stream => {
 //         console.log(tab_index)

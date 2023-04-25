@@ -33,13 +33,13 @@
 		/* 滚动条的滑轨背景颜色 */
 
 		.v-navigation-drawer__content::-webkit-scrollbar-thumb {
-			background-color: rgba(0, 0, 0, 0.2);
+			background-color: #7a007c;
 		}
 
 		/* 滑块颜色 */
 
 		.v-navigation-drawer__content::-webkit-scrollbar-button {
-			background-color: #7a007c;
+			display: none;
 		}
 
 		/* 滑轨两头的监听按钮颜色 */
@@ -134,11 +134,11 @@
 		}
 
 		.user-avatar {
-			background-color: #0000a0dd;
+			background-color: #0000a0bb;
 		}
 
 		.bot-avatar {
-			background-color: #7a0099dd
+			background-color: #7a009999
 		}
 
 		.v-application p {
@@ -322,16 +322,29 @@
 							</template>
 						</v-slider>
 						<v-slider :min="0" :max="10" :step="1" v-model="history_limit" thumb-color="purple"
-							label="chat轮数限制" thumb-label><template v-slot:append>
+							label="对话轮数限制" thumb-label><template v-slot:append>
 								<v-text-field v-model="history_limit" class="mt-0 pt-0" type="number"
 									style="width: 60px">
 								</v-text-field>
 							</template></v-slider>
 					</v-form>
-					<v-switch hide-details color="purple" inset v-model="语音输入" label="语音输入"></v-switch>
-					<v-switch hide-details color="purple" inset v-model="语音播报" label="语音播报"></v-switch>
+					<v-row>
+						<v-col cols="12" sm="2">
+							<v-switch hide-details color="purple" inset v-model="语音输入">
+								<template v-slot:label> <v-icon text>
+										mdi-microphone
+									</v-icon> </template>
+							</v-switch>
+						</v-col>
+						<v-col cols="12" sm="2">
+							<v-switch hide-details color="purple" inset v-model="语音播报">
+								<template v-slot:label> <v-icon text>
+										mdi-headset
+									</v-icon> </template></v-switch>
 
-					https://github.com/l15y/wenda
+						</v-col>
+					</v-row>
+					
 				</v-tab-item>
 				<v-tab-item v-for="plugin in plugins" :key="plugin.name">
 					<iframe frameborder="0" :src="plugin.url" style="width: 100%;height: 100%;"></iframe>
@@ -343,7 +356,9 @@
 					{{ $t(item) }}
 				</v-tab>
 				<v-tab v-for="plugin in plugins" :key="plugin.name">
-					{{plugin.name}}
+					<v-icon text v-if="plugin.icon">
+						{{"mdi-"+plugin.icon}}
+					</v-icon>{{plugin.name}}
 				</v-tab>
 			</v-tabs>
 			<br><br><br>
