@@ -61,7 +61,7 @@ for root, dirs, files in os.walk(source_folder_path):
             f.close()
 print("2.预处理完成 2/10")
 loader = DirectoryLoader(target_folder, glob='**/*.txt')
-print("3.从文件夹 "+target_folder+" 载入所以txt数据... 3/10")
+print("3.从文件夹 "+target_folder+" 载入所有txt数据... 3/10")
 docs = loader.load()
 print("4.完成数据结构化处理... 4/10")
 
