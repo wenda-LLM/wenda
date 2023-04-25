@@ -32,13 +32,17 @@
 <body>
 	<div id="app" v-cloak>
 		<v-app>
+			<h1>RTST知识库在线管理</h1>
 			<v-row>
 				<v-col cols="12" sm="6">
 					<v-text-field v-model="title" outlined :label='$t("title")' clearable></v-text-field>
 				</v-col>
 				<v-col cols="12" sm="6">
-					<v-btn color="purple" dark size="x-large" @click="upload_st_zhishiku(title,content)">
+					<v-btn color="purple" dark size="x-large" @click="upload_rtst_zhishiku(title,content)">
 						{{$t("send")}}
+					</v-btn>
+					<v-btn color="purple" dark size="x-large" @click="save_rtst()">
+						{{$t("save")}}
 					</v-btn>
 				</v-col>
 				<v-textarea outlined :placeholder='$t("content")' v-model="content">
@@ -59,14 +63,21 @@
 			methods: {
 			}
 		})
-		upload_st_zhishiku = (title, txt) => {
-			fetch("/api/upload_st_zhishiku", {
+		upload_rtst_zhishiku = async (title, txt) => {
+			response = await fetch("/api/upload_rtst_zhishiku", {
 				method: 'post', body: JSON.stringify({
 					title: title,
 					txt: txt
 				}),
 				headers: { 'Content-Type': 'application/json' }
 			})
+			alert(await response.text())
+		}
+		save_rtst = async () => {
+			response = await fetch("/api/save_rtst_zhishiku", {
+				method: 'post'
+			})
+			alert(await response.text())
 		}
 	</script>
 </body>

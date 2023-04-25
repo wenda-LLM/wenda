@@ -7,7 +7,8 @@ from plugins.settings import settings
 from plugins.settings import error_helper 
 from plugins.settings import success_print 
 divider='\n'
-cunnrent_setting=settings.library.st
+
+cunnrent_setting=settings.library.rtst
 def get_doc_by_id(id):
     return vectorstore.docstore.search(vectorstore.index_to_docstore_id[id])
 
@@ -66,8 +67,48 @@ try:
                                                                             device=cunnrent_setting.Device)
 except Exception  as e:
     error_helper("embedding加载失败，请下载相应模型",r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
+    raise e
+vectorstore=None
 try:
     vectorstore = FAISS.load_local(
-        'vectorstore_path', embeddings=embeddings)
+        'memery', embeddings=embeddings)
 except Exception  as e:
-    error_helper("vectorstore加载失败，请先构建索引",r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
+    success_print("没有读取到RTST记忆区，将新建。这不会产生不良影响")
+    pass
+from langchain.docstore.document import Document
+from langchain.text_splitter import CharacterTextSplitter
+from bottle import route, response, request, static_file, hook
+import bottle
+@route('/api/upload_rtst_zhishiku', method=("POST","OPTIONS"))
+def upload_zhishiku():
+    try:
+        data = request.json
+        title=data.get("title")
+        data = re.sub(r'！', "！\n", data.get("txt"))
+        data = re.sub(r'。', "。\n", data)
+        data = re.sub(r'[\n\r]+', "\n", data)
+        docs=[Document(page_content=data, metadata={"source":title })]
+        print(docs)
+        
+        text_splitter = CharacterTextSplitter(
+            chunk_size=int(cunnrent_setting.Size), chunk_overlap=int(cunnrent_setting.Overlap), separator='\n')
+        doc_texts = text_splitter.split_documents(docs)
+
+        texts = [d.page_content for d in doc_texts]
+        metadatas = [d.metadata for d in doc_texts]
+        vectorstore_new = FAISS.from_texts(texts, embeddings, metadatas=metadatas)
+        global vectorstore
+        if vectorstore is None:
+            vectorstore=vectorstore_new
+        else:
+            vectorstore.merge_from(vectorstore_new)
+        return '成功'
+    except Exception as e:
+        raise e
+@route('/api/save_rtst_zhishiku', method=("POST","OPTIONS"))
+def upload_zhishiku():
+    try:
+        vectorstore.save_local('memery')
+        return "保存成功"
+    except Exception as e:
+        raise e
