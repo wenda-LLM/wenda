@@ -66,23 +66,11 @@ function find_RomanNumerals(str) {
             }
         }
         content = content.join("\n\n")
-        app.对话.push({ "role": "user", "content": Q })
-        app.对话.push({ "role": "AI", "content": content })
+        add_conversation("user",  Q )
+        add_conversation("AI",  content )
         console.log(content)
 
-        navigator.permissions.query({ name: "clipboard-write" }).then(result => {
-            if (result.state == "granted" || result.state == "prompt") {
-                navigator.clipboard.writeText(content)
-                    .then(() => {
-                        console.log('文本已经成功复制到剪切板');
-                    })
-                    .catch(err => {
-                    });
-            }
-            else {
-                console.log("当前无操作权限。请使用最新版本Chrome浏览器，并在浏览器高级设置-页面设置中允许访问剪切板");
-            }
-        })
+        copy(content)
 
     },
 })
@@ -111,23 +99,10 @@ function find_RomanNumerals(str) {
             }
         }
         content = content.join("\n\n")
-        app.对话.push({ "role": "user", "content": title })
-        app.对话.push({ "role": "AI", "content": content })
+        add_conversation("user",  Q )
+        add_conversation("AI",  content )
         console.log(content)
 
-        navigator.permissions.query({ name: "clipboard-write" }).then(result => {
-            if (result.state == "granted" || result.state == "prompt") {
-                navigator.clipboard.writeText(content.replace(/\n+/g,'\n'))
-                    .then(() => {
-                        console.log('文本已经成功复制到剪切板');
-                    })
-                    .catch(err => {
-                    });
-            }
-            else {
-                console.log("当前无操作权限。请使用最新版本Chrome浏览器，并在浏览器高级设置-页面设置中允许访问剪切板");
-            }
-        })
-
+        copy(content)
     },
 })

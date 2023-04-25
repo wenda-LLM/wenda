@@ -82,6 +82,10 @@
 			position: absolute !important;
 		}
 
+		.float button {
+			display: block !important;
+		}
+
 		header {
 			position: fixed !important;
 			top: 0;
@@ -211,10 +215,16 @@
 								</v-avatar>
 								<br>
 								<v-expand-transition>
-									<v-icon class="float" v-if="hover&&!loading" large text
-										@click="删除 (current_conversation)">
-										mdi-delete
-									</v-icon>
+									<div v-if="hover" class="float">
+										<v-icon v-if="!loading" large text
+											@click="delete_current_conversation(current_conversation)">
+											mdi-delete
+										</v-icon>
+
+										<v-icon large text @click="copy(current_conversation.content)">
+											mdi-content-copy
+										</v-icon>
+									</div>
 								</v-expand-transition>
 							</div>
 						</v-hover>
@@ -389,7 +399,7 @@
 			app.会话模式 = 功能
 			app.drawer = false
 		}
-		删除 = (item) => {
+		delete_current_conversation = (item) => {
 			app.chat.splice(Math.floor(app.chat.indexOf(item) / 2) * 2, 2)
 			保存()
 		}
@@ -585,6 +595,27 @@
 			recognition.lang = "zh-CN";
 			recognition.start()
 			app.语音输入中 = true
+		}
+
+		copy = (s) => {
+			navigator.permissions.query({ name: "clipboard-write" }).then(result => {
+				if (result.state == "granted" || result.state == "prompt") {
+					navigator.clipboard.writeText(s.replace(/\n+/g, '\n'))
+						.then(() => {
+							alert('文本已经成功复制到剪切板');
+							console.log('文本已经成功复制到剪切板');
+						})
+						.catch(err => {
+						});
+				}
+				else {
+					alert('当前无操作权限。请使用最新版本Chrome浏览器，并在浏览器高级设置-页面设置中允许访问剪切板');
+					console.log("当前无操作权限。请使用最新版本Chrome浏览器，并在浏览器高级设置-页面设置中允许访问剪切板");
+				}
+			})
+		}
+		add_conversation = (role, content) => {
+			app.对话.push({ "role": role, "content": content })
 		}
 	</script>
 	<script src="api/llm"></script>
