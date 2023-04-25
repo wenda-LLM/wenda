@@ -22,12 +22,12 @@ const messages = {
         feature_selection: "功能选择",
         re_generate: "重新生成",
         title: "标题",
-        content: "内容"
+        content: "内容",
+        input_question:"输入问题"
     }
     ,
 
     'ja': {
-        wenda: 'ウェンダ',
         history: '履歴',
         send: '送信',
         abord: '中止',

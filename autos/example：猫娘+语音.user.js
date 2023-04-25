@@ -21,7 +21,7 @@
         lsdh(true)//打开历史对话
         let Q = app.问题
         app.max_length = 4096
-        app.会话模式 = { 名称: "常规模式", 描述: "输入问题", 问题: "" }
+        app.会话模式 = { 名称: "", 描述: "input_question", 问题: "" }
         await send(Q)
     },
 })
