@@ -448,7 +448,7 @@
 			let QA_history
 			if (app.history_on) {
 				QA_history = app.chat.concat()
-				if (app.history_limit != 0 && app.chat.length > app.history_limit) {
+				if (app.history_limit != 0 && app.chat.length > app.history_limit* 2) {
 					alert(`历史信息过长，将仅保留最后${app.history_limit}次chat记忆。setting为0不限制`)
 
 					QA_history = app.chat.slice(app.chat.length - app.history_limit * 2)
