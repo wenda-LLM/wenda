@@ -35,7 +35,7 @@
 			<h1>RTST知识库在线管理</h1>
 			<v-divider></v-divider><br>
 			<h2>当前知识库管理</h2>
-			<v-row>
+			<v-row><br>
 				上传或保存后，rtst默认知识库将切换为当前知识库
 				<v-col cols="12" sm="6">
 					<v-text-field v-model="memory_name" outlined :label='$t("memory_name")' clearable></v-text-field>
@@ -82,6 +82,10 @@
 		</v-app>
 	</div>
 	<script>
+		let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
+		genID = () => 'xxxxxxxxxxxx'.replace(/x/g, function () {
+			return chars[Math.random() * 62 | 0]
+		})
 		if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
 		app = new Vue({
 			el: '#app',
@@ -138,10 +142,6 @@
 			})
 			alert(await response.text())
 		}
-		let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
-		genID = () => 'xxxxxxxxxxxx'.replace(/x/g, function () {
-			return chars[Math.random() * 62 | 0]
-		})
 	</script>
 </body>
 
