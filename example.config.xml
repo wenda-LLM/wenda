@@ -71,7 +71,7 @@
                 <description>llama模型参数 暂时不用</description>
             </property>
         </LLAMA>
-        <LLAMA>
+        <CHATGLM>
             <property>
                 <name>Api_key</name>
                 <value></value>
@@ -82,7 +82,7 @@
                 <value></value>
                 <description>智谱AI开放平台public key</description>
             </property>
-        </LLAMA>
+        </CHATGLM>
     </Models>
     <Library>
         <property>

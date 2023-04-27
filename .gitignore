@@ -27,4 +27,4 @@ venv.bat
 views/plugins/00测试.js
 vectorstore_path*
 config.xml
-memory
+.history
