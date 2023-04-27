@@ -93,6 +93,7 @@
                 fess → fess搜索引擎
                 mix → 知识库融合,需设置参数
                 st → sentence_transformers,内测版本
+                rtst → 实时st
                 kg → 知识图谱,暂未启用
             </description>
         </property>
