@@ -2,15 +2,17 @@ from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
 import sentence_transformers
 import numpy as np
-import re
+import re,os
 from plugins.settings import settings
 from plugins.settings import error_helper 
 from plugins.settings import success_print 
 divider='\n'
 
+if not os.path.exists('memory'):
+    os.mkdir('memory')
 cunnrent_setting=settings.library.rtst
 def get_doc_by_id(id):
-    return vectorstore.docstore.search(vectorstore.index_to_docstore_id[id])
+    return vectorstores[memory_name].docstore.search(vectorstores[memory_name].index_to_docstore_id[id])
 
 def process_strings(A, C, B):
     # find the longest common suffix of A and prefix of B
@@ -44,12 +46,11 @@ def get_doc(id,score,step):
                     final_content=process_strings(final_content,divider,doc_after.page_content)
             except:
                 pass
-    return {'title': doc.metadata['source'],'content':re.sub(r'\n+', "\n", final_content)}
-
+    return {'title': doc.metadata['source'],'content':re.sub(r'\n+', "\n", final_content),"score":int(score)}
 def find(s,step = 0):
     try:
-        embedding = vectorstore.embedding_function(s)
-        scores, indices = vectorstore.index.search(np.array([embedding], dtype=np.float32), int(cunnrent_setting.Count))
+        embedding = get_vectorstore(memory_name).embedding_function(s)
+        scores, indices = vectorstores[memory_name].index.search(np.array([embedding], dtype=np.float32), int(cunnrent_setting.Count))
         docs = []
         for j, i in enumerate(indices[0]):
             if i == -1:
@@ -68,22 +69,29 @@ try:
 except Exception  as e:
     error_helper("embedding加载失败，请下载相应模型",r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
     raise e
-vectorstore=None
-try:
-    vectorstore = FAISS.load_local(
-        'memery', embeddings=embeddings)
-except Exception  as e:
-    success_print("没有读取到RTST记忆区，将新建。这不会产生不良影响")
-    pass
+vectorstores={}
+def get_vectorstore(memory_name):
+    try:
+        return vectorstores[memory_name]
+    except Exception  as e:
+        try:
+            vectorstores[memory_name] = FAISS.load_local(
+                'memory/'+memory_name, embeddings=embeddings)
+            return vectorstores[memory_name]
+        except Exception  as e:
+            success_print("没有读取到RTST记忆区，将新建。")
+    return None
 from langchain.docstore.document import Document
 from langchain.text_splitter import CharacterTextSplitter
 from bottle import route, response, request, static_file, hook
 import bottle
 @route('/api/upload_rtst_zhishiku', method=("POST","OPTIONS"))
 def upload_zhishiku():
+    global memory_name
     try:
         data = request.json
         title=data.get("title")
+        memory_name=data.get("memory_name")
         data = re.sub(r'！', "！\n", data.get("txt"))
         data = re.sub(r'。', "。\n", data)
         data = re.sub(r'[\n\r]+', "\n", data)
@@ -97,18 +105,34 @@ def upload_zhishiku():
         texts = [d.page_content for d in doc_texts]
         metadatas = [d.metadata for d in doc_texts]
         vectorstore_new = FAISS.from_texts(texts, embeddings, metadatas=metadatas)
-        global vectorstore
+        vectorstore=get_vectorstore(memory_name)
         if vectorstore is None:
-            vectorstore=vectorstore_new
+            vectorstores[memory_name]=vectorstore_new
         else:
-            vectorstore.merge_from(vectorstore_new)
+            vectorstores[memory_name].merge_from(vectorstore_new)
         return '成功'
     except Exception as e:
         raise e
 @route('/api/save_rtst_zhishiku', method=("POST","OPTIONS"))
-def upload_zhishiku():
+def save_zhishiku():
+    global memory_name
     try:
-        vectorstore.save_local('memery')
+        data = request.json
+        memory_name=data.get("memory_name")
+        vectorstores[memory_name].save_local('memory/'+memory_name)
         return "保存成功"
     except Exception as e:
         raise e
+import json
+@route('/api/find_rtst_in_memory', method=("POST","OPTIONS"))
+def api_find():
+    global memory_name
+    data = request.json
+    prompt = data.get('prompt')
+    step = data.get('step')
+    memory_name=data.get("memory_name")
+    if step is None:
+        step = int(settings.library.Step)
+    return json.dumps(find(prompt,int(step)))
+    
+memory_name=''

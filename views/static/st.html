@@ -33,6 +33,39 @@
 	<div id="app" v-cloak>
 		<v-app>
 			<h1>RTST知识库在线管理</h1>
+			<v-divider></v-divider><br>
+			<h2>当前知识库管理</h2>
+			<v-row>
+				上传或保存后，rtst默认知识库将切换为当前知识库
+				<v-col cols="12" sm="6">
+					<v-text-field v-model="memory_name" outlined :label='$t("memory_name")' clearable></v-text-field>
+				</v-col>
+				<v-col cols="12" sm="2"> <v-btn color="purple" dark size="x-large" @click="save_rtst()">
+						{{$t("save")}}
+					</v-btn>
+				</v-col>
+			</v-row>
+			<v-divider></v-divider><br>
+			<h2>测试查询</h2>
+			<v-row>
+				<v-col cols="12" sm="6">
+					<v-text-field v-model="test_zsk_prompt" outlined label="关键词" clearable></v-text-field>
+
+				</v-col>
+				<v-col cols="12" sm="6">
+					<v-text-field v-model="test_zsk_step" outlined label="上下文数量" clearable></v-text-field>
+				</v-col>
+			</v-row>
+			<v-btn color="purple" dark size="x-large"
+				@click="find_in_memory(test_zsk_prompt,test_zsk_step,memory_name)">
+				测试
+			</v-btn>
+			<v-data-table
+				:headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
+				:items="zhishiku" hide-default-footer></v-data-table>
+
+			<v-divider></v-divider><br>
+			<h2>测试上传</h2>
 			<v-row>
 				<v-col cols="12" sm="6">
 					<v-text-field v-model="title" outlined :label='$t("title")' clearable></v-text-field>
@@ -40,9 +73,6 @@
 				<v-col cols="12" sm="6">
 					<v-btn color="purple" dark size="x-large" @click="upload_rtst_zhishiku(title,content)">
 						{{$t("send")}}
-					</v-btn>
-					<v-btn color="purple" dark size="x-large" @click="save_rtst()">
-						{{$t("save")}}
 					</v-btn>
 				</v-col>
 				<v-textarea outlined :placeholder='$t("content")' v-model="content">
@@ -52,6 +82,7 @@
 		</v-app>
 	</div>
 	<script>
+		if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
 		app = new Vue({
 			el: '#app',
 			vuetify: new Vuetify(),
@@ -59,15 +90,39 @@
 			data: () => ({
 				content: '',
 				title: '',
+				memory_name: localStorage['wenda_rtst_ID'],
+				test_zsk_prompt: "",
+				test_zsk_step: 1,
+				zhishiku: [],
 			}),
 			methods: {
 			}
 		})
+
+		find_in_memory = async (s, step, memory_name) => {
+			response = await fetch("/api/find_rtst_in_memory", {
+				method: 'post',
+				body: JSON.stringify({
+					prompt: s,
+					step: step,
+					memory_name: app.memory_name
+				}),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+			let json = await response.json()
+			console.table(json)
+			app.zhishiku = json
+			return json
+		}
 		upload_rtst_zhishiku = async (title, txt) => {
 			response = await fetch("/api/upload_rtst_zhishiku", {
-				method: 'post', body: JSON.stringify({
+				method: 'post',
+				body: JSON.stringify({
 					title: title,
-					txt: txt
+					txt: txt,
+					memory_name: app.memory_name
 				}),
 				headers: { 'Content-Type': 'application/json' }
 			})
@@ -75,10 +130,18 @@
 		}
 		save_rtst = async () => {
 			response = await fetch("/api/save_rtst_zhishiku", {
-				method: 'post'
+				method: 'post',
+				body: JSON.stringify({
+					memory_name: app.memory_name
+				}),
+				headers: { 'Content-Type': 'application/json' }
 			})
 			alert(await response.text())
 		}
+		let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
+		genID = () => 'xxxxxxxxxxxx'.replace(/x/g, function () {
+			return chars[Math.random() * 62 | 0]
+		})
 	</script>
 </body>
 

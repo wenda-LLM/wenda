@@ -43,7 +43,7 @@ def get_doc(id,score,step):
                     final_content=process_strings(final_content,divider,doc_after.page_content)
             except:
                 pass
-    return {'title': doc.metadata['source'],'content':re.sub(r'\n+', "\n", final_content)}
+    return {'title': doc.metadata['source'],'content':re.sub(r'\n+', "\n", final_content),"score":int(score)}
 
 def find(s,step = 0):
     try:
