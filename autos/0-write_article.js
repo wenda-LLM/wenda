@@ -42,7 +42,6 @@ function find_RomanNumerals(str) {
     名称: "根据标题写论文",
     描述: "根据主题撰写内容翔实、有信服力的论文",
     问题: async () => {
-        zsk(true)
         lsdh(false)
         Q = app.问题
         app.max_length = 4096
