@@ -13,7 +13,7 @@ const messages = {
     'zh-CN': {
         wenda: '闻达',
         zhishiku: "知识库",
-        history: "历史",
+        history: "对话历史",
         send: "发送",
         abord: "中断",
         clear_history: "清除历史",

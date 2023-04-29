@@ -167,10 +167,6 @@
 						<v-list-item-content>
 							<v-list-item-title class="text-h6">
 								Auto
-								<v-btn color="#555" style="right: 1em;position: fixed;z-index: 1;" dark size="x-large"
-									@click="chat=[];保存()" :loading="loading">
-									{{$t("clear_history") }}
-								</v-btn>
 							</v-list-item-title>
 
 							<br>
@@ -193,10 +189,44 @@
 				<v-toolbar-title><a style="text-decoration: none;color: white;"
 						href="https://github.com/l15y/wenda">{{$t("wenda") }}</a></v-toolbar-title>
 				<v-spacer></v-spacer>
-				<v-switch hide-details color="purple" inset v-model="zhishiku_on" :label='$t("zhishiku")'></v-switch>
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<v-switch hide-details color="purple" inset v-model="history_on" :label='$t("history")'></v-switch>
 
+				<v-tooltip bottom>
+					<template v-slot:activator="{ on, attrs }">
+						<div v-bind="attrs" v-on="on">
+							<v-switch hide-details color="purple" inset v-model="zhishiku_on">
+								<template v-slot:label> <v-icon text>
+										mdi-book-open-variant
+									</v-icon> </template>
+							</v-switch>
+						</div>
+					</template>
+					<span>{{$t("zhishiku")}}</span>
+				</v-tooltip>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<v-tooltip bottom>
+					<template v-slot:activator="{ on, attrs }">
+						<div v-bind="attrs" v-on="on">
+							<v-switch hide-details color="purple" inset v-model="history_on">
+								<template v-slot:label> <v-icon text>
+										mdi-history
+									</v-icon> </template>
+							</v-switch>
+						</div>
+					</template>
+					<span>{{$t("history")}}</span>
+				</v-tooltip>
+
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<v-tooltip bottom>
+					<template v-slot:activator="{ on, attrs }">
+						<div v-bind="attrs" v-on="on">
+							<v-icon large text @click="chat=[];保存()">
+								mdi-delete-clock-outline
+							</v-icon>
+						</div>
+					</template>
+					<span>{{$t("clear_history")}}</span>
+				</v-tooltip>
 
 			</v-toolbar>
 
@@ -473,7 +503,7 @@
 						lsdh(true)
 						app.loading = true
 						app.chat = app.chat.slice(app.chat.length - 2)
-						app.chat[0].conent="提供本次对话中的关键信息。"
+						app.chat[0].conent = "提供本次对话中的关键信息。"
 						QA_history = app.chat.concat()
 					} else {
 						alert(`历史信息过长，将仅保留最后${app.history_limit}次chat记忆。setting为0不限制`)
