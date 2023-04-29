@@ -95,6 +95,7 @@ fess模式、bing模式均调用搜索引擎搜索获取答案。
 有以下几种方案：
 1.   rtst模式，sentence_transformers+faiss进行索引，支持预先构建索引和运行中构建。
 2.   bing模式，cn.bing搜索，仅国内可用
+2.   bingsite模式，cn.bing站内搜索，仅国内可用
 3.   fess模式，本地部署的[fess搜索](https://github.com/codelibs/fess)，并进行关键词提取
 4.   mix模式，融合
 ### rtst模式
@@ -109,7 +110,7 @@ Linux直接使用wenda环境执行```python plugins/buils_rtst_default_index.py`
 
 
 ### fess模式
-在本机使用默认端口安装fess后可直接运行。否则需修改`Fess_Host`的`127.0.0.1:8080`为相应值。[FESS安装教程](install_fess.md)
+在本机使用默认端口安装fess后可直接运行。否则需修改`config.xml`中`Fess_Host`的`127.0.0.1:8080`为相应值。[FESS安装教程](install_fess.md)
 ###  知识库调试
 ![](imgs/zsk-test.png)
 ![](imgs/zsk-glm.png)

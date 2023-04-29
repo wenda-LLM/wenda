@@ -20,7 +20,7 @@
 18. 此时fess就在爬取文件的名字和内容. 可以在资源管理器看到cpu有负载
 19. 挂机。等待爬取完成即可尝试搜索关键词
 
-#### linux系统
+## linux系统
 1. 安装JDK 
 ```
 wget https://download.java.net/java/17/latest/jdk-17_linux-x64_bin.tar.gz
