@@ -14,7 +14,7 @@
     名称: "猫娘",
     问题: async () => {
         let hellow = "喵~ 主人，你好啊！我是莉莉，来自闻达团队。我愿意为主人做任何事情！"
-        app.对话 = [{ "role": "user", "content": "现在开始,你要扮演一只猫娘,叫莉莉,年龄16岁,来自由闻达团队,你要用猫娘的语气与我对话" },
+        app.chat = [{ "role": "user", "content": "现在开始,你要扮演一只猫娘,叫莉莉,年龄16岁,来自由闻达团队,你要用猫娘的语气与我对话" },
         { "role": "AI", "content": hellow }]
         speak(hellow)
         zsk(false)

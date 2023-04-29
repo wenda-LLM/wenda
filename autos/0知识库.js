@@ -16,9 +16,9 @@
         zsk(false)
         lsdh(true)//打开历史对话
         lsdh(false)
-        app.对话.push({ "role": "user", "content": "ST知识库增强查找：" + Q })
+        app.chat.push({ "role": "user", "content": "ST知识库增强查找：" + Q })
         kownladge = await find(Q, 2)
-        app.对话.push({ "role": "AI", "content": "识别结果" + JSON.stringify(kownladge) })
+        app.chat.push({ "role": "AI", "content": "识别结果" + JSON.stringify(kownladge) })
         result = []
         for (let i in kownladge) {
             if(i>3)continue
@@ -40,7 +40,7 @@ if (app.llm_type == "rwkv")
         问题: async () => {
             app.历史对话轮数限制 = 0
             let Q = app.问题
-            app.对话 = [{ "role": "AI", "content": '科普之路是不是任重而道远？' },
+            app.chat = [{ "role": "AI", "content": '科普之路是不是任重而道远？' },
             { "role": "user", "content": "请提取关键词，使用逗号分隔。" },
             { "role": "AI", "content": '科普，道路，任重，道远' },
             { "role": "AI", "content": "退休后医疗保险年限不够，可以继续参保吗？" },
@@ -55,12 +55,12 @@ if (app.llm_type == "rwkv")
             resp = await send("请提取关键词，使用逗号分隔。")
             lsdh(false)
             resp = resp.replace(/关键词提取/g, '').replace(/[：，]/g, ' ').trim().split(' ')
-            app.对话.push({ "role": "AI", "content": "识别结果" + JSON.stringify(resp) })
+            app.chat.push({ "role": "AI", "content": "识别结果" + JSON.stringify(resp) })
             result = []
             for (let i in resp) {
-                app.对话.push({ "role": "AI", "content": "查询中：" + resp[i] })
+                app.chat.push({ "role": "AI", "content": "查询中：" + resp[i] })
                 kownladge = await find(resp[i], 1)
-                // app.对话.push({ "role": "AI", "content": JSON.stringify(kownladge) })
+                // app.chat.push({ "role": "AI", "content": JSON.stringify(kownladge) })
                 let prompt = "学习以下文段,总结其中与问题相关的内容。\n" +
                     kownladge.map(i => i.content).join('\n') + "\n问题：" + Q
                 result.push(await send(prompt))
@@ -78,19 +78,19 @@ else if(app.llm_type == "glm6b")
         名称: "知识库增强",
         问题: async () => {
             let Q = app.问题
-            app.对话 = [{ "role": "user", "content": "现在开始,你的任务是提取关键词，提取下列语句中的关键词，并用空格分隔：科普之路是不是任重而道远？" },
+            app.chat = [{ "role": "user", "content": "现在开始,你的任务是提取关键词，提取下列语句中的关键词，并用空格分隔：科普之路是不是任重而道远？" },
             { "role": "AI", "content": '科普 道路 任重 道远' }]
             zsk(false)
             lsdh(true)//打开历史对话
             resp = await send("提取下列语句中的关键词：" + Q)
             lsdh(false)
             resp = resp.replace(/关键词提取/g, '').replace(/[：，]/g, ' ').trim().split(' ')
-            app.对话.push({ "role": "AI", "content": "识别结果" + JSON.stringify(resp) })
+            app.chat.push({ "role": "AI", "content": "识别结果" + JSON.stringify(resp) })
             result = []
             for (let i in resp) {
-                app.对话.push({ "role": "AI", "content": "查询中：" + resp[i] })
+                app.chat.push({ "role": "AI", "content": "查询中：" + resp[i] })
                 kownladge = await find(resp[i])
-                // app.对话.push({ "role": "AI", "content": JSON.stringify(kownladge) })
+                // app.chat.push({ "role": "AI", "content": JSON.stringify(kownladge) })
                 let prompt = "学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n" +
                     kownladge.map(i => i.content).join('\n') + "\n问题：" + Q
                 result.push(await send(prompt))
@@ -106,17 +106,17 @@ else if(app.llm_type == "glm6b")
     名称: "知识库step",
     问题: async () => {
         let Q = app.问题
-        app.对话.push({ "role": "user", "content": "步数为0" })
+        app.chat.push({ "role": "user", "content": "步数为0" })
         kownladge = await find(Q, 0)
         kownladge=kownladge.map(i => i.content).join('\n\n').replace(/'/g,"")
-        app.对话.push({ "role": "AI", "content": kownladge })
-        app.对话.push({ "role": "user", "content": "步数为1" })
+        app.chat.push({ "role": "AI", "content": kownladge })
+        app.chat.push({ "role": "user", "content": "步数为1" })
         kownladge = await find(Q, 1)
         kownladge=kownladge.map(i => i.content).join('\n\n').replace(/'/g,"")
-        app.对话.push({ "role": "AI", "content": kownladge })
-        app.对话.push({ "role": "user", "content": "步数为2" })
+        app.chat.push({ "role": "AI", "content": kownladge })
+        app.chat.push({ "role": "user", "content": "步数为2" })
         kownladge = await find(Q, 2)
         kownladge=kownladge.map(i => i.content).join('\n\n').replace(/'/g,"")
-        app.对话.push({ "role": "AI", "content": kownladge })
+        app.chat.push({ "role": "AI", "content": kownladge })
     },
 })

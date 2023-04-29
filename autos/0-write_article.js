@@ -45,7 +45,7 @@ function find_RomanNumerals(str) {
         lsdh(false)
         Q = app.问题
         app.max_length = 4096
-        app.对话 = []
+        app.chat = []
         resp = (await send("根据以下主题，写一篇高度凝练且全面的论文提纲：" + Q, Q))
             .replace(/\n- /g, '\n1.')//兼容不同格式
             .split("\n")
@@ -79,7 +79,7 @@ function find_RomanNumerals(str) {
     问题: async () => {
         title = app.问题
         app.max_length = 4096
-        app.对话 = []
+        app.chat = []
         resp =title.split("\n")
         title=resp[0]
         content = [resp.join("\n\n"), "------------------------------正文------------------------------"]

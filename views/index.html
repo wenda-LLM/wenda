@@ -258,8 +258,8 @@
 								停止<br>输入
 							</v-btn>
 						</div>
-						<v-textarea autofocus hide-details no-resize rows="3" :loading="loading" :placeholder="$t(会话模式.描述)"
-							@keypress.enter="提交()" v-model="问题">
+						<v-textarea autofocus hide-details no-resize rows="3" :loading="loading"
+							:placeholder="$t(会话模式.描述)" @keypress.enter="提交()" v-model="问题">
 						</v-textarea>
 						<div>
 							<v-btn style="margin-bottom: 10px;margin-top: 0;" v-if="loading" color="purple" rounded="lg"
@@ -295,7 +295,8 @@
 					<v-btn color="purple" dark size="x-large" @click="find(test_zsk_prompt,test_zsk_step)">
 						测试
 					</v-btn>
-					<v-data-table :headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
+					<v-data-table
+						:headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
 						:items="zhishiku" hide-default-header hide-default-footer></v-data-table>
 
 				</v-tab-item>
@@ -321,12 +322,23 @@
 								</v-text-field>
 							</template>
 						</v-slider>
-						<v-slider :min="0" :max="10" :step="1" v-model="history_limit" thumb-color="purple"
-							label="对话轮数限制" thumb-label><template v-slot:append>
-								<v-text-field v-model="history_limit" class="mt-0 pt-0" type="number"
-									style="width: 60px">
-								</v-text-field>
-							</template></v-slider>
+						<v-row>
+							<v-col cols="12" sm="2">
+								<v-switch hide-details :label="$t('simplify_historical_information')" color="purple"
+									inset v-model="simplify_historical_information">
+								</v-switch>
+							</v-col>
+							<v-col cols="12" sm="10">
+								<v-slider :min="0" :max="10" :step="1" v-model="history_limit" thumb-color="purple"
+									label="对话轮数限制" thumb-label>
+									<template v-slot:append>
+										<v-text-field v-model="history_limit" class="mt-0 pt-0" type="number"
+											style="width: 60px">
+										</v-text-field>
+									</template>
+								</v-slider>
+							</v-col>
+						</v-row>
 					</v-form>
 					<v-row>
 						<v-col cols="12" sm="2">
@@ -344,7 +356,7 @@
 
 						</v-col>
 					</v-row>
-					
+
 				</v-tab-item>
 				<v-tab-item v-for="plugin in plugins" :key="plugin.name">
 					<iframe frameborder="0" :src="plugin.url" style="width: 100%;height: 100%;"></iframe>
@@ -383,6 +395,7 @@
 					问题: "",
 				},
 				plugins: [],
+				simplify_historical_information: true,
 				语音输入: false,
 				语音播报: false,
 				语音输入中: false,
@@ -447,11 +460,27 @@
 			app.loading = true
 			let QA_history
 			if (app.history_on) {
-				QA_history = app.chat.concat()
-				if (app.history_limit != 0 && app.chat.length > app.history_limit* 2) {
-					alert(`历史信息过长，将仅保留最后${app.history_limit}次chat记忆。setting为0不限制`)
-
-					QA_history = app.chat.slice(app.chat.length - app.history_limit * 2)
+				if (app.history_limit != 0 && (app.chat.length + 1) >= (app.history_limit * 2)) {
+					if (app.simplify_historical_information) {
+						alert(`历史信息过长，自动进行总结`)
+						let zdk_stste = app.zhishiku_on
+						zsk(false)
+						lsdh(false)
+						let prompt = "提取以下对话中的关键信息。\n" +
+							app.chat.map(i => (i.role == 'user' ? "Alice: " : "Bob: ") + i.content.replace(/\n/g, '')).join('\n')
+						await send(prompt)
+						zsk(zdk_stste)
+						lsdh(true)
+						app.loading = true
+						app.chat = app.chat.slice(app.chat.length - 2)
+						app.chat[0].conent="提供本次对话中的关键信息。"
+						QA_history = app.chat.concat()
+					} else {
+						alert(`历史信息过长，将仅保留最后${app.history_limit}次chat记忆。setting为0不限制`)
+						QA_history = app.chat.slice(app.chat.length - app.history_limit * 2)
+					}
+				} else {
+					QA_history = app.chat.concat()
 				}
 			}
 			else {
@@ -630,7 +659,7 @@
 			})
 		}
 		add_conversation = (role, content) => {
-			app.对话.push({ "role": role, "content": content })
+			app.chat.push({ "role": role, "content": content })
 		}
 	</script>
 	<script src="api/llm"></script>
