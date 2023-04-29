@@ -314,4 +314,7 @@ def load_zsk():
 thread_load_zsk = threading.Thread(target=load_zsk)
 thread_load_zsk.start()
 bottle.debug(True)
+
+import webbrowser
+webbrowser.open_new('http://127.0.0.1:'+str(settings.Port))
 bottle.run(server='paste', host="0.0.0.0", port=settings.Port, quiet=True)
