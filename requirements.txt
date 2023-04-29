@@ -6,6 +6,7 @@ transformers==4.26.1
 faiss-cpu
 sentence_transformers
 langchain
+pdfplumber
 InstructorEmbedding
 tiktoken
 nltk
