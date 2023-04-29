@@ -1,7 +1,1 @@
-sentence_transformers
-langchain
-InstructorEmbedding
-tiktoken
-nltk
-unstructured
 qdrant-client

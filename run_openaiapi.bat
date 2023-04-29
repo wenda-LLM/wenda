@@ -1,5 +1,5 @@
 @echo off
-call settings.bat
+call envirment.bat
 rem set OPENAI_API_KEY=123
 :a
 "%PYTHON%" wenda.py -t openai

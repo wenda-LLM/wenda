@@ -3,3 +3,13 @@ paste
 sqlalchemy
 sqlalchemy_utils
 transformers==4.26.1
+faiss-cpu
+sentence_transformers
+langchain
+InstructorEmbedding
+tiktoken
+nltk
+unstructured
+jieba
+numpy
+requests

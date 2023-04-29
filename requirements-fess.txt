@@ -1,4 +1,0 @@
-requests
-jieba
-numpy
-networkx

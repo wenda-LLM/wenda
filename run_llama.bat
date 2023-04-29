@@ -1,5 +1,5 @@
 @echo off
-call settings.bat
+call envirment.bat
 :a
 %PYTHON% wenda.py -t llama
 goto a

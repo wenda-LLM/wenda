@@ -1,5 +1,5 @@
 @echo off
-call settings.bat
+call envirment.bat
 :a
 %PYTHON% convert_rwkv.py
 pause
