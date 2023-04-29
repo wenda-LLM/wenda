@@ -1,6 +1,6 @@
 
 import argparse
-# import sentence_transformers
+import sentence_transformers
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import DirectoryLoader
 from langchain.vectorstores.faiss import FAISS
