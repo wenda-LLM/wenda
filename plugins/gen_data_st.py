@@ -75,17 +75,12 @@ for root, dirs, files in os.walk(source_folder_path):
                     data_list.append(page.extract_text())
                 data = "\n".join(data_list)
         else:
-            # 其他支持，这里是txt
-            try:
-                file_path = os.path.join(root, file)
-                with open('test1.txt', 'rb') as f:
-                    b = f.read()
-                    result = chardet.detect(b)
-                    data = b.decode(encoding=result['encoding'])
-            except:
-                file_path = os.path.join(root, file)
-                with open(file_path, "r", encoding='utf-8') as f:
-                    data = f.read()
+            # txt
+            file_path = os.path.join(root, file)
+            with open(file_path, 'rb') as f:
+                b = f.read()
+                result = chardet.detect(b)
+                data = b.decode(encoding=result['encoding'])
         data = re.sub(r'[\n\r]+', "", data)
         data = re.sub(r'！', "！\n", data)
         data = re.sub(r'：', "：\n", data)
