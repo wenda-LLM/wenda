@@ -8,6 +8,7 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.docstore.document import Document
 import pdfplumber
 import re
+import chardet
 import os
 import sys
 os.chdir(sys.path[0][:-8])
@@ -75,8 +76,10 @@ for root, dirs, files in os.walk(source_folder_path):
             # 其他支持，这里是txt
             try:
                 file_path = os.path.join(root, file)
-                with open(file_path, "r", encoding='utf-16') as f:
-                    data = f.read()
+                with open('test1.txt', 'rb') as f:
+                    b=f.read()
+                    result = chardet.detect(b)
+                    data = b.decode(encoding=result['encoding'])
             except:
                 file_path = os.path.join(root, file)
                 with open(file_path, "r", encoding='utf-8') as f:

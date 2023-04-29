@@ -14,19 +14,19 @@
         <property>
             <name>LLM_Type</name>
             <value>rwkv</value>
-            <description>LLM模型类型:glm6b、rwkv、llama、chatglm</description>
+            <description>LLM模型类型:glm6b、rwkv、llama</description>
         </property>
     </General>
     <Models>
         <RWKV>
             <property>
                 <name>Path</name>
-                <value>model/RWKV-4-Raven-7B-v10-Eng49%25-Chn50%25-Other1%25-20230420-ctx4096.pth</value>
+                <value>model/RWKV-4-Raven-7B-v10x.pth</value>
                 <description>rwkv模型位置</description>
             </property>
             <property>
                 <name>Strategy</name>
-                <value>cuda fp16i8 *18+</value>
+                <value>cuda fp16</value>
                 <description>rwkv模型参数</description>
             </property>
             <property>
@@ -38,7 +38,7 @@
         <GLM6B>
             <property>
                 <name>Path</name>
-                <value>model/chatglm-6b-int4</value>
+                <value>model/chatglm-6b-int8</value>
                 <description>glm模型位置</description>
             </property>
             <property>
@@ -71,29 +71,28 @@
                 <description>llama模型参数 暂时不用</description>
             </property>
         </LLAMA>
-        <CHATGLM>
+        <MOSS>
             <property>
-                <name>Api_key</name>
-                <value></value>
-                <description>智谱AI开放平台api key</description>
+                <name>Path</name>
+                <value>model/moss-moon-003-sft-plugin-int4</value>
+                <description>模型位置</description>
             </property>
             <property>
-                <name>Public_key</name>
+                <name>Strategy</name>
                 <value></value>
-                <description>智谱AI开放平台public key</description>
+                <description>模型参数 暂时不用</description>
             </property>
-        </CHATGLM>
+        </MOSS>
     </Models>
     <Library>
         <property>
             <name>Type</name>
-            <value>st</value>
+            <value>mix</value>
             <description>知识库类型:
                 bing → cn.bing搜索，仅国内可用
                 fess → fess搜索引擎
                 mix → 知识库融合,需设置参数
-                st → sentence_transformers,内测版本
-                rtst → 实时st
+                rtst → 支持实时生成的sentence_transformers,版本
                 kg → 知识图谱,暂未启用
             </description>
         </property>
@@ -103,11 +102,6 @@
             <description>知识库显示来源</description>
         </property>
         <property>
-            <name>Size</name>
-            <value>200</value>
-            <description>知识库最大长度</description>
-        </property>
-        <property>
             <name>Step</name>
             <value>2</value>
             <description>知识库默认上下文步长</description>
@@ -115,37 +109,27 @@
         <MIX>
             <property>
                 <name>Strategy</name>
-                <value>st:2 bing:5</value>
+                <value>rtst:2 bing:5</value>
                 <description>知识库融合参数</description>
             </property>
             <property>
                 <name>Count</name>
                 <value>5</value>
-                <description>知识库抽取数量</description>
+                <description>最大抽取数量</description>
             </property>
         </MIX>
         <BING>
             <property>
                 <name>Count</name>
                 <value>5</value>
-                <description>知识库抽取数量</description>
-            </property>
-            <property>
-                <name>Academic</name>
-                <value>True</value>
-                <description>是否使用必应学术</description>
-            </property>
-            <property>
-                <name>Searc_Site</name>
-                <value>www.12371.cn</value>
-                <description>cn.bing站内搜索网址: 共产党员网,留空不使用</description>
+                <description>最大抽取数量</description>
             </property>
         </BING>
         <FESS>
             <property>
                 <name>Count</name>
                 <value>1</value>
-                <description>知识库抽取数量</description>
+                <description>最大抽取数量</description>
             </property>
             <property>
                 <name>Fess_Host</name>
@@ -153,53 +137,11 @@
                 <description>Fess搜索引擎的部署地址</description>
             </property>
         </FESS>
-        <ST>
-            <property>
-                <name>Path</name>
-                <value>txt</value>
-                <description>知识库文本路径</description>
-            </property>
-            <property>
-                <name>Size</name>
-                <value>20</value>
-                <description>分块大小</description>
-            </property>
-            <property>
-                <name>Overlap</name>
-                <value>0</value>
-                <description>分块重叠长度</description>
-            </property>
-            <property>
-                <name>Count</name>
-                <value>5</value>
-                <description>知识库抽取数量</description>
-            </property>
-            <property>
-                <name>Model_Path</name>
-                <value>model/text2vec-large-chinese</value>
-                <description>向量模型存储路径</description>
-            </property>
-            <property>
-                <name>Device</name>
-                <value>cpu</value>
-                <description>sentence_transformers运行设备:cpu、cuda。仅用于查找，索引强制使用cuda</description>
-            </property>
-        </ST>
         <RTST>
-            <property>
-                <name>Size</name>
-                <value>20</value>
-                <description>分块大小</description>
-            </property>
-            <property>
-                <name>Overlap</name>
-                <value>0</value>
-                <description>分块重叠长度</description>
-            </property>
             <property>
                 <name>Count</name>
                 <value>3</value>
-                <description>知识库抽取数量</description>
+                <description>最大抽取数量</description>
             </property>
             <property>
                 <name>Model_Path</name>
@@ -243,7 +185,7 @@
             <property>
                 <name>Count</name>
                 <value>5</value>
-                <description>知识库抽取数量</description>
+                <description>最大抽取数量</description>
             </property>
             <property>
                 <name>Knowledge_Path</name>
