@@ -3,6 +3,7 @@ import argparse
 import sentence_transformers
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import DirectoryLoader
+from langchain.document_loaders import UnstructuredPDFLoader
 from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
 import re
@@ -39,32 +40,41 @@ print("1.预处理数据 1/10")
 for root, dirs, files in os.walk(source_folder_path):
     path_list = root.split(os.sep)
     for file in files:
-        try:
-            file_path = os.path.join(root, file)
-            with open(file_path, "r", encoding='utf-16') as f:
-                data = f.read()
-        except:
-            file_path = os.path.join(root, file)
-            with open(file_path, "r", encoding='utf-8') as f:
-                data = f.read()
-        data = re.sub(r'！', "！\n", data)
-        data = re.sub(r'：', "：\n", data)
-        data = re.sub(r'。', "。\n", data)
-        data = re.sub(r'[\n\r]+', "\n", data)
-        filename_prefix_list = [
-            item for item in path_list if item not in root_path_list]
-        file_name_prefix = '_'.join(x for x in filename_prefix_list if x)
-        cut_file_name = file_name_prefix + '_' + file if file_name_prefix else file
+        if file.__contains__(".pdf"):
+            file_path = os.path.join(root,file)
+            loader = UnstructuredPDFLoader(file_path)
+            load_data = loader.load()
+            data = load_data[0].page_content.replace(" ","")
+            data = data.replace("\u3000","")
+            cut_file_name = file.replace("pdf","txt")
+        else:
+            # 其他支持，这里是txt
+            try:
+                file_path = os.path.join(root, file)
+                with open(file_path, "r", encoding='utf-16') as f:
+                    data = f.read()
+            except:
+                file_path = os.path.join(root, file)
+                with open(file_path, "r", encoding='utf-8') as f:
+                    data = f.read()
+            data = re.sub(r'！', "！\n", data)
+            data = re.sub(r'：', "：\n", data)
+            data = re.sub(r'。', "。\n", data)
+            data = re.sub(r'[\n\r]+', "\n", data)
+            filename_prefix_list = [
+                item for item in path_list if item not in root_path_list]
+            file_name_prefix = '_'.join(x for x in filename_prefix_list if x)
+            cut_file_name = file_name_prefix + '_' + file if file_name_prefix else file
         cut_file_path = os.path.join(target_folder_path, cut_file_name)
         with open(cut_file_path, 'w', encoding='utf-8') as f:
             f.write(data)
-            f.close()
+            f.close() # with open 可以不用close
+
 print("2.预处理完成 2/10")
 loader = DirectoryLoader(target_folder, glob='**/*.txt')
 print("3.从文件夹 "+target_folder+" 载入所有txt数据... 3/10")
 docs = loader.load()
 print("4.完成数据结构化处理... 4/10")
-
 text_splitter = CharacterTextSplitter(
     chunk_size=int(settings.library.st.Size), chunk_overlap=int(settings.library.st.Overlap), separator='\n')
 print("5.构建分句器... 5/10")
