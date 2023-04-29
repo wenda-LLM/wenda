@@ -6,8 +6,7 @@ transformers==4.26.1
 faiss-cpu
 sentence_transformers
 langchain
-unstructured
-unstructured[local-inference]
+pdfplumber
 InstructorEmbedding
 tiktoken
 nltk

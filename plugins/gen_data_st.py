@@ -1,11 +1,11 @@
 
 import argparse
-import sentence_transformers
+# import sentence_transformers
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import DirectoryLoader
-from langchain.document_loaders import UnstructuredPDFLoader
 from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
+import pdfplumber
 import re
 import os
 import sys
@@ -42,10 +42,11 @@ for root, dirs, files in os.walk(source_folder_path):
     for file in files:
         if file.__contains__(".pdf"):
             file_path = os.path.join(root,file)
-            loader = UnstructuredPDFLoader(file_path)
-            load_data = loader.load()
-            data = load_data[0].page_content.replace(" ","")
-            data = data.replace("\u3000","")
+            with pdfplumber.open(file_path) as pdf:
+                data_list = []
+                for page in pdf.pages:
+                    data_list.append(page.extract_text())
+                data = "\n".join(data_list)
             cut_file_name = file.replace("pdf","txt")
         else:
             # 其他支持，这里是txt
