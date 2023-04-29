@@ -1,29 +1,29 @@
 # 闻达：一个大规模语言模型调用平台
 <!--ts-->
-* [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
-   * [简介](#简介)
-   * [安装部署](#安装部署)
-      * [懒人包](#懒人包)
-      * [自行安装](#自行安装)
-         * [1.安装库](#1安装库)
-         * [2.下载模型](#2下载模型)
-         * [3.参数设置](#3参数设置)
-   * [Auto](#auto)
-   * [知识库](#知识库)
-      * [st模式](#st模式)
-      * [fess模式](#fess模式)
-         * [win系统](#win系统)
-         * [linux系统](#linux系统)
-      * [调试工具](#调试工具)
-      * [使用](#使用)
-   * [模型配置](#模型配置)
-      * [chatGLM-6B](#chatglm-6b)
-      * [chatRWKV](#chatrwkv)
-         * [生成小说](#生成小说)
-         * [文字冒险游戏](#文字冒险游戏)
-      * [llama](#llama)
-* [基于本项目的二次开发](#基于本项目的二次开发)
-   * [<a href="https://github.com/AlanLee1996/wenda-webui">wenda-webui</a>](#wenda-webui)
+- [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
+  - [简介](#简介)
+  - [安装部署](#安装部署)
+    - [懒人包](#懒人包)
+    - [自行安装](#自行安装)
+      - [1.安装库](#1安装库)
+      - [2.下载模型](#2下载模型)
+      - [3.参数设置](#3参数设置)
+  - [Auto](#auto)
+  - [知识库](#知识库)
+    - [st模式](#st模式)
+    - [fess模式](#fess模式)
+      - [win系统](#win系统)
+      - [linux系统](#linux系统)
+    - [调试工具](#调试工具)
+    - [使用](#使用)
+  - [模型配置](#模型配置)
+    - [chatGLM-6B](#chatglm-6b)
+    - [chatRWKV](#chatrwkv)
+      - [生成小说](#生成小说)
+      - [文字冒险游戏](#文字冒险游戏)
+    - [llama](#llama)
+- [基于本项目的二次开发](#基于本项目的二次开发)
+  - [wenda-webui](#wenda-webui)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Fri Apr 28 08:27:53 UTC 2023 -->
@@ -31,7 +31,7 @@
 <!--te-->
 ## 简介
 一个LLM调用平台。旨在通过使用为小模型外挂知识库查找的方式，实现近似于大模型的生成能力。
-1. 目前支持模型：`chatGLM-6B`、`chatRWKV`、`chatYuan`、`llama系列`。
+1. 目前支持模型：`chatGLM-6B`、`chatRWKV`、`chatYuan`、`llama系列`以及openai的api和chatglm130b api。
 2. 知识库扩展模型能力
 3. 支持参数在线调整
 4. 支持`chatGLM-6B`、`chatRWKV`、`llama系列`流式输出和输出过程中中断
@@ -70,7 +70,7 @@
 #### 2.下载模型
 根据需要，下载对应模型。
 
-建议使用chatRWKV的RWKV-4-Raven-7B-v10，或chatGLM-6B。
+建议使用chatRWKV的RWKV-4-Raven-7B-v10x，或chatGLM-6B。
 
 #### 3.参数设置
 根据`config.xml`中说明，填写你的模型下载位置等信息
@@ -86,21 +86,18 @@
 ![](imgs/zsk1.jpg)
 ![](imgs/zsk2.jpg)
 
-fess模式、bing模式、bingxs模式、 bingsite模式均调用搜索引擎搜索获取答案。
+fess模式、bing模式均调用搜索引擎搜索获取答案。
 
 搜索后在回答之前插入提示信息，知识库的数据就被模型知道了。
 
 为防止爆显存，插入的数据不能太长，所以有字数限制。
 
-知识库在线模式：```pip install -r requirements-bing.txt```
-
-是有以下几种方案：
-1.   bing模式，cn.bing搜索，仅国内可用
-2.   bingxs模式，cn.bing学术搜索，仅国内可用
-3.   bingsite模式，bing站内搜索，需设置网址
-4.   st模式，sentence_transformers+faiss进行索引
+有以下几种方案：
+1.   st模式，sentence_transformers+faiss进行索引
+2.   bing模式，cn.bing搜索，仅国内可用
+3.   rtst模式，sentence_transformers+faiss进行索引。但构建方式为在线进行，支持多索引库切换
+4.   fess模式，本地部署的[fess搜索](https://github.com/codelibs/fess)，并进行关键词提取
 5.   mix模式，融合
-6.   fess模式，本地部署的[fess搜索](https://github.com/codelibs/fess)，并进行关键词提取
 ### st模式
 sentence_transformers+faiss进行索引、匹配，并连同上下文返回，相当于原先x模式升级版。
 
