@@ -109,7 +109,7 @@
         <MIX>
             <property>
                 <name>Strategy</name>
-                <value>rtst:2 bing:5</value>
+                <value>rtst:2 bingsite:2 bing:2</value>
                 <description>知识库融合参数</description>
             </property>
             <property>
@@ -125,6 +125,18 @@
                 <description>最大抽取数量</description>
             </property>
         </BING>
+        <BINGSITE>
+            <property>
+                <name>Count</name>
+                <value>5</value>
+                <description>最大抽取数量</description>
+            </property>
+            <property>
+                <name>site</name>
+                <value>www.12371.cn</value>
+                <description>搜索网站</description>
+            </property>
+        </BINGSITE>
         <FESS>
             <property>
                 <name>Count</name>

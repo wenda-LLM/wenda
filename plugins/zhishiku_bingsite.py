@@ -1,6 +1,7 @@
 import requests
 import re,os
-from plugins import settings
+from plugins.settings import settings
+cunnrent_setting=settings.library.bingsite
 session = requests.Session()
 # 正则提取摘要和链接
 title_pattern = re.compile('<a.target=..blank..target..(.*?)</a>')
@@ -13,8 +14,8 @@ headers = {
 proxies = {"http": None,"https": None,}
 
 
-def find(search_query):
-    url = 'https://cn.bing.com/search?q={}'.format(search_query)+" site:"+os.environ.get('site')
+def find(search_query,step):
+    url = 'https://cn.bing.com/search?q={}'.format(search_query)+" site:"+cunnrent_setting.site
     res = session.get(url, headers=headers, proxies=proxies)
     r = res.text
 
@@ -36,4 +37,4 @@ def find(search_query):
         tmp2 = re.sub('<[^<]+?>', '', tmp).replace('\n', '').strip()
         clear_title.append(tmp2)
     return [{'title': "["+clear_title[i]+"]("+link[i][1]+")", 'content':clear_brief[i]}
-            for i in range(min(settings.chunk_count, len(brief)))]
+            for i in range(min(int(cunnrent_setting.Count), len(brief)))]
