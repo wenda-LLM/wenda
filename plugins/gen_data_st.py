@@ -1,7 +1,4 @@
 
-from settings import success_print
-from settings import error_helper
-from settings import settings
 import argparse
 import sentence_transformers
 from langchain.text_splitter import CharacterTextSplitter
@@ -28,6 +25,9 @@ os.environ['wenda_'+'Port'] = str(args.Port)
 os.environ['wenda_'+'Logging'] = str(args.Logging)
 os.environ['wenda_'+'LLM_Type'] = str(args.LLM_Type)
 
+from settings import success_print
+from settings import error_helper
+from settings import settings
 source_folder = 'txt'
 source_folder_path = os.path.join(os.getcwd(), source_folder)
 
