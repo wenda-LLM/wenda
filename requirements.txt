@@ -13,3 +13,4 @@ unstructured
 jieba
 numpy
 requests
+cpm_kernels

@@ -209,7 +209,7 @@
             <property>
                 <name>Device</name>
                 <value>cpu</value>
-                <description>faiss运行设备</description>
+                <description>embedding运行设备</description>
             </property>
         </RTST>
         <QDRANT>
