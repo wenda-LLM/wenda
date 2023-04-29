@@ -17,7 +17,7 @@
 
 	<link href="/static/vuetify.min.css" rel="stylesheet">
 	<script src="/static/vue.js"></script>
-	<script src="https://unpkg.com/vue-i18n@8"></script>
+	<script src="/static/vue-i18n.js"></script>
 	<script src="/static/vuetify.min.js"></script>
 	<script src="/static/markdown-it.min.js"></script>
 	<script src="/static/strings.js"></script>
@@ -38,7 +38,8 @@
 			<v-row><br>
 				上传或保存后，rtst默认知识库将切换为当前知识库
 				<v-col cols="12" sm="6">
-					<v-text-field v-model="memory_name" outlined :label='$t("memory_name")' clearable></v-text-field>
+					<v-combobox v-model="memory_name" :items="['default',localStorage['wenda_rtst_ID']]"
+						:label='$t("memory_name")'></v-combobox>
 				</v-col>
 				<v-col cols="12" sm="2"> <v-btn color="purple" dark size="x-large" @click="save_rtst()">
 						{{$t("save")}}
@@ -49,11 +50,11 @@
 			<h2>测试查询</h2>
 			<v-row>
 				<v-col cols="12" sm="6">
-					<v-text-field v-model="test_zsk_prompt" outlined label="关键词" clearable></v-text-field>
+					<v-text-field v-model="test_zsk_prompt"  label="关键词" clearable></v-text-field>
 
 				</v-col>
 				<v-col cols="12" sm="6">
-					<v-text-field v-model="test_zsk_step" outlined label="上下文数量" clearable></v-text-field>
+					<v-text-field v-model="test_zsk_step"  label="上下文数量" clearable></v-text-field>
 				</v-col>
 			</v-row>
 			<v-btn color="purple" dark size="x-large"
@@ -68,14 +69,14 @@
 			<h2>测试上传</h2>
 			<v-row>
 				<v-col cols="12" sm="6">
-					<v-text-field v-model="title" outlined :label='$t("title")' clearable></v-text-field>
+					<v-text-field v-model="title" :label='$t("title")' clearable></v-text-field>
 				</v-col>
 				<v-col cols="12" sm="6">
 					<v-btn color="purple" dark size="x-large" @click="upload_rtst_zhishiku(title,content)">
 						{{$t("send")}}
 					</v-btn>
 				</v-col>
-				<v-textarea outlined :placeholder='$t("content")' v-model="content">
+				<v-textarea :placeholder='$t("content")' v-model="content">
 				</v-textarea>
 			</v-row>
 

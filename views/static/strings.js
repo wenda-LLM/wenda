@@ -24,7 +24,8 @@ const messages = {
         title: "标题",
         content: "内容",
         input_question:"输入问题",
-        save:"保存"
+        save:"保存",
+        memory_name:"记忆区名称"
     }
     ,
 

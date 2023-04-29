@@ -11,7 +11,7 @@ divider='\n'
 if not os.path.exists('memory'):
     os.mkdir('memory')
 cunnrent_setting=settings.library.rtst
-def get_doc_by_id(id):
+def get_doc_by_id(id,memory_name):
     return vectorstores[memory_name].docstore.search(vectorstores[memory_name].index_to_docstore_id[id])
 
 def process_strings(A, C, B):
@@ -27,27 +27,27 @@ def process_strings(A, C, B):
     else:
         return A + B
 
-def get_doc(id,score,step):
-    doc = get_doc_by_id(id)
+def get_doc(id,score,step,memory_name):
+    doc = get_doc_by_id(id,memory_name)
     final_content=doc.page_content
     print("文段分数：",score,[doc.page_content])
     if step > 0:
         for i in range(1, step+1):
             try:
-                doc_before=get_doc_by_id(id-i)
+                doc_before=get_doc_by_id(id-i,memory_name)
                 if doc_before.metadata['source']==doc.metadata['source']:
                     final_content=process_strings(doc_before.page_content,divider,final_content)
                     # print("上文分数：",score,doc.page_content)
             except:
                 pass
             try:
-                doc_after=get_doc_by_id(id+i)
+                doc_after=get_doc_by_id(id+i,memory_name)
                 if doc_after.metadata['source']==doc.metadata['source']:
                     final_content=process_strings(final_content,divider,doc_after.page_content)
             except:
                 pass
     return {'title': doc.metadata['source'],'content':re.sub(r'\n+', "\n", final_content),"score":int(score)}
-def find(s,step = 0):
+def find(s,step = 0,memory_name="default"):
     try:
         embedding = get_vectorstore(memory_name).embedding_function(s)
         scores, indices = vectorstores[memory_name].index.search(np.array([embedding], dtype=np.float32), int(cunnrent_setting.Count))
@@ -56,7 +56,7 @@ def find(s,step = 0):
             if i == -1:
                 continue
             if scores[0][j]>700:continue
-            docs.append(get_doc(i,scores[0][j],step))
+            docs.append(get_doc(i,scores[0][j],step,memory_name))
 
         return docs
     except Exception as e:
@@ -79,7 +79,7 @@ def get_vectorstore(memory_name):
                 'memory/'+memory_name, embeddings=embeddings)
             return vectorstores[memory_name]
         except Exception  as e:
-            success_print("没有读取到RTST记忆区，将新建。")
+            success_print("没有读取到RTST记忆区%s，将新建。"%memory_name)
     return None
 from langchain.docstore.document import Document
 from langchain.text_splitter import CharacterTextSplitter
@@ -87,7 +87,6 @@ from bottle import route, response, request, static_file, hook
 import bottle
 @route('/api/upload_rtst_zhishiku', method=("POST","OPTIONS"))
 def upload_zhishiku():
-    global memory_name
     try:
         data = request.json
         title=data.get("title")
@@ -112,27 +111,24 @@ def upload_zhishiku():
             vectorstores[memory_name].merge_from(vectorstore_new)
         return '成功'
     except Exception as e:
-        raise e
+        return str(e)
 @route('/api/save_rtst_zhishiku', method=("POST","OPTIONS"))
 def save_zhishiku():
-    global memory_name
     try:
         data = request.json
         memory_name=data.get("memory_name")
         vectorstores[memory_name].save_local('memory/'+memory_name)
         return "保存成功"
     except Exception as e:
-        raise e
+        return str(e)
 import json
 @route('/api/find_rtst_in_memory', method=("POST","OPTIONS"))
 def api_find():
-    global memory_name
     data = request.json
     prompt = data.get('prompt')
     step = data.get('step')
     memory_name=data.get("memory_name")
     if step is None:
         step = int(settings.library.Step)
-    return json.dumps(find(prompt,int(step)))
+    return json.dumps(find(prompt,int(step),memory_name))
     
-memory_name=''

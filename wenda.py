@@ -41,6 +41,8 @@ mutex = threading.Lock()
 
 @route('/static/<path:path>')
 def staticjs(path='-'):
+    if path.endswith(".html"):
+        noCache()
     if path.endswith(".js"):
         return static_file(path, root="views/static/",mimetype ="application/javascript")
     return static_file(path, root="views/static/")
