@@ -49,6 +49,8 @@ def staticjs(path='-'):
 
 @route('/:name')
 def static(name='-'):
+    if name.endswith(".html"):
+        noCache()
     return static_file(name, root="views")
 
 from plugins.settings import xml2json,json2xml

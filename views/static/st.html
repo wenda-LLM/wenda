@@ -26,6 +26,11 @@
 			display: unset;
 			margin: 30px;
 		}
+
+		.v-sheet.v-card {
+			margin: 20px;
+			padding: 10px;
+		}
 	</style>
 </head>
 
@@ -33,53 +38,72 @@
 	<div id="app" v-cloak>
 		<v-app>
 			<h1>RTST知识库在线管理</h1>
-			<v-divider></v-divider><br>
-			<h2>当前知识库管理</h2>
-			<v-row><br>
-				上传或保存后，rtst默认知识库将切换为当前知识库
-				<v-col cols="12" sm="6">
-					<v-combobox v-model="memory_name" :items="['default',localStorage['wenda_rtst_ID']]"
-						:label='$t("memory_name")'></v-combobox>
-				</v-col>
-				<v-col cols="12" sm="2"> <v-btn color="purple" dark size="x-large" @click="save_rtst()">
-						{{$t("save")}}
+			<v-card elevation="2">
+				<v-card-title>当前知识库管理</v-card-title>
+				<v-divider></v-divider><br>
+				<v-card-text>
+					<v-row>
+						<v-col cols="12" sm="6">
+							<v-combobox v-model="memory_name" :items="['default',localStorage['wenda_rtst_ID']]"
+								:label='$t("memory_name")'></v-combobox>
+						</v-col>
+						<v-col cols="12" sm="2">
+						</v-col>
+					</v-row>
+				</v-card-text>
+				<v-card-actions>
+					<v-btn color="purple" dark size="x-large" @click="save_rtst()">
+						{{$t("save_to_disk")}}
 					</v-btn>
-				</v-col>
-			</v-row>
-			<v-divider></v-divider><br>
-			<h2>测试查询</h2>
-			<v-row>
-				<v-col cols="12" sm="6">
-					<v-text-field v-model="test_zsk_prompt"  label="关键词" clearable></v-text-field>
+				</v-card-actions>
+			</v-card>
 
-				</v-col>
-				<v-col cols="12" sm="6">
-					<v-text-field v-model="test_zsk_step"  label="上下文数量" clearable></v-text-field>
-				</v-col>
-			</v-row>
-			<v-btn color="purple" dark size="x-large"
-				@click="find_in_memory(test_zsk_prompt,test_zsk_step,memory_name)">
-				测试
-			</v-btn>
-			<v-data-table
-				:headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
-				:items="zhishiku" hide-default-footer></v-data-table>
 
-			<v-divider></v-divider><br>
-			<h2>测试上传</h2>
-			<v-row>
-				<v-col cols="12" sm="6">
-					<v-text-field v-model="title" :label='$t("title")' clearable></v-text-field>
-				</v-col>
-				<v-col cols="12" sm="6">
+			<v-card elevation="2">
+				<v-card-title>测试查询</v-card-title>
+				<v-divider></v-divider><br>
+				<v-card-text>
+					<v-row>
+						<v-col cols="12" sm="6">
+							<v-text-field v-model="test_zsk_prompt" label="关键词" clearable></v-text-field>
+
+						</v-col>
+						<v-col cols="12" sm="6">
+							<v-text-field v-model="test_zsk_step" label="上下文数量" clearable></v-text-field>
+						</v-col>
+					</v-row>
+
+					<v-data-table
+						:headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
+						:items="zhishiku" hide-default-footer></v-data-table>
+				</v-card-text>
+				<v-card-actions>
+					<v-btn color="purple" dark size="x-large"
+						@click="find_in_memory(test_zsk_prompt,test_zsk_step,memory_name)">
+						查询
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+			<v-card elevation="2">
+				<v-card-title>测试上传</v-card-title>
+				<v-divider></v-divider><br>
+				<v-card-text>
+					<v-row>
+						<v-col cols="12" sm="6">
+							<v-text-field v-model="title" :label='$t("title")' clearable></v-text-field>
+						</v-col>
+						<v-col cols="12" sm="6">
+						</v-col>
+						<v-textarea :placeholder='$t("content")' v-model="content">
+						</v-textarea>
+					</v-row>
+				</v-card-text>
+				<v-card-actions>
 					<v-btn color="purple" dark size="x-large" @click="upload_rtst_zhishiku(title,content)">
-						{{$t("send")}}
+						{{$t("upload")}}
 					</v-btn>
-				</v-col>
-				<v-textarea :placeholder='$t("content")' v-model="content">
-				</v-textarea>
-			</v-row>
-
+				</v-card-actions>
+			</v-card>
 		</v-app>
 	</div>
 	<script>

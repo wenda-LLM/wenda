@@ -20,3 +20,4 @@ set "PYTHON=python.exe "
 )ELSE (
 )
 :end
+pip install pdfplumber -i https://mirrors.aliyun.com/pypi/simple/
