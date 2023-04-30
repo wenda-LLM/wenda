@@ -87,12 +87,13 @@
     <Library>
         <property>
             <name>Type</name>
-            <value>mix</value>
+            <value>bing</value>
             <description>知识库类型:
                 bing → cn.bing搜索，仅国内可用
                 fess → fess搜索引擎
                 mix → 知识库融合,需设置参数
                 rtst → 支持实时生成的sentence_transformers,版本
+                remote → 调用远程闻达知识库，用于集群化部署
                 kg → 知识图谱,暂未启用
             </description>
         </property>
@@ -149,6 +150,13 @@
                 <description>Fess搜索引擎的部署地址</description>
             </property>
         </FESS>
+        <REMOTE>
+            <property>
+                <name>Host</name>
+                <value>http://127.0.0.1:17860/api/find</value>
+                <description>远程知识库地址地址</description>
+            </property>
+        </REMOTE>
         <RTST>
             <property>
                 <name>Count</name>
