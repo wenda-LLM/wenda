@@ -5,11 +5,13 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.docstore.document import Document
+import threading
 import pdfplumber
 import re
 import chardet
 import os
 import sys
+import time
 os.chdir(sys.path[0][:-8])
 
 parser = argparse.ArgumentParser(description='Wenda config')
@@ -27,6 +29,7 @@ os.environ['wenda_'+'LLM_Type'] = str(args.LLM_Type)
 from settings import success_print
 from settings import error_helper
 from settings import settings
+from settings import CounterLock
 source_folder = 'txt'
 source_folder_path = os.path.join(os.getcwd(), source_folder)
 
@@ -52,19 +55,30 @@ except Exception as e:
 
 success_print("Embedding 加载完成")
 
+embedding_lock=CounterLock()
+vectorstore_lock=threading.Lock()
+def clac_embedding(texts, embeddings, metadatas):
+    global vectorstore
+    with embedding_lock:
+        vectorstore_new = FAISS.from_texts(texts, embeddings, metadatas=metadatas)
+    with vectorstore_lock:
+        if vectorstore is None:
+            vectorstore = vectorstore_new
+        else:
+            vectorstore.merge_from(vectorstore_new)
+
 def make_index():
-    global vectorstore, docs
+    global docs
     text_splitter = CharacterTextSplitter(
         chunk_size=20, chunk_overlap=0, separator='\n')
     doc_texts = text_splitter.split_documents(docs)
     docs = []
     texts = [d.page_content for d in doc_texts]
     metadatas = [d.metadata for d in doc_texts]
-    vectorstore_new = FAISS.from_texts(texts, embeddings, metadatas=metadatas)
-    if vectorstore is None:
-        vectorstore = vectorstore_new
-    else:
-        vectorstore.merge_from(vectorstore_new)
+    thread = threading.Thread(target=clac_embedding, args=(texts, embeddings, metadatas))
+    thread.start()
+    while embedding_lock.get_waiting_threads()>1:
+        time.sleep(0.1)
 
 all_files=[]
 
@@ -104,7 +118,10 @@ for i in range(len(all_files)):
         length_of_read=0
 if len(docs) > 0:
     make_index()
-success_print("处理完成")
+with embedding_lock:
+    time.sleep(0.1)
+    with vectorstore_lock:
+        success_print("处理完成")
 try:
     vectorstore_old = FAISS.load_local(
         'memory/default', embeddings=embeddings)

@@ -21,6 +21,7 @@ os.environ['wenda_'+'LLM_Type'] = str(args.LLM_Type)
 from plugins.settings import settings 
 from plugins.settings import error_helper 
 from plugins.settings import success_print 
+from plugins.settings import CounterLock
 
 
 def load_LLM():
@@ -36,7 +37,7 @@ LLM = load_LLM()
 Logging=bool(settings.Logging == 'True')
 if Logging:
     from plugins.defineSQL import session_maker, 记录
-mutex = threading.Lock()
+mutex = CounterLock()
 
 
 @route('/static/<path:path>')
@@ -118,16 +119,12 @@ def index():
     return static_file("index.html", root="views")
 
 
-当前用户 = None
 
 @route('/api/chat_now', method=('GET',"OPTIONS"))
 def api_chat_now():
     allowCROS()
-    response.set_header("Pragma", "no-cache")
-    response.add_header("Cache-Control", "must-revalidate")
-    response.add_header("Cache-Control", "no-cache")
-    response.add_header("Cache-Control", "no-store")
-    return '当前状态：'+当前用户[0]
+    noCache()
+    return '当前排队数量：'+str(mutex.get_waiting_threads())
 
 
 @hook('before_request')
@@ -196,7 +193,6 @@ def api_chat_box():
     # print(request.environ)
     IP = request.environ.get(
         'HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
-    global 当前用户
     error = ""
     with mutex:
         yield "data: %s\n\n" %json.dumps({"response": (str(len(prompt))+'字正在计算')})
@@ -246,7 +242,6 @@ def api_chat_stream():
     # print(request.environ)
     IP = request.environ.get(
         'HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
-    global 当前用户
     error = ""
     footer = '///'
     yield str(len(prompt))+'字正在计算'
@@ -290,11 +285,8 @@ tokenizer = None
 
 
 def load_model():
-    global 当前用户
-    mutex.acquire()
-    当前用户 = ['模型加载中', '', '']
-    LLM.load_model()
-    mutex.release()
+    with mutex:
+        LLM.load_model()
     torch.cuda.empty_cache()
     success_print("模型加载完成")
 

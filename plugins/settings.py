@@ -105,7 +105,37 @@ def success_print(*s):
     print(settings.green,end="")
     print(*s)
     print(settings.white,end="")
-    
+
+
+import threading
+
+class CounterLock:
+
+    def __init__(self):
+        self.lock = threading.Lock()
+        self.waiting_threads = 0
+        self.waiting_threads_lock = threading.Lock()
+
+    def acquire(self):
+        with self.waiting_threads_lock:
+            self.waiting_threads += 1
+        acquired = self.lock.acquire()
+
+    def release(self):
+        self.lock.release()
+        with self.waiting_threads_lock:
+            self.waiting_threads -= 1
+
+    def get_waiting_threads(self):
+        with self.waiting_threads_lock:
+            return self.waiting_threads
+
+    def __enter__(self):  # 实现 __enter__() 方法，用于在 with 语句的开始获取锁
+        self.acquire()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):  # 实现 __exit__() 方法，用于在 with 语句的结束释放锁
+        self.release()
 
 import json
 import os
