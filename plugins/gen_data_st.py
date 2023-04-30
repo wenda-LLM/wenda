@@ -2,7 +2,6 @@
 import argparse
 import sentence_transformers
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.document_loaders import DirectoryLoader
 from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.docstore.document import Document
@@ -32,6 +31,11 @@ source_folder = 'txt'
 source_folder_path = os.path.join(os.getcwd(), source_folder)
 
 
+import logging
+logging.basicConfig()
+logger = logging.getLogger()
+logger.setLevel(logging.ERROR)
+
 root_path_list = source_folder_path.split(os.sep)
 docs = []
 vectorstore = None
@@ -46,6 +50,7 @@ except Exception as e:
                  r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
     raise e
 
+success_print("Embedding 加载完成")
 
 def make_index():
     global vectorstore, docs
@@ -61,43 +66,52 @@ def make_index():
     else:
         vectorstore.merge_from(vectorstore_new)
 
+all_files=[]
 
 for root, dirs, files in os.walk(source_folder_path):
-    path_list = root.split(os.sep)
     for file in files:
-        data = ""
-        title = ""
-        if file.endswith(".pdf"):
-            file_path = os.path.join(root, file)
-            with pdfplumber.open(file_path) as pdf:
-                data_list = []
-                for page in pdf.pages:
-                    data_list.append(page.extract_text())
-                data = "\n".join(data_list)
-        else:
-            # txt
-            file_path = os.path.join(root, file)
-            with open(file_path, 'rb') as f:
-                b = f.read()
-                result = chardet.detect(b)
-                data = b.decode(encoding=result['encoding'])
-        data = re.sub(r'[\n\r]+', "", data)
-        data = re.sub(r'！', "！\n", data)
-        data = re.sub(r'：', "：\n", data)
-        data = re.sub(r'。', "。\n", data)
-        print("读取", len(data), file)
-        docs.append(Document(page_content=data, metadata={"source": file}))
-        if len(docs) > 100:
-            make_index()
+        all_files.append([root, file])
+success_print("文件列表生成完成",len(all_files))
+length_of_read=0
+for i in range(len(all_files)):
+    root, file=all_files[i]
+    data = ""
+    title = ""
+    if file.endswith(".pdf"):
+        file_path = os.path.join(root, file)
+        with pdfplumber.open(file_path) as pdf:
+            data_list = []
+            for page in pdf.pages:
+                data_list.append(page.extract_text())
+            data = "\n".join(data_list)
+    else:
+        # txt
+        file_path = os.path.join(root, file)
+        with open(file_path, 'rb') as f:
+            b = f.read()
+            result = chardet.detect(b)
+        with open(file_path, 'r', encoding=result['encoding']) as f:
+            data = f.read()
+    data = re.sub(r'[\n\r]+', "", data)
+    data = re.sub(r'！', "！\n", data)
+    data = re.sub(r'：', "：\n", data)
+    data = re.sub(r'。', "。\n", data)
+    length_of_read+=len(data)
+    docs.append(Document(page_content=data, metadata={"source": file}))
+    if length_of_read > 1e5:
+        success_print("处理进度",int(100*i/len(all_files)),f"%\t({i}/{len(all_files)})")
+        make_index()
+        length_of_read=0
 if len(docs) > 0:
     make_index()
+success_print("处理完成")
 try:
     vectorstore_old = FAISS.load_local(
         'memory/default', embeddings=embeddings)
-    print("9.合并至已有索引。如不需合并请删除 memory/default 文件夹 9/10")
+    success_print("合并至已有索引。如不需合并请删除 memory/default 文件夹")
     vectorstore_old.merge_from(vectorstore)
     vectorstore_old.save_local('memory/default')
 except:
-    print("9.新建索引 9/10")
+    print("新建索引")
     vectorstore.save_local('memory/default')
-success_print("10.保存完成 10/10")
+success_print("保存完成")

@@ -3,8 +3,6 @@ import xml.etree.ElementTree as ET
 import re
 import json
 
-
-
 class obj:
   def __init__(self, dict1):
     self.__dict__.update(dict1)
@@ -103,9 +101,9 @@ def error_print(s):
     print(settings.red,end="")
     print(s)
     print(settings.white,end="")
-def success_print(s):
+def success_print(*s):
     print(settings.green,end="")
-    print(s)
+    print(*s)
     print(settings.white,end="")
     
 
