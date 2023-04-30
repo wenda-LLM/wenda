@@ -98,7 +98,7 @@ def upload_zhishiku():
         print(docs)
         
         text_splitter = CharacterTextSplitter(
-            chunk_size=int(cunnrent_setting.Size), chunk_overlap=int(cunnrent_setting.Overlap), separator='\n')
+            chunk_size=20, chunk_overlap=0, separator='\n')
         doc_texts = text_splitter.split_documents(docs)
 
         texts = [d.page_content for d in doc_texts]
