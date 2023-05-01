@@ -482,7 +482,12 @@
 		re_generate = () => {
 			let last_send = app.chat[app.chat.length - 2]
 			app.chat.splice(app.chat.length - 2, 2)
-			send(last_send.content, last_send.keyword)
+			if (last_send.keyword)
+				app.问题 = last_send.keyword
+			else
+				app.问题 = last_send.content
+
+			提交(last_send.content, last_send.keyword)
 		}
 		send = async (s, keyword = "") => {
 			if (keyword == "") keyword = s
