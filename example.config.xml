@@ -21,7 +21,7 @@
         <RWKV>
             <property>
                 <name>Path</name>
-                <value>model/RWKV-4-Raven-7B-v10x.pth</value>
+                <value>model/RWKV-4-Raven-7B-v11.pth</value>
                 <description>rwkv模型位置</description>
             </property>
             <property>
@@ -31,7 +31,7 @@
             </property>
             <property>
                 <name>HistoryMode</name>
-                <value>string</value>
+                <value>state</value>
                 <description>rwkv历史记录实现方式：state、string</description>
             </property>
         </RWKV>
@@ -87,7 +87,7 @@
     <Library>
         <property>
             <name>Type</name>
-            <value>bing</value>
+            <value>mix</value>
             <description>知识库类型:
                 bing → cn.bing搜索，仅国内可用
                 fess → fess搜索引擎
@@ -110,7 +110,7 @@
         <MIX>
             <property>
                 <name>Strategy</name>
-                <value>rtst:2 bingsite:2 bing:2</value>
+                <value>bing:3 bingsite:2 rtst:2 agents:0</value>
                 <description>知识库融合参数</description>
             </property>
             <property>
