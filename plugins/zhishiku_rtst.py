@@ -46,7 +46,7 @@ def get_doc(id,score,step,memory_name):
                     final_content=process_strings(final_content,divider,doc_after.page_content)
             except:
                 pass
-    return {'title': doc.metadata['source'],'content':re.sub(r'\n+', "\n", final_content),"score":int(score)}
+    return {'title': f"[{doc.metadata['source']}](/api/read_news/{doc.metadata['source']})",'content':re.sub(r'\n+', "\n", final_content),"score":int(score)}
 def find(s,step = 0,memory_name="default"):
     try:
         embedding = get_vectorstore(memory_name).embedding_function(s)
@@ -81,12 +81,14 @@ def get_vectorstore(memory_name):
         except Exception  as e:
             success_print("没有读取到RTST记忆区%s，将新建。"%memory_name)
     return None
+
 from langchain.docstore.document import Document
 from langchain.text_splitter import CharacterTextSplitter
 from bottle import route, response, request, static_file, hook
 import bottle
 @route('/api/upload_rtst_zhishiku', method=("POST","OPTIONS"))
 def upload_zhishiku():
+    allowCROS()
     try:
         data = request.json
         title=data.get("title")
@@ -114,6 +116,7 @@ def upload_zhishiku():
         return str(e)
 @route('/api/save_rtst_zhishiku', method=("POST","OPTIONS"))
 def save_zhishiku():
+    allowCROS()
     try:
         data = request.json
         memory_name=data.get("memory_name")
@@ -124,6 +127,7 @@ def save_zhishiku():
 import json
 @route('/api/find_rtst_in_memory', method=("POST","OPTIONS"))
 def api_find():
+    allowCROS()
     data = request.json
     prompt = data.get('prompt')
     step = data.get('step')
@@ -131,4 +135,31 @@ def api_find():
     if step is None:
         step = int(settings.library.Step)
     return json.dumps(find(prompt,int(step),memory_name))
-    
+
+@route('/api/save_news', method=("POST","OPTIONS"))
+def save_news():
+    allowCROS()
+    try:
+        data = request.json
+        if not data:
+            return 'no data'
+        title = data.get('title')
+        txt = data.get('txt')
+        cut_file = f"txt/{title}.txt"
+        with open(cut_file, 'w', encoding='utf-8') as f:
+            f.write(txt)
+            f.close()
+        return 'success'
+    except Exception as e:
+        return(e)
+
+@route('/api/read_news/:path', method=("GET","OPTIONS"))
+def read_news(path=""):
+    allowCROS()
+    return static_file(path, root="txt/")
+
+def allowCROS():
+    response.set_header('Access-Control-Allow-Origin', '*')
+    response.add_header('Access-Control-Allow-Methods', 'POST,OPTIONS')
+    response.add_header('Access-Control-Allow-Headers',
+                        'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token')

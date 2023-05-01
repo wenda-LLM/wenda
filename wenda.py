@@ -31,12 +31,12 @@ def load_LLM():
         return LLM
     except Exception as e:
         print("LLM模型加载失败，请阅读说明：https://github.com/l15y/wenda", e)
-
-
 LLM = load_LLM()
+
 Logging=bool(settings.Logging == 'True')
 if Logging:
     from plugins.defineSQL import session_maker, 记录
+
 if not hasattr(LLM,"Lock") :
     mutex = CounterLock()
 else:
@@ -138,23 +138,6 @@ def validate():
         request.environ['REQUEST_METHOD'] = HTTP_ACCESS_CONTROL_REQUEST_METHOD
 
 
-@route('/api/save_news', method=("POST","OPTIONS"))
-def api_chat_stream():
-    allowCROS()
-    try:
-        data = request.json
-        if not data:
-            return '0'
-        title = data.get('title')
-        txt = data.get('txt')
-        cut_file = f"txt/{title}.txt"
-        with open(cut_file, 'w', encoding='utf-8') as f:
-            f.write(txt)
-            f.close()
-        return '1'
-    except Exception as e:
-        print(e)
-    return '2'
 
 
 @route('/api/find', method=("POST","OPTIONS"))
@@ -310,4 +293,15 @@ bottle.debug(True)
 
 import webbrowser
 webbrowser.open_new('http://127.0.0.1:'+str(settings.Port))
+
+import functools
+def pathinfo_adjust_wrapper(func):
+    # A wrapper for _handle() method
+    @functools.wraps(func)
+    def _(s,environ):
+        environ["PATH_INFO"] = environ["PATH_INFO"].encode("utf8").decode("latin1")
+        return func(s,environ)
+    return _
+bottle.Bottle._handle = pathinfo_adjust_wrapper(bottle.Bottle._handle)#修复bottle在处理utf8 url时的bug
+
 bottle.run(server='paste', host="0.0.0.0", port=settings.Port, quiet=True)
