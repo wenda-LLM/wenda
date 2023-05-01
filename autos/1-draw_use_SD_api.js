@@ -14,8 +14,9 @@
     名称: "draw_use_SD_api",
     问题: async () => {
         lsdh(false)
-        Q = app.问题
-        app.问题=""
+        zsk(false)
+        
+        Q = await send("使用英语简要描述以下场景：" + app.问题 )
         app.loading=true
         add_conversation("user",  Q)
         response = await fetch("/api/sd_agent", {
