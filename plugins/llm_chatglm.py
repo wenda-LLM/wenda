@@ -1,5 +1,5 @@
 from wudao.api_request import executeEngine, getToken
-from plugins.settings import settings
+from plugins.common import settings
 import os
 # 能力类型
 ability_type = "chatGLM"
@@ -44,9 +44,21 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku
             yield resp['msg']
     else:
         yield "获取token失败，请检查 API_KEY 和 PUBLIC_KEY"
-    
-
 
 
 def load_model():
      pass
+
+
+class Lock:
+    def __init__(self):
+        pass
+
+    def get_waiting_threads(self):
+        return 0
+
+    def __enter__(self): 
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb): 
+        pass

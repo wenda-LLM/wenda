@@ -3,9 +3,9 @@ from langchain.embeddings import HuggingFaceEmbeddings
 import sentence_transformers
 import numpy as np
 import re,os
-from plugins.settings import settings
-from plugins.settings import error_helper 
-from plugins.settings import success_print 
+from plugins.common import settings
+from plugins.common import error_helper 
+from plugins.common import success_print 
 divider='\n'
 
 if not os.path.exists('memory'):

@@ -4,7 +4,7 @@ from langchain.docstore.document import Document
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Filter
 from typing import Dict,  List, Optional, Tuple, Union
-from plugins.settings import settings
+from plugins.common import settings
 MetadataFilter = Dict[str, Union[str, int, bool]]
 COLLECTION_NAME = settings.library.qdrant.Collection
 

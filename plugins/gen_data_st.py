@@ -26,10 +26,10 @@ os.environ['wenda_'+'Port'] = str(args.Port)
 os.environ['wenda_'+'Logging'] = str(args.Logging)
 os.environ['wenda_'+'LLM_Type'] = str(args.LLM_Type)
 
-from settings import success_print
-from settings import error_helper
-from settings import settings
-from settings import CounterLock
+from common import success_print
+from common import error_helper
+from common import settings
+from common import CounterLock
 source_folder = 'txt'
 source_folder_path = os.path.join(os.getcwd(), source_folder)
 

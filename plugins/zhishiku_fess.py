@@ -1,6 +1,6 @@
 import requests
 import re,json
-from plugins.settings import settings
+from plugins.common import settings
 # encoding=utf-8
 import jieba
 with open("plugins/stopwords_txt",encoding = "utf-8") as f:

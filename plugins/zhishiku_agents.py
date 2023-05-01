@@ -1,7 +1,7 @@
 import requests
 from bottle import route, response, request, static_file, hook
 import bottle
-from plugins.settings import settings
+from plugins.common import settings
 @route('/api/sd_agent', method=("POST","OPTIONS"))
 def api_find():
     url = "http://127.0.0.1:786"

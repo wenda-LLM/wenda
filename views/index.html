@@ -590,7 +590,9 @@
 				response = await fetch("/api/chat_now", {
 					method: 'get'
 				})
-				alert(await response.text())
+				let j = JSON.parse(await response.text())
+				if (j.queue_length != 0)
+					alert(j.queue_length)
 				setTimeout(read_now, 3000)
 			}
 		}

@@ -110,7 +110,6 @@ def success_print(*s):
 import threading
 
 class CounterLock:
-
     def __init__(self):
         self.lock = threading.Lock()
         self.waiting_threads = 0

@@ -30,3 +30,16 @@ chatCompletion = None
 def load_model():
     openai.api_key = os.getenv("OPENAI_API_KEY")
     openai.api_base = "https://gpt.lucent.blog/v1"
+
+class Lock:
+    def __init__(self):
+        pass
+
+    def get_waiting_threads(self):
+        return 0
+
+    def __enter__(self): 
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb): 
+        pass

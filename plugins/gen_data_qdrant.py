@@ -24,7 +24,7 @@ os.environ['wenda_'+'Port'] = str(args.Port)
 os.environ['wenda_'+'Logging'] = str(args.Logging)
 os.environ['wenda_'+'LLM_Type'] = str(args.LLM_Type) 
 
-from settings import settings
+from common import settings
 source_folder = settings.library.qdrant.Path
 target_folder = source_folder + '_out'
 source_folder_path = os.path.join(os.getcwd(), source_folder)

@@ -1,6 +1,6 @@
 import requests
 import re,os
-from plugins.settings import settings
+from plugins.common import settings
 cunnrent_setting=settings.library.bingsite
 session = requests.Session()
 # 正则提取摘要和链接

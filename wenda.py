@@ -18,10 +18,10 @@ os.environ['wenda_'+'Port'] = str(args.Port)
 os.environ['wenda_'+'Logging'] = str(args.Logging)
 os.environ['wenda_'+'LLM_Type'] = str(args.LLM_Type) 
 
-from plugins.settings import settings 
-from plugins.settings import error_helper 
-from plugins.settings import success_print 
-from plugins.settings import CounterLock
+from plugins.common import settings 
+from plugins.common import error_helper 
+from plugins.common import success_print 
+from plugins.common import CounterLock
 
 
 def load_LLM():
@@ -37,8 +37,10 @@ LLM = load_LLM()
 Logging=bool(settings.Logging == 'True')
 if Logging:
     from plugins.defineSQL import session_maker, 记录
-mutex = CounterLock()
-
+if not hasattr(LLM,"Lock") :
+    mutex = CounterLock()
+else:
+    mutex = LLM.Lock()
 
 @route('/static/<path:path>')
 def staticjs(path='-'):
@@ -54,7 +56,7 @@ def static(name='-'):
         noCache()
     return static_file(name, root="views")
 
-from plugins.settings import xml2json,json2xml
+from plugins.common import xml2json,json2xml
 import json
 @route('/api/readconfig', method=("POST","OPTIONS"))
 def readconfig():
@@ -124,7 +126,7 @@ def index():
 def api_chat_now():
     allowCROS()
     noCache()
-    return '当前排队数量：'+str(mutex.get_waiting_threads())
+    return {'queue_length':mutex.get_waiting_threads()}
 
 
 @hook('before_request')

@@ -1,5 +1,5 @@
-from plugins.settings import settings
-from plugins.settings import error_print 
+from plugins.common import settings
+from plugins.common import error_print 
 zsk=[]
 input_list = settings.library.mix.Strategy.split(" ")
 for item in input_list:

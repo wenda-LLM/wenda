@@ -1,4 +1,4 @@
-from plugins.settings import settings
+from plugins.common import settings
 import re
 
 def chat_init(history):
@@ -48,7 +48,7 @@ def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
             ctx = f"\n\n{user}{interface} {prompt}\n\n{bot}{interface}"
     if settings.HistoryMode=='string':
         ctx=history+ctx
-    print(ctx)
+    # print(ctx)
     yield str(len(ctx))+'字正在计算'
     all_tokens = []
     out_last = 0

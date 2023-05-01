@@ -1,5 +1,5 @@
 
-from plugins.settings import settings
+from plugins.common import settings
 import requests
 import json
 session = requests.Session()
