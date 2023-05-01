@@ -220,7 +220,7 @@
 				<v-tooltip bottom>
 					<template v-slot:activator="{ on, attrs }">
 						<div v-bind="attrs" v-on="on">
-							<v-icon large text @click="chat=[];保存()">
+							<v-icon large text @click="chat=[];save_history()">
 								mdi-delete-clock-outline
 							</v-icon>
 						</div>
@@ -459,9 +459,9 @@
 		}
 		delete_current_conversation = (item) => {
 			app.chat.splice(Math.floor(app.chat.indexOf(item) / 2) * 2, 2)
-			保存()
+			save_history()
 		}
-		保存 = () => {
+		save_history = () => {
 			localStorage["wenda_chat_history"] = JSON.stringify(app.chat)
 		}
 		中断 = () => {
@@ -572,7 +572,7 @@
 
 			app.loading = false
 			已排队到 = true
-			保存()
+			save_history()
 			if (is_abord)
 				throw new MyException("已中断")
 			return 当前会话.content
@@ -610,7 +610,7 @@
 			// return conent
 			conent = String(conent)
 			let md = new markdownit();
-			md.disable(['link', 'image'])
+			// md.disable(['link', 'image'])
 			return md.render(conent).replace(/<a /g, '<a target="_blank"')
 		}
 		zsk = (b) => {

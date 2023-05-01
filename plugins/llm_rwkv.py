@@ -49,6 +49,7 @@ def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
     if settings.HistoryMode=='string':
         ctx=history+ctx
     print(ctx)
+    yield str(len(ctx))+'字正在计算'
     all_tokens = []
     out_last = 0
     response = ''

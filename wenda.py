@@ -244,7 +244,7 @@ def api_chat_stream():
         'HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
     error = ""
     footer = '///'
-    yield str(len(prompt))+'字正在计算'
+    
     if use_zhishiku:
         # print(keyword)
         response_d = zhishiku.find(keyword,int(settings.library.Step))
@@ -254,9 +254,6 @@ def api_chat_stream():
         if bool(settings.library.Show_Soucre == 'True'):
             footer = "\n### 来源：\n"+('\n').join(output_sources)+'///'
     with mutex:
-
-        yield footer
-
         print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
         try:
             for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=use_zhishiku):
