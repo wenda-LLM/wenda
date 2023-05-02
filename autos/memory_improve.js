@@ -21,11 +21,11 @@ if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
         Q = app.问题
         memory = await find_memory(Q)
         if (memory.length > 0) {
-            A = await send(app.问题 + memory.map(i => i.title+i.content).join('\n'))
+            A = await send(app.问题 + memory.map(i => `[在第${i.title}轮的回忆：${i.content}]`).join('\n'))
         } else {
             A = await send(app.问题)
         }
-        add_memory("Bob: " + Q + " Alice: " + A)
+        add_memory( Q )//+ " Alice: " + A
     },
 })
 find_memory = async (s) => {
@@ -44,14 +44,16 @@ find_memory = async (s) => {
     console.table(json)
     return json
 }
+记忆轮次=1
 add_memory = async (txt) => {
     response = await fetch("/api/upload_rtst_zhishiku", {
         method: 'post',
         body: JSON.stringify({
-            title:   Date.now()+"记忆：",
+            title:  ""+ 记忆轮次,
             txt: txt,
             memory_name: localStorage['wenda_rtst_ID']
         }),
         headers: { 'Content-Type': 'application/json' }
     })
+    记忆轮次+=1
 }
