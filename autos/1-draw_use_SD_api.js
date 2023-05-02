@@ -15,10 +15,10 @@
     问题: async () => {
         lsdh(false)
         zsk(false)
-        
-        Q = await send("使用英语简要描述以下场景：" + app.问题 )
-        app.loading=true
-        add_conversation("user",  Q)
+
+        Q = await send("使用英语简要描述以下场景：" + app.问题)
+        app.loading = true
+        add_conversation("user", Q)
         response = await fetch("/api/sd_agent", {
             method: 'post',
             body: JSON.stringify({
@@ -31,7 +31,7 @@
             }
         })
         let json = await response.json()
-        app.loading=false
+        app.loading = false
         add_conversation("AI", '![](data:image/png;base64,' + json.images[0] + ")")
         save_history()
     },
