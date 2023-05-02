@@ -402,13 +402,25 @@
 			</v-tabs-items>
 			<v-tabs v-model="tab" dark>
 				<v-tabs-slider color="purple"></v-tabs-slider>
-				<v-tab v-for="item in tabs" :key="item">
-					{{ $t(item) }}
+				<v-tab key="chat">
+					<v-icon text>
+						mdi-tooltip-edit-outline
+					</v-icon>
+				</v-tab>
+				<v-tab key="zhishiku">
+					<v-icon text>
+						mdi-book-search-outline
+					</v-icon>
 				</v-tab>
 				<v-tab v-for="plugin in plugins" :key="plugin.name">
 					<v-icon text v-if="plugin.icon">
 						{{"mdi-"+plugin.icon}}
 					</v-icon>{{plugin.name}}
+				</v-tab>
+				<v-tab key="setting">
+					<v-icon text>
+						mdi-cog
+					</v-icon>
 				</v-tab>
 			</v-tabs>
 			<br><br><br>
