@@ -35,3 +35,38 @@ def find(search_query,step = 0):
         clear_title.append(tmp2)
     return [{'title': "["+clear_title[i]+"]("+"https://weixin.sogou.com"+link[i]+")", 'content':clear_brief[i]}
             for i in range( len(brief))]
+
+from bottle import route, response, request, static_file, hook
+from bs4 import BeautifulSoup
+
+def allowCROS():
+    response.set_header('Access-Control-Allow-Origin', '*')
+    response.add_header('Access-Control-Allow-Methods', 'POST,OPTIONS')
+    response.add_header('Access-Control-Allow-Headers',
+                        'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token')
+@route('/api/read_sgwx', method=("POST","OPTIONS"))
+def read_news():
+    allowCROS()
+    #获取真实地址
+    try:
+        data = request.json
+        url=data.get("url")
+        r = session.get(url, headers=headers, proxies=proxies)
+        url=''.join(re.findall("url.+'(.*?)'", r.text))
+    except:
+        return "读取真实URL失败"
+    if url=='':
+        return "读取真实URL失败"
+    #读取公众号内容
+    try:
+        r = session.get(url, headers=headers, proxies=proxies)
+        soup = BeautifulSoup(r.text, 'html.parser')
+        text = str(soup.find(class_='rich_media_wrp'))
+        text = re.sub(r'[\r\n]','',text)
+        text = re.sub(r'<script.+/script>','',text)
+        text = re.sub(r'(<[^>]+>|\s)','',text)
+        return text
+    except:
+        return "读取公众号失败"
+
+
