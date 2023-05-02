@@ -331,7 +331,11 @@
 					</v-btn>
 					<v-data-table
 						:headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
-						:items="zhishiku" hide-default-header hide-default-footer></v-data-table>
+						:items="zhishiku" hide-default-header hide-default-footer>
+						<template v-slot:item.title="{ item }" >
+							<p v-html="md2html(item.title)"></p>
+						  </template>
+					</v-data-table>
 
 				</v-tab-item>
 				<v-tab-item key="setting">
