@@ -26,7 +26,7 @@ def process_strings(A, C, B):
     # otherwise, just return A + B
     else:
         return A + B
-
+    
 def get_doc(id,score,step,memory_name):
     doc = get_doc_by_id(id,memory_name)
     final_content=doc.page_content
@@ -46,7 +46,11 @@ def get_doc(id,score,step,memory_name):
                     final_content=process_strings(final_content,divider,doc_after.page_content)
             except:
                 pass
-    return {'title': f"[{doc.metadata['source']}](/api/read_news/{doc.metadata['source']})",'content':re.sub(r'\n+', "\n", final_content),"score":int(score)}
+    if doc.metadata['source'].endswith(".pdf") or doc.metadata['source'].endswith(".txt"):
+        title=f"[{doc.metadata['source']}](/api/read_news/{doc.metadata['source']})"
+    else:
+        title=doc.metadata['source']
+    return {'title': title,'content':re.sub(r'\n+', "\n", final_content),"score":int(score)}
 def find(s,step = 0,memory_name="default"):
     try:
         embedding = get_vectorstore(memory_name).embedding_function(s)
@@ -55,7 +59,7 @@ def find(s,step = 0,memory_name="default"):
         for j, i in enumerate(indices[0]):
             if i == -1:
                 continue
-            if scores[0][j]>500:continue
+            if scores[0][j]>700:continue
             docs.append(get_doc(i,scores[0][j],step,memory_name))
 
         return docs

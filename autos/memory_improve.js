@@ -2,7 +2,7 @@
 // @name         闻达 Auto ：记忆增强
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  
+// @description  使用rtst知识库增强模型长期记忆能力
 // @author       lyyyyy
 // @match        http://127.0.0.1:17860/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
@@ -21,11 +21,11 @@ if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
         Q = app.问题
         memory = await find_memory(Q)
         if (memory.length > 0) {
-            A = await send(app.问题 + "（回忆起了以下内容）\n" + memory.map(i => i.content).join('\n'))
+            A = await send(app.问题 + memory.map(i => i.title+i.content).join('\n'))
         } else {
             A = await send(app.问题)
         }
-        add_memory("Bob: " + Q + "。\n Alice: " + A)
+        add_memory("Bob: " + Q + " Alice: " + A)
     },
 })
 find_memory = async (s) => {
@@ -48,7 +48,7 @@ add_memory = async (txt) => {
     response = await fetch("/api/upload_rtst_zhishiku", {
         method: 'post',
         body: JSON.stringify({
-            title: "聊天记忆" + Date.now(),
+            title:   Date.now()+"记忆：",
             txt: txt,
             memory_name: localStorage['wenda_rtst_ID']
         }),
