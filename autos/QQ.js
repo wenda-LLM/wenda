@@ -15,6 +15,10 @@ script.src = "https://cdn.jsdelivr.net/npm/mirai-js/dist/browser/mirai-js.js";
 my_account = 2323662503
 QQ_bot_chatting = async s => {
     s=s.trim()
+    if (s.startsWith("cls")) {
+        app.chat=[]
+        return "清除历史"
+    }
     if (s.startsWith("zsk")) {
         cmd = s.split(" ")
             if (cmd[1] == 'on') {
