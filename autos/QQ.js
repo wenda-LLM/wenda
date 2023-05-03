@@ -14,23 +14,23 @@ script = document.createElement('script');
 script.src = "https://cdn.jsdelivr.net/npm/mirai-js/dist/browser/mirai-js.js";
 my_account = 2323662503
 QQ_bot_chatting = async s => {
-    s=s.trim()
+    s = s.trim()
     if (s.startsWith("cls")) {
-        app.chat=[]
+        app.chat = []
         return "清除历史"
     }
     if (s.startsWith("zsk")) {
         cmd = s.split(" ")
-            if (cmd[1] == 'on') {
-                zsk(true)
-                return "知识库开启"
-            }
-            if (cmd[1] == 'off') {
-                zsk(false)
-                return "知识库关闭"
+        if (cmd[1] == 'on') {
+            zsk(true)
+            return "知识库开启"
+        }
+        if (cmd[1] == 'off') {
+            zsk(false)
+            return "知识库关闭"
         }
     }
-    return await send(s.replace(/[\r\n]+/g,'\n'))
+    return await send(s.replace(/[\r\n]+/g, '\n'))
 }
 script.onload = async () => {
     alert("QQ机器人Auto：载入")
@@ -41,34 +41,42 @@ script.onload = async () => {
         verifyKey: 'INITKEYzLf3hb8p',
         qq: 2323662503,
     });
-    bot.on('FriendMessage', async data => {
+    bot.on('miraiEvent', async data => {
         console.log(data)
+    })
+    bot.on('FriendMessage', async data => {
+        Plain = ""
         data.messageChain.forEach(async element => {
             if (element.type == "Plain") {
-                await bot.sendMessage({
-                    friend: data.sender.id,
-                    message: new Message().addText(await QQ_bot_chatting(element.text)),
-                })
-
+                Plain += element.text
             }
         })
+        if (Plain.length > 0) {
+            await bot.sendMessage({
+                friend: data.sender.id,
+                message: new Message().addText(await QQ_bot_chatting(Plain)),
+            })
+        }
     });
     bot.on('GroupMessage', async data => {
         replay = false
-        console.log(data)
+        Plain = ""
         data.messageChain.forEach(async element => {
             if (element.type == "At" && element.target == my_account) {
                 replay = true
 
             }
-            if (replay && element.type == "Plain") {
-                await bot.sendMessage({
-                    group: data.sender.group.id,
-                    message: new Message().addText("["+data.sender.id +":"+data.sender.memberName + "]" + await QQ_bot_chatting(element.text)),
-                })
+            if (element.type == "Plain") {
+                Plain += element.text
 
             }
         })
+        if (replay && Plain.length > 0) {
+            await bot.sendMessage({
+                group: data.sender.group.id,
+                message: new Message().addText("[" + data.sender.id + ":" + data.sender.memberName + "]" + await QQ_bot_chatting(Plain)),
+            })
+        }
         // switch (data.sender.permission) {
         //     case Bot.groupPermission.OWNER:
         //         // 群主
