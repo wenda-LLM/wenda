@@ -1,1 +1,1 @@
-app.plugins.push({ icon:'upload', url: "static/st.html" })
+app.plugins.push({ icon:'book-education-outline', url: "static/st.html" })
