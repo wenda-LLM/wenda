@@ -26,7 +26,7 @@ QQ_bot_chatting = async s => {
                 return "知识库关闭"
         }
     }
-    return await send(s)
+    return await send(s.replace(/[\r\n]+/g,'\n'))
 }
 script.onload = async () => {
     alert("QQ机器人Auto：载入")
@@ -60,7 +60,7 @@ script.onload = async () => {
             if (replay && element.type == "Plain") {
                 await bot.sendMessage({
                     group: data.sender.group.id,
-                    message: new Message().addText(data.sender.memberName + ": " + await QQ_bot_chatting(element.text)),
+                    message: new Message().addText("["+data.sender.id +":"+data.sender.memberName + "]" + await QQ_bot_chatting(element.text)),
                 })
 
             }
