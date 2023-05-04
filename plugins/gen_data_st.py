@@ -104,7 +104,7 @@ for i in range(len(all_files)):
         with open(file_path, 'rb') as f:
             b = f.read()
             result = chardet.detect(b)
-        with open(file_path, 'r', encoding=result['encoding']) as f:
+        with open(file_path, 'r', encoding=result['encoding'], errors='ignore') as f:
             data = f.read()
     data = re.sub(r'[\n\r]+', "", data)
     data = re.sub(r'！', "！\n", data)
