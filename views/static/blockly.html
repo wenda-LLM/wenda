@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="blockly/blockly_compressed.js"></script>
+  <script src="blockly/blocks_compressed.js"></script>
+  <script src="blockly/javascript_compressed.js"></script>
+  <script src="blockly/msg/en.js"></script>
+
+  <style>
+  </style>
+</head>
+
+<body>
+<br>
+  <!-- <button onclick="showCode()">显示等效代码</button> -->
+  <button onclick="runCode()">载入至闻达</button>
+  <button onclick="localStorage['wenda_blockly_prog']=JSON.stringify(Blockly.serialization.workspaces.save(demoWorkspace))">保存</button>
+  <button onclick="Blockly.serialization.workspaces.load(JSON.parse(localStorage['wenda_blockly_prog']), demoWorkspace)">读取</button>
+
+  <div id="blocklyDiv" style="height: 460px; width: 100%;"></div>
+
+  <script>
+    Blockly.Blocks['发送'] = {
+      init: function () {
+        this.jsonInit({
+          "message0": '发送 %1 至闻达',
+          "args0": [
+            {
+              "type": "input_value",
+              "name": "VALUE",
+              "check": "String"
+            }
+          ],
+          "output": "String",
+          "colour": "purple",
+          "tooltip": "Returns number of letters in the provided text.",
+        });
+      }
+    }
+    Blockly.JavaScript['发送'] = function (block) {
+      var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
+        Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'\'';
+      return ["await send(" + argument0 + ')', Blockly.JavaScript.ORDER_MEMBER];
+    }
+    Blockly.Blocks['用户输入'] = {
+      init: function () {
+        this.jsonInit({
+          "message0": '用户输入',
+          "args0": [
+          ],
+          "output": "String",
+          "colour": "purple",
+          "tooltip": "Returns number of letters in the provided text.",
+        });
+      }
+    }
+    Blockly.JavaScript['用户输入'] = function (block) {
+      var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
+        Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'\'';
+      return ["app.问题", Blockly.JavaScript.ORDER_MEMBER];
+    }
+    var toolbox = {
+      "kind": "categoryToolbox",
+      "contents": [
+        {
+          "kind": "category",
+          "name": "逻辑判断",
+          "categorystyle": "logic_category",
+          "contents": [
+            {
+              "kind": "block",
+              "type": "controls_if"
+            },
+            {
+              "kind": "block",
+              "type": "controls_if",
+              "extraState": {
+                "hasElse": "true"
+              }
+            },
+            {
+              "kind": "block",
+              "type": "controls_if",
+              "extraState": {
+                "hasElse": "true",
+                "elseIfCount": 1
+              }
+            },
+            {
+                    "kind":"block",
+                    "type":"logic_compare"
+                  },
+                  {
+                    "kind":"block",
+                    "type":"logic_operation"
+                  },
+                  {
+                    "kind":"block",
+                    "type":"logic_negate"
+                  },
+                  {
+                    "kind":"block",
+                    "type":"logic_boolean"
+                  },
+                  {
+                    "kind":"block",
+                    "type":"logic_null"
+                  },
+                  {
+                    "kind":"block",
+                    "type":"logic_ternary"
+                  }
+          ]
+        },
+        {
+          "kind": "category",
+          "name": "循环",
+          "categorystyle": "loop_category",
+          "contents": [
+          {
+                "kind":"block",
+                "type":"controls_repeat_ext",
+                "inputs":{
+                  "TIMES":{
+                    "block":{
+                      "type":"math_number",
+                      "fields":{
+                        "NUM":10
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "kind":"block",
+                "type":"controls_whileUntil"
+              },
+              {
+                "kind":"block",
+                "type":"controls_for",
+                "fields":{
+                  "VAR":"i"
+                },
+                "inputs":{
+                  "FROM":{
+                    "block":{
+                      "type":"math_number",
+                      "fields":{
+                        "NUM":1
+                      }
+                    }
+                  },
+                  "TO":{
+                    "block":{
+                      "type":"math_number",
+                      "fields":{
+                        "NUM":10
+                      }
+                    }
+                  },
+                  "BY":{
+                    "block":{
+                      "type":"math_number",
+                      "fields":{
+                        "NUM":1
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "kind":"block",
+                "type":"controls_forEach"
+              },
+              {
+                "kind":"block",
+                "type":"controls_flow_statements"
+              }
+          ]
+        },
+        {
+          "kind": "category",
+          "name": "数学计算",
+          "categorystyle": "math_category",
+          "contents": [
+          {
+                "kind":"block",
+                "type":"math_number",
+                "fields":{
+                  "NUM":123
+                }
+              },
+              {
+                "kind":"block",
+                "type":"math_arithmetic",
+                "fields":{
+                  "OP":"ADD"
+                }
+              },
+              {
+                "kind":"block",
+                "type":"math_single",
+                "fields":{
+                  "OP":"ROOT"
+                }
+              },
+              {
+                "kind":"block",
+                "type":"math_trig",
+                "fields":{
+                  "OP":"SIN"
+                }
+              },
+              {
+                "kind":"block",
+                "type":"math_constant",
+                "fields":{
+                  "CONSTANT":"PI"
+                }
+              },
+              {
+                "kind":"block",
+                "type":"math_number_property",
+                "extraState":"<mutation divisor_input=\"false\"></mutation>",
+                "fields":{
+                  "PROPERTY":"EVEN"
+                }
+              },
+              {
+                "kind":"block",
+                "type":"math_round",
+                "fields":{
+                  "OP":"ROUND"
+                }
+              },
+              {
+                "kind":"block",
+                "type":"math_on_list",
+                "extraState":"<mutation op=\"SUM\"></mutation>",
+                "fields":{
+                  "OP":"SUM"
+                }
+              },
+              {
+                "kind":"block",
+                "type":"math_modulo"
+              },
+              {
+                "kind":"block",
+                "type":"math_constrain",
+                "inputs":{
+                  "LOW":{
+                    "block":{
+                      "type":"math_number",
+                      "fields":{
+                        "NUM":1
+                      }
+                    }
+                  },
+                  "HIGH":{
+                    "block":{
+                      "type":"math_number",
+                      "fields":{
+                        "NUM":100
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "kind":"block",
+                "type":"math_random_int",
+                "inputs":{
+                  "FROM":{
+                    "block":{
+                      "type":"math_number",
+                      "fields":{
+                        "NUM":1
+                      }
+                    }
+                  },
+                  "TO":{
+                    "block":{
+                      "type":"math_number",
+                      "fields":{
+                        "NUM":100
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "kind":"block",
+                "type":"math_random_float"
+              },
+              {
+                "kind":"block",
+                "type":"math_atan2"
+              }
+          ]
+        },
+        {
+          "kind": "category",
+          "name": "文本处理",
+          "categorystyle": "text_category",
+          "contents": [
+            {
+              "kind": "block",
+              "type": "text"
+            },
+            {
+              "kind": "block",
+              "type": "text_length"
+            },
+            {
+              "kind": "block",
+              "type": "text_print"
+            }
+          ]
+        },
+        {
+          "kind": "category",
+          "name": "闻达",
+          "colour": "purple",
+          "contents": [
+            {
+              "kind": "block",
+              "type": "发送"
+            },
+            {
+              "kind": "block",
+              "type": "用户输入"
+            },
+          ]
+        }
+      ]
+    }
+
+
+    var demoWorkspace = Blockly.inject('blocklyDiv',
+      {
+        media: 'blockly/media/',
+        toolbox: toolbox
+      });
+
+    var startBlocks = {"blocks":{"languageVersion":0,"blocks":[{"type":"controls_if","id":"iT,pk#nrYYiuU8PKx;X$","x":0,"y":0,"inline":false,"extraState":{"hasElse":true},"inputs":{"IF0":{"block":{"type":"logic_compare","id":"T4+ttZ~C_b*QO*3rX{Em","fields":{"OP":"EQ"},"inputs":{"A":{"block":{"type":"用户输入","id":"o@rNb@2m,1jCereA^pDz"}},"B":{"block":{"type":"text","id":"/|Fut]UGF$5;,^1oyrZ.","fields":{"TEXT":"你好"}}}}}},"DO0":{"block":{"type":"text_print","id":"1o4/30[sgFM*ilp0v48=","inline":false,"inputs":{"TEXT":{"block":{"type":"发送","id":"|bJf6;$KtPy=XjT5cnnQ","inputs":{"VALUE":{"block":{"type":"text","id":"zzQT`a;U(lNXXnBbcy](","fields":{"TEXT":"你好，闻达"}}}}}}}}},"ELSE":{"block":{"type":"text_print","id":"|?MKt8g%`aXLu=ixEn4X","inline":false,"inputs":{"TEXT":{"block":{"type":"发送","id":"A3X`8{7G)$yWJjE`H$~G","inputs":{"VALUE":{"block":{"type":"用户输入","id":"iEy-%[lUSX}vAu3Y~xgB"}}}}}}}}}}]}}
+    Blockly.serialization.workspaces.load(startBlocks, demoWorkspace);
+
+    function showCode() {
+      // Generate JavaScript code and display it.
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      alert(code);
+    }
+
+    function runCode() {
+      // Generate JavaScript code and run it.
+      window.LoopTrap = 1000;
+      Blockly.JavaScript.INFINITE_LOOP_TRAP =
+        'if (--window.LoopTrap < 0) throw "Infinite loop.";\n';
+      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      parent.postMessage( {from:'猫猫也会的图块化编程',data:code},'/')
+    }
+  </script>
+
+</body>
+
+</html>

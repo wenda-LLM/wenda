@@ -291,8 +291,8 @@ thread_load_zsk = threading.Thread(target=load_zsk)
 thread_load_zsk.start()
 bottle.debug(True)
 
-import webbrowser
-webbrowser.open_new('http://127.0.0.1:'+str(settings.Port))
+# import webbrowser
+# webbrowser.open_new('http://127.0.0.1:'+str(settings.Port))
 
 import functools
 def pathinfo_adjust_wrapper(func):
