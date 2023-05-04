@@ -67,7 +67,8 @@
 建议使用chatRWKV的RWKV-4-Raven-7B-v11，或chatGLM-6B。
 
 #### 3.参数设置
-根据`config.xml`中说明，填写你的模型下载位置等信息
+把`example.config.xml`重命名为`config.xml`，根据里面的参数说明，填写你的模型下载位置等信息
+
 ## Auto
 auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos`目录的方式注入至程序，为闻达附加各种自动化功能。
 
@@ -105,7 +106,7 @@ sentence_transformers+faiss进行索引、匹配，并连同上下文返回。�
 支持预先构建索引和运行中构建，其中，预先构建索引强制使用`cuda`，运行中构建根据`config.xml`中`rtst`段的`device(embedding运行设备)`决定，对于显存小于12G的用户建议使用`CPU`。
 
 Windows预先构建索引运行：`plugins/buils_rtst_default_index.bat`。
-Linux直接使用wenda环境执行```python plugins/gen_data_st.py```
+Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 
 需下载模型[GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)置于model文件夹，并将txt格式语料置于txt文件夹。
 
