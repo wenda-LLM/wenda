@@ -235,7 +235,7 @@
 			</v-toolbar>
 
 
-			<v-tabs-items v-model="tab" style="margin-top: 3em;">
+			<v-tabs-items v-model="tab" style="margin-top: 4em;">
 				<v-tab-item key="chat">
 					<div v-for="(current_conversation, index) in chat" :key="index"
 						:class="['d-flex flex-row align-center my-2', current_conversation.role == 'user' ? 'justify-end': null]">
