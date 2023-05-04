@@ -13,30 +13,30 @@
 **交流QQ群：LLM使用和综合讨论群162451840；知识库使用讨论群241773574；Auto开发交流群744842245；[discussions](https://github.com/l15y/wenda/discussions)**
 
 <!--ts-->
-- [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
-  - [安装部署](#安装部署)
-    - [懒人包](#懒人包)
-    - [自行安装](#自行安装)
-      - [1.安装库](#1安装库)
-      - [2.下载模型](#2下载模型)
-      - [3.参数设置](#3参数设置)
-  - [Auto](#auto)
-  - [知识库](#知识库)
-    - [rtst模式](#rtst模式)
-    - [fess模式](#fess模式)
-    - [知识库调试](#知识库调试)
-    - [使用](#使用)
-  - [模型配置](#模型配置)
-    - [chatGLM-6B](#chatglm-6b)
-    - [chatRWKV](#chatrwkv)
-      - [生成小说](#生成小说)
-      - [文字冒险游戏](#文字冒险游戏)
-    - [llama](#llama)
-- [基于本项目的二次开发](#基于本项目的二次开发)
-  - [wenda-webui](#wenda-webui)
+* [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
+   * [安装部署](#安装部署)
+      * [懒人包](#懒人包)
+      * [自行安装](#自行安装)
+         * [1.安装库](#1安装库)
+         * [2.下载模型](#2下载模型)
+         * [3.参数设置](#3参数设置)
+   * [Auto](#auto)
+   * [知识库](#知识库)
+      * [rtst模式](#rtst模式)
+      * [fess模式](#fess模式)
+      * [知识库调试](#知识库调试)
+      * [使用](#使用)
+   * [模型配置](#模型配置)
+      * [chatGLM-6B](#chatglm-6b)
+      * [chatRWKV](#chatrwkv)
+         * [生成小说](#生成小说)
+         * [文字冒险游戏](#文字冒险游戏)
+      * [llama](#llama)
+* [基于本项目的二次开发](#基于本项目的二次开发)
+   * [<a href="https://github.com/AlanLee1996/wenda-webui">wenda-webui</a>](#wenda-webui)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu May  4 07:00:25 UTC 2023 -->
+<!-- Added by: runner, at: Thu May  4 10:10:39 UTC 2023 -->
 
 <!--te-->
 ![](imgs/setting.png)
