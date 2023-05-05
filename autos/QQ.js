@@ -9,8 +9,11 @@
 // @run-at document-idle
 // @grant        none
 // ==/UserScript==
+
 //配置参考:https://drincann.github.io/Mirai-js/#/v2.x/Preparation
 my_account = 2323662503
+//第一行my_account改成你的QQ号
+
 script = document.createElement('script');
 script.src = "https://cdn.jsdelivr.net/npm/mirai-js/dist/browser/mirai-js.js";
 QQ_bot_chatting = async s => {
