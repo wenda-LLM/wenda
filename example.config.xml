@@ -26,7 +26,7 @@
             </property>
             <property>
                 <name>Strategy</name>
-                <value>cuda fp16</value>
+                <value>cuda fp16i8</value>
                 <description>rwkv模型参数</description>
             </property>
             <property>
@@ -87,7 +87,7 @@
     <REPLITCODE>
             <property>
                 <name>Path</name>
-                <value>model/replitcode</value>
+                <value>model/replit-code-v1-3b</value>
                 <description>replitcode模型位置
                 说明：目前模型参数和chat模型差异较大，写死了，不能通过wenda界面配置，需要调整自行到
                 llm_replitcode.py 文件中调整，或放开wenda界面参数
@@ -116,12 +116,15 @@
             <name>Type</name>
             <value>mix</value>
             <description>知识库类型:
-                bing → cn.bing搜索，仅国内可用
+                bing → cn.bing搜索，仅国内可用，目前处于服务降级状态
+                sosowx → sogo微信公众号搜索，可配合相应auto实现全文内容分析
                 fess → fess搜索引擎
-                mix → 知识库融合,需设置参数
-                rtst → 支持实时生成的sentence_transformers,版本
+                rtst → 支持实时生成的sentence_transformers
                 remote → 调用远程闻达知识库，用于集群化部署
                 kg → 知识图谱,暂未启用
+                特殊库：
+                mix → 根据参数进行多知识库融合
+                agents → 提供网络资源代理，没有知识库查找功能。建议通过mix加载。目前Stable-Diffusion的auto脚本需要使用其中功能
             </description>
         </property>
         <property>
@@ -137,7 +140,7 @@
         <MIX>
             <property>
                 <name>Strategy</name>
-                <value>bing:3 bingsite:2 rtst:2 agents:0</value>
+                <value>sogowx:3 bingsite:2 rtst:2 agents:0</value>
                 <description>知识库融合参数</description>
             </property>
             <property>
