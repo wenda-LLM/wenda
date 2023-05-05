@@ -13,28 +13,28 @@
 **交流QQ群：LLM使用和综合讨论群162451840；知识库使用讨论群241773574；Auto开发交流群744842245；[discussions](https://github.com/l15y/wenda/discussions)**
 
 <!--ts-->
-* [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
-   * [安装部署](#安装部署)
-      * [懒人包](#懒人包)
-      * [自行安装](#自行安装)
-         * [1.安装库](#1安装库)
-         * [2.下载模型](#2下载模型)
-         * [3.参数设置](#3参数设置)
-   * [Auto](#auto)
-      * [部分内置Auto使用说明](#部分内置auto使用说明)
-   * [知识库](#知识库)
-      * [rtst模式](#rtst模式)
-      * [fess模式](#fess模式)
-      * [知识库调试](#知识库调试)
-      * [使用](#使用)
-   * [模型配置](#模型配置)
-      * [chatGLM-6B](#chatglm-6b)
-      * [chatRWKV](#chatrwkv)
-         * [生成小说](#生成小说)
-         * [文字冒险游戏](#文字冒险游戏)
-      * [llama](#llama)
-* [基于本项目的二次开发](#基于本项目的二次开发)
-   * [<a href="https://github.com/AlanLee1996/wenda-webui">wenda-webui</a>](#wenda-webui)
+- [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
+  - [安装部署](#安装部署)
+    - [懒人包](#懒人包)
+    - [自行安装](#自行安装)
+      - [1.安装库](#1安装库)
+      - [2.下载模型](#2下载模型)
+      - [3.参数设置](#3参数设置)
+  - [Auto](#auto)
+    - [部分内置Auto使用说明](#部分内置auto使用说明)
+  - [知识库](#知识库)
+    - [rtst模式](#rtst模式)
+    - [fess模式](#fess模式)
+    - [知识库调试](#知识库调试)
+    - [使用](#使用)
+  - [模型配置](#模型配置)
+    - [chatGLM-6B](#chatglm-6b)
+    - [chatRWKV](#chatrwkv)
+      - [生成小说](#生成小说)
+      - [文字冒险游戏](#文字冒险游戏)
+    - [llama](#llama)
+- [基于本项目的二次开发](#基于本项目的二次开发)
+  - [wenda-webui](#wenda-webui)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Fri May  5 01:22:57 UTC 2023 -->
@@ -81,7 +81,7 @@ auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos
 | face-recognition.js  | 纯浏览器端人脸检测：通过识别嘴巴开合，控制语音输入。因浏览器限制，仅本地或TLS下可用 |
 | QQ.js                | QQ机器人:配置过程见文件开头注释                                                     |
 | block_programming.js | 猫猫也会的图块化编程:通过拖动图块实现简单Auto功能                                   |
-| 1-draw_use_SD_api.js | 通过agents模块（见example.config.xml`知识库`）调用Stable-Diffusion接口绘图          |
+| 1-draw_use_SD_api.js | 通过agents模块（见example.config.xml`<Library>`）调用Stable Diffusion接口绘图          |
 
 以上功能主要用于展示auto用法，进一步能力有待广大用户进一步发掘。
 ![](imgs/auto1.jpg)

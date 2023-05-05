@@ -124,7 +124,8 @@
                 kg → 知识图谱,暂未启用
                 特殊库：
                 mix → 根据参数进行多知识库融合
-                agents → 提供网络资源代理，没有知识库查找功能。建议通过mix加载。目前Stable-Diffusion的auto脚本需要使用其中功能
+                agents → 提供网络资源代理，没有知识库查找功能。建议通过mix加载。
+                        目前Stable-Diffusion的auto脚本需要使用其中功能，需开启其api功能
             </description>
         </property>
         <property>
