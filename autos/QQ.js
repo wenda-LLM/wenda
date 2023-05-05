@@ -10,9 +10,9 @@
 // @grant        none
 // ==/UserScript==
 //配置参考:https://drincann.github.io/Mirai-js/#/v2.x/Preparation
+my_account = 2323662503
 script = document.createElement('script');
 script.src = "https://cdn.jsdelivr.net/npm/mirai-js/dist/browser/mirai-js.js";
-my_account = 2323662503
 QQ_bot_chatting = async s => {
     s = s.trim()
     if (s.startsWith("cls")) {
