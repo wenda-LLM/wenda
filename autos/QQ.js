@@ -10,9 +10,13 @@
 // @grant        none
 // ==/UserScript==
 
-//配置参考:https://drincann.github.io/Mirai-js/#/v2.x/Preparation
+//配置参考:https://drincann.github.io/Mirai-js/#/v2.x/Preparation?id=%e4%b8%8d%e4%bc%9a%e5%bc%80%e5%90%af%ef%bc%9f 中"不会开启"部分
 my_account = 2323662503
-//第一行my_account改成你的QQ号
+//my_account改成你的QQ号
+verifyKey='INITKEYzLf3hb8p'
+//verifyKey改成Mirai-js中相同的
+baseUrl='http://127.0.0.1:8080'
+//Mirai地址，一般不用改
 
 script = document.createElement('script');
 script.src = "https://cdn.jsdelivr.net/npm/mirai-js/dist/browser/mirai-js.js";
@@ -40,8 +44,8 @@ script.onload = async () => {
     const { Bot, Message } = window.miraiJs;
     bot = new Bot();
     await bot.open({
-        baseUrl: 'http://127.0.0.1:8080',
-        verifyKey: 'INITKEYzLf3hb8p',
+        baseUrl: baseUrl,
+        verifyKey: verifyKey,
         qq: 2323662503,
     });
     bot.on('miraiEvent', async data => {
