@@ -75,7 +75,7 @@ def static(name='-'):
 @route('/api/llm')
 def llm_js():
     noCache()
-    return static_file('llm_'+settings.LLM_Type+".js", root="plugins")
+    return static_file('llm_'+settings.llm_type+".js", root="plugins")
     
 @route('/api/plugins')
 def read_auto_plugins():
