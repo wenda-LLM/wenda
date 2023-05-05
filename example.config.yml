@@ -1,0 +1,124 @@
+
+logging: False
+#日志"
+port: 17860
+#webui 默认启动端口号"
+llm_type: rwkv
+#llm模型类型:glm6b、rwkv、llama、replitcode
+llm_models: 
+  rwkv: 
+     path: "model/rwkv-4-raven-7b-v11.pth"
+     #rwkv模型位置"
+     strategy: "cuda fp16i8"
+     #rwkv模型参数"
+     historymode: state
+     #rwkv历史记录实现方式：state、string
+  glm6b: 
+     path: "model/chatglm-6b-int4"
+     #glm模型位置"
+     strategy: "cuda fp16"
+     #cuda fp16	 所有glm模型 要直接跑在gpu上都可以使用这个参数
+     #cuda fp16i8	 fp16原生模型 要自行量化为int8跑在gpu上可以使用这个参数
+     #cuda fp16i4	 fp16原生模型 要自行量化为int4跑在gpu上可以使用这个参数
+     #cpu fp32	 所有glm模型 要直接跑在cpu上都可以使用这个参数
+     #cpu fp16i8	fp16原生模型 要自行量化为int8跑在cpu上可以使用这个参数
+     #cpu fp16i4	fp16原生模型要 自行量化为int4跑在cpu上可以使用这个参数"
+     lora: ""
+     #glm-lora模型位置
+  llama: 
+     path: "model/ggml-vicuna-13b-4bit-rev1.bin"
+     #llama模型位置
+     strategy: ""
+     #llama模型参数 暂时不用
+  moss: 
+     path: "model/moss-moon-003-sft-plugin-int4"
+     #模型位置
+     strategy: ""
+     #模型参数 暂时不用"
+  replitcode: 
+     path: "model/replit-code-v1-3b"
+     #replitcode模型位置
+     #说明：目前模型参数和chat模型差异较大，写死了，不能通过wenda界面配置，需要调整自行到llm_replitcode.py 文件中调整，或放开wenda界面参数
+     #y = model.generate(x, max_length=100, do_sample=true, top_p=0.95, top_k=4, temperature=0.2, num_return_sequences=1, eos_token_id=tokenizer.eos_token_id)
+     #模型地址：https://huggingface.co/replit/replit-code-v1-3b ，约10g
+     #作用代码补全：问：def fibonacci(n):
+     #答：def fibonacci(n):
+     #if n == 0:
+     #return 0
+     #elif n == 1:
+     #return 1
+     #else:
+     #return fibonacci(n-1) + fibonacci(n-2)
+     #print(fibonacci(10))
+     strategy: "cuda fp16"
+    #因我的3070只有8g内存，所以是先把模理加载到内存进行精度转换，至少要32g系统内存， fp16 占用不到6g显存,fp32 超过8g未测试"
+library: 
+  general:
+     type: mix
+     #知识库类型:
+     #bing → cn.bing搜索，仅国内可用，目前处于服务降级状态
+     #sosowx → sogo微信公众号搜索，可配合相应auto实现全文内容分析
+     #fess → fess搜索引擎
+     #rtst → 支持实时生成的sentence_transformers
+     #remote → 调用远程闻达知识库，用于集群化部署
+     #kg → 知识图谱,暂未启用
+     #特殊库：
+     #mix → 根据参数进行多知识库融合
+     #agents → 提供网络资源代理，没有知识库查找功能。建议通过mix加载。
+     #目前stable-diffusion的auto脚本需要使用其中功能，需开启其api功能
+     show_soucre: false
+     #知识库显示来源
+     step: 2
+     #知识库默认上下文步长
+  mix: 
+     strategy: "sogowx:3 bingsite:2 rtst:2 agents:0"
+     #知识库融合参数
+     count: 5
+     #最大抽取数量
+  bing: 
+    count: 5
+     #最大抽取数量
+  bingsite: 
+     count: 5
+     #最大抽取数量
+     site: "www.12371.cn"
+     #搜索网站
+  fess: 
+     count: 1
+     #最大抽取数量
+     fess_host: "127.0.0.1:8080"
+     #fess搜索引擎的部署地址
+  remote: 
+    host: "http://127.0.0.1:17860/api/find"
+     #远程知识库地址地址
+  rtst: 
+     count: 3
+     #最大抽取数量
+     size: 20
+     #分块大小"
+     overlap: 0
+     #分块重叠长度
+     model_path: "model/text2vec-large-chinese"
+     #向量模型存储路径
+     device: cpu
+     #embedding运行设备
+  qdrant: 
+     path: txt
+     #知识库文本路径
+     model_path: "model/text2vec-large-chinese"
+     #向量模型存储路径
+     qdrant_host: "http://localhost:6333"
+     #qdrant服务地址"
+     device: cpu
+     #qdrant运行设备
+     collection: qa_collection
+     #qdrant集合名称
+  kg: 
+     count: 5
+     #最大抽取数量
+     knowledge_path: ""
+     #知识库的文件夹目录名称，若留空则为txt
+     graph_host: ""
+     #图数据库部署地址
+     model_path: ""
+     #信息抽取模型所在路径"

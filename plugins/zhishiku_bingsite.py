@@ -37,4 +37,4 @@ def find(search_query,step):
         tmp2 = re.sub('<[^<]+?>', '', tmp).replace('\n', '').strip()
         clear_title.append(tmp2)
     return [{'title': "["+clear_title[i]+"]("+link[i][1]+")", 'content':clear_brief[i]}
-            for i in range(min(int(cunnrent_setting.Count), len(brief)))]
+            for i in range(min(int(cunnrent_setting.count), len(brief)))]

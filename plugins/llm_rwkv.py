@@ -114,7 +114,7 @@ def load_model():
         # '1' to compile CUDA kernel (10x faster), requires c++ compiler & cuda libraries
 
     from rwkv.model import RWKV  # pip install rwkv
-    model = RWKV(model=settings.Path, strategy=settings.Strategy)
+    model = RWKV(model=settings.llm.path, strategy=settings.llm.strategy)
     # if settings.rwkv_lora_path == '':
     # else:
     #     with torch.no_grad():

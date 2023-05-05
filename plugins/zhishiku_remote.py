@@ -10,7 +10,7 @@ proxies = {"http": None,"https": None,}
 
 
 def find(search_query,step = 0):
-    url = cunnrent_setting.Host
+    url = cunnrent_setting.host
     res = session.post(url, headers=headers, proxies=proxies,json={
 					"prompt": search_query,
 					"step": step

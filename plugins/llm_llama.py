@@ -32,5 +32,5 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku
 def load_model():
     global model
     from llama_cpp import Llama
-    model = Llama(model_path=settings.Path,use_mlock=True,n_ctx=4096)
+    model = Llama(model_path=settings.llm.path,use_mlock=True,n_ctx=4096)
 

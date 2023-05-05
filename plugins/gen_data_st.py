@@ -14,18 +14,6 @@ import sys
 import time
 os.chdir(sys.path[0][:-8])
 
-parser = argparse.ArgumentParser(description='Wenda config')
-parser.add_argument('-c', type=str, dest="Config",
-                    default='config.xml', help="配置文件")
-parser.add_argument('-p', type=int, dest="Port", help="使用端口号")
-parser.add_argument('-l', type=bool, dest="Logging", help="是否开启日志")
-parser.add_argument('-t', type=str, dest="LLM_Type", help="选择使用的大模型")
-args = parser.parse_args()
-os.environ['wenda_'+'Config'] = args.Config
-os.environ['wenda_'+'Port'] = str(args.Port)
-os.environ['wenda_'+'Logging'] = str(args.Logging)
-os.environ['wenda_'+'LLM_Type'] = str(args.LLM_Type)
-
 from common import success_print
 from common import error_helper
 from common import settings
@@ -43,7 +31,7 @@ root_path_list = source_folder_path.split(os.sep)
 docs = []
 vectorstore = None
 
-model_path = settings.library.rtst.Model_Path
+model_path = settings.library.rtst.model_path
 try:
     embeddings = HuggingFaceEmbeddings(model_name='')
     embeddings.client = sentence_transformers.SentenceTransformer(

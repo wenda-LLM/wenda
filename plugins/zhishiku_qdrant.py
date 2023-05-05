@@ -45,5 +45,5 @@ def find(s):
         print(e)
         return []
     
-embedding_model = SentenceTransformer(settings.embeddings_path,device=settings.library.qdrant.Device)
+embedding_model = SentenceTransformer(settings.embeddings_path,device=settings.library.qdrant.device)
 qdrant = QdrantIndex(embedding_model)

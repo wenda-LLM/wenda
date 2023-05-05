@@ -38,12 +38,12 @@ def load_model():
     from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
     from accelerate import init_empty_weights, load_checkpoint_and_dispatch
     config = AutoConfig.from_pretrained(
-        settings.Path, local_files_only=True, trust_remote_code=True)
+        settings.llm.path, local_files_only=True, trust_remote_code=True)
     tokenizer = AutoTokenizer.from_pretrained(
-        settings.Path, local_files_only=True, trust_remote_code=True)
+        settings.llm.path, local_files_only=True, trust_remote_code=True)
     model = AutoModelForCausalLM.from_pretrained(
-        settings.Path, local_files_only=True, trust_remote_code=True)
+        settings.llm.path, local_files_only=True, trust_remote_code=True)
     with init_empty_weights():
         model = AutoModelForCausalLM.from_config(config, torch_dtype=torch.float16, trust_remote_code=True)
     model.tie_weights()
-    model = load_checkpoint_and_dispatch(model, settings.Path, device_map="auto", no_split_module_classes=["MossBlock"], dtype=torch.float16)
+    model = load_checkpoint_and_dispatch(model, settings.llm.path, device_map="auto", no_split_module_classes=["MossBlock"], dtype=torch.float16)

@@ -68,7 +68,7 @@
 建议使用chatRWKV的RWKV-4-Raven-7B-v11，或chatGLM-6B。
 
 #### 3.参数设置
-把`example.config.xml`重命名为`config.xml`，根据里面的参数说明，填写你的模型下载位置等信息
+把`example.config.yml`重命名为`config.yml`，根据里面的参数说明，填写你的模型下载位置等信息
 
 ## Auto
 auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos`目录的方式注入至程序，为闻达附加各种自动化功能。
@@ -81,7 +81,7 @@ auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos
 | face-recognition.js  | 纯浏览器端人脸检测：通过识别嘴巴开合，控制语音输入。因浏览器限制，仅本地或TLS下可用 |
 | QQ.js                | QQ机器人:配置过程见文件开头注释                                                     |
 | block_programming.js | 猫猫也会的图块化编程:通过拖动图块实现简单Auto功能                                   |
-| 1-draw_use_SD_api.js | 通过agents模块（见example.config.xml`<Library>`）调用Stable Diffusion接口绘图          |
+| 1-draw_use_SD_api.js | 通过agents模块（见example.config.yml`<Library>`）调用Stable Diffusion接口绘图          |
 
 以上功能主要用于展示auto用法，进一步能力有待广大用户进一步发掘。
 ![](imgs/auto1.jpg)
@@ -110,7 +110,7 @@ fess模式、bing模式均调用搜索引擎搜索获取答案。
 ### rtst模式
 sentence_transformers+faiss进行索引、匹配，并连同上下文返回。目前支持txt和pdf格式。
 
-支持预先构建索引和运行中构建，其中，预先构建索引强制使用`cuda`，运行中构建根据`config.xml`中`rtst`段的`device(embedding运行设备)`决定，对于显存小于12G的用户建议使用`CPU`。
+支持预先构建索引和运行中构建，其中，预先构建索引强制使用`cuda`，运行中构建根据`config.yml`中`rtst`段的`device(embedding运行设备)`决定，对于显存小于12G的用户建议使用`CPU`。
 
 Windows预先构建索引运行：`plugins/buils_rtst_default_index.bat`。
 
@@ -120,7 +120,7 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 
 
 ### fess模式
-在本机使用默认端口安装fess后可直接运行。否则需修改`config.xml`中`Fess_Host`的`127.0.0.1:8080`为相应值。[FESS安装教程](install_fess.md)
+在本机使用默认端口安装fess后可直接运行。否则需修改`config.yml`中`fess_host`的`127.0.0.1:8080`为相应值。[FESS安装教程](install_fess.md)
 ###  知识库调试
 ![](imgs/zsk-test.png)
 ![](imgs/zsk-glm.png)
@@ -132,14 +132,14 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 ### chatGLM-6B
 运行：`run_GLM6B.bat`。
 
-模型位置等参数：修改`config.xml`。
+模型位置等参数：修改`config.yml`。
 
 默认参数在GTX1660Ti（6G显存）上运行良好。
 
 ### chatRWKV
 运行：`run_rwkv.bat`。
 
-模型位置等参数：修改`config.xml`。
+模型位置等参数：修改`config.yml`。
 
 默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢。
 
@@ -154,7 +154,7 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 
 编译好的：https://github.com/l15y/llama-cpp-python/releases
 
-模型位置等参数：修改`config.xml`。
+模型位置等参数：修改`config.yml`。
 
 # 基于本项目的二次开发
 ## [wenda-webui](https://github.com/AlanLee1996/wenda-webui)

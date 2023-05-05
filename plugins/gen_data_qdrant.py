@@ -14,7 +14,7 @@ import uuid
 
 import argparse
 parser = argparse.ArgumentParser(description='Wenda config')
-parser.add_argument('-c', type=str, dest="Config", default='config.xml', help="配置文件")
+parser.add_argument('-c', type=str, dest="Config", default='config.yml', help="配置文件")
 parser.add_argument('-p', type=int, dest="Port", help="使用端口号")
 parser.add_argument('-l', type=bool, dest="Logging", help="是否开启日志")
 parser.add_argument('-t', type=str, dest="LLM_Type", help="选择使用的大模型")
@@ -130,7 +130,7 @@ for root, dirs, files in os.walk(source_folder_path):
             f.close()
 
 print("开始读取数据")
-embedding_model = SentenceTransformer(settings.library.qdrant.Model_Path,device=settings.library.qdrant.Device)
+embedding_model = SentenceTransformer(settings.library.qdrant.model_path,device=settings.library.qdrant.device)
 qdrant = QdrantIndex(embedding_model)
 qdrant.insert_into_index(target_folder)
 

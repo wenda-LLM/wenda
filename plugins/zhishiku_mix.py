@@ -1,7 +1,7 @@
 from plugins.common import settings
 from plugins.common import error_print 
 zsk=[]
-input_list = settings.library.mix.Strategy.split(" ")
+input_list = settings.library.mix.strategy.split(" ")
 for item in input_list:
     item=item.split(":")
     from importlib import import_module
@@ -13,5 +13,5 @@ def find(s,step = 0):
     result=[]
     for item in zsk:
         result+=item['zsk'].find(s,step)[:item['count']]
-    return result[:int(settings.library.mix.Count)]
+    return result[:int(settings.library.mix.count)]
 

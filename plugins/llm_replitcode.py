@@ -19,10 +19,10 @@ def load_model():
     from transformers import AutoModelForCausalLM, AutoTokenizer
     import torch
     tokenizer = AutoTokenizer.from_pretrained(
-        settings.Path, local_files_only=True, trust_remote_code=True)
+        settings.llm.path, local_files_only=True, trust_remote_code=True)
     model = AutoModelForCausalLM.from_pretrained(
-        settings.Path, local_files_only=True, trust_remote_code=True)
-    device, precision = settings.Strategy.split()
+        settings.llm.path, local_files_only=True, trust_remote_code=True)
+    device, precision = settings.llm.strategy.split()
 # 根据设备执行不同的操作
     if device == 'cpu':
         # 如果是cpu，不做任何操作

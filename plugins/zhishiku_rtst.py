@@ -54,7 +54,7 @@ def get_doc(id,score,step,memory_name):
 def find(s,step = 0,memory_name="default"):
     try:
         embedding = get_vectorstore(memory_name).embedding_function(s)
-        scores, indices = vectorstores[memory_name].index.search(np.array([embedding], dtype=np.float32), int(cunnrent_setting.Count))
+        scores, indices = vectorstores[memory_name].index.search(np.array([embedding], dtype=np.float32), int(cunnrent_setting.count))
         docs = []
         for j, i in enumerate(indices[0]):
             if i == -1:
@@ -68,8 +68,8 @@ def find(s,step = 0,memory_name="default"):
         return []
 try:
     embeddings = HuggingFaceEmbeddings(model_name='')
-    embeddings.client = sentence_transformers.SentenceTransformer(cunnrent_setting.Model_Path,
-                                                                            device=cunnrent_setting.Device)
+    embeddings.client = sentence_transformers.SentenceTransformer(cunnrent_setting.model_path,
+                                                                            device=cunnrent_setting.device)
 except Exception  as e:
     error_helper("embedding加载失败，请下载相应模型",r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
     raise e
@@ -137,7 +137,7 @@ def api_find():
     step = data.get('step')
     memory_name=data.get("memory_name")
     if step is None:
-        step = int(settings.library.Step)
+        step = int(settings.library.general.setp)
     return json.dumps(find(prompt,int(step),memory_name))
 
 @route('/api/save_news', method=("POST","OPTIONS"))

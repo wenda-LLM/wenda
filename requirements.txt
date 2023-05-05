@@ -17,3 +17,4 @@ requests
 cpm_kernels
 chardet
 rwkv
+pyyaml
