@@ -57,9 +57,9 @@ def clac_embedding(texts, embeddings, metadatas):
 
 def make_index():
     global docs
-    if hasattr(settings.library.rtst,"Size") and hasattr(settings.library.rtst,"Overlap"):
+    if hasattr(settings.library.rtst,"size") and hasattr(settings.library.rtst,"overlap"):
         text_splitter = CharacterTextSplitter(
-            chunk_size=int(settings.library.rtst.Size), chunk_overlap=int(settings.library.rtst.Overlap), separator='\n')
+            chunk_size=int(settings.library.rtst.size), chunk_overlap=int(settings.library.rtst.overlap), separator='\n')
     else:
         text_splitter = CharacterTextSplitter(
             chunk_size=20, chunk_overlap=0, separator='\n')
