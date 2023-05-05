@@ -95,21 +95,25 @@ for i in range(len(all_files)):
     root, file=all_files[i]
     data = ""
     title = ""
-    if file.endswith(".pdf"):
-        file_path = os.path.join(root, file)
-        with pdfplumber.open(file_path) as pdf:
-            data_list = []
-            for page in pdf.pages:
-                data_list.append(page.extract_text())
-            data = "\n".join(data_list)
-    else:
-        # txt
-        file_path = os.path.join(root, file)
-        with open(file_path, 'rb') as f:
-            b = f.read()
-            result = chardet.detect(b)
-        with open(file_path, 'r', encoding=result['encoding'], errors='ignore') as f:
-            data = f.read()
+    try:
+        if file.endswith(".pdf"):
+            file_path = os.path.join(root, file)
+            with pdfplumber.open(file_path) as pdf:
+                data_list = []
+                for page in pdf.pages:
+                    print(page.extract_text())
+                    data_list.append(page.extract_text())
+                data = "\n".join(data_list)
+        else:
+            # txt
+            file_path = os.path.join(root, file)
+            with open(file_path, 'rb') as f:
+                b = f.read()
+                result = chardet.detect(b)
+            with open(file_path, 'r', encoding=result['encoding']) as f:
+                data = f.read()
+    except Exception as e:
+        print("文件读取失败，当前文件已被跳过：",file,"。错误信息：",e)
     data = re.sub(r'[\n\r]+', "", data)
     data = re.sub(r'！', "！\n", data)
     data = re.sub(r'：', "：\n", data)
