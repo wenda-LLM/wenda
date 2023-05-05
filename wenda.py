@@ -180,8 +180,6 @@ def api_chat_box():
         'HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
     error = ""
     with mutex:
-        yield "data: %s\n\n" %json.dumps({"response": (str(len(prompt))+'字正在计算')})
-
         print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
         try:
             for response_text in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=use_zhishiku):
