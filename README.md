@@ -36,7 +36,7 @@
    * [<a href="https://github.com/AlanLee1996/wenda-webui">wenda-webui</a>](#wenda-webui)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu May  4 12:59:25 UTC 2023 -->
+<!-- Added by: runner, at: Thu May  4 13:32:48 UTC 2023 -->
 
 <!--te-->
 ![](imgs/setting.png)
@@ -106,6 +106,7 @@ sentence_transformers+faiss进行索引、匹配，并连同上下文返回。�
 支持预先构建索引和运行中构建，其中，预先构建索引强制使用`cuda`，运行中构建根据`config.xml`中`rtst`段的`device(embedding运行设备)`决定，对于显存小于12G的用户建议使用`CPU`。
 
 Windows预先构建索引运行：`plugins/buils_rtst_default_index.bat`。
+
 Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 
 需下载模型[GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)置于model文件夹，并将txt格式语料置于txt文件夹。

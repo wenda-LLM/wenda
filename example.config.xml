@@ -14,7 +14,7 @@
         <property>
             <name>LLM_Type</name>
             <value>rwkv</value>
-            <description>LLM模型类型:glm6b、rwkv、llama</description>
+            <description>LLM模型类型:glm6b、rwkv、llama、replitcode</description>
         </property>
     </General>
     <Models>
@@ -84,6 +84,33 @@
             </property>
         </MOSS>
     </Models>
+    <REPLITCODE>
+            <property>
+                <name>Path</name>
+                <value>model/replitcode</value>
+                <description>replitcode模型位置
+                说明：目前模型参数和chat模型差异较大，写死了，不能通过wenda界面配置，需要调整自行到
+                llm_replitcode.py 文件中调整，或放开wenda界面参数
+                y = model.generate(x, max_length=100, do_sample=True, top_p=0.95, top_k=4, temperature=0.2, num_return_sequences=1, eos_token_id=tokenizer.eos_token_id)
+                模型地址：https://huggingface.co/replit/replit-code-v1-3b ，约10G
+                作用代码补全：问：def fibonacci(n):
+                答：def fibonacci(n):
+                if n == 0:
+                return 0
+                elif n == 1:
+                return 1
+                else:
+                return fibonacci(n-1) + fibonacci(n-2)
+
+                print(fibonacci(10))
+                </description>
+            </property>
+            <property>
+                <name>Strategy</name>
+                <value>cuda fp16</value>
+                <description>因我的3070只有8G内存，所以是先把模理加载到内存进行精度转换，至少要32G系统内存， fp16 占用不到6G显存,fp32 超过8G未测试</description>
+            </property>
+        </REPLITCODE>
     <Library>
         <property>
             <name>Type</name>
@@ -162,6 +189,16 @@
                 <name>Count</name>
                 <value>3</value>
                 <description>最大抽取数量</description>
+            </property>
+            <property>
+                <name>Size</name>
+                <value>20</value>
+                <description>分块大小</description>
+            </property>
+            <property>
+                <name>Overlap</name>
+                <value>0</value>
+                <description>分块重叠长度</description>
             </property>
             <property>
                 <name>Model_Path</name>

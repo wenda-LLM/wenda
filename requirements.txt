@@ -16,3 +16,4 @@ numpy
 requests
 cpm_kernels
 chardet
+rwkv
