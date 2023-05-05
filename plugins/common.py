@@ -35,9 +35,9 @@ import webbrowser
 def error_helper(e,doc_url):
     error_print(e)
     webbrowser.open_new(doc_url)
-def error_print(s):
+def error_print(*s):
     print(red,end="")
-    print(s)
+    print(*s)
     print(white,end="")
 def success_print(*s):
     print(green,end="")
