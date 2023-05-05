@@ -20,7 +20,7 @@ def load_LLM():
         print("LLM模型加载失败，请阅读说明：https://github.com/l15y/wenda", e)
 LLM = load_LLM()
 
-logging=bool(settings.logging == 'True')
+logging=settings.logging
 if logging:
     from plugins.defineSQL import session_maker, 记录
 
@@ -226,7 +226,7 @@ def api_chat_stream():
         output_sources = [i['title'] for i in response_d]
         results = '\n'.join([str(i+1)+". "+re.sub('\n\n', '\n', response_d[i]['content']) for i in range(len(response_d))])
         prompt = 'system: 请扮演一名专业分析师，根据以下内容回答问题：'+prompt + "\n"+ results
-        if bool(settings.library.Show_Soucre == 'True'):
+        if settings.library.general.show_soucre == True:
             footer = "\n### 来源：\n"+('\n').join(output_sources)+'///'
     with mutex:
         print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
