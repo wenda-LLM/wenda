@@ -315,29 +315,6 @@
 						</div>
 					</v-footer>
 				</v-tab-item>
-				<v-tab-item key="zhishiku">
-					<br>
-					<v-row>
-						<v-col cols="12" sm="6">
-							<v-text-field v-model="test_zsk_prompt" outlined label="关键词" clearable></v-text-field>
-
-						</v-col>
-						<v-col cols="12" sm="6">
-							<v-text-field v-model="test_zsk_step" outlined label="上下文数量" clearable></v-text-field>
-						</v-col>
-					</v-row>
-					<v-btn color="purple" dark size="x-large" @click="find(test_zsk_prompt,test_zsk_step)">
-						测试
-					</v-btn>
-					<v-data-table
-						:headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
-						:items="zhishiku" hide-default-header hide-default-footer>
-						<template v-slot:item.title="{ item }" >
-							<p v-html="md2html(item.title)"></p>
-						  </template>
-					</v-data-table>
-
-				</v-tab-item>
 				<v-tab-item key="setting">
 					<br>
 					<v-form>
@@ -394,6 +371,28 @@
 
 						</v-col>
 					</v-row>
+				</v-tab-item>
+				<v-tab-item key="zhishiku">
+					<br>
+					<v-row>
+						<v-col cols="12" sm="6">
+							<v-text-field v-model="test_zsk_prompt" outlined label="关键词" clearable></v-text-field>
+
+						</v-col>
+						<v-col cols="12" sm="6">
+							<v-text-field v-model="test_zsk_step" outlined label="上下文数量" clearable></v-text-field>
+						</v-col>
+					</v-row>
+					<v-btn color="purple" dark size="x-large" @click="find(test_zsk_prompt,test_zsk_step)">
+						测试
+					</v-btn>
+					<v-data-table
+						:headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
+						:items="zhishiku" hide-default-header hide-default-footer>
+						<template v-slot:item.title="{ item }" >
+							<p v-html="md2html(item.title)"></p>
+						  </template>
+					</v-data-table>
 
 				</v-tab-item>
 				<v-tab-item v-for="plugin in plugins" :key="plugin.name">
@@ -407,6 +406,11 @@
 						mdi-tooltip-edit-outline
 					</v-icon>
 				</v-tab>
+				<v-tab key="setting">
+					<v-icon text>
+						mdi-cog
+					</v-icon>
+				</v-tab>
 				<v-tab key="zhishiku">
 					<v-icon text>
 						mdi-book-search-outline
@@ -416,11 +420,6 @@
 					<v-icon text v-if="plugin.icon">
 						{{"mdi-"+plugin.icon}}
 					</v-icon>{{plugin.name}}
-				</v-tab>
-				<v-tab key="setting">
-					<v-icon text>
-						mdi-cog
-					</v-icon>
 				</v-tab>
 			</v-tabs>
 			<br><br><br>
