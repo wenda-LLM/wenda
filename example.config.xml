@@ -83,8 +83,7 @@
                 <description>模型参数 暂时不用</description>
             </property>
         </MOSS>
-    </Models>
-    <REPLITCODE>
+        <REPLITCODE>
             <property>
                 <name>Path</name>
                 <value>model/replit-code-v1-3b</value>
@@ -111,6 +110,7 @@
                 <description>因我的3070只有8G内存，所以是先把模理加载到内存进行精度转换，至少要32G系统内存， fp16 占用不到6G显存,fp32 超过8G未测试</description>
             </property>
         </REPLITCODE>
+    </Models>
     <Library>
         <property>
             <name>Type</name>
