@@ -115,8 +115,10 @@ for i in range(len(all_files)):
         length_of_read=0
 if len(docs) > 0:
     make_index()
-with embedding_lock:
+
+while embedding_lock.get_waiting_threads()>0:
     time.sleep(0.1)
+with embedding_lock:
     with vectorstore_lock:
         success_print("处理完成")
 try:
