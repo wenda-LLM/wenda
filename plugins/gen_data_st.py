@@ -14,7 +14,7 @@ import sys
 import time
 os.chdir(sys.path[0][:-8])
 
-from common import success_print
+from common import success_print, error_print
 from common import error_helper
 from common import settings
 from common import CounterLock
@@ -112,6 +112,11 @@ for i in range(len(all_files)):
         success_print("处理进度",int(100*i/len(all_files)),f"%\t({i}/{len(all_files)})")
         make_index()
         length_of_read=0
+
+if len(all_files) == 0 or length_of_read == 0:
+    error_print("txt 目录没有数据")
+    sys.exit(0)
+
 if len(docs) > 0:
     make_index()
 with embedding_lock:
