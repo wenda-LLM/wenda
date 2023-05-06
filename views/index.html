@@ -451,6 +451,7 @@
 				test_zsk_prompt: "",
 				test_zsk_step: 1,
 				zhishiku: [],
+				zhishiku_dynamic:[],
 				setting: {},
 				tab: 0,
 				zhishiku_on: false,
@@ -634,6 +635,26 @@
 			app.zhishiku = json
 			return json
 		}
+
+		find_dynamic = async (s, step = 1,paraJson) => {
+			console.table(paraJson)
+			response = await fetch("/api/find_dynamic", {
+				method: 'post',
+				body: JSON.stringify({
+					prompt: s,
+					step: step,
+					paraJson: paraJson
+				}),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+			let json = await response.json()
+			console.table(json)
+			app.zhishiku_dynamic = json
+			return json
+		}
+
 		function md2html(conent) {
 			// return conent
 			conent = String(conent)

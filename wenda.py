@@ -56,9 +56,26 @@ def load_zsk():
     except Exception as e:
         error_helper("知识库加载失败，请阅读说明",r"https://github.com/l15y/wenda#%E7%9F%A5%E8%AF%86%E5%BA%93")
         raise e
-
+    
 thread_load_zsk = threading.Thread(target=load_zsk)
 thread_load_zsk.start()
+
+# 按照auto的需求动态载入相应的知识库
+# 例如某auto需要bingsite和st，这可以动态的载入这类知识库
+zhishiku_dynamic = None
+def load_dynamic_zsk():
+    try:
+        from importlib import import_module
+        global zhishiku_dynamic
+        zhishiku_dynamic = import_module('plugins.zhishiku_dynamic')
+        success_print("动态知识库加载完成")
+    except Exception as e:
+        error_helper("动态知识库加载失败，请阅读说明",r"https://github.com/l15y/wenda#%E7%9F%A5%E8%AF%86%E5%BA%93")
+        raise e
+
+# 该线程的作用主要是导入动态知识库的查询函数 
+thread_load_dynamiczsk = threading.Thread(target=load_dynamic_zsk)
+thread_load_dynamiczsk.start()
 
 @route('/static/<path:path>')
 def staticjs(path='-'):
@@ -131,7 +148,26 @@ def validate():
     if REQUEST_METHOD == 'OPTIONS' and HTTP_ACCESS_CONTROL_REQUEST_METHOD:
         request.environ['REQUEST_METHOD'] = HTTP_ACCESS_CONTROL_REQUEST_METHOD
 
+@route('/api/find_dynamic', method=("POST","OPTIONS"))
+def find_dynamic():
+    allowCROS()
+    data = request.json
+    if not data:
+        return '0'
+    prompt = data.get('prompt')
+    step = data.get('step')
+    paraJson=data.get('paraJson') #转成json对象
 
+    if step is None:
+        step = int(settings.library.general.step)
+    
+    if paraJson is None:
+        paraJson = {'libraryStategy':"sogowx:2 bingsite:3 fess:2 rtst:3 bing:2",'maxItmes':10}
+
+    print(type(paraJson)) 
+    print(paraJson) 
+
+    return json.dumps(zhishiku_dynamic.find_dynamic(prompt,int(step),paraJson))
 
 
 @route('/api/find', method=("POST","OPTIONS"))
