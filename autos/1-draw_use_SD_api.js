@@ -20,11 +20,13 @@
         app.loading = true
         add_conversation("user", Q)
         response = await fetch("/api/sd_agent", {
+            // signal: signal,
             method: 'post',
             body: JSON.stringify({
-                "prompt": `((masterpiece, best quality)), photorealistic,` + Q,
-                "steps": 20,
-                "negative_prompt": `paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans`
+                prompt: `((masterpiece, best quality)), photorealistic,` + Q,
+                steps: 20,
+                // sampler_name: "DPM++ SDE Karras",
+                negative_prompt: `paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans`
             }),
             headers: {
                 'Content-Type': 'application/json'
