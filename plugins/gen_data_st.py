@@ -14,7 +14,7 @@ import sys
 import time
 os.chdir(sys.path[0][:-8])
 
-from common import success_print, error_print
+from common import success_print
 from common import error_helper
 from common import settings
 from common import CounterLock
@@ -69,7 +69,7 @@ def make_index():
     metadatas = [d.metadata for d in doc_texts]
     thread = threading.Thread(target=clac_embedding, args=(texts, embeddings, metadatas))
     thread.start()
-    while embedding_lock.get_waiting_threads()>1:
+    while embedding_lock.get_waiting_threads()>2:
         time.sleep(0.1)
 
 all_files=[]
@@ -102,23 +102,30 @@ for i in range(len(all_files)):
                 data = f.read()
     except Exception as e:
         print("文件读取失败，当前文件已被跳过：",file,"。错误信息：",e)
-    data = re.sub(r'[\n\r]+', "", data)
     data = re.sub(r'！', "！\n", data)
     data = re.sub(r'：', "：\n", data)
     data = re.sub(r'。', "。\n", data)
+    data = re.sub(r'\r', "\n", data)
+    data = re.sub(r'\n\n', "\n", data)
+    data = re.sub(r"\n\s*\n", "\n", data)
     length_of_read+=len(data)
     docs.append(Document(page_content=data, metadata={"source": file}))
     if length_of_read > 1e5:
         success_print("处理进度",int(100*i/len(all_files)),f"%\t({i}/{len(all_files)})")
         make_index()
+        # print(embedding_lock.get_waiting_threads())
         length_of_read=0
 
-#if len(all_files) == 0 or length_of_read == 0:
-#    error_print("txt 目录没有数据")
-#    sys.exit(0)
+
+if len(all_files) == 0:
+    error_print("txt 目录没有数据")
+    sys.exit(0)
 
 if len(docs) > 0:
     make_index()
+
+while embedding_lock.get_waiting_threads()>0:
+    time.sleep(0.1)
 with embedding_lock:
     time.sleep(0.1)
     with vectorstore_lock:
