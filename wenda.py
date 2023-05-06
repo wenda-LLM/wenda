@@ -1,3 +1,5 @@
+import logging
+logging.captureWarnings(True)
 import torch
 import threading
 import os
