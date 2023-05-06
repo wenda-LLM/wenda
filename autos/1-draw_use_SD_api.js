@@ -11,7 +11,7 @@
 
 
 功能.push({
-    名称: "draw_use_SD_api",
+    名称: "draw use SD",
     问题: async () => {
         lsdh(false)
         zsk(false)
@@ -30,9 +30,13 @@
                 'Content-Type': 'application/json'
             }
         })
-        let json = await response.json()
+        try {
+            let json = await response.json()
+            add_conversation("AI", '![](data:image/png;base64,' + json.images[0] + ")")
+        } catch (error) {
+            alert("连接SD API失败，请确认已开启agents库，并将SD API地址设置为127.0.0.1:786")
+        }
         app.loading = false
-        add_conversation("AI", '![](data:image/png;base64,' + json.images[0] + ")")
         save_history()
     },
 })
