@@ -1,4 +1,4 @@
-app.plugins.push({ icon:'note-edit-outline', url: "/static/wdtodolist/index.html" })
+app.plugins.push({ icon:'note-edit-outline', url: "/static/wdnote/index.html" })
 
 
 功能.push({
