@@ -69,7 +69,7 @@ def make_index():
     metadatas = [d.metadata for d in doc_texts]
     thread = threading.Thread(target=clac_embedding, args=(texts, embeddings, metadatas))
     thread.start()
-    while embedding_lock.get_waiting_threads()>1:
+    while embedding_lock.get_waiting_threads()>2:
         time.sleep(0.1)
 
 all_files=[]
