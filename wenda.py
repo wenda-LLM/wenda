@@ -10,7 +10,7 @@ import bottle
 
 from plugins.common import settings 
 from plugins.common import error_helper,error_print,success_print
-from plugins.common import CounterLock
+from plugins.common import CounterLock,allowCROS
 
 
 def load_LLM():
@@ -56,9 +56,26 @@ def load_zsk():
     except Exception as e:
         error_helper("知识库加载失败，请阅读说明",r"https://github.com/l15y/wenda#%E7%9F%A5%E8%AF%86%E5%BA%93")
         raise e
-
+    
 thread_load_zsk = threading.Thread(target=load_zsk)
 thread_load_zsk.start()
+
+# 按照auto的需求动态载入相应的知识库
+# 例如某auto需要bingsite和st，这可以动态的载入这类知识库
+zhishiku_dynamic = None
+def load_dynamic_zsk():
+    try:
+        from importlib import import_module
+        global zhishiku_dynamic
+        zhishiku_dynamic = import_module('plugins.zhishiku_dynamic')
+        success_print("动态知识库加载完成")
+    except Exception as e:
+        error_helper("动态知识库加载失败，请阅读说明",r"https://github.com/l15y/wenda#%E7%9F%A5%E8%AF%86%E5%BA%93")
+        raise e
+
+# 该线程的作用主要是导入动态知识库的查询函数 
+thread_load_dynamiczsk = threading.Thread(target=load_dynamic_zsk)
+thread_load_dynamiczsk.start()
 
 @route('/static/<path:path>')
 def staticjs(path='-'):
@@ -104,11 +121,6 @@ def noCache():
     response.add_header("Cache-Control", "no-cache")
     response.add_header("Cache-Control", "no-store")
     
-def allowCROS():
-    response.set_header('Access-Control-Allow-Origin', '*')
-    response.add_header('Access-Control-Allow-Methods', 'POST,OPTIONS')
-    response.add_header('Access-Control-Allow-Headers',
-                        'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token')
 @route('/')
 def index():
     noCache()
@@ -130,7 +142,6 @@ def validate():
         'HTTP_ACCESS_CONTROL_REQUEST_METHOD')
     if REQUEST_METHOD == 'OPTIONS' and HTTP_ACCESS_CONTROL_REQUEST_METHOD:
         request.environ['REQUEST_METHOD'] = HTTP_ACCESS_CONTROL_REQUEST_METHOD
-
 
 
 

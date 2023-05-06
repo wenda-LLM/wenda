@@ -3,7 +3,7 @@ from langchain.embeddings import HuggingFaceEmbeddings
 import sentence_transformers
 import numpy as np
 import re,os
-from plugins.common import settings
+from plugins.common import settings,allowCROS
 from plugins.common import error_helper 
 from plugins.common import success_print 
 divider='\n'
@@ -161,9 +161,3 @@ def save_news():
 def read_news(path=""):
     allowCROS()
     return static_file(path, root="txt/")
-
-def allowCROS():
-    response.set_header('Access-Control-Allow-Origin', '*')
-    response.add_header('Access-Control-Allow-Methods', 'POST,OPTIONS')
-    response.add_header('Access-Control-Allow-Headers',
-                        'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token')
