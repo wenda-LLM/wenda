@@ -113,9 +113,9 @@ for i in range(len(all_files)):
         make_index()
         length_of_read=0
 
-if len(all_files) == 0 or length_of_read == 0:
-    error_print("txt 目录没有数据")
-    sys.exit(0)
+#if len(all_files) == 0 or length_of_read == 0:
+#    error_print("txt 目录没有数据")
+#    sys.exit(0)
 
 if len(docs) > 0:
     make_index()
