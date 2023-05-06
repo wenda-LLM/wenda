@@ -389,9 +389,9 @@
 					<v-data-table
 						:headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
 						:items="zhishiku" hide-default-header hide-default-footer>
-						<template v-slot:item.title="{ item }" >
+						<template v-slot:item.title="{ item }">
 							<p v-html="md2html(item.title)"></p>
-						  </template>
+						</template>
 					</v-data-table>
 
 				</v-tab-item>
@@ -508,7 +508,7 @@
 
 			提交(last_send.content, last_send.keyword)
 		}
-		send = async (s, keyword = "") => {
+		send = async (s, keyword = "", show = true) => {
 			if (keyword == "") keyword = s
 			is_abord = false
 			app.loading = true
@@ -543,9 +543,11 @@
 			已排队到 = false
 			setTimeout(read_now, 3000)
 			app.问题 = s.replace(/\r\n/g, '\n')
-			app.chat.push({ role: "user", content: app.问题, keyword: keyword })
 			let 当前会话 = { role: "AI", content: '……' }
-			app.chat.push(当前会话)
+			if (show) {
+				app.chat.push({ role: "user", content: app.问题, keyword: keyword })
+				app.chat.push(当前会话)
+			}
 			setTimeout(() =>
 				window.scrollTo(0, document.body.scrollHeight)
 				, 0)
