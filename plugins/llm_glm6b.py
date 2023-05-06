@@ -23,10 +23,46 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku
                                                max_length=max_length, top_p=top_p, temperature=temperature):
         yield response
 
+def sum_values(dict):
+  total = 0
+  for value in dict.values():
+    total += value
+  return total
+
+def dict_to_list(d):
+  l = []
+  for k, v in d.items():
+    l.extend([k] * v)
+  return l
 
 def load_model():
     global model, tokenizer
     from transformers import AutoModel, AutoTokenizer
+
+    num_trans_layers = 28
+    strategy = ('->'.join([x.strip() for x in settings.llm.strategy.split('->')])).replace('->', ' -> ')
+    s = [x.strip().split(' ') for x in strategy.split('->')]
+    print(s)
+    if len(s)>1:
+        from accelerate import dispatch_model
+        start_device = int(s[0][0].split(':')[1])
+        device_map = {'transformer.word_embeddings': start_device,
+                  'transformer.final_layernorm': start_device, 'lm_head': start_device}
+        
+        n = {}
+        for i in range(len(s)):
+            si = s[i]
+            if len(s[i]) > 2:
+                ss = si[2]
+                if ss.startswith('*'):
+                        n[int(si[0].split(':')[1])]=int(ss[1:])
+            else:
+                n[int(si[0].split(':')[1])] = num_trans_layers+2-sum_values(n)
+        n[start_device] -= 2
+        n = dict_to_list(n)
+        for i in range(num_trans_layers):
+            device_map[f'transformer.layers.{i}'] = n[i]
+
     tokenizer = AutoTokenizer.from_pretrained(
         settings.llm.path, local_files_only=True, trust_remote_code=True)
     model = AutoModel.from_pretrained(
@@ -35,7 +71,8 @@ def load_model():
         print('Lora模型地址', settings.llm.lora)
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, settings.llm.lora)
-    device, precision = settings.llm.strategy.split()
+        
+    device, precision = s[0][0], s[0][1]
     # 根据设备执行不同的操作
     if device == 'cpu':
         # 如果是cpu，不做任何操作
@@ -45,6 +82,8 @@ def load_model():
         import torch
         if not (precision.startswith('fp16i') and torch.cuda.get_device_properties(0).total_memory < 1.4e+10):
             model = model.cuda()
+    elif len(s)>1 and device.startswith('cuda:'):
+        pass
     else:
         # 如果是其他设备，报错并退出程序
         print('Error: 不受支持的设备')
@@ -78,4 +117,6 @@ def load_model():
         # 如果是其他精度，报错并退出程序
         print('Error: 不受支持的精度')
         exit()
+    if len(s)>1:
+        model = dispatch_model(model, device_map=device_map)
     model = model.eval()
