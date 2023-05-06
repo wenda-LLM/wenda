@@ -1,6 +1,24 @@
 app.plugins.push({ icon:'note-edit-outline', url: "/static/wdnote/index.html" })
 
 
+find_dynamic = async (s, step = 1,paraJson) => {
+    console.table(paraJson)
+    response = await fetch("/api/find_dynamic", {
+        method: 'post',
+        body: JSON.stringify({
+            prompt: s,
+            step: step,
+            paraJson: paraJson
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    let json = await response.json()
+    console.table(json)
+    app.zhishiku_dynamic = json
+    return json
+}
 功能.push({
     名称: "闻达笔记",
     问题: async () => {

@@ -10,7 +10,7 @@ import bottle
 
 from plugins.common import settings 
 from plugins.common import error_helper,error_print,success_print
-from plugins.common import CounterLock
+from plugins.common import CounterLock,allowCROS
 
 
 def load_LLM():
@@ -121,11 +121,6 @@ def noCache():
     response.add_header("Cache-Control", "no-cache")
     response.add_header("Cache-Control", "no-store")
     
-def allowCROS():
-    response.set_header('Access-Control-Allow-Origin', '*')
-    response.add_header('Access-Control-Allow-Methods', 'POST,OPTIONS')
-    response.add_header('Access-Control-Allow-Headers',
-                        'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token')
 @route('/')
 def index():
     noCache()
@@ -148,26 +143,6 @@ def validate():
     if REQUEST_METHOD == 'OPTIONS' and HTTP_ACCESS_CONTROL_REQUEST_METHOD:
         request.environ['REQUEST_METHOD'] = HTTP_ACCESS_CONTROL_REQUEST_METHOD
 
-@route('/api/find_dynamic', method=("POST","OPTIONS"))
-def find_dynamic():
-    allowCROS()
-    data = request.json
-    if not data:
-        return '0'
-    prompt = data.get('prompt')
-    step = data.get('step')
-    paraJson=data.get('paraJson') #转成json对象
-
-    if step is None:
-        step = int(settings.library.general.step)
-    
-    if paraJson is None:
-        paraJson = {'libraryStategy':"sogowx:2 bingsite:3 fess:2 rtst:3 bing:2",'maxItmes':10}
-
-    print(type(paraJson)) 
-    print(paraJson) 
-
-    return json.dumps(zhishiku_dynamic.find_dynamic(prompt,int(step),paraJson))
 
 
 @route('/api/find', method=("POST","OPTIONS"))
