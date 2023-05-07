@@ -11,6 +11,7 @@ llm_models:
      #rwkv模型位置"
      strategy: "cuda fp16i8"
      #rwkv模型参数"
+     #支持rwkvcpp运行方式，设置strategy诸如"Q8_0->16"即可开启，代表运行Q8_0模型在16个cpu核心上
      historymode: state
      #rwkv历史记录实现方式：state、string
   glm6b: 
