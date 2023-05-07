@@ -17,7 +17,7 @@ library:
      #特殊库：
      #mix         根据参数进行多知识库融合
      #agents      提供网络资源代理，没有知识库查找功能，所以数量为0
-     #            （目前stable-diffusion的auto脚本需要使用其中功能，需开启其api功能）
+     #            （目前stable-diffusion的auto脚本需要使用其中功能，同时需开启stable-diffusion的api功能）
 
      count: 5
      #最大抽取数量（所有知识库总和）
