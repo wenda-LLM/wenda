@@ -3,7 +3,7 @@ import re
 
 def chat_init(history):
     global state
-    if settings.HistoryMode!='string':
+    if settings.llm.historymode!='string':
         if history is not None and len(history) > 0:
             pass
         else:
@@ -46,7 +46,7 @@ def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
             ctx=prompt.replace("raw!","")
         else:
             ctx = f"\n\n{user}{interface} {prompt}\n\n{bot}{interface}"
-    if settings.HistoryMode=='string':
+    if settings.llm.historymode=='string':
         ctx=history+ctx
     # print(ctx)
     yield str(len(ctx))+'字正在计算'
