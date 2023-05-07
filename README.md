@@ -13,28 +13,28 @@
 **交流QQ群：LLM使用和综合讨论群162451840；知识库使用讨论群241773574；Auto开发交流群744842245；[discussions](https://github.com/l15y/wenda/discussions)**
 
 <!--ts-->
-* [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
-   * [安装部署](#安装部署)
-      * [懒人包](#懒人包)
-      * [自行安装](#自行安装)
-         * [1.安装库](#1安装库)
-         * [2.下载模型](#2下载模型)
-         * [3.参数设置](#3参数设置)
-   * [Auto](#auto)
-      * [部分内置Auto使用说明](#部分内置auto使用说明)
-   * [知识库](#知识库)
-      * [rtst模式](#rtst模式)
-      * [fess模式](#fess模式)
-      * [知识库调试](#知识库调试)
-      * [使用](#使用)
-   * [模型配置](#模型配置)
-      * [chatGLM-6B](#chatglm-6b)
-      * [chatRWKV](#chatrwkv)
-         * [生成小说](#生成小说)
-         * [文字冒险游戏](#文字冒险游戏)
-      * [llama](#llama)
-* [基于本项目的二次开发](#基于本项目的二次开发)
-   * [<a href="https://github.com/AlanLee1996/wenda-webui">wenda-webui</a>](#wenda-webui)
+- [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
+  - [安装部署](#安装部署)
+    - [懒人包](#懒人包)
+    - [自行安装](#自行安装)
+      - [1.安装库](#1安装库)
+      - [2.下载模型](#2下载模型)
+      - [3.参数设置](#3参数设置)
+  - [Auto](#auto)
+    - [部分内置Auto使用说明](#部分内置auto使用说明)
+  - [知识库](#知识库)
+    - [rtst模式](#rtst模式)
+    - [fess模式](#fess模式)
+    - [知识库调试](#知识库调试)
+    - [使用](#使用)
+  - [模型配置](#模型配置)
+    - [chatGLM-6B](#chatglm-6b)
+    - [chatRWKV](#chatrwkv)
+      - [生成小说](#生成小说)
+      - [文字冒险游戏](#文字冒险游戏)
+    - [llama](#llama)
+- [基于本项目的二次开发](#基于本项目的二次开发)
+  - [wenda-webui](#wenda-webui)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sun May  7 02:10:24 UTC 2023 -->
@@ -68,7 +68,7 @@
 建议使用chatRWKV的RWKV-4-Raven-7B-v11，或chatGLM-6B。
 
 #### 3.参数设置
-把`example.config.yml`重命名为`config.yml`，根据里面的参数说明，填写你的模型下载位置等信息
+把`example.config.yml`重命名为`config.yml`(复制`example.config.yml`)，根据里面的参数说明，填写你的模型下载位置等信息
 
 ## Auto
 auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos`目录的方式注入至程序，为闻达附加各种自动化功能。
@@ -110,7 +110,7 @@ fess模式、bing模式均调用搜索引擎搜索获取答案。
 ### rtst模式
 sentence_transformers+faiss进行索引、匹配，并连同上下文返回。目前支持txt和pdf格式。
 
-支持预先构建索引和运行中构建，其中，预先构建索引强制使用`cuda`，运行中构建根据`config.yml`中`rtst`段的`device(embedding运行设备)`决定，对于显存小于12G的用户建议使用`CPU`。
+支持预先构建索引和运行中构建，其中，预先构建索引强制使用`cuda`，运行中构建根据`config.yml`(复制`example.config.yml`)中`rtst`段的`device(embedding运行设备)`决定，对于显存小于12G的用户建议使用`CPU`。
 
 Windows预先构建索引运行：`plugins/buils_rtst_default_index.bat`。
 
@@ -120,7 +120,7 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 
 
 ### fess模式
-在本机使用默认端口安装fess后可直接运行。否则需修改`config.yml`中`fess_host`的`127.0.0.1:8080`为相应值。[FESS安装教程](install_fess.md)
+在本机使用默认端口安装fess后可直接运行。否则需修改`config.yml`(复制`example.config.yml`)中`fess_host`的`127.0.0.1:8080`为相应值。[FESS安装教程](install_fess.md)
 ###  知识库调试
 ![](imgs/zsk-test.png)
 ![](imgs/zsk-glm.png)
@@ -132,14 +132,14 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 ### chatGLM-6B
 运行：`run_GLM6B.bat`。
 
-模型位置等参数：修改`config.yml`。
+模型位置等参数：修改`config.yml`(复制`example.config.yml`)。
 
 默认参数在GTX1660Ti（6G显存）上运行良好。
 
 ### chatRWKV
 运行：`run_rwkv.bat`。
 
-模型位置等参数：修改`config.yml`。
+模型位置等参数：见`config.yml`(复制`example.config.yml`)。
 
 默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢。
 
@@ -154,11 +154,7 @@ plugins/rwkvcpp里的三个模块来自[saharNooby/rwkv.cpp](https://github.com/
 ### llama
 运行：`run_llama.bat`。
 
-注意库最好使用我修改的：[llama-cpp-python](https://github.com/l15y/llama-cpp-python)，才可以正常使用中文（截止4月15日）。
-
-编译好的：https://github.com/l15y/llama-cpp-python/releases
-
-模型位置等参数：修改`config.yml`。
+模型位置等参数：见`config.yml`(复制`example.config.yml`)。
 
 # 基于本项目的二次开发
 ## [wenda-webui](https://github.com/AlanLee1996/wenda-webui)
