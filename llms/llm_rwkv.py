@@ -7,7 +7,7 @@ if settings.llm.strategy.startswith("Q"):
     from typing import Optional
     import torch
     import tokenizers
-    from plugins.rwkvcpp.sampling import sample_logits
+    from llms.rwkvcpp.sampling import sample_logits
     logits: Optional[torch.Tensor] = None
     state: Optional[torch.Tensor] = None
 
@@ -130,11 +130,11 @@ if settings.llm.strategy.startswith("Q"):
     def load_model():
         global model,tokenizer
         
-        from plugins.rwkvcpp.rwkv_cpp_shared_library import load_rwkv_shared_library
+        from llms.rwkvcpp.rwkv_cpp_shared_library import load_rwkv_shared_library
         library = load_rwkv_shared_library()
         print(f'System info: {library.rwkv_get_system_info_string()}')
         print('Loading RWKV model')
-        from plugins.rwkvcpp.rwkv_cpp_model import RWKVModel
+        from llms.rwkvcpp.rwkv_cpp_model import RWKVModel
         cpu_count = int(settings.llm.strategy.split('->')[1])
         model = RWKVModel(library, settings.llm.path,cpu_count)
         print('Loading 20B tokenizer')

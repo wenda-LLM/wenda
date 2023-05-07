@@ -1,32 +1,35 @@
+import re
+import functools
+import bottle
+from bottle import route, response, request, static_file, hook
+import datetime
+import json
+import os
+import threading
+import torch
+from plugins.common import error_helper, error_print, success_print
+from plugins.common import CounterLock, allowCROS
+from plugins.common import settings
 import logging
 logging.captureWarnings(True)
-import torch
-import threading
-import os
-import json
-import datetime
-from bottle import route, response, request, static_file, hook
-import bottle
-
-from plugins.common import settings 
-from plugins.common import error_helper,error_print,success_print
-from plugins.common import CounterLock,allowCROS
 
 
 def load_LLM():
     try:
         from importlib import import_module
-        LLM = import_module('plugins.llm_'+settings.llm_type)
+        LLM = import_module('llms.llm_'+settings.llm_type)
         return LLM
     except Exception as e:
         print("LLM模型加载失败，请阅读说明：https://github.com/l15y/wenda", e)
+
+
 LLM = load_LLM()
 
-logging=settings.logging
+logging = settings.logging
 if logging:
     from plugins.defineSQL import session_maker, 记录
 
-if not hasattr(LLM,"Lock") :
+if not hasattr(LLM, "Lock"):
     mutex = CounterLock()
 else:
     mutex = LLM.Lock()
@@ -47,20 +50,22 @@ thread_load_model = threading.Thread(target=load_model)
 thread_load_model.start()
 zhishiku = None
 
+
 def load_zsk():
     try:
         from importlib import import_module
         global zhishiku
         import plugins.zhishiku as zsk
-        zhishiku= zsk
+        zhishiku = zsk
         success_print("知识库加载完成")
     except Exception as e:
-        error_helper("知识库加载失败，请阅读说明",r"https://github.com/l15y/wenda#%E7%9F%A5%E8%AF%86%E5%BA%93")
+        error_helper(
+            "知识库加载失败，请阅读说明", r"https://github.com/l15y/wenda#%E7%9F%A5%E8%AF%86%E5%BA%93")
         raise e
-    
+
+
 thread_load_zsk = threading.Thread(target=load_zsk)
 thread_load_zsk.start()
-
 
 
 @route('/static/<path:path>')
@@ -68,8 +73,9 @@ def staticjs(path='-'):
     if path.endswith(".html"):
         noCache()
     if path.endswith(".js"):
-        return static_file(path, root="views/static/",mimetype ="application/javascript")
+        return static_file(path, root="views/static/", mimetype="application/javascript")
     return static_file(path, root="views/static/")
+
 
 @route('/:name')
 def static(name='-'):
@@ -77,21 +83,23 @@ def static(name='-'):
         noCache()
     return static_file(name, root="views")
 
+
 @route('/api/llm')
 def llm_js():
     noCache()
-    return static_file('llm_'+settings.llm_type+".js", root="plugins")
-    
+    return static_file('llm_'+settings.llm_type+".js", root="llms")
+
+
 @route('/api/plugins')
 def read_auto_plugins():
     noCache()
-    plugins=[]
+    plugins = []
     for root, dirs, files in os.walk("autos"):
         for file in files:
             if(file.endswith(".js")):
                 file_path = os.path.join(root, file)
                 with open(file_path, "r", encoding='utf-8') as f:
-                    plugins.append( f.read())
+                    plugins.append(f.read())
     return "\n".join(plugins)
 # @route('/writexml', method=("POST","OPTIONS"))
 # def writexml():
@@ -101,24 +109,26 @@ def read_auto_plugins():
     #     f.write(s)
     #     # print(j)
     #     return s
+
+
 def noCache():
     response.set_header("Pragma", "no-cache")
     response.add_header("Cache-Control", "must-revalidate")
     response.add_header("Cache-Control", "no-cache")
     response.add_header("Cache-Control", "no-store")
-    
+
+
 @route('/')
 def index():
     noCache()
     return static_file("index.html", root="views")
 
 
-
-@route('/api/chat_now', method=('GET',"OPTIONS"))
+@route('/api/chat_now', method=('GET', "OPTIONS"))
 def api_chat_now():
     allowCROS()
     noCache()
-    return {'queue_length':mutex.get_waiting_threads()}
+    return {'queue_length': mutex.get_waiting_threads()}
 
 
 @hook('before_request')
@@ -130,8 +140,7 @@ def validate():
         request.environ['REQUEST_METHOD'] = HTTP_ACCESS_CONTROL_REQUEST_METHOD
 
 
-
-@route('/api/find', method=("POST","OPTIONS"))
+@route('/api/find', method=("POST", "OPTIONS"))
 def api_find():
     allowCROS()
     data = request.json
@@ -141,9 +150,10 @@ def api_find():
     step = data.get('step')
     if step is None:
         step = int(settings.library.step)
-    return json.dumps(zhishiku.find(prompt,int(step)))
+    return json.dumps(zhishiku.find(prompt, int(step)))
 
-@route('/chat/completions', method=("POST","OPTIONS"))
+
+@route('/chat/completions', method=("POST", "OPTIONS"))
 def api_chat_box():
     response.content_type = "text/event-stream"
     response.add_header("Connection", "keep-alive")
@@ -176,19 +186,20 @@ def api_chat_box():
             for response_text in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=use_zhishiku):
                 if (response_text):
                     # yield "data: %s\n\n" %response_text
-                    yield "data: %s\n\n" %json.dumps({"response": response_text})
-            
-            yield "data: %s\n\n" %"[DONE]"
+                    yield "data: %s\n\n" % json.dumps({"response": response_text})
+
+            yield "data: %s\n\n" % "[DONE]"
         except Exception as e:
             error = str(e)
-            error_print("错误",error)
+            error_print("错误", error)
             response_text = ''
         torch.cuda.empty_cache()
     if response_text == '':
-        yield "data: %s\n\n" %json.dumps({"response": ("发生错误，正在重新加载模型"+error)})
+        yield "data: %s\n\n" % json.dumps({"response": ("发生错误，正在重新加载模型"+error)})
         os._exit(0)
-import re
-@route('/api/chat_stream', method=("POST","OPTIONS"))
+
+
+@route('/api/chat_stream', method=("POST", "OPTIONS"))
 def api_chat_stream():
     allowCROS()
     data = request.json
@@ -218,13 +229,14 @@ def api_chat_stream():
         'HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
     error = ""
     footer = '///'
-    
+
     if use_zhishiku:
         # print(keyword)
-        response_d = zhishiku.find(keyword,int(settings.library.step))
+        response_d = zhishiku.find(keyword, int(settings.library.step))
         output_sources = [i['title'] for i in response_d]
-        results = '\n'.join([str(i+1)+". "+re.sub('\n\n', '\n', response_d[i]['content']) for i in range(len(response_d))])
-        prompt = 'system: 请扮演一名专业分析师，根据以下内容回答问题：'+prompt + "\n"+ results
+        results = '\n'.join([str(i+1)+". "+re.sub('\n\n', '\n',
+                            response_d[i]['content']) for i in range(len(response_d))])
+        prompt = 'system: 请扮演一名专业分析师，根据以下内容回答问题：'+prompt + "\n" + results
         if settings.library.show_soucre == True:
             footer = "\n### 来源：\n"+('\n').join(output_sources)+'///'
     with mutex:
@@ -250,19 +262,24 @@ def api_chat_stream():
     print(response)
     yield "/././"
 
+
 bottle.debug(True)
 
 # import webbrowser
 # webbrowser.open_new('http://127.0.0.1:'+str(settings.Port))
 
-import functools
+
 def pathinfo_adjust_wrapper(func):
     # A wrapper for _handle() method
     @functools.wraps(func)
-    def _(s,environ):
-        environ["PATH_INFO"] = environ["PATH_INFO"].encode("utf8").decode("latin1")
-        return func(s,environ)
+    def _(s, environ):
+        environ["PATH_INFO"] = environ["PATH_INFO"].encode(
+            "utf8").decode("latin1")
+        return func(s, environ)
     return _
-bottle.Bottle._handle = pathinfo_adjust_wrapper(bottle.Bottle._handle)#修复bottle在处理utf8 url时的bug
+
+
+bottle.Bottle._handle = pathinfo_adjust_wrapper(
+    bottle.Bottle._handle)  # 修复bottle在处理utf8 url时的bug
 
 bottle.run(server='paste', host="0.0.0.0", port=settings.port, quiet=True)

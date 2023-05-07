@@ -1,6 +1,4 @@
 from plugins.common import settings
-import os
-
 
 def chat_init(history):
     history_formatted = None
