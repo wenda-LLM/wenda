@@ -13,19 +13,19 @@ from typing import Dict, Iterable, List, Optional, Union
 import uuid
 
 from common import settings
-source_folder = settings.library.qdrant.Path
+source_folder = settings.librarys.qdrant.Path
 target_folder = source_folder + '_out'
 source_folder_path = os.path.join(os.getcwd(), source_folder)
 target_folder_path = os.path.join(os.getcwd(), target_folder)
 
 MetadataFilter = Dict[str, Union[str, int, bool]]
-COLLECTION_NAME = settings.library.qdrant.Collection
+COLLECTION_NAME = settings.librarys.qdrant.Collection
 
 class QdrantIndex():
 
     def __init__(self,embedding_model):
         self.qdrant_client = QdrantClient(
-                url=settings.library.qdrant.Qdrant_Host,
+                url=settings.librarys.qdrant.Qdrant_Host,
         )
         self.embedding_model =  embedding_model
         self.embedding_size = self.embedding_model.get_sentence_embedding_dimension()
@@ -118,7 +118,7 @@ for root, dirs, files in os.walk(source_folder_path):
             f.close()
 
 print("开始读取数据")
-embedding_model = SentenceTransformer(settings.library.qdrant.model_path,device=settings.library.qdrant.device)
+embedding_model = SentenceTransformer(settings.librarys.qdrant.model_path,device=settings.librarys.qdrant.device)
 qdrant = QdrantIndex(embedding_model)
 qdrant.insert_into_index(target_folder)
 

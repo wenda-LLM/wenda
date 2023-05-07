@@ -1,7 +1,7 @@
 import requests
 import re,os
 from plugins.common import settings
-cunnrent_setting=settings.library.bingsite
+cunnrent_setting=settings.librarys.bingsite
 session = requests.Session()
 # 正则提取摘要和链接
 title_pattern = re.compile('<a.target=..blank..target..(.*?)</a>')

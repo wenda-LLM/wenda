@@ -31,7 +31,7 @@ root_path_list = source_folder_path.split(os.sep)
 docs = []
 vectorstore = None
 
-model_path = settings.library.rtst.model_path
+model_path = settings.librarys.rtst.model_path
 try:
     embeddings = HuggingFaceEmbeddings(model_name='')
     embeddings.client = sentence_transformers.SentenceTransformer(
@@ -57,9 +57,9 @@ def clac_embedding(texts, embeddings, metadatas):
 
 def make_index():
     global docs
-    if hasattr(settings.library.rtst,"size") and hasattr(settings.library.rtst,"overlap"):
+    if hasattr(settings.librarys.rtst,"size") and hasattr(settings.librarys.rtst,"overlap"):
         text_splitter = CharacterTextSplitter(
-            chunk_size=int(settings.library.rtst.size), chunk_overlap=int(settings.library.rtst.overlap), separator='\n')
+            chunk_size=int(settings.librarys.rtst.size), chunk_overlap=int(settings.librarys.rtst.overlap), separator='\n')
     else:
         text_splitter = CharacterTextSplitter(
             chunk_size=20, chunk_overlap=0, separator='\n')

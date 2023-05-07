@@ -6,13 +6,13 @@ from qdrant_client.http.models import Filter
 from typing import Dict,  List, Optional, Tuple, Union
 from plugins.common import settings
 MetadataFilter = Dict[str, Union[str, int, bool]]
-COLLECTION_NAME = settings.library.qdrant.Collection
+COLLECTION_NAME = settings.librarys.qdrant.Collection
 
 class QdrantIndex():
 
     def __init__(self,embedding_model):
         self.qdrant_client = QdrantClient(
-                url=settings.library.qdrant.Qdrant_Host,
+                url=settings.librarys.qdrant.Qdrant_Host,
         )
         self.embedding_model =  embedding_model
         self.embedding_size = self.embedding_model.get_sentence_embedding_dimension()
@@ -45,5 +45,5 @@ def find(s):
         print(e)
         return []
     
-embedding_model = SentenceTransformer(settings.embeddings_path,device=settings.library.qdrant.device)
+embedding_model = SentenceTransformer(settings.embeddings_path,device=settings.librarys.qdrant.device)
 qdrant = QdrantIndex(embedding_model)

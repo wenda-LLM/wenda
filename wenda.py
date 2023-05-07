@@ -51,7 +51,8 @@ def load_zsk():
     try:
         from importlib import import_module
         global zhishiku
-        zhishiku = import_module('plugins.zhishiku_'+settings.library.general.type)
+        import plugins.zhishiku as zsk
+        zhishiku= zsk
         success_print("知识库加载完成")
     except Exception as e:
         error_helper("知识库加载失败，请阅读说明",r"https://github.com/l15y/wenda#%E7%9F%A5%E8%AF%86%E5%BA%93")
@@ -60,22 +61,7 @@ def load_zsk():
 thread_load_zsk = threading.Thread(target=load_zsk)
 thread_load_zsk.start()
 
-# 按照auto的需求动态载入相应的知识库
-# 例如某auto需要bingsite和st，这可以动态的载入这类知识库
-zhishiku_dynamic = None
-def load_dynamic_zsk():
-    try:
-        from importlib import import_module
-        global zhishiku_dynamic
-        zhishiku_dynamic = import_module('plugins.zhishiku_dynamic')
-        success_print("动态知识库加载完成")
-    except Exception as e:
-        error_helper("动态知识库加载失败，请阅读说明",r"https://github.com/l15y/wenda#%E7%9F%A5%E8%AF%86%E5%BA%93")
-        raise e
 
-# 该线程的作用主要是导入动态知识库的查询函数 
-thread_load_dynamiczsk = threading.Thread(target=load_dynamic_zsk)
-thread_load_dynamiczsk.start()
 
 @route('/static/<path:path>')
 def staticjs(path='-'):
@@ -154,7 +140,7 @@ def api_find():
     prompt = data.get('prompt')
     step = data.get('step')
     if step is None:
-        step = int(settings.library.general.step)
+        step = int(settings.library.step)
     return json.dumps(zhishiku.find(prompt,int(step)))
 
 @route('/chat/completions', method=("POST","OPTIONS"))
@@ -235,11 +221,11 @@ def api_chat_stream():
     
     if use_zhishiku:
         # print(keyword)
-        response_d = zhishiku.find(keyword,int(settings.library.general.step))
+        response_d = zhishiku.find(keyword,int(settings.library.step))
         output_sources = [i['title'] for i in response_d]
         results = '\n'.join([str(i+1)+". "+re.sub('\n\n', '\n', response_d[i]['content']) for i in range(len(response_d))])
         prompt = 'system: 请扮演一名专业分析师，根据以下内容回答问题：'+prompt + "\n"+ results
-        if settings.library.general.show_soucre == True:
+        if settings.library.show_soucre == True:
             footer = "\n### 来源：\n"+('\n').join(output_sources)+'///'
     with mutex:
         print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
