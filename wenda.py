@@ -118,6 +118,27 @@ def noCache():
     response.add_header("Cache-Control", "no-store")
 
 
+def pathinfo_adjust_wrapper(func):
+    # A wrapper for _handle() method
+    @functools.wraps(func)
+    def _(s, environ):
+        environ["PATH_INFO"] = environ["PATH_INFO"].encode(
+            "utf8").decode("latin1")
+        return func(s, environ)
+    return _
+
+
+bottle.Bottle._handle = pathinfo_adjust_wrapper(
+    bottle.Bottle._handle)  # 修复bottle在处理utf8 url时的bug
+
+@hook('before_request')
+def validate():
+    REQUEST_METHOD = request.environ.get('REQUEST_METHOD')
+    HTTP_ACCESS_CONTROL_REQUEST_METHOD = request.environ.get(
+        'HTTP_ACCESS_CONTROL_REQUEST_METHOD')
+    if REQUEST_METHOD == 'OPTIONS' and HTTP_ACCESS_CONTROL_REQUEST_METHOD:
+        request.environ['REQUEST_METHOD'] = HTTP_ACCESS_CONTROL_REQUEST_METHOD
+
 @route('/')
 def index():
     noCache()
@@ -130,14 +151,6 @@ def api_chat_now():
     noCache()
     return {'queue_length': mutex.get_waiting_threads()}
 
-
-@hook('before_request')
-def validate():
-    REQUEST_METHOD = request.environ.get('REQUEST_METHOD')
-    HTTP_ACCESS_CONTROL_REQUEST_METHOD = request.environ.get(
-        'HTTP_ACCESS_CONTROL_REQUEST_METHOD')
-    if REQUEST_METHOD == 'OPTIONS' and HTTP_ACCESS_CONTROL_REQUEST_METHOD:
-        request.environ['REQUEST_METHOD'] = HTTP_ACCESS_CONTROL_REQUEST_METHOD
 
 
 @route('/api/find', method=("POST", "OPTIONS"))
@@ -268,18 +281,5 @@ bottle.debug(True)
 # import webbrowser
 # webbrowser.open_new('http://127.0.0.1:'+str(settings.Port))
 
-
-def pathinfo_adjust_wrapper(func):
-    # A wrapper for _handle() method
-    @functools.wraps(func)
-    def _(s, environ):
-        environ["PATH_INFO"] = environ["PATH_INFO"].encode(
-            "utf8").decode("latin1")
-        return func(s, environ)
-    return _
-
-
-bottle.Bottle._handle = pathinfo_adjust_wrapper(
-    bottle.Bottle._handle)  # 修复bottle在处理utf8 url时的bug
 
 bottle.run(server='paste', host="0.0.0.0", port=settings.port, quiet=True)
