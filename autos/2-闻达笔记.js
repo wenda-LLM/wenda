@@ -1,24 +1,6 @@
 app.plugins.push({ icon:'note-edit-outline', url: "/static/wdnote/index.html" })
 
 
-find_dynamic = async (s, step = 1,paraJson) => {
-    console.table(paraJson)
-    response = await fetch("/api/find_dynamic", {
-        method: 'post',
-        body: JSON.stringify({
-            prompt: s,
-            step: step,
-            paraJson: paraJson
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    let json = await response.json()
-    console.table(json)
-    app.zhishiku_dynamic = json
-    return json
-}
 功能.push({
     名称: "闻达笔记",
     问题: async () => {
@@ -26,7 +8,7 @@ find_dynamic = async (s, step = 1,paraJson) => {
         zsk(false)
         lsdh(false)
         app.chat.push({ "role": "user", "content": "以下文段是我准备写笔记的相关素材和观点，请结合如下内容写一篇笔记。\n文段内容：\n" + Q })
-        kownladge = await find_dynamic(Q, 3,{'libraryStategy':"rtst:3",'maxItmes':2})
+        kownladge = await find_dynamic(Q, 3,{'libraryStategy':"sogowx:3",'maxItmes':2})
 
         result = []
    
