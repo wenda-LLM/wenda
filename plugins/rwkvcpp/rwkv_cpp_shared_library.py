@@ -212,9 +212,9 @@ def load_rwkv_shared_library() -> RWKVSharedLibrary:
         # Search relative to this file
         str(repo_root_dir / 'bin' / 'Release' / file_name),
         # Fallback
-        str(repo_root_dir / file_name)
+        str(repo_root_dir / file_name),
+        str(repo_root_dir / 'rwkvcpp' / file_name)
     ]
-
     for path in paths:
         if os.path.isfile(path):
             return RWKVSharedLibrary(path)
