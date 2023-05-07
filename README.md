@@ -151,14 +151,6 @@ plugins/rwkvcpp里的三个模块来自[saharNooby/rwkv.cpp](https://github.com/
 ![](imgs/novel.png)
 #### 文字冒险游戏
 ![](imgs/wzmx.png)
-
-### rwkv.cpp
-运行：`run_rwkvcpp.sh`。
-
-模型位置等参数：修改`config.yml`。
-
-
-
 ### llama
 运行：`run_llama.bat`。
 
