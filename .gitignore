@@ -25,3 +25,4 @@ vectorstore_path*
 config.yml
 memory
 .history
+*.zip
