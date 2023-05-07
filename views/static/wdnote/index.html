@@ -75,8 +75,8 @@
         .search button {
             flex: 1;
             height: 30px;
-            background-color: #428bca;
-            border-color: #357ebd;
+            background-color: #1a1b1c;
+            border-color: #272728;
             color: #fff;
             border-radius: 5px;
             border: none;
@@ -211,7 +211,7 @@
     <div class="todo_list">
         <div class="top">
             <div class="title">
-                <h2>闻达笔记</h2>
+                <h2 id="updatecontent" onclick="w_getData()">闻达笔记</h2>
             </div>
             <div class="search">
                 <input type="text" id="todo" onkeyup="this.value=this.value.replace(/[, ]/g,'')">
@@ -394,6 +394,12 @@
                 localStorage.setItem('todoList', JSON.stringify(data));
                 w_getData();
             })
+
+            //刷新页面
+            function updatecontent(){
+                w_getData();
+            }
+
             //时间函数
             function w_nowTime() {
                 var myDate = new Date();
