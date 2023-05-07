@@ -157,6 +157,8 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 支持量化在cpu运行，速度较慢，没有显卡或者没有nvidia显卡的用户使用。
 注意默认librwkv.so是在debian sid编译的，不支持windows,其他linux发行版本未知。可以查看：[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)，下载windows版本，或者自行编译。
 
+plugins/rwkv_cpp_model.py,plugins/rwkv_cpp_shared_library.py,plugins/sampling.py这三个模块来自[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)
+
 ### llama
 运行：`run_llama.bat`。
 
