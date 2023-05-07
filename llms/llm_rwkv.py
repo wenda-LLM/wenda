@@ -135,8 +135,11 @@ if settings.llm.strategy.startswith("Q"):
         print(f'System info: {library.rwkv_get_system_info_string()}')
         print('Loading RWKV model')
         from llms.rwkvcpp.rwkv_cpp_model import RWKVModel
-        cpu_count = int(settings.llm.strategy.split('->')[1])
-        model = RWKVModel(library, settings.llm.path,cpu_count)
+        try:
+            cpu_count = int(settings.llm.strategy.split('->')[1])
+            model = RWKVModel(library, settings.llm.path,cpu_count)
+        except:
+            model = RWKVModel(library, settings.llm.path)
         print('Loading 20B tokenizer')
         tokenizer = tokenizers.Tokenizer.from_file(str('20B_tokenizer.json'))
 
