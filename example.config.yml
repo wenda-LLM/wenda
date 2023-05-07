@@ -79,13 +79,12 @@ llm_type: rwkv
 #llm模型类型:glm6b、rwkv、llama、replitcode等，详见相关文件
 llm_models: 
   rwkv: 
-   #   path: "model/rwkv-4-raven-7b-v11.pth"
-     path: "model/rwkv_ggml_q8.bin"
-     #rwkv模型位置"
-   #   strategy: "cuda fp16i8"
-     strategy: "Q8_0"
+     path: "model/rwkv-4-raven-7b-v11.pth"      #rwkv模型位置"
+     strategy: "cuda fp16i8"
+   #   path: "model/rwkv_ggml_q8.bin"           #rwkv模型位置"
+   #   strategy: "Q8_0"       #rwkvcpp:运行方式，设置strategy诸如"Q8_0->16"即可开启，代表运行Q8_0模型在16个cpu核心上
      #rwkv模型参数"
-     #支持rwkvcpp运行方式，设置strategy诸如"Q8_0->16"即可开启，代表运行Q8_0模型在16个cpu核心上
+    
      historymode: state
      #rwkv历史记录实现方式：state、string
   glm6b: 
