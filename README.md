@@ -13,28 +13,28 @@
 **交流QQ群：LLM使用和综合讨论群162451840；知识库使用讨论群241773574；Auto开发交流群744842245；[discussions](https://github.com/l15y/wenda/discussions)**
 
 <!--ts-->
-* [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
-   * [安装部署](#安装部署)
-      * [懒人包](#懒人包)
-      * [自行安装](#自行安装)
-         * [1.安装库](#1安装库)
-         * [2.下载模型](#2下载模型)
-         * [3.参数设置](#3参数设置)
-   * [Auto](#auto)
-      * [部分内置Auto使用说明](#部分内置auto使用说明)
-   * [知识库](#知识库)
-      * [rtst模式](#rtst模式)
-      * [fess模式](#fess模式)
-      * [知识库调试](#知识库调试)
-      * [使用](#使用)
-   * [模型配置](#模型配置)
-      * [chatGLM-6B](#chatglm-6b)
-      * [chatRWKV](#chatrwkv)
-         * [生成小说](#生成小说)
-         * [文字冒险游戏](#文字冒险游戏)
-      * [llama](#llama)
-* [基于本项目的二次开发](#基于本项目的二次开发)
-   * [<a href="https://github.com/AlanLee1996/wenda-webui">wenda-webui</a>](#wenda-webui)
+- [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
+  - [安装部署](#安装部署)
+    - [懒人包](#懒人包)
+    - [自行安装](#自行安装)
+      - [1.安装库](#1安装库)
+      - [2.下载模型](#2下载模型)
+      - [3.参数设置](#3参数设置)
+  - [Auto](#auto)
+    - [部分内置Auto使用说明](#部分内置auto使用说明)
+  - [知识库](#知识库)
+    - [rtst模式](#rtst模式)
+    - [fess模式](#fess模式)
+    - [知识库调试](#知识库调试)
+    - [使用](#使用)
+  - [模型配置](#模型配置)
+    - [chatGLM-6B](#chatglm-6b)
+    - [chatRWKV](#chatrwkv)
+      - [生成小说](#生成小说)
+      - [文字冒险游戏](#文字冒险游戏)
+    - [llama](#llama)
+- [基于本项目的二次开发](#基于本项目的二次开发)
+  - [wenda-webui](#wenda-webui)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sun May  7 10:24:13 UTC 2023 -->
@@ -93,7 +93,7 @@ auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos
 ## 知识库
 知识库原理是生成一些提示信息，会插入到对话里面。
 ![](imgs/zsk1.jpg)
-![](imgs/zsk2.jpg)
+![](imgs/zsk2.png)
 
 fess模式、bing模式均调用搜索引擎搜索获取答案。
 
@@ -144,7 +144,7 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢。
 
 设置strategy诸如"Q8_0->8"即支持量化在cpu运行，速度较慢，没有显卡或者没有nvidia显卡的用户使用。
-注意默认librwkv.so是在debian sid编译的，不支持windows,其他linux发行版本未知。可以查看：[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)，下载windows版本，或者自行编译。
+注意默认librwkv.so是在debian sid编译的，其他linux发行版本未知。可以查看：[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)，下载windows版本，或者自行编译。
 plugins/rwkvcpp里的三个模块来自[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)
 
 #### 生成小说

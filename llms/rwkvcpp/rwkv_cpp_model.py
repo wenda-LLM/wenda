@@ -1,7 +1,7 @@
 import os
 import torch
 import multiprocessing
-from plugins.rwkvcpp.rwkv_cpp_shared_library import RWKVSharedLibrary
+from llms.rwkvcpp.rwkv_cpp_shared_library import RWKVSharedLibrary
 from typing import Tuple, Optional
 
 class RWKVModel:
