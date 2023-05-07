@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .on {
+            overflow: none;
+            white-space: none;
+            text-overflow: none;
+            cursor: pointer;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .todo_list {
+            min-width: 300px;
+            max-width: 60%;
+            height: 800px;
+            margin: 20px auto;
+            border-style: dotted solid double dashed;
+            /* padding: 10px; */
+            position: relative;
+        }
+
+        .left_cli {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+
+        .dialog {
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .6);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 99;
+            display: none;
+        }
+
+        .top {
+            height: 100px;
+            /* outline: red solid 1px; */
+        }
+
+        .title {
+            text-align: center;
+        }
+
+        .search {
+            text-align: center;
+            display: flex;
+        }
+
+        .search input {
+            margin: 10px;
+            width: 70%;
+            height: 30px;
+            padding-left: 5px;
+        }
+
+        .search button {
+            flex: 1;
+            height: 30px;
+            background-color: #1a1b1c;
+            border-color: #272728;
+            color: #fff;
+            border-radius: 5px;
+            border: none;
+            margin: 12px 5px 0 0;
+        }
+
+        .head {
+            /* height: 50px; */
+        }
+
+        .content {
+            height: 600px;
+            /* outline: yellow solid 1px; */
+        }
+
+        .list {
+            margin-top: 10px;
+            height: 30px;
+            display: flex;
+            text-align: center;
+            border-bottom: 2px dashed #ddd;
+        }
+
+        .left {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .time {
+            flex: 1;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .operation {
+            /* width: 20%; */
+            /* text-align: center; */
+            display: flex;
+            padding-right: 15px;
+        }
+
+        .operation button {
+            margin-left: 5px;
+            background-color: #428bca;
+            border-color: #357ebd;
+            color: #fff;
+            border-radius: 5px;
+            border: none;
+            flex: 1;
+            height: 22px;
+            line-height: 22px;
+            padding: 0 4px;
+        }
+
+        .listtodo {
+            /* margin: 12px 0; */
+            display: flex;
+            padding: 8px 0px 8px 10px;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .line {
+            text-decoration: line-through;
+            color: red;
+        }
+
+        .wrap_dialog {
+            width: 30%;
+            position: relative;
+            /* margin: 0 auto 50px; */
+            background: #fff;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+            box-sizing: border-box;
+            padding: 20px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        input {
+            outline: none;
+        }
+
+        .wrap_dialog textarea {
+            width: 95%;
+            height: 100px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            resize: none;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .wrap_dialog h2 {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .wrap_dialog div {
+            margin-top: 40px;
+            text-align: right;
+        }
+
+        .wrap_dialog div button {
+            height: 30px;
+            padding: 0 10px;
+            border: none;
+        }
+
+        .wrap_dialog div button:last-child {
+            background-color: #428bca;
+            color: #fff;
+            margin-right: 10px;
+        }
+
+        .wrap_dialog div button:first-child {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            /* color: #fff; */
+            padding: 0 10px;
+        }
+
+        #imgObj {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="todo_list">
+        <div class="top">
+            <div class="title">
+                <h2 id="updatecontent" onclick="w_getData()">闻达笔记</h2>
+            </div>
+            <div class="search">
+                <input type="text" id="todo" onkeyup="this.value=this.value.replace(/[, ]/g,'')">
+                <button id="add">添加</button>
+                <button id="search">查找</button>
+            </div>
+        </div>
+        <div class="head">
+            <div class="list">
+                <div class="left">
+                    <h3>事件</h3>
+                </div>
+                <div class="time">
+                    <h3>时间</h3>
+                </div>
+                <div class="operation">
+                    <h3>操作</h3>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <!-- <div class="listtodo">
+                <div class="left">
+                    123
+                </div>
+                <div class="time">
+                    2019.15.26
+                </div>
+                <div class="operation">
+                    <button>done</button>
+                    <button>delete</button>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="dialog">
+            <div class="wrap_dialog">
+                <h2>编辑</h2>
+                <textarea></textarea>
+                <div>
+                    <button id="close" onclick="state(0)">取消</button>
+                    <button id="determine">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script>
+        //id标识便于筛选
+        var count = 0;
+        // 第一次加载执行
+        window.onload = function () {
+            w_getData();
+        }
+        //调取本地存储展示在页面 w_前缀是为了方便智能查找
+        function w_getData() {
+            var data = JSON.parse(localStorage.getItem('todoList'));
+            var arr = [];
+            //没有直接return掉
+            if (data == null) {
+                return
+            }
+            $('.content').html('');
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].line == true) {
+                    var html = `<div class="listtodo" listid="${data[i].id}"><div class="left line">${data[i].things}</div><div class="time line">${data[i].time}</div><div class="operation"><button id="dones">done</button><button id="delete">delete</button></div></div>`;
+                } else {
+                    var html = `<div class="listtodo" listid="${data[i].id}"><img id="imgObj" width="12" style="margin: 3px 8px 0 0;opacity: .5;" height="12" src="./edit.png"/>`;
+                    if (data[i].things.length > 15) {
+                        html += `<div class="left left_cli">${data[i].things}</div><div class="time">${data[i].time}</div><div class="operation"><button id="done">done</button><button id="delete">delete</button></div></div>`;
+                    } else {
+                        html += `<div class="left">${data[i].things}</div><div class="time">${data[i].time}</div><div class="operation"><button id="done">done</button><button id="delete">delete</button></div></div>`;
+                    }
+                }
+                $('.content').append(html);
+
+
+                if (data[i].id != null) {
+                    arr.push(data[i].id);
+                }
+            }
+            if (arr.length > 0) {
+                var max = Math.max.apply(null, arr);
+                count = max + 1;
+            }
+        }
+        $(function () {
+            //添加事件
+            $('#add').click(function () {
+                // 非空验证
+                if ($('#todo').val() == '') {
+                    return
+                }
+                //获取时间
+                var time = w_nowTime();
+                //todoList
+                var todoList = [];
+                // 先获取下本地是否存有
+                var historyTodoList = JSON.parse(localStorage.getItem("todoList"));
+                if (historyTodoList) {
+                    //本地有
+                    var todo = {};
+                    todo.things = $('#todo').val();
+                    todo.time = time;
+                    todo.id = count;
+                    historyTodoList.push(todo);
+                    localStorage.setItem('todoList', JSON.stringify(historyTodoList));
+                    count++;
+                } else {
+                    //本地無
+                    var todo = {};
+                    todo.things = $('#todo').val();
+                    todo.time = time;
+                    todo.id = count;
+                    todoList.push(todo);
+                    localStorage.setItem('todoList', JSON.stringify(todoList));
+                    count++;
+                }
+                //存储完成后清空输入框
+                $('#todo').val('');
+                // 显示在任务列表
+                w_getData();
+            })
+
+            $('#search').click(function () {
+                var text = $('#todo').val();//获取文本框输入
+                if ($.trim(text) != "") {
+                    $(".content .listtodo").hide().filter(":contains('" + text + "')").show();
+                } else {
+                    $(".content .listtodo").show()
+                }
+            })
+            // 已完成直接划掉(采用事件委托的方式，方式新增html元素找不到事件)
+            $(document).on('click', '#done', function () {
+                $(this).parent().siblings('time').addClass('line')
+                $(this).parent().siblings('left').addClass('line')
+                $(this).parent().siblings('#imgObj').hide()
+                let listids = $(this).parent().parent().attr('listid');
+                let datas = JSON.parse(localStorage.getItem('todoList'));
+                let resIndexs = datas.findIndex(v => {
+                    return v.id === parseInt(listids);
+                })
+                datas[resIndexs].line = true;
+                localStorage.setItem('todoList', JSON.stringify(datas));
+                w_getData();
+
+            })
+
+            $(document).on('click', '#dones', function () {
+                $(this).parent().siblings('.time').removeClass('line')
+                $(this).parent().siblings('.left').addClass('line')
+                let listids = $(this).parent().parent().attr('listid');
+                let datas = JSON.parse(localStorage.getItem('todoList'));
+                let resIndexs = datas.findIndex(v => {
+                    return v.id === parseInt(listids);
+                })
+                datas[resIndexs].line = false;
+                localStorage.setItem('todoList', JSON.stringify(datas));
+                w_getData();
+
+            })
+
+
+            //delete删除事件(采用事件委托的方式，方式新增html元素找不到事件)
+            $(document).on('click', '#delete', function () {
+                let listid = $(this).parent().parent().attr('listid');
+                let data = JSON.parse(localStorage.getItem('todoList'));
+                // ES6 提供了两个数组的实例查找相关的方法
+                // ① Array.find
+                // ② Array.findIndex
+                let res = data.find(v => {
+                    return v.id === parseInt(listid);
+                })
+                let resIndex = data.findIndex(v => {
+                    return v.id === parseInt(listid);
+                })
+                console.log(res, resIndex)
+                data.splice(resIndex, 1);
+                //删除后存储
+                localStorage.setItem('todoList', JSON.stringify(data));
+                w_getData();
+            })
+
+            //刷新页面
+            function updatecontent(){
+                w_getData();
+            }
+
+            //时间函数
+            function w_nowTime() {
+                var myDate = new Date();
+                var year = myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+                var month = myDate.getMonth() + 1;       //获取当前月份(0-11,0代表1月)
+                var day = myDate.getDate();        //获取当前日(1-31)
+                var week = myDate.getDay();         //获取当前星期X(0-6,0代表星期天)
+                var hour = myDate.getHours();       //获取当前小时数(0-23)
+                var minutes = myDate.getMinutes();     //获取当前分钟数(0-59)
+                var seconds = myDate.getSeconds();     //获取当前秒数(0-59)
+                switch (week) {
+                    case 0:
+                        week = `日`
+                        break;
+                    case 1:
+                        week = `一`
+                        break;
+                    case 2:
+                        week = `二`
+                        break;
+                    case 3:
+                        week = `三`
+                        break;
+                    case 4:
+                        week = `四`
+                        break;
+                    case 5:
+                        week = `五`
+                        break;
+                    case 6:
+                        week = `六`
+                        break;
+                    default:
+                }
+                return `${year}年${w_zero(month)}月${w_zero(day)}日${w_zero(hour)}:${w_zero(minutes)}:${w_zero(seconds)}星期${week}`
+            }
+            //不够补零
+            function w_zero(num) {
+                if (num < 10) return "0" + num; else return num;
+            }
+        })
+        // enter添加事件
+        $('#todo').keydown(function (event) {
+            var e = event || window.event;
+            if (e.keyCode == 13) {
+                $('#add').click();
+            }
+        });
+        $(document).on('click', '.content .listtodo .left_cli', function () {
+            $(this).addClass('on').removeClass('left_cli');
+        })
+
+        $(document).on('click', '.content .listtodo .on', function () {
+            $(this).addClass('left_cli').removeClass('on')
+        })
+
+        var ItemId = ''
+        $(document).on('click', '#imgObj', function () {
+            ItemId = $(this).parent().attr('listid');
+            state(1)
+            $('.dialog textarea').val($(this).siblings('.left').html())
+        })
+
+        $(document).on('click', '#determine', function () {
+            state(0)
+            let data = JSON.parse(localStorage.getItem('todoList'));
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].id === parseInt(ItemId)) {
+                    data[i].things = $('.dialog textarea').val()
+                }
+            }
+            let resIndex = data.findIndex(v => {
+                return v.id === parseInt(ItemId);
+            })
+            localStorage.setItem('todoList', JSON.stringify(data));
+            w_getData();
+        })
+
+        function state(val) {
+            if (val == 1) {
+                $('.dialog').show()
+            } else {
+                $('.dialog').hide()
+            }
+        }
+
+    </script>
+</body>
+
+</html>
