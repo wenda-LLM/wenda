@@ -13,28 +13,29 @@
 **交流QQ群：LLM使用和综合讨论群162451840；知识库使用讨论群241773574；Auto开发交流群744842245；[discussions](https://github.com/l15y/wenda/discussions)**
 
 <!--ts-->
-* [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
-   * [安装部署](#安装部署)
-      * [懒人包](#懒人包)
-      * [自行安装](#自行安装)
-         * [1.安装库](#1安装库)
-         * [2.下载模型](#2下载模型)
-         * [3.参数设置](#3参数设置)
-   * [Auto](#auto)
-      * [部分内置Auto使用说明](#部分内置auto使用说明)
-   * [知识库](#知识库)
-      * [rtst模式](#rtst模式)
-      * [fess模式](#fess模式)
-      * [知识库调试](#知识库调试)
-      * [使用](#使用)
-   * [模型配置](#模型配置)
-      * [chatGLM-6B](#chatglm-6b)
-      * [chatRWKV](#chatrwkv)
-         * [生成小说](#生成小说)
-         * [文字冒险游戏](#文字冒险游戏)
-      * [llama](#llama)
-* [基于本项目的二次开发](#基于本项目的二次开发)
-   * [<a href="https://github.com/AlanLee1996/wenda-webui">wenda-webui</a>](#wenda-webui)
+- [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
+  - [安装部署](#安装部署)
+    - [各版本功能及安装说明](#各版本功能及安装说明)
+    - [懒人包](#懒人包)
+    - [自行安装](#自行安装)
+      - [1.安装库](#1安装库)
+      - [2.下载模型](#2下载模型)
+      - [3.参数设置](#3参数设置)
+  - [Auto](#auto)
+    - [部分内置Auto使用说明](#部分内置auto使用说明)
+  - [知识库](#知识库)
+    - [rtst模式](#rtst模式)
+    - [fess模式](#fess模式)
+    - [知识库调试](#知识库调试)
+    - [使用](#使用)
+  - [模型配置](#模型配置)
+    - [chatGLM-6B](#chatglm-6b)
+    - [chatRWKV](#chatrwkv)
+      - [生成小说](#生成小说)
+      - [文字冒险游戏](#文字冒险游戏)
+    - [llama](#llama)
+- [基于本项目的二次开发](#基于本项目的二次开发)
+  - [wenda-webui](#wenda-webui)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sun May  7 11:04:27 UTC 2023 -->
@@ -43,6 +44,19 @@
 ![](imgs/setting.png)
 ![](imgs/setting2.png)
 ## 安装部署
+### 各版本功能及安装说明
+| 功能                          | Windows懒人包                                                                | 自部署 |
+| ----------------------------- | ---------------------------------------------------------------------------- | ------ |
+| [知识库](#知识库)             | rtst模式须下载模型text2vec-large-chinese，fess模式须安装fess，网络模式直接用 | 同上   |
+| [Auto](#auto)                 | 全部支持,QQ机器人须自行安装 mirai-api-http                                   | 同上   |
+| [chatGLM-6B](#chatglm-6b)     | 支持CUDA下int4、8、16，须自行下载模型 。可自行安装组件以支持CPU              | 同上   |
+| [chatRWKV](#chatrwkv) torch版 | 全部功能支持，须自行下载模型。在安装vc后支持一键启动CUDA加速                 | 同上   |
+| chatRWKV rwlv.cpp版           | 全部功能支持，须自行下载模型，也可使用内置脚本对torch版模型转换和量化。      | 同上   |
+| replit                        | 支持，须自行下载模型。                                                       | 同上   |
+| chatglm130b api               | 支持，须设置自己的key                                                        | 支持   |
+| openai api                    | 支持，须设置自己的key                                                        | 支持   |
+| [llama](#llama).cpp           | 不支持                                                                       | 支持   |
+| moss                          | 不支持                                                                       | 支持   |
 ### 懒人包
 链接：https://pan.baidu.com/s/105nOsldGt5mEPoT2np1ZoA?pwd=lyqz 
 
@@ -82,7 +96,7 @@ auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos
 | face-recognition.js  | 纯浏览器端人脸检测：通过识别嘴巴开合，控制语音输入。因浏览器限制，仅本地或TLS下可用 |
 | QQ.js                | QQ机器人:配置过程见文件开头注释                                                     |
 | block_programming.js | 猫猫也会的图块化编程:通过拖动图块实现简单Auto功能                                   |
-| 1-draw_use_SD_api.js | 通过agents模块（见example.config.yml`<Library>`）调用Stable Diffusion接口绘图          |
+| 1-draw_use_SD_api.js | 通过agents模块（见example.config.yml`<Library>`）调用Stable Diffusion接口绘图       |
 
 以上功能主要用于展示auto用法，进一步能力有待广大用户进一步发掘。
 ![](imgs/auto1.jpg)
@@ -107,7 +121,6 @@ fess模式、bing模式均调用搜索引擎搜索获取答案。
 2.   bing模式，cn.bing搜索，仅国内可用
 2.   bingsite模式，cn.bing站内搜索，仅国内可用
 3.   fess模式，本地部署的[fess搜索](https://github.com/codelibs/fess)，并进行关键词提取
-4.   mix模式，融合
 ### rtst模式
 sentence_transformers+faiss进行索引、匹配，并连同上下文返回。目前支持txt和pdf格式。
 
