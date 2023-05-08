@@ -13,29 +13,30 @@
 **交流QQ群：LLM使用和综合讨论群162451840；知识库使用讨论群241773574；Auto开发交流群744842245；[discussions](https://github.com/l15y/wenda/discussions)**
 
 <!--ts-->
-* [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
-   * [安装部署](#安装部署)
-      * [各版本功能及安装说明](#各版本功能及安装说明)
-      * [懒人包](#懒人包)
-      * [自行安装](#自行安装)
-         * [1.安装库](#1安装库)
-         * [2.下载模型](#2下载模型)
-         * [3.参数设置](#3参数设置)
-   * [Auto](#auto)
-      * [部分内置Auto使用说明](#部分内置auto使用说明)
-   * [知识库](#知识库)
-      * [rtst模式](#rtst模式)
-      * [fess模式](#fess模式)
-      * [知识库调试](#知识库调试)
-      * [使用](#使用)
-   * [模型配置](#模型配置)
-      * [chatGLM-6B](#chatglm-6b)
-      * [chatRWKV](#chatrwkv)
-         * [生成小说](#生成小说)
-         * [文字冒险游戏](#文字冒险游戏)
-      * [llama](#llama)
-* [基于本项目的二次开发](#基于本项目的二次开发)
-   * [<a href="https://github.com/AlanLee1996/wenda-webui">wenda-webui</a>](#wenda-webui)
+- [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
+  - [安装部署](#安装部署)
+    - [各版本功能及安装说明](#各版本功能及安装说明)
+    - [懒人包](#懒人包)
+    - [自行安装](#自行安装)
+      - [1.安装库](#1安装库)
+      - [2.下载模型](#2下载模型)
+      - [3.参数设置](#3参数设置)
+  - [Auto](#auto)
+    - [部分内置Auto使用说明](#部分内置auto使用说明)
+  - [知识库](#知识库)
+    - [rtst模式](#rtst模式)
+    - [fess模式](#fess模式)
+    - [知识库调试](#知识库调试)
+    - [使用](#使用)
+  - [模型配置](#模型配置)
+    - [chatGLM-6B](#chatglm-6b)
+    - [chatRWKV](#chatrwkv)
+      - [torch](#torch)
+      - [cpp](#cpp)
+      - [文字冒险游戏](#文字冒险游戏)
+    - [llama](#llama)
+- [基于本项目的二次开发](#基于本项目的二次开发)
+  - [wenda-webui](#wenda-webui)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Mon May  8 12:13:14 UTC 2023 -->
@@ -45,18 +46,18 @@
 ![](imgs/setting2.png)
 ## 安装部署
 ### 各版本功能及安装说明
-| 功能                          | Windows懒人包                                                                | 自部署 |
-| ----------------------------- | ---------------------------------------------------------------------------- | ------ |
-| [知识库](#知识库)             | rtst模式须下载模型text2vec-large-chinese，fess模式须安装fess，网络模式直接用 | 同上   |
-| [Auto](#auto)                 | 全部支持,QQ机器人须自行安装 mirai-api-http                                   | 同上   |
-| [chatGLM-6B](#chatglm-6b)     | 支持CUDA下int4、8、16，须自行下载模型 。可自行安装组件以支持CPU              | 同上   |
-| [chatRWKV](#chatrwkv) torch版 | 全部功能支持，须自行下载模型。在安装vc后支持一键启动CUDA加速                 | 同上   |
-| chatRWKV rwlv.cpp版           | 全部功能支持，须自行下载模型，也可使用内置脚本对torch版模型转换和量化。      | 同上   |
-| replit                        | 支持，须自行下载模型。                                                       | 同上   |
-| chatglm130b api               | 支持，须设置自己的key                                                        | 支持   |
-| openai api                    | 支持，须设置自己的key                                                        | 支持   |
-| [llama](#llama).cpp           | 不支持                                                                       | 支持   |
-| moss                          | 不支持                                                                       | 支持   |
+| 功能                       | Windows懒人包                                                                | 自部署 |
+| -------------------------- | ---------------------------------------------------------------------------- | ------ |
+| [知识库](#知识库)          | rtst模式须下载模型text2vec-large-chinese，fess模式须安装fess，网络模式直接用 | 同上   |
+| [Auto](#auto)              | 全部支持，[部分内置Auto使用说明](#部分内置auto使用说明)                      | 同上   |
+| [chatGLM-6B](#chatglm-6b)  | 支持CUDA下int4、8、16，须自行下载模型 。可自行安装组件以支持CPU              | 同上   |
+| chatRWKV [torch](#torch)版 | 全部功能支持，须自行下载模型。在安装vc后支持一键启动CUDA加速                 | 同上   |
+| chatRWKV [cpp](#cpp)版     | 全部功能支持，须自行下载模型，也可使用内置脚本对torch版模型转换和量化。      | 同上   |
+| replit                     | 支持，须自行下载模型。                                                       | 同上   |
+| chatglm130b api            | 支持，须设置自己的key                                                        | 支持   |
+| openai api                 | 支持，须设置自己的key                                                        | 支持   |
+| [llama](#llama).cpp        | 不支持                                                                       | 支持   |
+| moss                       | 不支持                                                                       | 支持   |
 ### 懒人包
 链接：https://pan.baidu.com/s/105nOsldGt5mEPoT2np1ZoA?pwd=lyqz 
 
@@ -151,18 +152,24 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 默认参数在GTX1660Ti（6G显存）上运行良好。
 
 ### chatRWKV
-运行：`run_rwkv.bat`。
+现在支持torch和cpp两种后端实现，运行：`run_rwkv.bat`。
 
 模型位置等参数：见`config.yml`(复制`example.config.yml`)。
+#### torch
+可使用内置脚本对模型量化，运行：`cov_torch_rwkv.bat`。此操作可以加快启动速度。
 
 默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢。
 
-设置strategy诸如"Q8_0->8"即支持量化在cpu运行，速度较慢，没有显卡或者没有nvidia显卡的用户使用。
-注意默认librwkv.so是在debian sid编译的，其他linux发行版本未知。可以查看：[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)，下载windows版本，或者自行编译。
-plugins/rwkvcpp里的三个模块来自[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)
+在安装vc后支持一键启动CUDA加速，运行：`run_rwkv_with_vc.bat`。强烈建议安装！！！
+#### cpp
+可使用内置脚本对torch版模型转换和量化。 运行：`cov_ggml_rwkv.bat`。
 
-#### 生成小说
-![](imgs/novel.png)
+设置strategy诸如"Q8_0->8"即支持量化在cpu运行，速度较慢，没有显卡或者没有nvidia显卡的用户使用。
+
+注意：默认windows版本文件为AVX2，默认Liunx版本文件是在debian sid编译的，其他linux发行版本未知。
+
+可以查看：[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)，下载其他版本，或者自行编译。
+
 #### 文字冒险游戏
 ![](imgs/wzmx.png)
 ### llama
