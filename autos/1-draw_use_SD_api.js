@@ -16,9 +16,10 @@
         lsdh(false)
         zsk(false)
 
-        Q = await send("使用英语简要描述以下场景：" + app.问题)
+        add_conversation("user", app.问题)
+        Q = await send("使用英语简要描述以下场景：" + app.问题, app.问题, false)
         app.loading = true
-        add_conversation("user", Q)
+        alert("提示词：" + Q)
         response = await fetch("/api/sd_agent", {
             // signal: signal,
             method: 'post',

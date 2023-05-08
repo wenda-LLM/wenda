@@ -10,7 +10,7 @@ divider='\n'
 
 if not os.path.exists('memory'):
     os.mkdir('memory')
-cunnrent_setting=settings.library.rtst
+cunnrent_setting=settings.librarys.rtst
 def get_doc_by_id(id,memory_name):
     return vectorstores[memory_name].docstore.search(vectorstores[memory_name].index_to_docstore_id[id])
 
@@ -137,7 +137,7 @@ def api_find():
     step = data.get('step')
     memory_name=data.get("memory_name")
     if step is None:
-        step = int(settings.library.general.step)
+        step = int(settings.library.step)
     return json.dumps(find(prompt,int(step),memory_name))
 
 @route('/api/save_news', method=("POST","OPTIONS"))

@@ -51,7 +51,7 @@ def find(search_query,step = 0):
         rest = []
         for i in search_query.split("########"):
             if len(i.strip())>0:
-                url = 'http://' + settings.library.fess.fess_host + '/json/?q={}&num=10&sort=score.desc&lang=zh_CN'.format(i)
+                url = 'http://' + settings.librarys.fess.fess_host + '/json/?q={}&num=10&sort=score.desc&lang=zh_CN'.format(i)
                 res = session.get(url, headers=headers, proxies=proxies)
                 r = res.json()
                 r=r["response"]['result']
@@ -63,7 +63,7 @@ def find(search_query,step = 0):
         # print('restrestrestrestrestrest', r)
         # "<strong>""</strong>"
         return [{'title': r[i]['title'], 'content':replace_strong(r[i]['content_description'])}
-                for i in range(min(int(settings.library.fess.count), len(r)))]
+                for i in range(min(int(settings.librarys.fess.count), len(r)))]
     except Exception  as e:
         print("fess读取失败",e)
         return []
@@ -76,13 +76,13 @@ def upload_zhishiku():
     data = request.json
     prompt = data.get('prompt')
     try:
-        url = 'http://' + settings.library.fess.fess_host + '/json/?q={}&num=10&sort=score.desc&lang=zh_CN'.format(prompt)
+        url = 'http://' + settings.librarys.fess.fess_host + '/json/?q={}&num=10&sort=score.desc&lang=zh_CN'.format(prompt)
         res = session.get(url, headers=headers, proxies=proxies)
         r = res.json()
         r=r["response"]['result']
         # "<strong>""</strong>"
         return json.dumps( [{'title': r[i]['title'], 'content':replace_strong(r[i]['content_description'])}
-                for i in range(min(int(settings.library.fess.count), len(r)))])
+                for i in range(min(int(settings.librarys.fess.count), len(r)))])
     except Exception  as e:
         print("fess读取失败",e)
         return json.dumps([])

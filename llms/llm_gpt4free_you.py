@@ -1,4 +1,4 @@
-import plugins.gpt4free.you as openai_api
+import llms.gpt4free.you as openai_api
 
 
 def chat_init(history):

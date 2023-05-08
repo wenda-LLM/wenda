@@ -37,7 +37,7 @@
    * [<a href="https://github.com/AlanLee1996/wenda-webui">wenda-webui</a>](#wenda-webui)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun May  7 02:10:24 UTC 2023 -->
+<!-- Added by: runner, at: Sun May  7 11:04:27 UTC 2023 -->
 
 <!--te-->
 ![](imgs/setting.png)
@@ -58,6 +58,7 @@
 3. 双击运行`运行GLM6B.bat`。
 4. 如果需要生成离线知识库，参考 [知识库](#知识库)。
 ### 自行安装
+PS:一定要看`example.config.yml`，里面对各功能有更详细的说明！！！
 #### 1.安装库
 通用依赖：```pip install -r requirements.txt```
 根据使用的 [知识库](#知识库)进行相应配置
@@ -68,7 +69,7 @@
 建议使用chatRWKV的RWKV-4-Raven-7B-v11，或chatGLM-6B。
 
 #### 3.参数设置
-把`example.config.yml`重命名为`config.yml`，根据里面的参数说明，填写你的模型下载位置等信息
+把`example.config.yml`重命名为`config.yml`(复制`example.config.yml`)，根据里面的参数说明，填写你的模型下载位置等信息
 
 ## Auto
 auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos`目录的方式注入至程序，为闻达附加各种自动化功能。
@@ -93,7 +94,7 @@ auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos
 ## 知识库
 知识库原理是生成一些提示信息，会插入到对话里面。
 ![](imgs/zsk1.jpg)
-![](imgs/zsk2.jpg)
+![](imgs/zsk2.png)
 
 fess模式、bing模式均调用搜索引擎搜索获取答案。
 
@@ -110,7 +111,7 @@ fess模式、bing模式均调用搜索引擎搜索获取答案。
 ### rtst模式
 sentence_transformers+faiss进行索引、匹配，并连同上下文返回。目前支持txt和pdf格式。
 
-支持预先构建索引和运行中构建，其中，预先构建索引强制使用`cuda`，运行中构建根据`config.yml`中`rtst`段的`device(embedding运行设备)`决定，对于显存小于12G的用户建议使用`CPU`。
+支持预先构建索引和运行中构建，其中，预先构建索引强制使用`cuda`，运行中构建根据`config.yml`(复制`example.config.yml`)中`rtst`段的`device(embedding运行设备)`决定，对于显存小于12G的用户建议使用`CPU`。
 
 Windows预先构建索引运行：`plugins/buils_rtst_default_index.bat`。
 
@@ -120,7 +121,7 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 
 
 ### fess模式
-在本机使用默认端口安装fess后可直接运行。否则需修改`config.yml`中`fess_host`的`127.0.0.1:8080`为相应值。[FESS安装教程](install_fess.md)
+在本机使用默认端口安装fess后可直接运行。否则需修改`config.yml`(复制`example.config.yml`)中`fess_host`的`127.0.0.1:8080`为相应值。[FESS安装教程](install_fess.md)
 ###  知识库调试
 ![](imgs/zsk-test.png)
 ![](imgs/zsk-glm.png)
@@ -132,19 +133,19 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 ### chatGLM-6B
 运行：`run_GLM6B.bat`。
 
-模型位置等参数：修改`config.yml`。
+模型位置等参数：修改`config.yml`(复制`example.config.yml`)。
 
 默认参数在GTX1660Ti（6G显存）上运行良好。
 
 ### chatRWKV
 运行：`run_rwkv.bat`。
 
-模型位置等参数：修改`config.yml`。
+模型位置等参数：见`config.yml`(复制`example.config.yml`)。
 
 默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢。
 
 设置strategy诸如"Q8_0->8"即支持量化在cpu运行，速度较慢，没有显卡或者没有nvidia显卡的用户使用。
-注意默认librwkv.so是在debian sid编译的，不支持windows,其他linux发行版本未知。可以查看：[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)，下载windows版本，或者自行编译。
+注意默认librwkv.so是在debian sid编译的，其他linux发行版本未知。可以查看：[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)，下载windows版本，或者自行编译。
 plugins/rwkvcpp里的三个模块来自[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)
 
 #### 生成小说
@@ -154,11 +155,7 @@ plugins/rwkvcpp里的三个模块来自[saharNooby/rwkv.cpp](https://github.com/
 ### llama
 运行：`run_llama.bat`。
 
-注意库最好使用我修改的：[llama-cpp-python](https://github.com/l15y/llama-cpp-python)，才可以正常使用中文（截止4月15日）。
-
-编译好的：https://github.com/l15y/llama-cpp-python/releases
-
-模型位置等参数：修改`config.yml`。
+模型位置等参数：见`config.yml`(复制`example.config.yml`)。
 
 # 基于本项目的二次开发
 ## [wenda-webui](https://github.com/AlanLee1996/wenda-webui)
