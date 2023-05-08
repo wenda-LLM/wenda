@@ -39,19 +39,17 @@
 ### 懒人包
 链接：https://pan.baidu.com/s/105nOsldGt5mEPoT2np1ZoA?pwd=lyqz 
 
-视频教程：https://www.bilibili.com/video/BV1aX4y1z7ar/?vd_source=629edb00375d46ad4097acdc7cbc0ca3
-
 提取码：lyqz
 
 默认参数在6G显存设备上运行良好。最新版懒人版已集成一键更新功能，建议使用前更新。
 
 使用步骤（以glm6b模型为例）：
-1. 下载懒人版主体（最新版已集成模型，因此不需单独下载）。
+1. 下载懒人版主体和模型，模型可以用内置脚本从HF下载，也可以从网盘下载。
 2. 如果没有安装`CUDA11.8`，从网盘下载并安装。
 3. 双击运行`运行GLM6B.bat`。
 4. 如果需要生成离线知识库，参考 [知识库](#知识库)。
 ### 自行安装
-PS:一定要看`example.config.yml`，里面对各功能有更详细的说明！！！
+PS:一定要看[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml)，里面对各功能有更详细的说明！！！
 #### 1.安装库
 通用依赖：```pip install -r requirements.txt```
 根据使用的 [知识库](#知识库)进行相应配置
@@ -62,7 +60,7 @@ PS:一定要看`example.config.yml`，里面对各功能有更详细的说明！
 建议使用chatRWKV的RWKV-4-Raven-7B-v11，或chatGLM-6B。
 
 #### 3.参数设置
-把`example.config.yml`重命名为`config.yml`(复制`example.config.yml`)，根据里面的参数说明，填写你的模型下载位置等信息
+把[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml)重命名为`config.yml`，根据里面的参数说明，填写你的模型下载位置等信息
 
 ## Auto
 auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos`目录的方式注入至程序，为闻达附加各种自动化功能。
@@ -103,7 +101,7 @@ auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos
 ### rtst模式
 sentence_transformers+faiss进行索引、匹配，并连同上下文返回。目前支持txt和pdf格式。
 
-支持预先构建索引和运行中构建，其中，预先构建索引强制使用`cuda`，运行中构建根据`config.yml`(复制`example.config.yml`)中`rtst`段的`device(embedding运行设备)`决定，对于显存小于12G的用户建议使用`CPU`。
+支持预先构建索引和运行中构建，其中，预先构建索引强制使用`cuda`，运行中构建根据`config.yml`(复制[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml))中`rtst`段的`device(embedding运行设备)`决定，对于显存小于12G的用户建议使用`CPU`。
 
 Windows预先构建索引运行：`plugins/buils_rtst_default_index.bat`。
 
@@ -113,7 +111,7 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 
 
 ### fess模式
-在本机使用默认端口安装fess后可直接运行。否则需修改`config.yml`(复制`example.config.yml`)中`fess_host`的`127.0.0.1:8080`为相应值。[FESS安装教程](install_fess.md)
+在本机使用默认端口安装fess后可直接运行。否则需修改`config.yml`(复制[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml))中`fess_host`的`127.0.0.1:8080`为相应值。[FESS安装教程](install_fess.md)
 ###  知识库调试
 ![](imgs/zsk-test.png)
 ![](imgs/zsk-glm.png)
@@ -123,14 +121,14 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 ### chatGLM-6B
 运行：`run_GLM6B.bat`。
 
-模型位置等参数：修改`config.yml`(复制`example.config.yml`)。
+模型位置等参数：修改`config.yml`(复制[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml))。
 
 默认参数在GTX1660Ti（6G显存）上运行良好。
 
 ### chatRWKV
 支持torch和cpp两种后端实现，运行：`run_rwkv.bat`。
 
-模型位置等参数：见`config.yml`(复制`example.config.yml`)。
+模型位置等参数：见`config.yml`(复制[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml))。
 #### torch
 可使用内置脚本对模型量化，运行：`cov_torch_rwkv.bat`。此操作可以加快启动速度。
 
@@ -151,7 +149,7 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 ### llama
 运行：`run_llama.bat`。
 
-模型位置等参数：见`config.yml`(复制`example.config.yml`)。
+模型位置等参数：见`config.yml`(复制[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml))。
 
 # 基于本项目的二次开发
 ## [wenda-webui](https://github.com/AlanLee1996/wenda-webui)
