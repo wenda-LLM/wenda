@@ -27,7 +27,6 @@
     - [rtst模式](#rtst模式)
     - [fess模式](#fess模式)
     - [知识库调试](#知识库调试)
-    - [使用](#使用)
   - [模型配置](#模型配置)
     - [chatGLM-6B](#chatglm-6b)
     - [chatRWKV](#chatrwkv)
@@ -46,18 +45,20 @@
 ![](imgs/setting2.png)
 ## 安装部署
 ### 各版本功能及安装说明
-| 功能                       | Windows懒人包                                                                | 自部署 |
-| -------------------------- | ---------------------------------------------------------------------------- | ------ |
-| [知识库](#知识库)          | rtst模式须下载模型text2vec-large-chinese，fess模式须安装fess，网络模式直接用 | 同上   |
-| [Auto](#auto)              | 全部支持，[部分内置Auto使用说明](#部分内置auto使用说明)                      | 同上   |
-| [chatGLM-6B](#chatglm-6b)  | 支持CUDA下int4、8、16，须自行下载模型 。可自行安装组件以支持CPU              | 同上   |
-| chatRWKV [torch](#torch)版 | 全部功能支持，须自行下载模型。在安装vc后支持一键启动CUDA加速                 | 同上   |
-| chatRWKV [cpp](#cpp)版     | 全部功能支持，须自行下载模型，也可使用内置脚本对torch版模型转换和量化。      | 同上   |
-| replit                     | 支持，须自行下载模型。                                                       | 同上   |
-| chatglm130b api            | 支持，须设置自己的key                                                        | 支持   |
-| openai api                 | 支持，须设置自己的key                                                        | 支持   |
-| [llama](#llama).cpp        | 不支持                                                                       | 支持   |
-| moss                       | 不支持                                                                       | 支持   |
+| 功能                                    | Windows懒人包                                                           | 自部署 |
+| --------------------------------------- | ----------------------------------------------------------------------- | ------ |
+| [知识库](#知识库) [rtst模式](#rtst模式) | 须下载模型text2vec-large-chinese                                        | 同上   |
+| [知识库](#知识库) [fess模式](#fess模式) | 须安装fess                                                              | 同上   |
+| [知识库](#知识库) 网络模式              | 支持                                                                    | 同上   |
+| [Auto](#auto)                           | 全部支持，[部分内置Auto使用说明](#部分内置auto使用说明)                 | 同上   |
+| [chatGLM-6B](#chatglm-6b)               | 支持CUDA，须自行下载模型 。可自行安装组件以支持CPU                      | 同上   |
+| RWKV [torch](#torch)版                  | 全部功能支持，须自行下载模型。在安装vc后支持一键启动CUDA加速            | 同上   |
+| RWKV [cpp](#cpp)版                      | 全部功能支持，须自行下载模型，也可使用内置脚本对torch版模型转换和量化。 | 同上   |
+| replit                                  | 支持，须自行下载模型。                                                  | 同上   |
+| chatglm130b api                         | 支持，须设置自己的key                                                   | 支持   |
+| openai api                              | 支持，须设置自己的key                                                   | 支持   |
+| [llama](#llama).cpp                     | 不支持                                                                  | 支持   |
+| moss                                    | 不支持                                                                  | 支持   |
 ### 懒人包
 链接：https://pan.baidu.com/s/105nOsldGt5mEPoT2np1ZoA?pwd=lyqz 
 
@@ -107,21 +108,21 @@ auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos
 [auto例程](https://github.com/l15y/wenda/tree/main/autos)
 
 ## 知识库
-知识库原理是生成一些提示信息，会插入到对话里面。
+知识库原理是在搜索后，生成一些提示信息插入到对话里面，知识库的数据就被模型知道了。[rtst模式](#rtst模式)计算语义并在本地数据库中匹配；[fess模式](#fess模式)（相当于本地搜索引擎）、bing模式均调用搜索引擎搜索获取答案。
+
+为防止爆显存和受限于模型理解能力，插入的数据不能太长，所以有字数和条数限制，这一问题可通过知识库增强Auto解决。
+
+正常使用中，勾选右上角知识库即开启知识库。
 ![](imgs/zsk1.jpg)
 ![](imgs/zsk2.png)
 
-fess模式、bing模式均调用搜索引擎搜索获取答案。
 
-搜索后在回答之前插入提示信息，知识库的数据就被模型知道了。
-
-为防止爆显存，插入的数据不能太长，所以有字数限制。
 
 有以下几种方案：
 1.   rtst模式，sentence_transformers+faiss进行索引，支持预先构建索引和运行中构建。
 2.   bing模式，cn.bing搜索，仅国内可用
-2.   bingsite模式，cn.bing站内搜索，仅国内可用
-3.   fess模式，本地部署的[fess搜索](https://github.com/codelibs/fess)，并进行关键词提取
+3.   bingsite模式，cn.bing站内搜索，仅国内可用
+4.   fess模式，本地部署的[fess搜索](https://github.com/codelibs/fess)，并进行关键词提取
 ### rtst模式
 sentence_transformers+faiss进行索引、匹配，并连同上下文返回。目前支持txt和pdf格式。
 
@@ -139,10 +140,8 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 ###  知识库调试
 ![](imgs/zsk-test.png)
 ![](imgs/zsk-glm.png)
-
 ![](imgs/zsk-rwkv.png)
-### 使用
-正常使用中，勾选右上角知识库
+
 ##  模型配置
 ### chatGLM-6B
 运行：`run_GLM6B.bat`。
@@ -152,7 +151,7 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 默认参数在GTX1660Ti（6G显存）上运行良好。
 
 ### chatRWKV
-现在支持torch和cpp两种后端实现，运行：`run_rwkv.bat`。
+支持torch和cpp两种后端实现，运行：`run_rwkv.bat`。
 
 模型位置等参数：见`config.yml`(复制`example.config.yml`)。
 #### torch
