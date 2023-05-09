@@ -101,7 +101,7 @@ llm_models:
      lora: ""
      #glm-lora模型位置
   llama: 
-     path: "model/ggml-vicuna-13b-4bit-rev1.bin"
+     path: "model/stable-vicuna-13B.ggml.q4_2.bin"
      #llama模型位置
      strategy: ""
      #llama模型参数 暂时不用
