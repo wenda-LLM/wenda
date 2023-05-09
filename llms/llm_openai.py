@@ -19,9 +19,16 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku
     history_data.append({"role": "user", "content": prompt},)
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=history_data
+        messages=history_data,
+        stream=True
     )
-    yield response['choices'][0]['message']['content']
+    resTemp=""
+    for chunk in response:
+        #print(chunk)
+        if chunk['choices'][0]["finish_reason"]!="stop":
+            if hasattr(chunk['choices'][0]['delta'], 'content'):
+                resTemp+=chunk['choices'][0]['delta']['content']
+                yield resTemp
 
 
 chatCompletion = None
@@ -29,6 +36,7 @@ chatCompletion = None
 
 def load_model():
     openai.api_key = os.getenv("OPENAI_API_KEY")
+    #openai.api_base = "https://api.openai.com/v1"
     openai.api_base = "https://gpt.lucent.blog/v1"
 
 class Lock:
