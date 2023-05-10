@@ -11,7 +11,7 @@
 
 
 功能.push({
-    名称: "draw use SD",
+    名称: "画图",
     问题: async () => {
         lsdh(false)
         zsk(false)
@@ -25,6 +25,38 @@
             method: 'post',
             body: JSON.stringify({
                 prompt: `((masterpiece, best quality)), photorealistic,` + Q,
+                steps: 20,
+                // sampler_name: "DPM++ SDE Karras",
+                negative_prompt: `paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans`
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        try {
+            let json = await response.json()
+            add_conversation("AI", '![](data:image/png;base64,' + json.images[0] + ")")
+        } catch (error) {
+            alert("连接SD API失败，请确认已开启agents库，并将SD API地址设置为127.0.0.1:786")
+        }
+        app.loading = false
+        save_history()
+    },
+})
+功能.push({
+    名称: "draw use SD",
+    问题: async () => {
+        lsdh(false)
+        zsk(false)
+
+        add_conversation("user", app.问题)
+        Q = app.问题
+        app.loading = true
+        response = await fetch("/api/sd_agent", {
+            // signal: signal,
+            method: 'post',
+            body: JSON.stringify({
+                prompt: `best quality, hyper realism, (ultra high resolution), masterpiece, 8K, RAW Photo, ` + Q,
                 steps: 20,
                 // sampler_name: "DPM++ SDE Karras",
                 negative_prompt: `paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans`
