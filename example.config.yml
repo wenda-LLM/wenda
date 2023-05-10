@@ -71,8 +71,8 @@ library:
      step: 2
      #知识库默认上下文步长
   mix: 
-     strategy: "sogowx:3 bingsite:2 rtst:2 agents:0"
-     #知识库融合参数
+     strategy: "sogowx:3 bingsite:2 rtst:2:default agents:0"
+     #知识库融合参数。其中rtst可以指定库
      count: 5
      #最大抽取数量
   bing: 
