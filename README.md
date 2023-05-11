@@ -13,29 +13,30 @@
 **交流QQ群：LLM使用和综合讨论群162451840；知识库使用讨论群241773574；Auto开发交流群744842245；[discussions](https://github.com/l15y/wenda/discussions)**
 
 <!--ts-->
-* [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
-   * [安装部署](#安装部署)
-      * [各版本功能及安装说明](#各版本功能及安装说明)
-      * [懒人包](#懒人包)
-      * [自行安装](#自行安装)
-         * [1.安装库](#1安装库)
-         * [2.下载模型](#2下载模型)
-         * [3.参数设置](#3参数设置)
-   * [Auto](#auto)
-      * [部分内置Auto使用说明](#部分内置auto使用说明)
-   * [知识库](#知识库)
-      * [rtst模式](#rtst模式)
-      * [fess模式](#fess模式)
-      * [知识库调试](#知识库调试)
-   * [模型配置](#模型配置)
-      * [chatGLM-6B](#chatglm-6b)
-      * [chatRWKV](#chatrwkv)
-         * [torch](#torch)
-         * [cpp](#cpp)
-         * [文字冒险游戏](#文字冒险游戏)
-      * [llama](#llama)
-* [基于本项目的二次开发](#基于本项目的二次开发)
-   * [<a href="https://github.com/AlanLee1996/wenda-webui">wenda-webui</a>](#wenda-webui)
+- [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
+  - [安装部署](#安装部署)
+    - [各版本功能及安装说明](#各版本功能及安装说明)
+    - [懒人包](#懒人包)
+    - [自行安装](#自行安装)
+      - [1.安装库](#1安装库)
+      - [2.下载模型](#2下载模型)
+      - [3.参数设置](#3参数设置)
+  - [Auto](#auto)
+    - [Auto 开发函数列表](#auto-开发函数列表)
+    - [部分内置 Auto 使用说明](#部分内置-auto-使用说明)
+  - [知识库](#知识库)
+    - [rtst模式](#rtst模式)
+    - [fess模式](#fess模式)
+    - [知识库调试](#知识库调试)
+  - [模型配置](#模型配置)
+    - [chatGLM-6B](#chatglm-6b)
+    - [chatRWKV](#chatrwkv)
+      - [torch](#torch)
+      - [cpp](#cpp)
+      - [文字冒险游戏](#文字冒险游戏)
+    - [llama](#llama)
+- [基于本项目的二次开发](#基于本项目的二次开发)
+  - [wenda-webui](#wenda-webui)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Mon May  8 12:47:43 UTC 2023 -->
@@ -88,7 +89,19 @@ PS:一定要看[example.config.yml](https://github.com/l15y/wenda/blob/main/exam
 ## Auto
 auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos`目录的方式注入至程序，为闻达附加各种自动化功能。
 
-### 部分内置Auto使用说明
+### Auto 开发函数列表
+| 函数 （所有函数皆为异步调用）       | 功能                                    | 说明                                                                |
+| ----------------------------------- | --------------------------------------- | ------------------------------------------------------------------- |
+| send (s, keyword = "", show = true) | 发送信息至LLM，返回字符串为模型返回值。 | s：输入模型文本；keyword:聊天界面显示文本；show：是否在聊天界面显示 |
+| add_conversation(role, content)     | 添加会话信息。                          | role：'AI'、'user'；content：字符串                                 |
+| save_history ()                     | 保存会话历史。                          | 对话完成后会自动保存，但手动添加的对话须手动保存                    |
+| find (s, step = 1)                  | 从知识库查找。                          | 返回json数组                                                        |
+| find_dynamic(s, step = 1, paraJson) | 从动态知识库查找；参考闻达笔记Auto      | paraJson如{libraryStategy:"sogowx:3",maxItmes:2}                    |
+| zsk (b=true)                        | 开关知识库。                            |                                                                     |
+| lsdh (b=true)                       | 开关历史对话。                          |                                                                     |
+| speak (s)                           | 使用TTS引擎朗读文本。                   |                                                                     |
+| copy (s)                            | 使用浏览器`clipboard-write`负责文本。   | 需要相关权限组                                                      |
+### 部分内置 Auto 使用说明
 | 文件名               | 功能                                                                                |
 | -------------------- | ----------------------------------------------------------------------------------- |
 | 0-write_article.js   | 写论文：根据题目或提纲写论文                                                        |
