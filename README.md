@@ -10,7 +10,10 @@
 6. 支持局域网、内网部署和多用户同时使用。
 
 
-**交流QQ群：LLM使用和综合讨论群162451840；知识库使用讨论群241773574；Auto开发交流群744842245；[discussions](https://github.com/l15y/wenda/discussions)**
+交流QQ群：LLM使用和综合讨论群162451840；知识库使用讨论群241773574(满)；Auto开发交流群744842245；
+
+[discussions](https://github.com/l15y/wenda/discussions)
+[QQ频道](https://pd.qq.com/s/ej03plxks)
 
 <!--ts-->
 - [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
