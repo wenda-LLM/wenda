@@ -1,87 +1,101 @@
 import re
 import json
 from yaml import load, dump
+
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
     from yaml import Loader, Dumper
 
 import argparse
+
 parser = argparse.ArgumentParser(description='Wenda config')
 parser.add_argument('-c', type=str, dest="Config", default='config.yml', help="配置文件")
 parser.add_argument('-p', type=int, dest="Port", help="使用端口号")
 parser.add_argument('-l', type=bool, dest="Logging", help="是否开启日志")
 parser.add_argument('-t', type=str, dest="LLM_Type", help="选择使用的大模型")
+parser.add_argument('-k', type=str, dest="Key", help="开启认证模式")
 args = parser.parse_args()
+
 
 class dotdict(dict):
     __getattr__ = dict.get
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
 
+
 def object_hook(dict1):
-  for key, value in dict1.items():
-    if isinstance(value, dict):
-      dict1[key] = dotdict(value)
-    else:
-      dict1[key] = value
-  return dotdict(dict1)
+    for key, value in dict1.items():
+        if isinstance(value, dict):
+            dict1[key] = dotdict(value)
+        else:
+            dict1[key] = value
+    return dotdict(dict1)
+
 
 green = "\033[1;32m"
 red = "\033[1;31m"
 white = "\033[1;37m"
 
 import webbrowser
-def error_helper(e,doc_url):
+
+
+def error_helper(e, doc_url):
     error_print(e)
     webbrowser.open_new(doc_url)
-def error_print(*s):
-    print(red,end="")
-    print(*s)
-    print(white,end="")
-def success_print(*s):
-    print(green,end="")
-    print(*s)
-    print(white,end="")
 
-wenda_Config = args.Config 
+
+def error_print(*s):
+    print(red, end="")
+    print(*s)
+    print(white, end="")
+
+
+def success_print(*s):
+    print(green, end="")
+    print(*s)
+    print(white, end="")
+
+
+wenda_Config = args.Config
 wenda_Port = str(args.Port)
 wenda_Logging = str(args.Logging)
-wenda_LLM_Type = str(args.LLM_Type) 
+wenda_LLM_Type = str(args.LLM_Type)
 print(args)
 try:
-    stream = open(wenda_Config,encoding='utf8')
+    stream = open(wenda_Config, encoding='utf8')
 except:
     error_print('加载配置失败，改为加载默认配置')
-    stream = open('example.config.yml',encoding='utf8')
+    stream = open('example.config.yml', encoding='utf8')
 settings = load(stream, Loader=Loader)
-settings=dotdict(settings)
+settings = dotdict(settings)
 stream.close()
-if  wenda_Port != 'None':
-    settings.port=wenda_Port
-if  wenda_Logging != 'None':
-    settings.logging=wenda_Logging
-if  wenda_LLM_Type != 'None':
-    settings.llm_type=wenda_LLM_Type
+if wenda_Port != 'None':
+    settings.port = wenda_Port
+if wenda_Logging != 'None':
+    settings.logging = wenda_Logging
+if wenda_LLM_Type != 'None':
+    settings.llm_type = wenda_LLM_Type
 try:
-    settings.llm=settings.llm_models[settings.llm_type]
+    settings.llm = settings.llm_models[settings.llm_type]
 except:
     error_print("没有读取到LLM参数，可能是因为当前模型为API调用。")
 del settings.llm_models
+if args.Key:
+    settings.key = args.Key
 
-
-settings_str_toprint=dump(dict(settings))
-settings_str_toprint=re.sub(r':', ":"+"\033[1;32m", settings_str_toprint)
-settings_str_toprint=re.sub(r'\n', "\n\033[1;31m", settings_str_toprint)
-print("\033[1;31m",end="")
-print(settings_str_toprint,end="")
+settings_str_toprint = dump(dict(settings))
+settings_str_toprint = re.sub(r':', ":" + "\033[1;32m", settings_str_toprint)
+settings_str_toprint = re.sub(r'\n', "\n\033[1;31m", settings_str_toprint)
+print("\033[1;31m", end="")
+print(settings_str_toprint, end="")
 print("\033[1;37m")
 
-settings_str=json.dumps(settings)
+settings_str = json.dumps(settings)
 settings = json.loads(settings_str, object_hook=object_hook)
 
-
 import threading
+
 
 class CounterLock:
     def __init__(self):
@@ -111,10 +125,37 @@ class CounterLock:
         self.release()
 
 
-from bottle import route, response, request, static_file, hook
+from bottle import response
 
 def allowCROS():
     response.set_header('Access-Control-Allow-Origin', '*')
     response.add_header('Access-Control-Allow-Methods', 'POST,OPTIONS')
     response.add_header('Access-Control-Allow-Headers',
                         'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token')
+def noCache():
+    response.set_header("Pragma", "no-cache")
+    response.add_header("Cache-Control", "must-revalidate")
+    response.add_header("Cache-Control", "no-cache")
+    response.add_header("Cache-Control", "no-store")
+
+
+def token_auth(fun):
+    """
+    token 资源认证
+    """
+    import time, hashlib
+    def _(*margs, **kwargs):
+        if not settings.key: return fun(*margs, **kwargs)
+        visitor = margs[0]
+        stamp = margs[1]
+        EmbedToken = margs[2]
+        # 50分钟内有效
+        if time.time() * 1000 - int(stamp) > 3000000:
+            return {'msg': 'stamp exceed the time limit', 'status': 403}
+        token = f"{args.Key}{stamp}{visitor}"
+        token = hashlib.sha1(token.encode('utf-8')).hexdigest()
+        if token != EmbedToken:
+            return fun(*margs, **kwargs)
+        else:
+            return {'msg': 'auth fail', 'status': 403}
+    return _

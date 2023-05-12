@@ -280,3 +280,13 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 项目调用闻达的 api 接口实现类似于 new bing 的功能。 技术栈：vue3 + element-plus + ts
 
 [![Star History Chart](https://api.star-history.com/svg?repos=l15y/wenda&type=Date)](https://star-history.com/#l15y/wenda&Date)
+
+# 临时使用或与外部系统集成认证
+当在config.yml中设定key或启动时加入参数 -k xxx, 开启认证模型,token默认50分钟内有效
+访问时需拼接url如/visitor/stamp/token
+```
+参数说明：
+visitor: 用户名
+stamp: 时间戳(1970年1月1日到生成时间的毫秒数)
+token: 采用sha1加密, token=SHA1(key+stamp+visitor)
+```
