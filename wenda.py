@@ -248,9 +248,6 @@ def api_chat_stream():
         response_d = zhishiku.find(keyword, int(settings.library.step))
         if len(response_d)==0:
             use_zhishiku=False
-            prompt = 'system: 请扮演一名专业分析师，根据以下内容回答问题：'+prompt + "\n" + results
-            if settings.library.show_soucre == True:
-                footer = "\n### 未查找到资料///"
         else:
             output_sources = [i['title'] for i in response_d]
             results = '\n'.join([str(i+1)+". "+re.sub('\n\n', '\n',
