@@ -84,22 +84,25 @@ for i in range(len(all_files)):
     data = ""
     title = ""
     try:
-        if file.endswith(".pdf"):
-            file_path = os.path.join(root, file)
+        file_path = os.path.join(root, file)
+        _, ext = os.path.splitext(file_path)
+        if ext.lower() == '.pdf':
+            #pdf
             with pdfplumber.open(file_path) as pdf:
                 data_list = []
                 for page in pdf.pages:
                     print(page.extract_text())
                     data_list.append(page.extract_text())
                 data = "\n".join(data_list)
-        else:
+        elif ext.lower() == '.txt':
             # txt
-            file_path = os.path.join(root, file)
             with open(file_path, 'rb') as f:
                 b = f.read()
                 result = chardet.detect(b)
             with open(file_path, 'r', encoding=result['encoding']) as f:
                 data = f.read()
+        else:
+            print("目前还不支持文件格式：", ext)
     except Exception as e:
         print("文件读取失败，当前文件已被跳过：",file,"。错误信息：",e)
     data = re.sub(r'！', "！\n", data)
