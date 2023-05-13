@@ -98,7 +98,7 @@ function find_RomanNumerals(str) {
             }
         }
         content = content.join("\n\n")
-        add_conversation("user",  Q )
+        add_conversation("user",  title )
         add_conversation("AI",  content )
         console.log(content)
 
