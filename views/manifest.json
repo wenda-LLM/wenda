@@ -1,0 +1,17 @@
+{
+    "scope": "/",
+    "name": "闻达",
+    "short_name": "闻达",
+    "start_url": "/",
+    "display": "standalone",
+    "description": "闻达",
+    "lang": "cn",
+    "orientation": "portrait",
+    "theme_color": "#70B7FD",
+    "background_color": "#fff",
+    "icons": [{
+        "src": "wd.png",
+        "sizes": "144x144",
+        "type": "image/png"
+    }]
+}
