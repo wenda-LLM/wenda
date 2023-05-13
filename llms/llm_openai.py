@@ -18,7 +18,7 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku
                     {"role": "assistant", "content": old_chat['content']},)
     history_data.append({"role": "user", "content": prompt},)
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4-0314",
         messages=history_data,
         stream=True
     )
