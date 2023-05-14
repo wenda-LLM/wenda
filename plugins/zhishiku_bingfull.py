@@ -10,7 +10,6 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import time
-import pyperclip
 
 session = requests.Session()
 # 正则提取摘要和链接
