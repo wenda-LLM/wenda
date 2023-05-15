@@ -274,7 +274,7 @@
 									<template v-slot:activator="{ on, attrs }">
 										<div v-bind="attrs" v-on="on">
 											<v-btn outlined style="margin-top: 10px;" color="purple" rounded="lg"
-												@click="">
+												@click='window.open(source.url,"_blank")'>
 												{{source.title}}
 											</v-btn>
 										</div>
