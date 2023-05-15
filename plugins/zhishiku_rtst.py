@@ -71,7 +71,7 @@ try:
     embeddings.client = sentence_transformers.SentenceTransformer(cunnrent_setting.model_path,
                                                                             device=cunnrent_setting.device)
 except Exception  as e:
-    error_helper("embedding加载失败，请下载相应模型",r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
+    error_helper("embedding加载失败，请下载语义知识库计算模型",r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
     raise e
 vectorstores={}
 def get_vectorstore(memory_name):

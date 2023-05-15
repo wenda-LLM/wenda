@@ -51,7 +51,6 @@ listen = () => {
         app.问题 = final_transcript
         if (final_transcript.length > 1)
             提交()
-        isSpeaking = false;
         app.语音输入中 = false
         console.log('======================' + "end" + '======================');
     }

@@ -32,6 +32,7 @@
       * [rtst模式](#rtst模式)
       * [fess模式](#fess模式)
       * [知识库调试](#知识库调试)
+      * [清洗知识库文件](#清洗知识库文件)
    * [模型配置](#模型配置)
       * [chatGLM-6B](#chatglm-6b)
       * [chatRWKV](#chatrwkv)
@@ -43,7 +44,7 @@
    * [<a href="https://github.com/AlanLee1996/wenda-webui">wenda-webui</a>](#wenda-webui)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri May 12 02:15:21 UTC 2023 -->
+<!-- Added by: runner, at: Sun May 14 12:45:00 UTC 2023 -->
 
 <!--te-->
 ![](imgs/setting.png)
@@ -241,6 +242,14 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 ![](imgs/zsk-glm.png)
 ![](imgs/zsk-rwkv.png)
 
+### 清洗知识库文件
+
+安装 [utool](https://u.tools/) 工具，uTools 是一个极简、插件化的桌面软件，可以安装各种使用 nodejs 开发的插件。您可以使用插件对闻达的知识库进行数据清洗。请自行安装以下推荐插件：
+
+- 插件“解散文件夹”，用于将子目录的文件移动到根目录，并删除所有子目录。
+- 插件“重复文件查找”，用于删除目录中的重复文件，原理是对比文件 md5。
+- 插件“文件批量重命名”，用于使用正则匹配和修改文件名，并将分类后的文件名进行知识库的分区操作。
+
 ##  模型配置
 ### chatGLM-6B
 运行：`run_GLM6B.bat`。
@@ -278,5 +287,6 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 # 基于本项目的二次开发
 ## [wenda-webui](https://github.com/AlanLee1996/wenda-webui)
 项目调用闻达的 api 接口实现类似于 new bing 的功能。 技术栈：vue3 + element-plus + ts
+![](imgs/webui.jpg)
 
 [![Star History Chart](https://api.star-history.com/svg?repos=l15y/wenda&type=Date)](https://star-history.com/#l15y/wenda&Date)
