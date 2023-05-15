@@ -267,8 +267,22 @@
 							</div>
 						</v-hover>
 
-						<span v-if="current_conversation.role != 'user'" class="answer"
-							v-html="md2html(current_conversation.content)"></span>
+						<span v-if="current_conversation.role != 'user'" class="answer">
+							<div v-html="md2html(current_conversation.content)"></div>
+							<template v-for="source in current_conversation.sources">
+								<v-tooltip bottom>
+									<template v-slot:activator="{ on, attrs }">
+										<div v-bind="attrs" v-on="on">
+											<v-btn outlined style="margin-top: 10px;" color="purple" rounded="lg"
+												@click="">
+												{{source.title}}
+											</v-btn>
+										</div>
+									</template>
+									<span v-html="source.content"></span>
+								</v-tooltip>
+							</template>
+						</span>
 					</div>
 					<div v-if="!loading&&chat.length>0">
 						<v-tooltip left>
@@ -436,6 +450,9 @@
 			el: '#app',
 			vuetify: new Vuetify(),
 			i18n: i18n,
+			filters: {
+				
+			},
 			data: () => ({
 				问题: '',
 				chat: JSON.parse(localStorage["wenda_chat_history"] || "[]"),
@@ -513,7 +530,7 @@
 
 			提交(last_send.content, last_send.keyword)
 		}
-		send = async (s, keyword = "", show = true) => {
+		send = async (s, keyword = "", show = true, sources = []) => {
 			if (keyword == "") keyword = s
 			is_abord = false
 			app.loading = true
@@ -548,9 +565,9 @@
 			已排队到 = false
 			setTimeout(read_now, 3000)
 			app.问题 = s.replace(/\r\n/g, '\n')
-			let 当前会话 = { role: "AI", content: '……' }
+			let 当前会话 = { role: "AI", content: '……', sources: sources }
 			if (show) {
-				app.chat.push({ role: "user", content: app.问题, keyword: keyword })
+				app.chat.push({ role: "user", content: keyword, keyword: keyword })
 				app.chat.push(当前会话)
 			}
 			setTimeout(() =>
@@ -741,9 +758,10 @@
 				}
 			})
 		}
-		add_conversation = (role, content) => {
-			app.chat.push({ "role": role, "content": content })
+		add_conversation = (role, content, sources = null) => {
+			app.chat.push({ "role": role, "content": content, sources: sources })
 		}
+
 	</script>
 	<script src="api/llm"></script>
 	<script src="api/plugins"></script>
