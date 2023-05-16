@@ -24,18 +24,21 @@
         })
         result = []
         for (let i in kownladge) {
-            wx_response = await fetch("/api/read_sgwx", {
-                method: 'post',
-                body: JSON.stringify({
-                    url: kownladge[i].title.match(/\((.+)\)/)[1],
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            console.log(kownladge[i].title.match(/\((.+)\)/))
+            if(kownladge[i].title.match(/\((.+)\)/) != null || kownladge[i].title.match(/\((.+)\)/) != undefined){
+                wx_response = await fetch("/api/read_sgwx", {
+                    method: 'post',
+                    body: JSON.stringify({
+                        url: kownladge[i].title.match(/\((.+)\)/)[1],
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
 
-            let prompt = "精炼地总结以下文段中与问题相关的信息为二十个字。\n" + await wx_response.text() + "\n问题：" + Q
-            result.push(await send(prompt))
+                let prompt = "精炼地总结以下文段中与问题相关的信息为二十个字。\n" + await wx_response.text() + "\n问题：" + Q
+                result.push(await send(prompt))
+                }
         }
         let prompt = "根据以下资料，用中文回答问题。\n" +
             result.join('\n') + "\n问题：" + Q
