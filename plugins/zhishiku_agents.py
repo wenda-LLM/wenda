@@ -18,3 +18,10 @@ def api_find():
     response = requests.post(url=f'{url}/sdapi/v1/txt2img', json=request.json, proxies=proxies)
     r = response.text
     return r
+
+@route('/assets/<path:path>')#wenda-webui
+def webui(path='-'):
+    print(path)
+    if path.endswith(".js"):
+        return static_file(path, root="views/static/wenda-webui/assets", mimetype="application/javascript")
+    return static_file(path, root="views/static/wenda-webui/assets")
