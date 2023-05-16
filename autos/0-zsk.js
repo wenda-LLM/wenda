@@ -24,7 +24,6 @@
         })
         result = []
         for (let i in kownladge) {
-            console.log(kownladge[i].title.match(/\((.+)\)/))
             if(kownladge[i].title.match(/\((.+)\)/) != null || kownladge[i].title.match(/\((.+)\)/) != undefined){
                 wx_response = await fetch("/api/read_sgwx", {
                     method: 'post',
