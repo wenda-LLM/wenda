@@ -22,13 +22,16 @@
 
 <body>
   <!-- <br> -->
-  <!-- <button onclick="showCode()">显示等效代码</button> -->
-  <button onclick="runCode()">载入至闻达</button>
-  <button
-    onclick="localStorage['wenda_blockly_prog']=JSON.stringify(Blockly.serialization.workspaces.save(demoWorkspace))">保存</button>
-  <button
-    onclick="Blockly.serialization.workspaces.load(JSON.parse(localStorage['wenda_blockly_prog']), demoWorkspace)">读取</button>
+  <div style="z-index: 100;position: fixed;bottom: 0;">
 
+    <button onclick="showCode()">显示等效代码</button>
+    <button onclick="runCode()">载入至闻达</button>
+    <button
+      onclick="localStorage['wenda_blockly_prog']=JSON.stringify(Blockly.serialization.workspaces.save(demoWorkspace))">保存</button>
+    <button
+      onclick="Blockly.serialization.workspaces.load(JSON.parse(localStorage['wenda_blockly_prog']), demoWorkspace)">读取</button>
+
+  </div>
   <div id="blocklyDiv" style="width: 100%;"></div>
 
   <script>

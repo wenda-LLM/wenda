@@ -27,13 +27,13 @@
 		}
 
 		.v-navigation-drawer__content::-webkit-scrollbar-track {
-			background-color: #550056;
+			background-color: #bd00c0;
 		}
 
 		/* 滚动条的滑轨背景颜色 */
 
 		.v-navigation-drawer__content::-webkit-scrollbar-thumb {
-			background-color: #7a007c;
+			background-color: #fb00ff;
 		}
 
 		/* 滑块颜色 */
@@ -47,6 +47,10 @@
 		.answer td {
 			outline: 1px solid;
 			padding: 2px;
+		}
+
+		.v-slide-group__wrapper {
+			background: #fff;
 		}
 
 		div[aria-haspopup] {
@@ -116,7 +120,8 @@
 			width: 100%;
 		}
 
-		html ,.v-window__container{
+		html,
+		.v-window__container {
 			background-color: #0001;
 		}
 
@@ -177,7 +182,7 @@
 <body>
 	<div id="app" v-cloak>
 		<v-app>
-			<v-navigation-drawer width="350" v-model="drawer" style="height: 100%;position: fixed;" temporary dark>
+			<v-navigation-drawer width="350" v-model="drawer" style="height: 100%;position: fixed;" temporary>
 				<v-list>
 					<v-list-item>
 						<v-list-item-content>
@@ -200,7 +205,7 @@
 					</v-list-item>
 				</v-list>
 			</v-navigation-drawer>
-			<v-toolbar float dark>
+			<v-toolbar dark color="purple darken-2">
 				<v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 				<v-toolbar-title><a style="text-decoration: none;color: white;"
 						href="https://github.com/l15y/wenda">{{$t("wenda") }}</a></v-toolbar-title>
@@ -209,7 +214,7 @@
 				<v-tooltip bottom>
 					<template v-slot:activator="{ on, attrs }">
 						<div v-bind="attrs" v-on="on">
-							<v-switch hide-details color="purple" inset v-model="zhishiku_on">
+							<v-switch hide-details  inset v-model="zhishiku_on">
 								<template v-slot:label> <v-icon text>
 										mdi-book-open-variant
 									</v-icon> </template>
@@ -222,7 +227,7 @@
 				<v-tooltip bottom>
 					<template v-slot:activator="{ on, attrs }">
 						<div v-bind="attrs" v-on="on">
-							<v-switch hide-details color="purple" inset v-model="history_on">
+							<v-switch hide-details  inset v-model="history_on">
 								<template v-slot:label> <v-icon text>
 										mdi-history
 									</v-icon> </template>
@@ -247,7 +252,7 @@
 			</v-toolbar>
 
 
-			<v-tabs-items v-model="tab" style="margin-top: 64px;">
+			<v-tabs-items v-model="tab" style="margin-top: 64px;margin-bottom: 48px;">
 				<v-tab-item key="chat">
 					<div v-for="(current_conversation, index) in chat" :key="index"
 						:class="['d-flex flex-row align-center my-2', current_conversation.role == 'user' ? 'justify-end': null]">
@@ -262,12 +267,12 @@
 								<br>
 								<v-expand-transition>
 									<div v-if="hover" class="float">
-										<v-icon v-if="!loading" large text
+										<v-icon v-if="!loading" large text color="purple"
 											@click="delete_current_conversation(current_conversation)">
 											mdi-delete
 										</v-icon>
 
-										<v-icon large text @click="copy(current_conversation.content)">
+										<v-icon large text color="purple" @click="copy(current_conversation.content)">
 											mdi-content-copy
 										</v-icon>
 									</div>
@@ -297,8 +302,8 @@
 						<v-tooltip left>
 							<template v-slot:activator="{ on, attrs }">
 
-								<v-icon class="float" large text style="right: 0;" v-bind="attrs" v-on="on"
-									@click="re_generate()">
+								<v-icon color="purple" class="float" large text style="right: 0;" v-bind="attrs"
+									v-on="on" @click="re_generate()">
 									mdi-refresh
 								</v-icon>
 							</template>
@@ -426,7 +431,7 @@
 					<iframe frameborder="0" :src="plugin.url" style="width: 100%;height: 100%;"></iframe>
 				</v-tab-item>
 			</v-tabs-items>
-			<v-tabs v-model="tab" dark>
+			<v-tabs v-model="tab" color="purple" style="background: #fff;">
 				<v-tabs-slider color="purple"></v-tabs-slider>
 				<v-tab key="chat">
 					<v-icon text>
@@ -449,7 +454,6 @@
 					</v-icon>{{plugin.name}}
 				</v-tab>
 			</v-tabs>
-			<br><br><br>
 			<v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line;">{{snackbar_text}}</v-snackbar>
 		</v-app>
 	</div>
