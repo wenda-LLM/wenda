@@ -49,6 +49,10 @@
 			padding: 2px;
 		}
 
+		div[aria-haspopup] {
+			display: inline-block;
+		}
+
 		.answer table {
 			outline: 1px solid;
 		}
@@ -273,8 +277,9 @@
 								<v-tooltip bottom>
 									<template v-slot:activator="{ on, attrs }">
 										<div v-bind="attrs" v-on="on">
-											<v-btn outlined style="margin-top: 10px;max-width: -webkit-fill-available;overflow-x: hidden;" color="purple" rounded="lg"
-												@click='window.open(source.url,"_blank")'>
+											<v-btn outlined
+												style="margin-top: 10px;max-width: -webkit-fill-available;overflow-x: hidden;"
+												color="purple" rounded="lg" @click='window.open(source.url,"_blank")'>
 												{{source.title}}
 											</v-btn>
 										</div>
@@ -451,7 +456,7 @@
 			vuetify: new Vuetify(),
 			i18n: i18n,
 			filters: {
-				
+
 			},
 			data: () => ({
 				问题: '',
