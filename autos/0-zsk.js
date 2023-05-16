@@ -9,66 +9,54 @@
 // @run-at document-idle
 // @grant        none
 // ==/UserScript==
+get_title_form_md = (s) => {
+    console.log(s)
+    try {
+        return s.match('\\[(.+)\\]')[1]
+    } catch {
+        return s
+    }
+}
+get_url_form_md = (s) => {
+    console.log(s)
+    try {
+        return s.match('\\((.+)\\)')[1]
+    } catch {
+        return s
+    }
+}
 功能.push({
-    名称: "知识库增强(sgwx全文爬取)",
+    名称: "知识库增强",
     问题: async () => {
         let Q = app.问题
         zsk(false)
         lsdh(true)//打开历史对话
         lsdh(false)
         app.chat.push({ "role": "user", "content": Q })
-        kownladge = await find(Q, 2)
-        app.chat.push({
-            "role": "AI", "content": "识别结果:\n|标题|内容|\n|--|--|\n" +
-                kownladge.map(i => "|" + i.title + "|" + i.content.replace(/\n/g,' ') + "|").join("\n")
-        })
-        result = []
-        for (let i in kownladge) {
-            if(kownladge[i].title.match(/\((.+)\)/) != null || kownladge[i].title.match(/\((.+)\)/) != undefined){
-                wx_response = await fetch("/api/read_sgwx", {
-                    method: 'post',
-                    body: JSON.stringify({
-                        url: kownladge[i].title.match(/\((.+)\)/)[1],
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-
-                let prompt = "精炼地总结以下文段中与问题相关的信息为二十个字。\n" + await wx_response.text() + "\n问题：" + Q
-                result.push(await send(prompt))
-                }
+        kownladge = (await find(Q, 2)).map(i => ({
+            title: get_title_form_md(i.title),
+            url: get_url_form_md(i.title),
+            content: i.content
+        }))
+        answer = {
+            role: "AI",
+            content: "",
+            sources: kownladge
         }
-        let prompt = "根据以下资料，用中文回答问题。\n" +
-            result.join('\n') + "\n问题：" + Q
-        await send(prompt)
-        //app.会话模式={名称: "常规模式",描述: "输入问题",问题: ""}
-    },
-})
-功能.push({
-    名称: "知识库增强(根据注意力)",
-    问题: async () => {
-        let Q = app.问题
-        zsk(false)
-        lsdh(true)//打开历史对话
-        lsdh(false)
-        app.chat.push({ "role": "user", "content": "ST知识库增强查找：" + Q })
-        kownladge = await find(Q, 2)
-        app.chat.push({
-            "role": "AI", "content": "识别结果:\n|标题|内容|\n|--|--|\n" +
-                kownladge.map(i => "|" + i.title + "|" + i.content.replace(/\n/g,' ') + "|").join("\n")
-        })
+        app.chat.push(answer)
         result = []
         for (let i in kownladge) {
+            answer.content = '正在查找：' + kownladge[i].title
             if (i > 3) continue
             let prompt = "精炼地总结以下文段中与问题相关的信息为二十个字。\n" +
                 kownladge[i].content + "\n问题：" + Q
-            result.push(await send(prompt))
+            result.push(await send(prompt, keyword = Q, show = false))
         }
+        app.chat.pop()
+        app.chat.pop()
         let prompt = "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。\n" +
             result.join('\n') + "\n问题：" + Q
-        await send(prompt)
-        //app.会话模式={名称: "常规模式",描述: "输入问题",问题: ""}
+        await send(prompt, keyword = Q, show = true,sources=kownladge)
     },
 })
 
@@ -95,7 +83,7 @@ if (app.llm_type == "rwkv") {
             resp = resp.replace(/关键词提取/g, '').replace(/[：，]/g, ' ').trim().split(' ')
             app.chat.push({
                 "role": "AI", "content": "识别结果:\n|标题|内容|\n|--|--|\n" +
-                    kownladge.map(i => "|" + i.title + "|" + i.content.replace(/\n/g,' ') + "|").join("\n")
+                    kownladge.map(i => "|" + i.title + "|" + i.content.replace(/\n/g, ' ') + "|").join("\n")
             })
             result = []
             for (let i in resp) {
@@ -127,7 +115,7 @@ else if (app.llm_type == "glm6b") {
             resp = resp.replace(/关键词提取/g, '').replace(/[：，]/g, ' ').trim().split(' ')
             app.chat.push({
                 "role": "AI", "content": "识别结果:\n|标题|内容|\n|--|--|\n" +
-                    kownladge.map(i => "|" + i.title + "|" + i.content.replace(/\n/g,' ') + "|").join("\n")
+                    kownladge.map(i => "|" + i.title + "|" + i.content.replace(/\n/g, ' ') + "|").join("\n")
             })
             result = []
             for (let i in resp) {
@@ -145,6 +133,40 @@ else if (app.llm_type == "glm6b") {
         },
     })
 }
+功能.push({
+    名称: "sgwx知识库全文爬取",
+    问题: async () => {
+        let Q = app.问题
+        zsk(false)
+        lsdh(true)//打开历史对话
+        lsdh(false)
+        app.chat.push({ "role": "user", "content": Q })
+        kownladge = await find(Q, 2)
+        app.chat.push({
+            "role": "AI", "content": "识别结果:\n|标题|内容|\n|--|--|\n" +
+                kownladge.map(i => "|" + i.title + "|" + i.content.replace(/\n/g, ' ') + "|").join("\n")
+        })
+        result = []
+        for (let i in kownladge) {
+            wx_response = await fetch("/api/read_sgwx", {
+                method: 'post',
+                body: JSON.stringify({
+                    url: kownladge[i].title.match(/\((.+)\)/)[1],
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            let prompt = "精炼地总结以下文段中与问题相关的信息为二十个字。\n" + await wx_response.text() + "\n问题：" + Q
+            result.push(await send(prompt))
+        }
+        let prompt = "根据以下资料，用中文回答问题。\n" +
+            result.join('\n') + "\n问题：" + Q
+        await send(prompt)
+        //app.会话模式={名称: "常规模式",描述: "输入问题",问题: ""}
+    },
+})
 // 功能.push({
 //     名称: "知识库step",
 //     问题: async () => {

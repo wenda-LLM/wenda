@@ -14,26 +14,29 @@ proxies = {"http": None,"https": None,}
 
 
 def find(search_query,step = 0):
-    url = 'https://cn.bing.com/search?q={}'.format(search_query)
-    res = session.get(url, headers=headers, proxies=proxies)
-    r = res.text
+    try:
+        url = 'https://cn.bing.com/search?q={}'.format(search_query)
+        res = session.get(url, headers=headers, proxies=proxies)
+        r = res.text
 
-    title = title_pattern.findall(r)
-    brief = brief_pattern.findall(r)
-    link = link_pattern.findall(r)
+        title = title_pattern.findall(r)
+        brief = brief_pattern.findall(r)
+        link = link_pattern.findall(r)
 
-    # 数据清洗
-    clear_brief = []
-    for i in brief:
-        tmp = re.sub('<[^<]+?>', '', i).replace('\n', '').strip()
-        tmp1 = re.sub('^.*&ensp;', '', tmp).replace('\n', '').strip()
-        tmp2 = re.sub('^.*>', '', tmp1).replace('\n', '').strip()
-        clear_brief.append(tmp2)
+        # 数据清洗
+        clear_brief = []
+        for i in brief:
+            tmp = re.sub('<[^<]+?>', '', i).replace('\n', '').strip()
+            tmp1 = re.sub('^.*&ensp;', '', tmp).replace('\n', '').strip()
+            tmp2 = re.sub('^.*>', '', tmp1).replace('\n', '').strip()
+            clear_brief.append(tmp2)
 
-    clear_title = []
-    for i in title:
-        tmp = re.sub('^.*?>', '', i).replace('\n', '').strip()
-        tmp2 = re.sub('<[^<]+?>', '', tmp).replace('\n', '').strip()
-        clear_title.append(tmp2)
-    return [{'title': "["+clear_title[i]+"]("+link[i][1]+")", 'content':clear_brief[i]}
-            for i in range(min(int(settings.librarys.bing.count), len(brief)))]
+        clear_title = []
+        for i in title:
+            tmp = re.sub('^.*?>', '', i).replace('\n', '').strip()
+            tmp2 = re.sub('<[^<]+?>', '', tmp).replace('\n', '').strip()
+            clear_title.append(tmp2)
+        return [{'title': "["+clear_title[i]+"]("+link[i][1]+")", 'content':clear_brief[i]}
+                for i in range(min(int(settings.librarys.bing.count), len(brief)))]
+    except:
+        return []
