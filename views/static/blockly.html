@@ -9,6 +9,13 @@
   <script src="blockly/msg/zh-hans.js"></script>
 
   <style>
+    html,
+    body,
+    #blocklyDiv {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
   </style>
 </head>
 
@@ -21,7 +28,7 @@
   <button
     onclick="Blockly.serialization.workspaces.load(JSON.parse(localStorage['wenda_blockly_prog']), demoWorkspace)">读取</button>
 
-  <div id="blocklyDiv" style="height: 560px; width: 100%;"></div>
+  <div id="blocklyDiv" style="width: 100%;"></div>
 
   <script>
     // s = document.documentElement.clientHeight / 600;
