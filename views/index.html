@@ -767,7 +767,7 @@
 		add_conversation = (role, content, sources = null) => {
 			app.chat.push({ "role": role, "content": content, sources: sources })
 		}
-
+		console.warn=function(){}
 	</script>
 	<script src="api/llm"></script>
 	<script src="api/plugins"></script>
