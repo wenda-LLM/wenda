@@ -265,8 +265,6 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 #### torch
 可使用内置脚本对模型量化，运行：`cov_torch_rwkv.bat`。此操作可以加快启动速度。
 
-默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢。
-
 在安装vc后支持一键启动CUDA加速，运行：`run_rwkv_with_vc.bat`。强烈建议安装！！！
 #### cpp
 可使用内置脚本对torch版模型转换和量化。 运行：`cov_ggml_rwkv.bat`。
