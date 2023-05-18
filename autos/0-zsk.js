@@ -32,7 +32,7 @@ get_url_form_md = (s) => {
         zsk(false)
         lsdh(false)
         app.chat.push({ "role": "user", "content": Q })
-        kownladge = (await find(Q, 2)).map(i => ({
+        kownladge = (await find(Q, 5)).map(i => ({
             title: get_title_form_md(i.title),
             url: get_url_form_md(i.title),
             content: i.content
@@ -47,7 +47,7 @@ get_url_form_md = (s) => {
         for (let i in kownladge) {
             answer.content = '正在查找：' + kownladge[i].title
             if (i > 3) continue
-            let prompt = "精炼地总结以下文段中与问题相关的信息为二十个字。\n" +
+            let prompt = "总结以下文段中与问题相关的信息。\n" +
                 kownladge[i].content + "\n问题：" + Q
             result.push(await send(prompt, keyword = Q, show = false))
         }
@@ -67,7 +67,7 @@ if (app.llm_type == "rwkv") {
             let Q = app.问题
             zsk(false)
             lsdh(false)
-            kownladge = (await find(Q, 10)).map(i => ({
+            kownladge = (await find(Q, 5)).map(i => ({
                 title: get_title_form_md(i.title),
                 url: get_url_form_md(i.title),
                 content: i.content
