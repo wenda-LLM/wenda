@@ -26,6 +26,7 @@
 
     <button onclick="showCode()">显示等效代码</button>
     <button onclick="runCode()">载入至闻达</button>
+    <button onclick="analyzeCode()">智能分析</button>
     <!-- <button
       onclick="localStorage['wenda_blockly_prog']=JSON.stringify(Blockly.serialization.workspaces.save(demoWorkspace))">
       保存</button>
@@ -491,6 +492,15 @@
       var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
       Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
       parent.postMessage({ from: '猫猫也会的图块化编程', data: code }, '/')
+    }
+    function analyzeCode() {
+      // Generate JavaScript code and run it.
+      window.LoopTrap = 1000;
+      Blockly.JavaScript.INFINITE_LOOP_TRAP =
+        'if (--window.LoopTrap < 0) throw "Infinite loop.";\n';
+      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      parent.postMessage({ from: '猫猫也会的图块化编程_分析', data: code }, '/')
     }
   </script>
 

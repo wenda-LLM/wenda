@@ -22,4 +22,9 @@ window.addEventListener('message', function (e) {
         })
         this.alert("载入成功")
     }
+    if (e.data.from == '猫猫也会的图块化编程_分析') {
+        let data = e.data.data
+        send("我正在教小朋友使用blocky编程，请分析下列程序实现的功能:\n"+data, keyword = "请分析我写的程序")
+        app.tab=0
+    }
 });
