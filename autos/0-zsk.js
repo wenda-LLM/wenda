@@ -30,7 +30,6 @@ get_url_form_md = (s) => {
     问题: async () => {
         let Q = app.问题
         zsk(false)
-        lsdh(true)//打开历史对话
         lsdh(false)
         app.chat.push({ "role": "user", "content": Q })
         kownladge = (await find(Q, 2)).map(i => ({
@@ -56,11 +55,29 @@ get_url_form_md = (s) => {
         app.chat.pop()
         let prompt = "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。\n" +
             result.join('\n') + "\n问题：" + Q
-        await send(prompt, keyword = Q, show = true,sources=kownladge)
+        await send(prompt, keyword = Q, show = true, sources = kownladge)
     },
 })
 
 if (app.llm_type == "rwkv") {
+
+    功能.push({
+        名称: "知识库增强(rwkv)",
+        问题: async () => {
+            let Q = app.问题
+            zsk(false)
+            lsdh(false)
+            kownladge = (await find(Q, 10)).map(i => ({
+                title: get_title_form_md(i.title),
+                url: get_url_form_md(i.title),
+                content: i.content
+            }))
+            let prompt = "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。\n" +
+            kownladge.map(i => i.content).join('\n') + "\n问题：" + Q
+            await send(prompt, keyword = Q, show = true, sources = kownladge)
+        }
+    }
+    )
     功能.push({
         名称: "知识库增强(根据关键词)",
         问题: async () => {
