@@ -26,10 +26,11 @@ get_url_form_md = (s) => {
     }
 }
 功能.push({
-    名称: "知识库增强",
+    名称: "知识库",
+    描述: "通过知识库回答问题",
     问题: async () => {
         let Q = app.问题
-        zsk(false)
+        
         lsdh(false)
         app.chat.push({ "role": "user", "content": Q })
         kownladge = (await find(Q, 5)).map(i => ({
@@ -65,7 +66,7 @@ if (app.llm_type == "rwkv") {
         名称: "知识库增强(rwkv)",
         问题: async () => {
             let Q = app.问题
-            zsk(false)
+            
             lsdh(false)
             kownladge = (await find(Q, 5)).map(i => ({
                 title: get_title_form_md(i.title),
@@ -93,7 +94,7 @@ if (app.llm_type == "rwkv") {
             { "role": "user", "content": "请提取关键词，使用逗号分隔。" },
             { "role": "AI", "content": '电子社保卡，参保地，错误' },
             { "role": "AI", "content": Q }]
-            zsk(false)
+            
             lsdh(true)//打开历史对话
             resp = await send("请提取关键词，使用逗号分隔。")
             lsdh(false)
@@ -125,7 +126,7 @@ else if (app.llm_type == "glm6b") {
             let Q = app.问题
             app.chat = [{ "role": "user", "content": "现在开始,你的任务是提取关键词，提取下列语句中的关键词，并用空格分隔：科普之路是不是任重而道远？" },
             { "role": "AI", "content": '科普 道路 任重 道远' }]
-            zsk(false)
+            
             lsdh(true)//打开历史对话
             resp = await send("提取下列语句中的关键词：" + Q)
             lsdh(false)
@@ -154,7 +155,7 @@ else if (app.llm_type == "glm6b") {
     名称: "sgwx知识库全文爬取",
     问题: async () => {
         let Q = app.问题
-        zsk(false)
+        
         lsdh(true)//打开历史对话
         lsdh(false)
         app.chat.push({ "role": "user", "content": Q })

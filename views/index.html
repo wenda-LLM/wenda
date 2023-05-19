@@ -170,6 +170,22 @@
 			padding-top: 0;
 			margin-top: 0;
 		}
+
+		.v-application--is-ltr .v-input--selection-controls__input {
+			/* 紧凑右上角开关 */
+			margin-right: 0px;
+		}
+
+		.v-slide-group:not(.v-slide-group--has-affixes)>.v-slide-group__prev {
+			/* 隐藏手机选项卡左侧空白 */
+			display: none !important;
+		}
+
+		button.v-icon.notranslate.v-chip__close.v-icon--link.v-icon--right.mdi.mdi-close-circle.theme--light {
+			/* 防止功能关闭按钮看不到 */
+			position: sticky;
+			right: 0px;
+		}
 	</style>
 </head>
 
@@ -208,7 +224,7 @@
 				<v-tooltip bottom>
 					<template v-slot:activator="{ on, attrs }">
 						<div v-bind="attrs" v-on="on">
-							<v-switch hide-details  inset v-model="zhishiku_on">
+							<v-switch hide-details inset v-model="zhishiku_on">
 								<template v-slot:label> <v-icon text>
 										mdi-book-open-variant
 									</v-icon> </template>
@@ -217,11 +233,10 @@
 					</template>
 					<span>{{$t("zhishiku")}}</span>
 				</v-tooltip>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<v-tooltip bottom>
 					<template v-slot:activator="{ on, attrs }">
 						<div v-bind="attrs" v-on="on">
-							<v-switch hide-details  inset v-model="history_on">
+							<v-switch hide-details inset v-model="history_on">
 								<template v-slot:label> <v-icon text>
 										mdi-history
 									</v-icon> </template>
@@ -230,8 +245,6 @@
 					</template>
 					<span>{{$t("history")}}</span>
 				</v-tooltip>
-
-				&nbsp;&nbsp;&nbsp;&nbsp;
 				<v-tooltip bottom>
 					<template v-slot:activator="{ on, attrs }">
 						<div v-bind="attrs" v-on="on">
@@ -318,27 +331,32 @@
 								停止<br>输入
 							</v-btn>
 						</div>
-						<v-textarea autofocus hide-details no-resize rows="3" :loading="loading"
-							:placeholder="$t(会话模式.描述)" @keypress.enter="提交()" v-model="问题">
-						</v-textarea>
-						<div>
-							<v-btn style="margin-bottom: 10px;margin-top: 0;" v-if="loading" color="purple" rounded="lg"
-								dark size="x-large" @click="中断()">
-								{{$t("abord")}}
-							</v-btn>
-							<v-btn style="margin-bottom: 10px;margin-top: 0;" color="purple" rounded="lg" dark
-								size="x-large" @click="提交()" v-if="!loading">
-								{{$t("send")}}
-							</v-btn>
-							<br>
-							<v-expand-transition>
-								<v-chip v-if="会话模式.名称!=''" color="purple" outlined close
-									@click:close='会话模式={名称: "",描述: "input_question",问题: ""}'>
-									{{会话模式.名称}}
-								</v-chip>
-							</v-expand-transition>
+						<v-row no-gutters>
+							<v-col cols="8" md="11">
+								<v-textarea autofocus hide-details no-resize rows="3" :loading="loading"
+									:placeholder="$t(会话模式.描述)" @keypress.enter="提交()" v-model="问题">
+								</v-textarea>
+							</v-col>
+							<v-col cols="4" md="1">
+								<div style="text-align: center;">
+									<v-btn style="margin-bottom: 10px;" v-if="loading" color="purple" rounded="lg" dark
+										size="x-large" @click="中断()">
+										{{$t("abord")}}
+									</v-btn>
+									<v-btn style="margin-bottom: 10px;" color="purple" rounded="lg" dark size="x-large"
+										@click="提交()" v-if="!loading">
+										{{$t("send")}}
+									</v-btn>
+									<br>
+									<v-expand-transition>
+										<v-chip v-if="会话模式.名称!=''" color="purple" outlined close
+											@click:close='zhishiku_on=false'>
+											{{会话模式.名称}}
+										</v-chip>
+									</v-expand-transition>
 
-						</div>
+								</div>
+							</v-col>
 					</v-footer>
 				</v-tab-item>
 				<v-tab-item key="setting">
@@ -457,8 +475,17 @@
 			el: '#app',
 			vuetify: new Vuetify(),
 			i18n: i18n,
-			filters: {
-
+			watch: {
+				zhishiku_on: (zhishiku_on) => {
+					if (zhishiku_on) {
+						app.会话模式 = app.功能菜单.find(i => i.名称 == '知识库')
+					} else
+						app.会话模式 = {
+							名称: "",
+							描述: "input_question",
+							问题: "",
+						}
+				}
 			},
 			data: () => ({
 				问题: '',
@@ -591,7 +618,7 @@
 						top_p: app.top_p,
 						max_length: app.max_length,
 						history: QA_history,
-						zhishiku: app.zhishiku_on
+						zhishiku: false
 					}),
 					headers: {
 						'Content-Type': 'application/json'
@@ -768,7 +795,7 @@
 		add_conversation = (role, content, sources = null) => {
 			app.chat.push({ "role": role, "content": content, sources: sources })
 		}
-		console.warn=function(){}
+		console.warn = function () { }
 		get_user_input = () => app.问题
 	</script>
 	<script src="api/llm"></script>
