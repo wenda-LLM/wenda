@@ -4,7 +4,7 @@ logging: False
 port: 17860
 #webui 默认启动端口号"
 library: 
-     strategy: "sogowx:3 bingsite:2 rtst:2 agents:0"
+     strategy: "rtst:2 agents:0"
      #知识库参数，每组参数间用空格分隔，冒号前为知识库类型，后为抽取数量。
 
      #知识库类型:

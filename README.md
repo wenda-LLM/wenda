@@ -16,32 +16,31 @@
 [QQ频道](https://pd.qq.com/s/ej03plxks)
 
 <!--ts-->
-* [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
-   * [安装部署](#安装部署)
-      * [各版本功能及安装说明](#各版本功能及安装说明)
-      * [懒人包](#懒人包)
-      * [自行安装](#自行安装)
-         * [1.安装库](#1安装库)
-         * [2.下载模型](#2下载模型)
-         * [3.参数设置](#3参数设置)
-   * [Auto](#auto)
-      * [Auto 开发函数列表](#auto-开发函数列表)
-      * [Auto 开发涉及代码段](#auto-开发涉及代码段)
-      * [部分内置 Auto 使用说明](#部分内置-auto-使用说明)
-   * [知识库](#知识库)
-      * [rtst模式](#rtst模式)
-      * [fess模式](#fess模式)
-      * [知识库调试](#知识库调试)
-      * [清洗知识库文件](#清洗知识库文件)
-   * [模型配置](#模型配置)
-      * [chatGLM-6B](#chatglm-6b)
-      * [chatRWKV](#chatrwkv)
-         * [torch](#torch)
-         * [cpp](#cpp)
-         * [文字冒险游戏](#文字冒险游戏)
-      * [llama](#llama)
-* [基于本项目的二次开发](#基于本项目的二次开发)
-   * [<a href="https://github.com/AlanLee1996/wenda-webui">wenda-webui</a>](#wenda-webui)
+- [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
+  - [安装部署](#安装部署)
+    - [各版本功能及安装说明](#各版本功能及安装说明)
+    - [懒人包](#懒人包)
+    - [自行安装](#自行安装)
+      - [1.安装库](#1安装库)
+      - [2.下载模型](#2下载模型)
+      - [3.参数设置](#3参数设置)
+  - [Auto](#auto)
+    - [Auto 开发函数列表](#auto-开发函数列表)
+    - [Auto 开发涉及代码段](#auto-开发涉及代码段)
+    - [部分内置 Auto 使用说明](#部分内置-auto-使用说明)
+  - [知识库](#知识库)
+    - [rtst模式](#rtst模式)
+    - [fess模式](#fess模式)
+    - [知识库调试](#知识库调试)
+    - [清洗知识库文件](#清洗知识库文件)
+  - [模型配置](#模型配置)
+    - [chatGLM-6B](#chatglm-6b)
+    - [chatRWKV](#chatrwkv)
+      - [torch](#torch)
+      - [cpp](#cpp)
+    - [llama](#llama)
+- [基于本项目的二次开发](#基于本项目的二次开发)
+  - [wenda-webui](#wenda-webui)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sun May 14 12:45:00 UTC 2023 -->
@@ -204,6 +203,7 @@ try {
 ![](imgs/auto1.jpg)
 ![](imgs/auto2.png)
 ![](imgs/auto3.png)
+![](imgs/auto4.png)
 
 [auto例程](https://github.com/l15y/wenda/tree/main/autos)
 
@@ -265,8 +265,6 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 #### torch
 可使用内置脚本对模型量化，运行：`cov_torch_rwkv.bat`。此操作可以加快启动速度。
 
-默认参数在GTX1660Ti（6G显存）上正常运行，但速度较慢。
-
 在安装vc后支持一键启动CUDA加速，运行：`run_rwkv_with_vc.bat`。强烈建议安装！！！
 #### cpp
 可使用内置脚本对torch版模型转换和量化。 运行：`cov_ggml_rwkv.bat`。
@@ -277,8 +275,6 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 
 可以查看：[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)，下载其他版本，或者自行编译。
 
-#### 文字冒险游戏
-![](imgs/wzmx.png)
 ### llama
 运行：`run_llama.bat`。
 
