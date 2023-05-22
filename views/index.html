@@ -170,6 +170,27 @@
 			padding-top: 0;
 			margin-top: 0;
 		}
+
+		.v-application--is-ltr .v-input--selection-controls__input {
+			/* 紧凑右上角开关 */
+			margin-right: 0px;
+		}
+
+		.v-slide-group:not(.v-slide-group--has-affixes)>.v-slide-group__prev {
+			/* 隐藏手机选项卡左侧空白 */
+			display: none !important;
+		}
+
+		button.v-icon.notranslate.v-chip__close.v-icon--link.v-icon--right.mdi.mdi-close-circle.theme--light {
+			/* 防止功能关闭按钮看不到 */
+			position: sticky;
+			right: 0px;
+		}
+
+		.v-sheet.v-card {
+			margin: 20px;
+			padding: 10px;
+		}
 	</style>
 </head>
 
@@ -208,7 +229,7 @@
 				<v-tooltip bottom>
 					<template v-slot:activator="{ on, attrs }">
 						<div v-bind="attrs" v-on="on">
-							<v-switch hide-details  inset v-model="zhishiku_on">
+							<v-switch hide-details inset v-model="zhishiku_on">
 								<template v-slot:label> <v-icon text>
 										mdi-book-open-variant
 									</v-icon> </template>
@@ -217,11 +238,10 @@
 					</template>
 					<span>{{$t("zhishiku")}}</span>
 				</v-tooltip>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<v-tooltip bottom>
 					<template v-slot:activator="{ on, attrs }">
 						<div v-bind="attrs" v-on="on">
-							<v-switch hide-details  inset v-model="history_on">
+							<v-switch hide-details inset v-model="history_on">
 								<template v-slot:label> <v-icon text>
 										mdi-history
 									</v-icon> </template>
@@ -230,8 +250,6 @@
 					</template>
 					<span>{{$t("history")}}</span>
 				</v-tooltip>
-
-				&nbsp;&nbsp;&nbsp;&nbsp;
 				<v-tooltip bottom>
 					<template v-slot:activator="{ on, attrs }">
 						<div v-bind="attrs" v-on="on">
@@ -318,27 +336,32 @@
 								停止<br>输入
 							</v-btn>
 						</div>
-						<v-textarea autofocus hide-details no-resize rows="3" :loading="loading"
-							:placeholder="$t(会话模式.描述)" @keypress.enter="提交()" v-model="问题">
-						</v-textarea>
-						<div>
-							<v-btn style="margin-bottom: 10px;margin-top: 0;" v-if="loading" color="purple" rounded="lg"
-								dark size="x-large" @click="中断()">
-								{{$t("abord")}}
-							</v-btn>
-							<v-btn style="margin-bottom: 10px;margin-top: 0;" color="purple" rounded="lg" dark
-								size="x-large" @click="提交()" v-if="!loading">
-								{{$t("send")}}
-							</v-btn>
-							<br>
-							<v-expand-transition>
-								<v-chip v-if="会话模式.名称!=''" color="purple" outlined close
-									@click:close='会话模式={名称: "",描述: "input_question",问题: ""}'>
-									{{会话模式.名称}}
-								</v-chip>
-							</v-expand-transition>
+						<v-row no-gutters>
+							<v-col cols="8" md="11">
+								<v-textarea autofocus hide-details no-resize rows="3" :loading="loading"
+									:placeholder="$t(会话模式.描述)" @keypress.enter="提交()" v-model="问题">
+								</v-textarea>
+							</v-col>
+							<v-col cols="4" md="1">
+								<div style="text-align: center;">
+									<v-btn style="margin-bottom: 10px;" v-if="loading" color="purple" rounded="lg" dark
+										size="x-large" @click="中断()">
+										{{$t("abord")}}
+									</v-btn>
+									<v-btn style="margin-bottom: 10px;" color="purple" rounded="lg" dark size="x-large"
+										@click="提交()" v-if="!loading">
+										{{$t("send")}}
+									</v-btn>
+									<br>
+									<v-expand-transition>
+										<v-chip v-if="会话模式.名称!=''" color="purple" outlined close
+											@click:close='zhishiku_on=false'>
+											{{会话模式.名称}}
+										</v-chip>
+									</v-expand-transition>
 
-						</div>
+								</div>
+							</v-col>
 					</v-footer>
 				</v-tab-item>
 				<v-tab-item key="setting">
@@ -399,26 +422,71 @@
 					</v-row>
 				</v-tab-item>
 				<v-tab-item key="zhishiku">
-					<br>
-					<v-row>
-						<v-col cols="12" sm="6">
-							<v-text-field v-model="test_zsk_prompt" outlined label="关键词" clearable></v-text-field>
+					<h1>知识库管理</h1>
+					<v-card elevation="2">
+						<v-card-title>动态调整知识库</v-card-title>
+						<v-divider></v-divider>
+						<v-card-text>网页刷新后恢复<br>
+							<v-row>
+								<v-col cols="8">
+									<v-combobox v-model="zsk_libraryStategy"
+										:items="['rtst:3:default agents:0','sogowx:3 bing:3']" label='库参数'></v-combobox>
+								</v-col>
+								<v-col cols="4">
+									<v-text-field v-model="zsk_maxItmes" outlined label="最大数量"></v-text-field>
+								</v-col>
+							</v-row> </v-card-text>
+						<v-card-actions>
+							<v-btn color="purple" dark size="x-large"
+								@click='find=(s, step = 1)=>find_dynamic(s, step, {libraryStategy:zsk_libraryStategy,maxItmes:zsk_maxItmes})'>
+								设置
+							</v-btn>
+						</v-card-actions>
+					</v-card>
+					<v-card elevation="2">
+						<v-card-title>知识提取提示词</v-card-title>
+						<v-divider></v-divider>
+						<v-card-text><br>
+							<v-combobox v-model="zsk_总结提示词"
+								:items="['总结以下文段中与问题相关的信息。']" label='总结提示词'></v-combobox>
 
-						</v-col>
-						<v-col cols="12" sm="6">
-							<v-text-field v-model="test_zsk_step" outlined label="上下文数量" clearable></v-text-field>
-						</v-col>
-					</v-row>
-					<v-btn color="purple" dark size="x-large" @click="find(test_zsk_prompt,test_zsk_step)">
-						测试
-					</v-btn>
-					<v-data-table
-						:headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
-						:items="zhishiku" hide-default-header hide-default-footer>
-						<template v-slot:item.title="{ item }">
-							<p v-html="md2html(item.title)"></p>
-						</template>
-					</v-data-table>
+								<v-combobox v-model="zsk_回答提示词"
+								:items="['学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。']"
+								 label='回答提示词'></v-combobox>
+
+						</v-card-text>
+					</v-card>
+					<v-card elevation="2">
+						<v-card-title>查询知识库</v-card-title>
+						<v-divider></v-divider><br>
+						<v-card-text>
+							<v-row>
+								<v-col cols="12" sm="6">
+									<v-text-field v-model="test_zsk_prompt" outlined label="关键词"
+										clearable></v-text-field>
+
+								</v-col>
+								<v-col cols="12" sm="6">
+									<v-text-field v-model="test_zsk_step" outlined label="上下文数量"
+										clearable></v-text-field>
+								</v-col>
+							</v-row>
+							<v-data-table
+								:headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
+								:items="zhishiku" hide-default-header hide-default-footer>
+								<template v-slot:item.title="{ item }">
+									<p v-html="md2html(item.title)"></p>
+								</template>
+							</v-data-table>
+							<v-card-actions>
+								<v-btn color="purple" dark size="x-large" @click="find(test_zsk_prompt,test_zsk_step)">
+									测试
+								</v-btn>
+							</v-card-actions>
+					</v-card>
+
+
+
 
 				</v-tab-item>
 				<v-tab-item v-for="plugin in plugins" :key="plugin.name">
@@ -457,8 +525,17 @@
 			el: '#app',
 			vuetify: new Vuetify(),
 			i18n: i18n,
-			filters: {
-
+			watch: {
+				zhishiku_on: (zhishiku_on) => {
+					if (zhishiku_on) {
+						app.会话模式 = app.功能菜单.find(i => i.名称 == '知识库')
+					} else
+						app.会话模式 = {
+							名称: "",
+							描述: "input_question",
+							问题: "",
+						}
+				}
 			},
 			data: () => ({
 				问题: '',
@@ -466,6 +543,10 @@
 				history_on: false,
 				history_limit: 5,
 				功能菜单: 功能,
+				zsk_libraryStategy: "",
+				zsk_maxItmes: 5,
+				zsk_总结提示词:'总结以下文段中与问题相关的信息。',
+				zsk_回答提示词:'学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。',
 				会话模式: {
 					名称: "",
 					描述: "input_question",
@@ -479,7 +560,6 @@
 				test_zsk_prompt: "",
 				test_zsk_step: 1,
 				zhishiku: [],
-				zhishiku_dynamic: [],
 				setting: {},
 				tab: 0,
 				zhishiku_on: false,
@@ -591,7 +671,7 @@
 						top_p: app.top_p,
 						max_length: app.max_length,
 						history: QA_history,
-						zhishiku: app.zhishiku_on
+						zhishiku: false
 					}),
 					headers: {
 						'Content-Type': 'application/json'
@@ -679,7 +759,7 @@
 			})
 			let json = await response.json()
 			console.table(json)
-			app.zhishiku_dynamic = json
+			app.zhishiku = json
 			return json
 		}
 
@@ -768,7 +848,7 @@
 		add_conversation = (role, content, sources = null) => {
 			app.chat.push({ "role": role, "content": content, sources: sources })
 		}
-		console.warn=function(){}
+		console.warn = function () { }
 		get_user_input = () => app.问题
 	</script>
 	<script src="api/llm"></script>

@@ -54,19 +54,37 @@ def api_find_dynamic():
 
     return json.dumps(find_dynamic(prompt, int(step), paraJson))
 
-
-def find_dynamic(s, step=0, paraJson={'libraryStategy': "bing:2 bingsite:3 fess:2 rtst:3 sogowx:2", 'maxItmes': 10}):
-    zsk = []
+def find_dynamic(s,step = 0,paraJson = {'libraryStategy':"bing:2 bingsite:3 fess:2 rtst:3:default sogowx:2",'maxItmes':10}):
+    zsk=[]
+    rtst_on=False
+    rtst_name='default'
     input_list = paraJson['libraryStategy'].split(" ")
+    
+    # print('from dynamic:')
+    
     for item in input_list:
-        item = item.split(":")
+        item=item.split(":")
+        rtst_on=False
         from importlib import import_module
         zhishiku = import_module('plugins.zhishiku_'+item[0])
         if zhishiku is None:
-            error_print("动态载入知识库失败", item[0])
-        zsk.append({'zsk': zhishiku, "count": int(item[1])})
+            error_print("载入知识库失败",item[0])
+        if len(item) >= 3:
+            if item[0] == 'rtst' and item[2] != None:
+               rtst_name=item[2]
+               rtst_on=True
+            #    print(rtst_name)
+            # else:
+            #     print('rtst 不存在')
 
-    result = []
+        zsk.append({'zsk':zhishiku,"count":int(item[1]),'rtst_state':rtst_on})
+
+    result=[]
+
     for item in zsk:
-        result += item['zsk'].find(s, step)[:item['count']]
+        # print(item)
+        if(item['rtst_state']):
+            result+=item['zsk'].find(s,step,rtst_name)[:item['count']]
+        else:
+            result+=item['zsk'].find(s,step)[:item['count']]
     return result[:paraJson["maxItmes"]]
