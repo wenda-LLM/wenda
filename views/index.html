@@ -429,20 +429,32 @@
 						<v-card-text>网页刷新后恢复<br>
 							<v-row>
 								<v-col cols="8">
-									<v-combobox v-model="zsk_libraryStategy" 
+									<v-combobox v-model="zsk_libraryStategy"
 										:items="['rtst:3:default agents:0','sogowx:3 bing:3']" label='库参数'></v-combobox>
 								</v-col>
 								<v-col cols="4">
 									<v-text-field v-model="zsk_maxItmes" outlined label="最大数量"></v-text-field>
 								</v-col>
-							</v-row>
-						</v-card-text>
+							</v-row> </v-card-text>
 						<v-card-actions>
 							<v-btn color="purple" dark size="x-large"
 								@click='find=(s, step = 1)=>find_dynamic(s, step, {libraryStategy:zsk_libraryStategy,maxItmes:zsk_maxItmes})'>
 								设置
 							</v-btn>
 						</v-card-actions>
+					</v-card>
+					<v-card elevation="2">
+						<v-card-title>知识提取提示词</v-card-title>
+						<v-divider></v-divider>
+						<v-card-text><br>
+							<v-combobox v-model="zsk_总结提示词"
+								:items="['总结以下文段中与问题相关的信息。']" label='总结提示词'></v-combobox>
+
+								<v-combobox v-model="zsk_回答提示词"
+								:items="['学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。']"
+								 label='回答提示词'></v-combobox>
+
+						</v-card-text>
 					</v-card>
 					<v-card elevation="2">
 						<v-card-title>查询知识库</v-card-title>
@@ -533,6 +545,8 @@
 				功能菜单: 功能,
 				zsk_libraryStategy: "",
 				zsk_maxItmes: 5,
+				zsk_总结提示词:'总结以下文段中与问题相关的信息。',
+				zsk_回答提示词:'学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。',
 				会话模式: {
 					名称: "",
 					描述: "input_question",
