@@ -19,12 +19,6 @@ def api_find():
     r = response.text
     return r
 
-@route('/assets/<path:path>')#wenda-webui
-def webui(path='-'):
-    if path.endswith(".js"):
-        return static_file(path, root="views/static/wenda-webui/assets", mimetype="application/javascript")
-    return static_file(path, root="views/static/wenda-webui/assets")
-
 @route('/webhook/event', method=("POST"))#webhook
 def api_find():
     print(request.json)
