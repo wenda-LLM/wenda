@@ -176,11 +176,6 @@
       display: none !important;
     }
 
-    button.v-icon.notranslate.v-chip__close.v-icon--link.v-icon--right.mdi.mdi-close-circle.theme--light {
-      /* 防止功能关闭按钮看不到 */
-      position: sticky;
-      right: 0px;
-    }
 
     .v-sheet.v-card {
       margin: 20px;
@@ -345,8 +340,7 @@
                   </v-btn>
                   <br />
                   <v-expand-transition>
-                    <v-chip v-if="会话模式.名称!=''" color="purple" outlined close @click:close="zhishiku_on=false"
-                      style="padding-right: 20px">
+                    <v-chip v-if="会话模式.名称!=''" color="purple" outlined close @click:close="zhishiku_on=false">
                       <span class="d-inline-block text-truncate" style="max-width: 120px">
                         {{会话模式.名称}}
                       </span>
