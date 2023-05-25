@@ -107,8 +107,8 @@ def read_auto_plugins():
             if(file.endswith(".js")):
                 file_path = os.path.join(root, file)
                 with open(file_path, "r", encoding='utf-8') as f:
-                    plugins.append(f.read())
-    return "\n".join(plugins)
+                    plugins.append({"name":file,"content":f.read()})
+    return json.dumps(plugins)
 # @route('/writexml', method=("POST","OPTIONS"))
 # def writexml():
     # data = request.json
