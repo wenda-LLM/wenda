@@ -1,1075 +1,857 @@
 <html>
-  <head>
-    <title>闻达</title>
-    <meta charset="utf-8" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=400,  user-scalable=no" />
-    <link rel="shortcut icon" href="#" />
-    <!-- <link href="https://npm.elemecdn.com/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
+<head>
+  <title>闻达</title>
+  <meta charset="utf-8" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=400,  user-scalable=no" />
+  <link rel="shortcut icon" href="wd.png" />
+  <!-- <link href="https://npm.elemecdn.com/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
 	<link href="https://npm.elemecdn.com/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
 	<script src="https://npm.elemecdn.com/vue@2.x/dist/vue.min.js"></script>
 	<script src="https://npm.elemecdn.com/vuetify@2.x/dist/vuetify.min.js"></script> -->
-    <link rel="manifest" href="manifest.json" />
-    <link
-      href="static/mdi_font/css/materialdesignicons.min.css"
-      rel="stylesheet"
-    />
+  <link rel="manifest" href="manifest.json" />
+  <link href="static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet" />
 
-    <link href="static/vuetify.min.css" rel="stylesheet" />
-    <script src="static/vue.js"></script>
-    <script src="static/vue-i18n.js"></script>
-    <script src="static/vuetify.min.js"></script>
-    <script src="static/markdown-it.min.js"></script>
-    <script src="static/strings.js"></script>
-    <style>
-      .v-navigation-drawer__content::-webkit-scrollbar {
-        width: 5px;
-      }
+  <link href="static/vuetify.min.css" rel="stylesheet" />
+  <script src="static/vue.js"></script>
+  <script src="static/vue-i18n.js"></script>
+  <script src="static/vuetify.min.js"></script>
+  <script src="static/markdown-it.min.js"></script>
+  <script src="static/strings.js"></script>
+  <style>
+    .v-navigation-drawer__content::-webkit-scrollbar {
+      width: 5px;
+    }
 
-      .v-navigation-drawer__content::-webkit-scrollbar-track {
-        background-color: #bd00c0;
-      }
+    .v-navigation-drawer__content::-webkit-scrollbar-track {
+      background-color: #bd00c0;
+    }
 
-      /* 滚动条的滑轨背景颜色 */
+    /* 滚动条的滑轨背景颜色 */
 
-      .v-navigation-drawer__content::-webkit-scrollbar-thumb {
-        background-color: #fb00ff;
-      }
+    .v-navigation-drawer__content::-webkit-scrollbar-thumb {
+      background-color: #fb00ff;
+    }
 
-      /* 滑块颜色 */
+    /* 滑块颜色 */
 
-      .v-navigation-drawer__content::-webkit-scrollbar-button {
-        display: none;
-      }
+    .v-navigation-drawer__content::-webkit-scrollbar-button {
+      display: none;
+    }
 
-      /* 滑轨两头的监听按钮颜色 */
-      .answer th,
-      .answer td {
-        outline: 1px solid;
-        padding: 2px;
-      }
+    /* 滑轨两头的监听按钮颜色 */
+    .answer th,
+    .answer td {
+      outline: 1px solid;
+      padding: 2px;
+    }
 
-      div[aria-haspopup] {
-        display: inline-block;
-        margin: 10px;
-      }
+    div[aria-haspopup] {
+      display: inline-block;
+      margin: 10px;
+    }
 
-      .answer table {
-        outline: 1px solid;
-      }
+    .answer table {
+      outline: 1px solid;
+    }
 
-      .ask,
-      .answer {
-        padding: 1em;
-        background: #fff;
-        border-radius: 16px;
-        max-width: 80%;
-        margin: 0 10px;
-        word-break: break-word;
-        line-height: 1.2;
-      }
+    .ask,
+    .answer {
+      padding: 1em;
+      background: #fff;
+      border-radius: 16px;
+      max-width: 80%;
+      margin: 0 10px;
+      word-break: break-word;
+      line-height: 1.2;
+    }
 
-      .ask {
-        margin-left: auto;
-        white-space: break-spaces;
-      }
+    .ask {
+      margin-left: auto;
+      white-space: break-spaces;
+    }
 
-      .头像 {
-        margin-bottom: auto;
-        color: #fff !important;
-        position: unset;
-      }
+    .头像 {
+      margin-bottom: auto;
+      color: #fff !important;
+      position: unset;
+    }
 
-      .answer img {
-        max-width: 100%;
-      }
+    .answer img {
+      max-width: 100%;
+    }
 
-      #app,
-      .v-application--wrap {
-        background: transparent;
-        min-height: 100%;
-        /* background: #cecece0a; */
-      }
+    #app,
+    .v-application--wrap {
+      background: transparent;
+      min-height: 100%;
+      /* background: #cecece0a; */
+    }
 
-      .float {
-        position: absolute !important;
-      }
+    .float {
+      position: absolute !important;
+    }
 
-      .float button {
-        display: block !important;
-      }
+    .float button {
+      display: block !important;
+    }
 
-      header {
-        position: fixed !important;
-        top: 0;
-        z-index: 1;
-        width: 100%;
-      }
+    header {
+      position: fixed !important;
+      top: 0;
+      z-index: 1;
+      width: 100%;
+    }
 
-      footer {
-        padding-bottom: 54px !important;
-      }
+    footer {
+      padding-bottom: 54px !important;
+    }
 
-      .v-tabs {
-        position: fixed !important;
-        bottom: 0;
-        z-index: 3;
-        width: 100%;
-      }
+    .v-tabs {
+      position: fixed !important;
+      bottom: 0;
+      z-index: 3;
+      width: 100%;
+    }
 
-      html,
-      .v-window__container {
-        background-color: #0001;
-      }
+    html,
+    .v-window__container {
+      background-color: #0001;
+    }
 
-      [v-cloak] {
-        display: none;
-      }
+    [v-cloak] {
+      display: none;
+    }
 
-      .v-tabs-items {
-        height: 100%;
-      }
+    .v-tabs-items {
+      height: 100%;
+    }
 
-      .v-window-item {
-        min-height: 100%;
-        margin: 30px;
-      }
+    .v-window-item {
+      min-height: 100%;
+      margin: 30px;
+    }
 
-      .v-window-item:has(iframe) {
-        margin: 0;
-      }
+    .v-window-item:has(iframe) {
+      margin: 0;
+    }
 
-      .v-tab.v-tab {
-        color: inherit;
-        font-weight: bold;
-        font-size: large;
-      }
+    .v-tab.v-tab {
+      color: inherit;
+      font-weight: bold;
+      font-size: large;
+    }
 
-      .user-avatar {
-        background-color: #0000a0bb;
-      }
+    .user-avatar {
+      background-color: #0000a0bb;
+    }
 
-      .bot-avatar {
-        background-color: #7a0099bb;
-      }
+    .bot-avatar {
+      background-color: #7a0099bb;
+    }
 
-      .v-application p {
-        margin-bottom: 10px;
-        white-space: break-spaces;
-      }
+    .v-application p {
+      margin-bottom: 10px;
+      white-space: break-spaces;
+    }
 
-      .v-application a {
-        line-height: 1.3;
-      }
+    .v-application a {
+      line-height: 1.3;
+    }
 
-      .v-input.v-textarea.v-text-field {
-        padding-top: 0;
-        margin-top: 0;
-      }
+    .v-input.v-textarea.v-text-field {
+      padding-top: 0;
+      margin-top: 0;
+    }
 
-      .v-application--is-ltr .v-input--selection-controls__input {
-        /* 紧凑右上角开关 */
-        margin-right: 0px;
-      }
+    .v-application--is-ltr .v-input--selection-controls__input {
+      /* 紧凑右上角开关 */
+      margin-right: 0px;
+    }
 
-      .v-slide-group:not(.v-slide-group--has-affixes) > .v-slide-group__prev {
-        /* 隐藏手机选项卡左侧空白 */
-        display: none !important;
-      }
+    .v-slide-group:not(.v-slide-group--has-affixes)>.v-slide-group__prev {
+      /* 隐藏手机选项卡左侧空白 */
+      display: none !important;
+    }
 
-      button.v-icon.notranslate.v-chip__close.v-icon--link.v-icon--right.mdi.mdi-close-circle.theme--light {
-        /* 防止功能关闭按钮看不到 */
-        position: sticky;
-        right: 0px;
-      }
+    button.v-icon.notranslate.v-chip__close.v-icon--link.v-icon--right.mdi.mdi-close-circle.theme--light {
+      /* 防止功能关闭按钮看不到 */
+      position: sticky;
+      right: 0px;
+    }
 
-      .v-sheet.v-card {
-        margin: 20px;
-        padding: 10px;
-      }
-    </style>
-  </head>
+    .v-sheet.v-card {
+      margin: 20px;
+      padding: 10px;
+    }
+  </style>
+</head>
 
-  <body>
-    <div id="app" v-cloak>
-      <v-app>
-        <v-navigation-drawer
-          width="350"
-          v-model="drawer"
-          style="height: 100%; position: fixed"
-          temporary
-        >
-          <v-list>
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title class="text-h6"> Auto </v-list-item-title>
+<body>
+  <div id="app" v-cloak>
+    <v-app>
+      <v-navigation-drawer width="350" v-model="drawer" style="height: 100%; position: fixed" temporary>
+        <v-list>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title class="text-h6"> Auto </v-list-item-title>
 
+              <br />
+              <v-list-item-subtitle>
+                {{$t("feature_selection") }}
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item v-for="功能 in 功能菜单" @click.stop="load_feature(功能)">
+            <v-list-item-title v-text="功能.名称"> </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+      <v-toolbar dark color="purple darken-2" v-if="showHeader">
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-toolbar-title><a style="text-decoration: none; color: white"
+            href="https://github.com/l15y/wenda">{{$t("wenda") }}</a></v-toolbar-title>
+        <v-spacer></v-spacer>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <div v-bind="attrs" v-on="on">
+              <v-switch hide-details inset v-model="zhishiku_on">
+                <template v-slot:label>
+                  <v-icon text> mdi-book-open-variant </v-icon>
+                </template>
+              </v-switch>
+            </div>
+          </template>
+          <span>{{$t("zhishiku")}}</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <div v-bind="attrs" v-on="on">
+              <v-switch hide-details inset v-model="history_on">
+                <template v-slot:label>
+                  <v-icon text> mdi-history </v-icon>
+                </template>
+              </v-switch>
+            </div>
+          </template>
+          <span>{{$t("history")}}</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <div v-bind="attrs" v-on="on">
+              <v-icon text @click="chat=[];save_history()">
+                mdi-delete-clock-outline
+              </v-icon>
+            </div>
+          </template>
+          <span>{{$t("clear_history")}}</span>
+        </v-tooltip>
+      </v-toolbar>
+
+      <v-tabs-items v-model="tab" style="margin-bottom: 48px" :style="{marginTop: showHeader ? '64px' : '0px'}">
+        <v-tab-item key="chat">
+          <div v-for="(current_conversation, index) in chat" :key="index"
+            :class="['d-flex flex-row align-center my-2', current_conversation.role == 'user' ? 'justify-end': null]">
+            <span v-if="current_conversation.role == 'user'" class="ask" v-text="current_conversation.content"></span>
+            <v-hover v-slot="{ hover }">
+              <div>
+                <v-avatar :class="current_conversation.role == 'user' ? 'user-avatar': 'bot-avatar'" size="36"
+                  class="头像">
+                  <span>{{ {user:"问",AI:'答'}[current_conversation.role]
+                    }}</span>
+                </v-avatar>
                 <br />
-                <v-list-item-subtitle>
-                  {{$t("feature_selection") }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
+                <v-expand-transition>
+                  <div v-if="hover" class="float">
+                    <v-icon v-if="!loading" large text color="purple"
+                      @click="delete_current_conversation(current_conversation)">
+                      mdi-delete
+                    </v-icon>
 
-            <v-divider></v-divider>
-
-            <v-list-item
-              v-for="功能 in 功能菜单"
-              @click.stop="load_feature(功能)"
-            >
-              <v-list-item-title v-text="功能.名称"> </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-navigation-drawer>
-        <v-toolbar dark color="purple darken-2" v-if="showHeader">
-          <v-app-bar-nav-icon
-            @click.stop="drawer = !drawer"
-          ></v-app-bar-nav-icon>
-          <v-toolbar-title
-            ><a
-              style="text-decoration: none; color: white"
-              href="https://github.com/l15y/wenda"
-              >{{$t("wenda") }}</a
-            ></v-toolbar-title
-          >
-          <v-spacer></v-spacer>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <div v-bind="attrs" v-on="on">
-                <v-switch hide-details inset v-model="zhishiku_on">
-                  <template v-slot:label>
-                    <v-icon text> mdi-book-open-variant </v-icon>
-                  </template>
-                </v-switch>
+                    <v-icon large text color="purple" @click="copy(current_conversation.content)">
+                      mdi-content-copy
+                    </v-icon>
+                  </div>
+                </v-expand-transition>
               </div>
-            </template>
-            <span>{{$t("zhishiku")}}</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <div v-bind="attrs" v-on="on">
-                <v-switch hide-details inset v-model="history_on">
-                  <template v-slot:label>
-                    <v-icon text> mdi-history </v-icon>
-                  </template>
-                </v-switch>
-              </div>
-            </template>
-            <span>{{$t("history")}}</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <div v-bind="attrs" v-on="on">
-                <v-icon text @click="chat=[];save_history()">
-                  mdi-delete-clock-outline
-                </v-icon>
-              </div>
-            </template>
-            <span>{{$t("clear_history")}}</span>
-          </v-tooltip>
-        </v-toolbar>
+            </v-hover>
 
-        <v-tabs-items
-          v-model="tab"
-          style="margin-bottom: 48px"
-          :style="{marginTop: showHeader ? '64px' : '0px'}"
-        >
-          <v-tab-item key="chat">
-            <div
-              v-for="(current_conversation, index) in chat"
-              :key="index"
-              :class="['d-flex flex-row align-center my-2', current_conversation.role == 'user' ? 'justify-end': null]"
-            >
-              <span
-                v-if="current_conversation.role == 'user'"
-                class="ask"
-                v-text="current_conversation.content"
-              ></span>
-              <v-hover v-slot="{ hover }">
-                <div>
-                  <v-avatar
-                    :class="current_conversation.role == 'user' ? 'user-avatar': 'bot-avatar'"
-                    size="36"
-                    class="头像"
-                  >
-                    <span
-                      >{{ {user:"问",AI:'答'}[current_conversation.role]
-                      }}</span
-                    >
-                  </v-avatar>
-                  <br />
-                  <v-expand-transition>
-                    <div v-if="hover" class="float">
-                      <v-icon
-                        v-if="!loading"
-                        large
-                        text
-                        color="purple"
-                        @click="delete_current_conversation(current_conversation)"
-                      >
-                        mdi-delete
-                      </v-icon>
-
-                      <v-icon
-                        large
-                        text
-                        color="purple"
-                        @click="copy(current_conversation.content)"
-                      >
-                        mdi-content-copy
-                      </v-icon>
-                    </div>
-                  </v-expand-transition>
-                </div>
-              </v-hover>
-
-              <span v-if="current_conversation.role != 'user'" class="answer">
-                <div v-html="md2html(current_conversation.content)"></div>
-                <template style="margin-top: 10px">
-                  <v-tooltip
-                    bottom
-                    v-for="source in current_conversation.sources"
-                    :max-width="500"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <div v-bind="attrs" v-on="on" style="margin: 3px">
-                        <v-btn
-                          outlined
-                          style="
+            <span v-if="current_conversation.role != 'user'" class="answer">
+              <div v-html="md2html(current_conversation.content)"></div>
+              <template style="margin-top: 10px">
+                <v-tooltip bottom v-for="source in current_conversation.sources" :max-width="500">
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on" style="margin: 3px">
+                      <v-btn outlined style="
                             margin-top: 0px;
                             max-width: -webkit-fill-available;
                             overflow-x: hidden;
-                          "
-                          color="purple"
-                          rounded="lg"
-                          @click='window.open(source.url,"_blank")'
-                          x-small
-                        >
-                          <span
-                            class="d-inline-block text-truncate"
-                            style="max-width: 150px"
-                          >
-                            {{source.title}}
-                          </span>
-                        </v-btn>
-                      </div>
-                    </template>
-                    <span v-html="source.content"></span>
-                  </v-tooltip>
-                </template>
-              </span>
-            </div>
-            <div v-if="!loading&&chat.length>0">
-              <v-tooltip left>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-icon
-                    color="purple"
-                    class="float"
-                    large
-                    text
-                    style="right: 0"
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="re_generate()"
-                  >
-                    mdi-refresh
-                  </v-icon>
-                </template>
-                <span>{{$t("re_generate")}}</span>
-              </v-tooltip>
-            </div>
-            <br /><br /><br /><br /><br /><br /><br /><br /><br />
-            <v-footer fixed>
-              <div
-                style="position: fixed; bottom: 120px; width: 100%; z-index: 20"
-                v-if="语音输入"
-              >
-                <v-btn
-                  style="margin: auto; display: flex"
-                  color="purple"
-                  fab
-                  dark
-                  size="x-large"
-                  @click="listen()"
-                  :loading="loading"
-                  v-if="!语音输入中"
-                >
-                  语音<br />输入
-                </v-btn>
-                <v-btn
-                  style="margin: auto; display: flex"
-                  color="purple"
-                  fab
-                  dark
-                  size="x-large"
-                  @click="stop_listen"
-                  :loading="loading"
-                  v-if="语音输入中"
-                >
-                  停止<br />输入
-                </v-btn>
-              </div>
-              <v-row no-gutters>
-                <v-col cols="8" md="11">
-                  <v-textarea
-                    autofocus
-                    hide-details
-                    no-resize
-                    rows="3"
-                    :loading="loading"
-                    :placeholder="$t(会话模式.描述)"
-                    @keypress.enter="提交()"
-                    v-model="问题"
-                  >
-                  </v-textarea>
-                </v-col>
-                <v-col cols="4" md="1">
-                  <div style="text-align: center">
-                    <v-btn
-                      style="margin-bottom: 10px"
-                      v-if="loading"
-                      color="purple"
-                      rounded="lg"
-                      dark
-                      size="x-large"
-                      @click="中断()"
-                    >
-                      {{$t("abord")}}
-                    </v-btn>
-                    <v-btn
-                      style="margin-bottom: 10px"
-                      color="purple"
-                      rounded="lg"
-                      dark
-                      size="x-large"
-                      @click="提交()"
-                      v-if="!loading"
-                    >
-                      {{$t("send")}}
-                    </v-btn>
-                    <br />
-                    <v-expand-transition>
-                      <v-chip
-                        v-if="会话模式.名称!=''"
-                        color="purple"
-                        outlined
-                        close
-                        @click:close="zhishiku_on=false"
-                        style="padding-right: 20px"
-                      >
-                        <span
-                          class="d-inline-block text-truncate"
-                          style="max-width: 120px"
-                        >
-                          {{会话模式.名称}}
+                          " color="purple" rounded="lg" @click='window.open(source.url,"_blank")' x-small>
+                        <span class="d-inline-block text-truncate" style="max-width: 150px">
+                          {{source.title}}
                         </span>
-                      </v-chip>
-                    </v-expand-transition>
-                  </div>
-                </v-col>
-              </v-row>
-            </v-footer>
-          </v-tab-item>
-          <v-tab-item key="setting">
-            <br />
-            <v-form>
-              <v-slider
-                :min="1000"
-                :max="4000"
-                :step="10"
-                v-model="max_length"
-                thumb-color="purple"
-                label="max_length"
-                thumb-label
-                ><template v-slot:append>
-                  <v-text-field
-                    v-model="max_length"
-                    class="mt-0 pt-0"
-                    type="number"
-                    style="width: 60px"
-                  >
-                  </v-text-field>
-                </template>
-              </v-slider>
-              <v-slider
-                :min="0"
-                :max="2"
-                :step="0.1"
-                v-model="temperature"
-                thumb-color="purple"
-                label="temperature"
-                thumb-label
-                ><template v-slot:append>
-                  <v-text-field
-                    v-model="temperature"
-                    class="mt-0 pt-0"
-                    type="number"
-                    style="width: 60px"
-                  >
-                  </v-text-field>
-                </template>
-              </v-slider>
-              <v-slider
-                :min="0"
-                :max="1"
-                :step="0.1"
-                v-model="top_p"
-                thumb-color="purple"
-                label="top_p"
-                thumb-label
-              >
-                <template v-slot:append>
-                  <v-text-field
-                    v-model="top_p"
-                    class="mt-0 pt-0"
-                    type="number"
-                    style="width: 60px"
-                  >
-                  </v-text-field>
-                </template>
-              </v-slider>
-              <v-row>
-                <v-col cols="12" sm="2">
-                  <v-switch
-                    hide-details
-                    :label="$t('simplify_historical_information')"
-                    color="purple"
-                    inset
-                    v-model="simplify_historical_information"
-                  >
-                  </v-switch>
-                </v-col>
-                <v-col cols="12" sm="10">
-                  <v-slider
-                    :min="0"
-                    :max="10"
-                    :step="1"
-                    v-model="history_limit"
-                    thumb-color="purple"
-                    label="对话轮数限制"
-                    thumb-label
-                  >
-                    <template v-slot:append>
-                      <v-text-field
-                        v-model="history_limit"
-                        class="mt-0 pt-0"
-                        type="number"
-                        style="width: 60px"
-                      >
-                      </v-text-field>
-                    </template>
-                  </v-slider>
-                </v-col>
-              </v-row>
-            </v-form>
-            <v-row>
-              <v-col cols="12" sm="2">
-                <v-switch hide-details color="purple" inset v-model="语音输入">
-                  <template v-slot:label>
-                    <v-icon text> mdi-microphone </v-icon>
+                      </v-btn>
+                    </div>
                   </template>
-                </v-switch>
+                  <span v-html="source.content"></span>
+                </v-tooltip>
+              </template>
+            </span>
+          </div>
+          <div v-if="!loading&&chat.length>0">
+            <v-tooltip left>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon color="purple" class="float" large text style="right: 0" v-bind="attrs" v-on="on"
+                  @click="re_generate()">
+                  mdi-refresh
+                </v-icon>
+              </template>
+              <span>{{$t("re_generate")}}</span>
+            </v-tooltip>
+          </div>
+          <br /><br /><br /><br /><br /><br /><br /><br /><br />
+          <v-footer fixed>
+            <div style="position: fixed; bottom: 120px; width: 100%; z-index: 20" v-if="语音输入">
+              <v-btn style="margin: auto; display: flex" color="purple" fab dark size="x-large" @click="listen()"
+                :loading="loading" v-if="!语音输入中">
+                语音<br />输入
+              </v-btn>
+              <v-btn style="margin: auto; display: flex" color="purple" fab dark size="x-large" @click="stop_listen"
+                :loading="loading" v-if="语音输入中">
+                停止<br />输入
+              </v-btn>
+            </div>
+            <v-row no-gutters>
+              <v-col cols="8" md="11">
+                <v-textarea autofocus hide-details no-resize rows="3" :loading="loading" :placeholder="$t(会话模式.描述)"
+                  @keypress.enter="提交()" v-model="问题">
+                </v-textarea>
               </v-col>
-              <v-col cols="12" sm="2">
-                <v-switch hide-details color="purple" inset v-model="语音播报">
-                  <template v-slot:label>
-                    <v-icon text> mdi-headset </v-icon>
-                  </template></v-switch
-                >
+              <v-col cols="4" md="1">
+                <div style="text-align: center">
+                  <v-btn style="margin-bottom: 10px" v-if="loading" color="purple" rounded="lg" dark size="x-large"
+                    @click="中断()">
+                    {{$t("abord")}}
+                  </v-btn>
+                  <v-btn style="margin-bottom: 10px" color="purple" rounded="lg" dark size="x-large" @click="提交()"
+                    v-if="!loading">
+                    {{$t("send")}}
+                  </v-btn>
+                  <br />
+                  <v-expand-transition>
+                    <v-chip v-if="会话模式.名称!=''" color="purple" outlined close @click:close="zhishiku_on=false"
+                      style="padding-right: 20px">
+                      <span class="d-inline-block text-truncate" style="max-width: 120px">
+                        {{会话模式.名称}}
+                      </span>
+                    </v-chip>
+                  </v-expand-transition>
+                </div>
               </v-col>
             </v-row>
-          </v-tab-item>
-          <v-tab-item key="zhishiku">
-            <h1>知识库管理</h1>
-            <v-card elevation="2">
-              <v-card-title>动态调整知识库</v-card-title>
-              <v-divider></v-divider>
-              <v-card-text
-                >网页刷新后恢复<br />
-                <v-row>
-                  <v-col cols="8">
-                    <v-combobox
-                      v-model="zsk_libraryStategy"
-                      :items="['rtst:3:default agents:0','sogowx:3 bing:3']"
-                      label="库参数"
-                    ></v-combobox>
-                  </v-col>
-                  <v-col cols="4">
-                    <v-text-field
-                      v-model="zsk_maxItmes"
-                      outlined
-                      label="最大数量"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-card-text>
+          </v-footer>
+        </v-tab-item>
+        <v-tab-item key="setting">
+          <br />
+          <v-form>
+            <v-slider :min="1000" :max="4000" :step="10" v-model="max_length" thumb-color="purple" label="max_length"
+              thumb-label><template v-slot:append>
+                <v-text-field v-model="max_length" class="mt-0 pt-0" type="number" style="width: 60px">
+                </v-text-field>
+              </template>
+            </v-slider>
+            <v-slider :min="0" :max="2" :step="0.1" v-model="temperature" thumb-color="purple" label="temperature"
+              thumb-label><template v-slot:append>
+                <v-text-field v-model="temperature" class="mt-0 pt-0" type="number" style="width: 60px">
+                </v-text-field>
+              </template>
+            </v-slider>
+            <v-slider :min="0" :max="1" :step="0.1" v-model="top_p" thumb-color="purple" label="top_p" thumb-label>
+              <template v-slot:append>
+                <v-text-field v-model="top_p" class="mt-0 pt-0" type="number" style="width: 60px">
+                </v-text-field>
+              </template>
+            </v-slider>
+            <v-row>
+              <v-col cols="12" sm="2">
+                <v-switch hide-details :label="$t('simplify_historical_information')" color="purple" inset
+                  v-model="simplify_historical_information">
+                </v-switch>
+              </v-col>
+              <v-col cols="12" sm="10">
+                <v-slider :min="0" :max="10" :step="1" v-model="history_limit" thumb-color="purple" label="对话轮数限制"
+                  thumb-label>
+                  <template v-slot:append>
+                    <v-text-field v-model="history_limit" class="mt-0 pt-0" type="number" style="width: 60px">
+                    </v-text-field>
+                  </template>
+                </v-slider>
+              </v-col>
+            </v-row>
+          </v-form>
+          <v-row>
+            <v-col cols="12" sm="2">
+              <v-switch hide-details color="purple" inset v-model="语音输入">
+                <template v-slot:label>
+                  <v-icon text> mdi-microphone </v-icon>
+                </template>
+              </v-switch>
+            </v-col>
+            <v-col cols="12" sm="2">
+              <v-switch hide-details color="purple" inset v-model="语音播报">
+                <template v-slot:label>
+                  <v-icon text> mdi-headset </v-icon>
+                </template></v-switch>
+            </v-col>
+          </v-row>
+        </v-tab-item>
+        <v-tab-item key="zhishiku">
+          <h1>知识库管理</h1>
+          <v-card elevation="2">
+            <v-card-title>动态调整知识库</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>网页刷新后恢复<br />
+              <v-row>
+                <v-col cols="8">
+                  <v-combobox v-model="zsk_libraryStategy" :items="['rtst:3:default agents:0','sogowx:3 bing:3']"
+                    label="库参数"></v-combobox>
+                </v-col>
+                <v-col cols="4">
+                  <v-text-field v-model="zsk_maxItmes" outlined label="最大数量"></v-text-field>
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="purple" dark size="x-large"
+                @click="find=(s, step = 1)=>find_dynamic(s, step, {libraryStategy:zsk_libraryStategy,maxItmes:zsk_maxItmes})">
+                设置
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+          <v-card elevation="2">
+            <v-card-title>知识提取提示词</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text><br />
+              <v-combobox v-model="zsk_总结提示词" :items="['总结以下文段中与问题相关的信息。']" label="总结提示词"></v-combobox>
+
+              <v-combobox v-model="zsk_回答提示词" :items="['学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。']"
+                label="回答提示词"></v-combobox>
+            </v-card-text>
+          </v-card>
+          <v-card elevation="2">
+            <v-card-title>查询知识库</v-card-title>
+            <v-divider></v-divider><br />
+            <v-card-text>
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <v-text-field v-model="test_zsk_prompt" outlined label="关键词" clearable></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field v-model="test_zsk_step" outlined label="上下文数量" clearable></v-text-field>
+                </v-col>
+              </v-row>
+              <v-data-table
+                :headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
+                :items="zhishiku" hide-default-header hide-default-footer>
+                <template v-slot:item.title="{ item }">
+                  <p v-html="md2html(item.title)"></p>
+                </template>
+              </v-data-table>
               <v-card-actions>
-                <v-btn
-                  color="purple"
-                  dark
-                  size="x-large"
-                  @click="find=(s, step = 1)=>find_dynamic(s, step, {libraryStategy:zsk_libraryStategy,maxItmes:zsk_maxItmes})"
-                >
-                  设置
+                <v-btn color="purple" dark size="x-large" @click="find(test_zsk_prompt,test_zsk_step)">
+                  测试
                 </v-btn>
               </v-card-actions>
-            </v-card>
-            <v-card elevation="2">
-              <v-card-title>知识提取提示词</v-card-title>
-              <v-divider></v-divider>
-              <v-card-text
-                ><br />
-                <v-combobox
-                  v-model="zsk_总结提示词"
-                  :items="['总结以下文段中与问题相关的信息。']"
-                  label="总结提示词"
-                ></v-combobox>
-
-                <v-combobox
-                  v-model="zsk_回答提示词"
-                  :items="['学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。']"
-                  label="回答提示词"
-                ></v-combobox>
-              </v-card-text>
-            </v-card>
-            <v-card elevation="2">
-              <v-card-title>查询知识库</v-card-title>
-              <v-divider></v-divider><br />
-              <v-card-text>
-                <v-row>
-                  <v-col cols="12" sm="6">
-                    <v-text-field
-                      v-model="test_zsk_prompt"
-                      outlined
-                      label="关键词"
-                      clearable
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <v-text-field
-                      v-model="test_zsk_step"
-                      outlined
-                      label="上下文数量"
-                      clearable
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-data-table
-                  :headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
-                  :items="zhishiku"
-                  hide-default-header
-                  hide-default-footer
-                >
-                  <template v-slot:item.title="{ item }">
-                    <p v-html="md2html(item.title)"></p>
-                  </template>
-                </v-data-table>
-                <v-card-actions>
-                  <v-btn
-                    color="purple"
-                    dark
-                    size="x-large"
-                    @click="find(test_zsk_prompt,test_zsk_step)"
-                  >
-                    测试
-                  </v-btn>
-                </v-card-actions>
-              </v-card-text>
-            </v-card>
-          </v-tab-item>
-          <v-tab-item v-for="plugin in plugins" :key="plugin.name">
-            <iframe
-              frameborder="0"
-              :src="plugin.url"
-              style="width: 100%; height: 100%"
-            ></iframe>
-          </v-tab-item>
-        </v-tabs-items>
-        <v-tabs v-model="tab" color="purple" style="background: #fff">
-          <v-tabs-slider color="purple"></v-tabs-slider>
-          <v-tab key="chat">
-            <v-icon text> mdi-tooltip-edit-outline </v-icon>
-          </v-tab>
-          <v-tab key="setting">
-            <v-icon text> mdi-cog </v-icon>
-          </v-tab>
-          <v-tab key="zhishiku">
-            <v-icon text> mdi-book-search-outline </v-icon>
-          </v-tab>
-          <v-tab v-for="plugin in plugins" :key="plugin.name">
-            <v-icon text v-if="plugin.icon"> {{"mdi-"+plugin.icon}} </v-icon
-            >{{plugin.name}}
-          </v-tab>
-        </v-tabs>
-        <v-snackbar
-          v-model="snackbar"
-          :timeout="3000"
-          style="white-space: pre-line"
-          >{{snackbar_text}}</v-snackbar
-        >
-      </v-app>
-    </div>
-    <script>
-      功能 = [];
-      app = new Vue({
-        el: "#app",
-        vuetify: new Vuetify(),
-        i18n: i18n,
-        watch: {
-          zhishiku_on: (zhishiku_on) => {
-            if (zhishiku_on) {
-              app.会话模式 = app.功能菜单.find((i) => i.名称 == "知识库");
-            } else
-              app.会话模式 = {
-                名称: "",
-                描述: "input_question",
-                问题: "",
-              };
-          },
-          tab: (val) => {
-            app.showHeader = true;
-            if (val > 2) {
-              if (app.plugins[val - 3].url == "/alan_ui.html") {
-                console.log("alan_ui.html");
-                app.showHeader = false;
-              }
-            }
-          },
-        },
-        data() {
-          return {
-            问题: "",
-            chat: JSON.parse(localStorage["wenda_chat_history"] || "[]"),
-            history_on: false,
-            history_limit: 5,
-            功能菜单: 功能,
-            zsk_libraryStategy: "",
-            zsk_maxItmes: 5,
-            zsk_总结提示词: "总结以下文段中与问题相关的信息。",
-            zsk_回答提示词:
-              "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。",
-            会话模式: {
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item v-for="plugin in plugins" :key="plugin.name">
+          <iframe frameborder="0" :src="plugin.url" style="width: 100%; height: 100%"></iframe>
+        </v-tab-item>
+      </v-tabs-items>
+      <v-tabs v-model="tab" color="purple" style="background: #fff">
+        <v-tabs-slider color="purple"></v-tabs-slider>
+        <v-tab key="chat">
+          <v-icon text> mdi-tooltip-edit-outline </v-icon>
+        </v-tab>
+        <v-tab key="setting">
+          <v-icon text> mdi-cog </v-icon>
+        </v-tab>
+        <v-tab key="zhishiku">
+          <v-icon text> mdi-book-search-outline </v-icon>
+        </v-tab>
+        <v-tab v-for="plugin in plugins" :key="plugin.name">
+          <v-icon text v-if="plugin.icon"> {{"mdi-"+plugin.icon}} </v-icon>{{plugin.name}}
+        </v-tab>
+      </v-tabs>
+      <v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line">{{snackbar_text}}</v-snackbar>
+    </v-app>
+  </div>
+  <script>
+    功能 = [];
+    app = new Vue({
+      el: "#app",
+      vuetify: new Vuetify(),
+      i18n: i18n,
+      watch: {
+        zhishiku_on: (zhishiku_on) => {
+          if (zhishiku_on) {
+            app.会话模式 = app.功能菜单.find((i) => i.名称 == "知识库");
+          } else
+            app.会话模式 = {
               名称: "",
               描述: "input_question",
               问题: "",
-            },
-            plugins: [],
-            simplify_historical_information: false,
-            语音输入: false,
-            语音播报: false,
-            语音输入中: false,
-            test_zsk_prompt: "",
-            test_zsk_step: 1,
-            zhishiku: [],
-            setting: {},
-            tab: 0,
-            zhishiku_on: false,
-            temperature: 0.8,
-            max_length: 2048,
-            top_p: 0.8,
-            llm_type: "",
-            tabs: ["chat", "zhishiku", "setting"],
-            snackbar: false,
-            snackbar_text: "",
-            loading: false,
-            drawer: false,
-            showHeader: true,
-          };
+            };
         },
-        methods: {},
-      });
-      alert = (text) => {
-        app.snackbar_text = text; //.replace(/\n/g,"<br>")
-        app.snackbar = true;
-      };
+        tab: (val) => {
+          if (val > 2) {
+            if (app.plugins[val - 3].hide_title == true) {
+              app.showHeader = false;
+              return
+            }
+          }
+          app.showHeader = true;
+        },
+      },
+      data() {
+        return {
+          问题: "",
+          chat: JSON.parse(localStorage["wenda_chat_history"] || "[]"),
+          history_on: false,
+          history_limit: 5,
+          功能菜单: 功能,
+          zsk_libraryStategy: "",
+          zsk_maxItmes: 5,
+          zsk_总结提示词: "总结以下文段中与问题相关的信息。",
+          zsk_回答提示词:
+            "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。",
+          会话模式: {
+            名称: "",
+            描述: "input_question",
+            问题: "",
+          },
+          plugins: [],
+          simplify_historical_information: false,
+          语音输入: false,
+          语音播报: false,
+          语音输入中: false,
+          test_zsk_prompt: "",
+          test_zsk_step: 1,
+          zhishiku: [],
+          setting: {},
+          tab: 0,
+          zhishiku_on: false,
+          temperature: 0.8,
+          max_length: 2048,
+          top_p: 0.8,
+          llm_type: "",
+          tabs: ["chat", "zhishiku", "setting"],
+          snackbar: false,
+          snackbar_text: "",
+          loading: false,
+          drawer: false,
+          showHeader: true,
+        };
+      },
+      methods: {},
+    });
+    alert = (text) => {
+      app.snackbar_text = text; //.replace(/\n/g,"<br>")
+      app.snackbar = true;
+    };
 
-      load_feature = (功能) => {
-        app.会话模式 = 功能;
-        app.drawer = false;
-      };
-      delete_current_conversation = (item) => {
-        app.chat.splice(Math.floor(app.chat.indexOf(item) / 2) * 2, 2);
-        save_history();
-      };
-      save_history = () => {
-        localStorage["wenda_chat_history"] = JSON.stringify(app.chat);
-      };
-      中断 = () => {
-        is_abord = true;
-        controller.abort();
-        controller = new AbortController();
-        signal = controller.signal;
-      };
+    load_feature = (功能) => {
+      app.会话模式 = 功能;
+      app.drawer = false;
+    };
+    delete_current_conversation = (item) => {
+      app.chat.splice(Math.floor(app.chat.indexOf(item) / 2) * 2, 2);
+      save_history();
+    };
+    save_history = () => {
+      localStorage["wenda_chat_history"] = JSON.stringify(app.chat);
+    };
+    中断 = () => {
+      is_abord = true;
+      controller.abort();
       controller = new AbortController();
       signal = controller.signal;
-      提交 = async () => {
-        if (typeof app.会话模式.问题 == "function") {
-          app.会话模式.问题();
-        } else {
-          send(app.会话模式.问题 + app.问题, app.问题);
-        }
-      };
-      re_generate = () => {
-        let last_send = app.chat[app.chat.length - 2];
-        app.chat.splice(app.chat.length - 2, 2);
-        if (last_send.keyword) app.问题 = last_send.keyword;
-        else app.问题 = last_send.content;
+    };
+    controller = new AbortController();
+    signal = controller.signal;
+    提交 = async () => {
+      if (typeof app.会话模式.问题 == "function") {
+        app.会话模式.问题();
+      } else {
+        send(app.会话模式.问题 + app.问题, app.问题);
+      }
+    };
+    re_generate = () => {
+      let last_send = app.chat[app.chat.length - 2];
+      app.chat.splice(app.chat.length - 2, 2);
+      if (last_send.keyword) app.问题 = last_send.keyword;
+      else app.问题 = last_send.content;
 
-        提交(last_send.content, last_send.keyword);
-      };
-      send = async (s, keyword = "", show = true, sources = []) => {
-        if (keyword == "") keyword = s;
-        is_abord = false;
-        app.loading = true;
-        let QA_history;
-        if (app.history_on) {
-          if (
-            app.history_limit != 0 &&
-            app.chat.length + 1 >= app.history_limit * 2
-          ) {
-            if (app.simplify_historical_information) {
-              alert(`历史信息过长，自动进行总结`);
-              let zdk_stste = app.zhishiku_on;
-              zsk(false);
-              lsdh(false);
-              let prompt =
-                "提取以下对话中的关键信息。\n" +
-                app.chat
-                  .map(
-                    (i) =>
-                      (i.role == "user" ? "Alice: " : "Bob: ") +
-                      i.content.replace(/\n/g, "")
-                  )
-                  .join("\n");
-              await send(prompt);
-              zsk(zdk_stste);
-              lsdh(true);
-              app.loading = true;
-              app.chat = app.chat.slice(app.chat.length - 2);
-              app.chat[0].conent = "提供本次对话中的关键信息。";
-              QA_history = app.chat.concat();
-            } else {
-              alert(
-                `历史信息过长，将仅保留最后${app.history_limit}次chat记忆。setting为0不限制`
-              );
-              QA_history = app.chat.slice(
-                app.chat.length - app.history_limit * 2
-              );
-            }
-          } else {
+      提交(last_send.content, last_send.keyword);
+    };
+    send = async (s, keyword = "", show = true, sources = []) => {
+      if (keyword == "") keyword = s;
+      is_abord = false;
+      app.loading = true;
+      let QA_history;
+      if (app.history_on) {
+        if (
+          app.history_limit != 0 &&
+          app.chat.length + 1 >= app.history_limit * 2
+        ) {
+          if (app.simplify_historical_information) {
+            alert(`历史信息过长，自动进行总结`);
+            let zdk_stste = app.zhishiku_on;
+            zsk(false);
+            lsdh(false);
+            let prompt =
+              "提取以下对话中的关键信息。\n" +
+              app.chat
+                .map(
+                  (i) =>
+                    (i.role == "user" ? "Alice: " : "Bob: ") +
+                    i.content.replace(/\n/g, "")
+                )
+                .join("\n");
+            await send(prompt);
+            zsk(zdk_stste);
+            lsdh(true);
+            app.loading = true;
+            app.chat = app.chat.slice(app.chat.length - 2);
+            app.chat[0].conent = "提供本次对话中的关键信息。";
             QA_history = app.chat.concat();
+          } else {
+            alert(
+              `历史信息过长，将仅保留最后${app.history_limit}次chat记忆。setting为0不限制`
+            );
+            QA_history = app.chat.slice(
+              app.chat.length - app.history_limit * 2
+            );
           }
         } else {
-          QA_history = [];
+          QA_history = app.chat.concat();
         }
-        已排队到 = false;
+      } else {
+        QA_history = [];
+      }
+      已排队到 = false;
+      setTimeout(read_now, 3000);
+      app.问题 = s.replace(/\r\n/g, "\n");
+      let 当前会话 = { role: "AI", content: "……", sources: sources };
+      if (show) {
+        app.chat.push({ role: "user", content: keyword, keyword: keyword });
+        app.chat.push(当前会话);
+      }
+      setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
+      try {
+        response = await fetch("/api/chat_stream", {
+          signal: signal,
+          method: "post",
+          body: JSON.stringify({
+            prompt: app.问题,
+            keyword: keyword,
+            temperature: app.temperature,
+            top_p: app.top_p,
+            max_length: app.max_length,
+            history: QA_history,
+            zhishiku: false,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        let buffer = "";
+        app.问题 = "";
+        const reader = response.body.getReader();
+        while (true) {
+          const { value, done } = await reader.read();
+          已排队到 = true;
+          let res = new TextDecoder("utf-8").decode(value);
+          buffer += res;
+          while (buffer.indexOf("///") > -1) {
+            if (buffer == "/././") {
+              //应对网络问题
+              done = true;
+              break;
+            }
+            buffer = buffer.split("///");
+            当前会话.content = buffer[buffer.length - 2];
+            buffer = buffer[buffer.length - 1];
+          }
+          if (done) break;
+        }
+      } catch { }
+      if (app.语音播报) {
+        if (app.zhishiku_on)
+          speak(当前会话.content.replace(/###[\s\S]*/, ""));
+        else speak(当前会话.content);
+      }
+
+      app.loading = false;
+      已排队到 = true;
+      save_history();
+      if (is_abord) throw new MyException("已中断");
+      return 当前会话.content;
+    };
+    function MyException(message) {
+      this.message = message;
+    }
+    read_now = async () => {
+      if (!已排队到) {
+        response = await fetch("/api/chat_now", {
+          method: "get",
+        });
+        let j = JSON.parse(await response.text());
+        if (j.queue_length != 0) alert(j.queue_length);
         setTimeout(read_now, 3000);
-        app.问题 = s.replace(/\r\n/g, "\n");
-        let 当前会话 = { role: "AI", content: "……", sources: sources };
-        if (show) {
-          app.chat.push({ role: "user", content: keyword, keyword: keyword });
-          app.chat.push(当前会话);
-        }
-        setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
-        try {
-          response = await fetch("/api/chat_stream", {
-            signal: signal,
-            method: "post",
-            body: JSON.stringify({
-              prompt: app.问题,
-              keyword: keyword,
-              temperature: app.temperature,
-              top_p: app.top_p,
-              max_length: app.max_length,
-              history: QA_history,
-              zhishiku: false,
-            }),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          let buffer = "";
-          app.问题 = "";
-          const reader = response.body.getReader();
-          while (true) {
-            const { value, done } = await reader.read();
-            已排队到 = true;
-            let res = new TextDecoder("utf-8").decode(value);
-            buffer += res;
-            while (buffer.indexOf("///") > -1) {
-              if (buffer == "/././") {
-                //应对网络问题
-                done = true;
-                break;
-              }
-              buffer = buffer.split("///");
-              当前会话.content = buffer[buffer.length - 2];
-              buffer = buffer[buffer.length - 1];
-            }
-            if (done) break;
-          }
-        } catch {}
-        if (app.语音播报) {
-          if (app.zhishiku_on)
-            speak(当前会话.content.replace(/###[\s\S]*/, ""));
-          else speak(当前会话.content);
-        }
-
-        app.loading = false;
-        已排队到 = true;
-        save_history();
-        if (is_abord) throw new MyException("已中断");
-        return 当前会话.content;
-      };
-      function MyException(message) {
-        this.message = message;
       }
-      read_now = async () => {
-        if (!已排队到) {
-          response = await fetch("/api/chat_now", {
-            method: "get",
-          });
-          let j = JSON.parse(await response.text());
-          if (j.queue_length != 0) alert(j.queue_length);
-          setTimeout(read_now, 3000);
+    };
+
+    find = async (s, step = 1) => {
+      response = await fetch("/api/find", {
+        method: "post",
+        body: JSON.stringify({
+          prompt: s,
+          step: step,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      let json = await response.json();
+      console.table(json);
+      app.zhishiku = json;
+      return json;
+    };
+
+    find_dynamic = async (s, step = 1, paraJson) => {
+      console.table(paraJson);
+      response = await fetch("/api/find_dynamic", {
+        method: "post",
+        body: JSON.stringify({
+          prompt: s,
+          step: step,
+          paraJson: paraJson,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      let json = await response.json();
+      console.table(json);
+      app.zhishiku = json;
+      return json;
+    };
+
+    function md2html(conent) {
+      // return conent
+      conent = String(conent);
+      let md = new markdownit();
+      // md.disable(['link', 'image'])
+      return md.render(conent).replace(/<a /g, '<a target="_blank"');
+    }
+    zsk = (b) => {
+      app.zhishiku_on = b;
+    };
+    lsdh = (b) => {
+      app.history_on = b;
+    };
+
+    speak = (s) => {
+      msg = new SpeechSynthesisUtterance();
+      msg.rate = 1;
+      msg.pitch = 10;
+      msg.text = s;
+      msg.volume = 1;
+      speechSynthesis.speak(msg);
+    };
+    stop_listen = () => {
+      recognition.stop();
+      app.loading = true;
+    };
+    listen = () => {
+      recognition = new window.webkitSpeechRecognition();
+      let final_transcript = "";
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.onstart = function () { };
+      recognition.onresult = function (event) {
+        let interim_transcript = "";
+        for (var i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            final_transcript += event.results[i][0].transcript;
+            console.log(final_transcript);
+            app.问题 = final_transcript;
+          } else {
+            interim_transcript += event.results[i][0].transcript;
+          }
         }
       };
+      recognition.onerror = function (e) {
+        console.log(final_transcript);
+        alert("语音识别失败:", e.error);
+        app.语音输入中 = false;
+        console.log(
+          "======================" + "error" + "======================",
+          e
+        );
+      };
+      recognition.onend = function () {
+        console.log(final_transcript);
+        app.问题 = final_transcript;
+        if (final_transcript.length > 1) 提交();
+        app.语音输入中 = false;
+        console.log(
+          "======================" + "end" + "======================"
+        );
+      };
+      recognition.lang = "zh-CN";
+      recognition.start();
+      app.语音输入中 = true;
+    };
 
-      find = async (s, step = 1) => {
-        response = await fetch("/api/find", {
-          method: "post",
-          body: JSON.stringify({
-            prompt: s,
-            step: step,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        let json = await response.json();
-        console.table(json);
-        app.zhishiku = json;
-        return json;
-      };
-
-      find_dynamic = async (s, step = 1, paraJson) => {
-        console.table(paraJson);
-        response = await fetch("/api/find_dynamic", {
-          method: "post",
-          body: JSON.stringify({
-            prompt: s,
-            step: step,
-            paraJson: paraJson,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        let json = await response.json();
-        console.table(json);
-        app.zhishiku = json;
-        return json;
-      };
-
-      function md2html(conent) {
-        // return conent
-        conent = String(conent);
-        let md = new markdownit();
-        // md.disable(['link', 'image'])
-        return md.render(conent).replace(/<a /g, '<a target="_blank"');
-      }
-      zsk = (b) => {
-        app.zhishiku_on = b;
-      };
-      lsdh = (b) => {
-        app.history_on = b;
-      };
-
-      speak = (s) => {
-        msg = new SpeechSynthesisUtterance();
-        msg.rate = 1;
-        msg.pitch = 10;
-        msg.text = s;
-        msg.volume = 1;
-        speechSynthesis.speak(msg);
-      };
-      stop_listen = () => {
-        recognition.stop();
-        app.loading = true;
-      };
-      listen = () => {
-        recognition = new window.webkitSpeechRecognition();
-        let final_transcript = "";
-        recognition.continuous = true;
-        recognition.interimResults = true;
-        recognition.onstart = function () {};
-        recognition.onresult = function (event) {
-          let interim_transcript = "";
-          for (var i = event.resultIndex; i < event.results.length; ++i) {
-            if (event.results[i].isFinal) {
-              final_transcript += event.results[i][0].transcript;
-              console.log(final_transcript);
-              app.问题 = final_transcript;
-            } else {
-              interim_transcript += event.results[i][0].transcript;
-            }
+    copy = (s) => {
+      navigator.permissions
+        .query({ name: "clipboard-write" })
+        .then((result) => {
+          if (result.state == "granted" || result.state == "prompt") {
+            navigator.clipboard
+              .writeText(s.replace(/\n+/g, "\n"))
+              .then(() => {
+                alert("文本已经成功复制到剪切板");
+                console.log("文本已经成功复制到剪切板");
+              })
+              .catch((err) => { });
+          } else {
+            alert(
+              "当前无操作权限。请使用最新版本Chrome浏览器，并在浏览器高级设置-页面设置中允许访问剪切板"
+            );
+            console.log(
+              "当前无操作权限。请使用最新版本Chrome浏览器，并在浏览器高级设置-页面设置中允许访问剪切板"
+            );
           }
-        };
-        recognition.onerror = function (e) {
-          console.log(final_transcript);
-          alert("语音识别失败:", e.error);
-          app.语音输入中 = false;
-          console.log(
-            "======================" + "error" + "======================",
-            e
-          );
-        };
-        recognition.onend = function () {
-          console.log(final_transcript);
-          app.问题 = final_transcript;
-          if (final_transcript.length > 1) 提交();
-          app.语音输入中 = false;
-          console.log(
-            "======================" + "end" + "======================"
-          );
-        };
-        recognition.lang = "zh-CN";
-        recognition.start();
-        app.语音输入中 = true;
-      };
+        });
+    };
+    add_conversation = (role, content, sources = null) => {
+      app.chat.push({ role: role, content: content, sources: sources });
+    };
+    console.warn = function () { };
+    get_user_input = () => app.问题;
+  </script>
+  <script src="api/llm"></script>
+  <script src="api/plugins"></script>
+</body>
 
-      copy = (s) => {
-        navigator.permissions
-          .query({ name: "clipboard-write" })
-          .then((result) => {
-            if (result.state == "granted" || result.state == "prompt") {
-              navigator.clipboard
-                .writeText(s.replace(/\n+/g, "\n"))
-                .then(() => {
-                  alert("文本已经成功复制到剪切板");
-                  console.log("文本已经成功复制到剪切板");
-                })
-                .catch((err) => {});
-            } else {
-              alert(
-                "当前无操作权限。请使用最新版本Chrome浏览器，并在浏览器高级设置-页面设置中允许访问剪切板"
-              );
-              console.log(
-                "当前无操作权限。请使用最新版本Chrome浏览器，并在浏览器高级设置-页面设置中允许访问剪切板"
-              );
-            }
-          });
-      };
-      add_conversation = (role, content, sources = null) => {
-        app.chat.push({ role: role, content: content, sources: sources });
-      };
-      console.warn = function () {};
-      get_user_input = () => app.问题;
-    </script>
-    <script src="api/llm"></script>
-    <script src="api/plugins"></script>
-  </body>
 </html>
