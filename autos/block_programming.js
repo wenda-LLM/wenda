@@ -9,7 +9,7 @@
 // @grant        none
 // ==/UserScript==
 
-app.plugins.push({ icon: "cat", url: "static/blockly.html" })
+app.plugins.push({ icon: "cat", url: "static/blockly.html" ,hide_title:true})
 window.addEventListener('message', function (e) {
     if (e.data.from == '猫猫也会的图块化编程') {
         let data = e.data.data
