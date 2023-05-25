@@ -236,9 +236,6 @@ def api_chat_stream():
     temperature = data.get('temperature')
     if temperature is None:
         temperature = 0.9
-    use_zhishiku = data.get('zhishiku')
-    if use_zhishiku is None:
-        use_zhishiku = False
     keyword = data.get('keyword')
     if keyword is None:
         keyword = prompt
@@ -251,22 +248,10 @@ def api_chat_stream():
     error = ""
     footer = '///'
 
-    if use_zhishiku:
-        # print(keyword)
-        response_d = zhishiku.find(keyword, int(settings.library.step))
-        if len(response_d)==0:
-            use_zhishiku=False
-        else:
-            output_sources = [i['title'] for i in response_d]
-            results = '\n'.join([str(i+1)+". "+re.sub('\n\n', '\n',
-                                response_d[i]['content']) for i in range(len(response_d))])
-            prompt = 'system: 请扮演一名专业分析师，根据以下内容回答问题：'+prompt + "\n" + results
-            if settings.library.show_soucre == True:
-                footer = "\n### 来源：\n"+('\n').join(output_sources)+'///'
     with mutex:
         print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
         try:
-            for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=use_zhishiku):
+            for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
                 if (response):
                     yield response+footer
         except Exception as e:
