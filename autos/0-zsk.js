@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         闻达 Auto 示例：知识库增强
+// @name         知识库
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  先根据不同关键词搜索结果给出粗略回答，再提炼各次回答给出最终回答
+// @description  利用知识库回答问题
 // @author       lyyyyy
 // @match        http://127.0.0.1:17860/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1

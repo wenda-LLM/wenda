@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         闻达 Auto ：记忆增强
+// @name         记忆增强
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  使用rtst知识库增强模型长期记忆能力

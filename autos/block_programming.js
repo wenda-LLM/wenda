@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         New Userscript
+// @name         猫猫也会的图块化编程
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  try to take over the world!
+// @description  使用图块化编程的方式进行简单的auto开发
 // @author       You
 // @match        http://127.0.0.1:17860/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
