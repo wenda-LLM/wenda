@@ -359,12 +359,12 @@
             <v-card-text>
               <v-data-table  item-key="name" show-expand 
                 :headers="[{ text: '名称', value: 'name' },{ text: '描述', value: 'description' },{ text: '禁用', value: 'disabled' },  { text: '', value: 'data-table-expand' },]"
-                :items="autos" hide-default-footer>
+                :items="autos">
                 <template v-slot:item.disabled="{ item }">
                   <v-switch v-model="item.disabled"></v-switch>
                 </template>
                 <template v-slot:expanded-item="{ headers, item }">
-                  <pre style="width: 500px;" :colspan="headers.length">{{ item.content }}</pre>
+                  <pre style="width: 200px;" :colspan="headers.length">{{ item.content }}</pre>
                 </template>
               </v-data-table>
             </v-card-text>
