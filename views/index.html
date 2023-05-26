@@ -1,4 +1,5 @@
 <html>
+
 <head>
   <title>闻达</title>
   <meta charset="utf-8" />
@@ -311,7 +312,7 @@
             </v-tooltip>
           </div>
           <br /><br /><br /><br /><br /><br /><br /><br /><br />
-          <v-footer fixed>
+          <v-footer fixed class="pr-0">
             <div style="position: fixed; bottom: 120px; width: 100%; z-index: 20" v-if="语音输入">
               <v-btn style="margin: auto; display: flex" color="purple" fab dark size="x-large" @click="listen()"
                 :loading="loading" v-if="!语音输入中">
@@ -352,58 +353,88 @@
           </v-footer>
         </v-tab-item>
         <v-tab-item key="setting">
-          <br />
-          <v-form>
-            <v-slider :min="1000" :max="4000" :step="10" v-model="max_length" thumb-color="purple" label="max_length"
-              thumb-label><template v-slot:append>
-                <v-text-field v-model="max_length" class="mt-0 pt-0" type="number" style="width: 60px">
-                </v-text-field>
-              </template>
-            </v-slider>
-            <v-slider :min="0" :max="2" :step="0.1" v-model="temperature" thumb-color="purple" label="temperature"
-              thumb-label><template v-slot:append>
-                <v-text-field v-model="temperature" class="mt-0 pt-0" type="number" style="width: 60px">
-                </v-text-field>
-              </template>
-            </v-slider>
-            <v-slider :min="0" :max="1" :step="0.1" v-model="top_p" thumb-color="purple" label="top_p" thumb-label>
-              <template v-slot:append>
-                <v-text-field v-model="top_p" class="mt-0 pt-0" type="number" style="width: 60px">
-                </v-text-field>
-              </template>
-            </v-slider>
-            <v-row>
-              <v-col cols="12" sm="2">
-                <v-switch hide-details :label="$t('simplify_historical_information')" color="purple" inset
-                  v-model="simplify_historical_information">
-                </v-switch>
-              </v-col>
-              <v-col cols="12" sm="10">
-                <v-slider :min="0" :max="10" :step="1" v-model="history_limit" thumb-color="purple" label="对话轮数限制"
-                  thumb-label>
-                  <template v-slot:append>
-                    <v-text-field v-model="history_limit" class="mt-0 pt-0" type="number" style="width: 60px">
+          <v-card elevation="2">
+            <v-card-title>Autos管理</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text><br />
+              <v-data-table
+                :headers="[{ text: '名称', value: 'name' },{ text: '描述', value: 'description' },{ text: '禁用', value: 'disabled' }]"
+                :items="autos" hide-default-footer>
+                <template v-slot:item.disabled="{ item }">
+                  <v-switch v-model="item.disabled"></v-switch>
+                </template>
+              </v-data-table>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="purple" dark size="x-large"
+                @click="disabled_auto={};app.autos.forEach(auto=>disabled_auto[auto.name]=auto.disabled);localStorage['wenda_disabled_auto'] =JSON.stringify(disabled_auto)">
+                保存（刷新后起效）
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+          <v-card elevation="2">
+            <v-card-title>模型运行参数</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text><br />
+              <v-form>
+                <v-slider :min="1000" :max="4000" :step="10" v-model="max_length" thumb-color="purple"
+                  label="max_length" thumb-label><template v-slot:append>
+                    <v-text-field v-model="max_length" class="mt-0 pt-0" type="number" style="width: 60px">
                     </v-text-field>
                   </template>
                 </v-slider>
-              </v-col>
-            </v-row>
-          </v-form>
-          <v-row>
-            <v-col cols="12" sm="2">
-              <v-switch hide-details color="purple" inset v-model="语音输入">
-                <template v-slot:label>
-                  <v-icon text> mdi-microphone </v-icon>
-                </template>
-              </v-switch>
-            </v-col>
-            <v-col cols="12" sm="2">
-              <v-switch hide-details color="purple" inset v-model="语音播报">
-                <template v-slot:label>
-                  <v-icon text> mdi-headset </v-icon>
-                </template></v-switch>
-            </v-col>
-          </v-row>
+                <v-slider :min="0" :max="2" :step="0.1" v-model="temperature" thumb-color="purple" label="temperature"
+                  thumb-label><template v-slot:append>
+                    <v-text-field v-model="temperature" class="mt-0 pt-0" type="number" style="width: 60px">
+                    </v-text-field>
+                  </template>
+                </v-slider>
+                <v-slider :min="0" :max="1" :step="0.1" v-model="top_p" thumb-color="purple" label="top_p" thumb-label>
+                  <template v-slot:append>
+                    <v-text-field v-model="top_p" class="mt-0 pt-0" type="number" style="width: 60px">
+                    </v-text-field>
+                  </template>
+                </v-slider>
+                <v-row>
+                  <v-col cols="12" sm="2">
+                    <v-switch hide-details :label="$t('simplify_historical_information')" color="purple" inset
+                      v-model="simplify_historical_information">
+                    </v-switch>
+                  </v-col>
+                  <v-col cols="12" sm="10">
+                    <v-slider :min="0" :max="10" :step="1" v-model="history_limit" thumb-color="purple" label="对话轮数限制"
+                      thumb-label>
+                      <template v-slot:append>
+                        <v-text-field v-model="history_limit" class="mt-0 pt-0" type="number" style="width: 60px">
+                        </v-text-field>
+                      </template>
+                    </v-slider>
+                  </v-col>
+                </v-row>
+              </v-form>
+            </v-card-text>
+          </v-card>
+          <v-card elevation="2">
+            <v-card-title>语音设置</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text><br />
+              <v-row>
+                <v-col cols="12" sm="2">
+                  <v-switch hide-details color="purple" inset v-model="语音输入">
+                    <template v-slot:label>
+                      <v-icon text> mdi-microphone </v-icon>
+                    </template>
+                  </v-switch>
+                </v-col>
+                <v-col cols="12" sm="2">
+                  <v-switch hide-details color="purple" inset v-model="语音播报">
+                    <template v-slot:label>
+                      <v-icon text> mdi-headset </v-icon>
+                    </template></v-switch>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
         </v-tab-item>
         <v-tab-item key="zhishiku">
           <h1>知识库管理</h1>
@@ -532,6 +563,7 @@
             问题: "",
           },
           plugins: [],
+          autos: [],
           simplify_historical_information: false,
           语音输入: false,
           语音播报: false,
@@ -845,7 +877,41 @@
     get_user_input = () => app.问题;
   </script>
   <script src="api/llm"></script>
-  <script src="api/plugins"></script>
+  <script>
+    get_auto_description = plugin => {
+      try {
+        return plugin.content.match(/@description (.+)\n/)[1].trim()
+      } catch {
+
+      }
+      return ''
+    }
+    get_auto_name = plugin => {
+      try {
+        return plugin.content.match(/@name (.+)\n/)[1].trim() + `(${plugin.name})`
+      } catch {
+
+      }
+      return plugin.name
+    }
+
+    load_plugins = async () => {
+      disabled_auto = JSON.parse(localStorage['wenda_disabled_auto'] || '{}')
+      plugins = await fetch("/api/plugins")
+      plugins = await plugins.json()
+      plugins.forEach(plugin => {
+        let name = get_auto_name(plugin)
+        let auto = {
+          name: name,
+          description: get_auto_description(plugin),
+          disabled: disabled_auto[name]
+        }
+        app.autos.push(auto)
+        if (!auto.disabled) eval(plugin.content)
+      })
+    }
+    load_plugins()
+  </script>
 </body>
 
 </html>
