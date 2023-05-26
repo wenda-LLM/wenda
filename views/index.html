@@ -325,8 +325,8 @@
             </div>
             <v-row no-gutters>
               <v-col cols="8" md="11">
-                <v-textarea autofocus hide-details no-resize rows="3" :loading="loading" :placeholder="$t(会话模式.描述)"
-                  @keypress.enter="提交()" v-model="问题">
+                <v-textarea hide-details no-resize rows="3" :loading="loading" :placeholder="$t(会话模式.描述)"
+                  @keypress.enter="submit" v-model="问题">
                 </v-textarea>
               </v-col>
               <v-col cols="4" md="1">
@@ -335,7 +335,7 @@
                     @click="中断()">
                     {{$t("abord")}}
                   </v-btn>
-                  <v-btn style="margin-bottom: 10px" color="purple" rounded="lg" dark size="x-large" @click="提交()"
+                  <v-btn style="margin-bottom: 10px" color="purple" rounded="lg" dark size="x-large" @click="submit()"
                     v-if="!loading">
                     {{$t("send")}}
                   </v-btn>
@@ -357,7 +357,7 @@
             <v-card-title>Auto管理</v-card-title>
             <v-divider></v-divider>
             <v-card-text>
-              <v-data-table  item-key="name" show-expand 
+              <v-data-table item-key="name" show-expand
                 :headers="[{ text: '名称', value: 'name' },{ text: '描述', value: 'description' },{ text: '禁用', value: 'disabled' },  { text: '', value: 'data-table-expand' },]"
                 :items="autos">
                 <template v-slot:item.disabled="{ item }">
@@ -615,12 +615,16 @@
     };
     controller = new AbortController();
     signal = controller.signal;
-    提交 = async () => {
-      if (typeof app.会话模式.问题 == "function") {
-        app.会话模式.问题();
-      } else {
-        send(app.会话模式.问题 + app.问题, app.问题);
-      }
+    submit = async (e) => {
+      console.log(e)
+      if (e.shiftKey) {
+        this.问题 += "\n";
+      } else
+        if (typeof app.会话模式.问题 == "function") {
+          app.会话模式.问题();
+        } else {
+          send(app.会话模式.问题 + app.问题, app.问题);
+        }
     };
     re_generate = () => {
       let last_send = app.chat[app.chat.length - 2];
@@ -628,7 +632,7 @@
       if (last_send.keyword) app.问题 = last_send.keyword;
       else app.问题 = last_send.content;
 
-      提交(last_send.content, last_send.keyword);
+      submit(last_send.content, last_send.keyword);
     };
     send = async (s, keyword = "", show = true, sources = []) => {
       if (keyword == "") keyword = s;
@@ -840,7 +844,7 @@
       recognition.onend = function () {
         console.log(final_transcript);
         app.问题 = final_transcript;
-        if (final_transcript.length > 1) 提交();
+        if (final_transcript.length > 1) submit();
         app.语音输入中 = false;
         console.log(
           "======================" + "end" + "======================"
@@ -907,7 +911,7 @@
         let auto = {
           name: name,
           description: get_auto_description(plugin),
-          content:plugin.content,
+          content: plugin.content,
           disabled: disabled_auto[name]
         }
         app.autos.push(auto)
