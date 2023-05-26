@@ -364,6 +364,9 @@
                   <v-switch v-model="item.disabled"></v-switch>
                 </template>
                 <template v-slot:expanded-item="{ headers, item }">
+                  <v-icon v-if="find_auto(item.name)>-1" large text @click="del_auto(item.name)">
+                    mdi-delete
+                  </v-icon>
                   <pre style="width: 200px;" :colspan="headers.length">{{ item.content }}</pre>
                 </template>
               </v-data-table>
@@ -920,10 +923,31 @@
       saved_auto = JSON.parse(localStorage['wenda_saved_auto'] || '[]')
       saved_auto.forEach(auto => {
         app.autos.push(auto)
-        if (!auto.disabled) eval(plugin.content)
+        if (!auto.disabled) eval(auto.content)
       })
     }
     load_plugins()
+    add_auto = (content) => {
+      let plugin = { content: content, name: '用户添加' }
+      let name = get_auto_name(plugin)
+      let auto = {
+        name: name,
+        description: get_auto_description(plugin),
+        content: plugin.content,
+        disabled: false
+      }
+      saved_auto.push(auto)
+      app.autos.push(auto)
+      eval(plugin.content)
+      localStorage['wenda_saved_auto'] = JSON.stringify(saved_auto)
+    }
+    find_auto = (name) => saved_auto.findIndex((a) => a.name == name)
+    del_auto = (name) => {
+      let auto_index = find_auto(name)
+      saved_auto.splice(auto_index, 1)
+      localStorage['wenda_saved_auto'] = JSON.stringify(saved_auto)
+      location.reload()
+    }
   </script>
 </body>
 
