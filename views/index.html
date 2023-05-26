@@ -616,8 +616,7 @@
     controller = new AbortController();
     signal = controller.signal;
     submit = async (e) => {
-      console.log(e)
-      if (e.shiftKey) {
+      if (e && e.shiftKey) {
         this.问题 += "\n";
       } else
         if (typeof app.会话模式.问题 == "function") {
