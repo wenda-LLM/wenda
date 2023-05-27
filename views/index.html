@@ -383,19 +383,19 @@
             <v-divider></v-divider>
             <v-card-text><br />
               <v-form>
-                <v-slider :min="1000" :max="4000" :step="10" v-model="max_length" thumb-color="purple"
+                <v-slider :min="1000" :max="4000" :step="10" v-model="max_length" :thumb-color="color"
                   label="max_length" thumb-label><template v-slot:append>
                     <v-text-field v-model="max_length" class="mt-0 pt-0" type="number" style="width: 60px">
                     </v-text-field>
                   </template>
                 </v-slider>
-                <v-slider :min="0" :max="2" :step="0.1" v-model="temperature" thumb-color="purple" label="temperature"
+                <v-slider :min="0" :max="2" :step="0.1" v-model="temperature" :thumb-color="color" label="temperature"
                   thumb-label><template v-slot:append>
                     <v-text-field v-model="temperature" class="mt-0 pt-0" type="number" style="width: 60px">
                     </v-text-field>
                   </template>
                 </v-slider>
-                <v-slider :min="0" :max="1" :step="0.1" v-model="top_p" thumb-color="purple" label="top_p" thumb-label>
+                <v-slider :min="0" :max="1" :step="0.1" v-model="top_p" :thumb-color="color" label="top_p" thumb-label>
                   <template v-slot:append>
                     <v-text-field v-model="top_p" class="mt-0 pt-0" type="number" style="width: 60px">
                     </v-text-field>
@@ -408,7 +408,7 @@
                     </v-switch>
                   </v-col>
                   <v-col cols="12" sm="10">
-                    <v-slider :min="0" :max="10" :step="1" v-model="history_limit" thumb-color="purple" label="对话轮数限制"
+                    <v-slider :min="0" :max="10" :step="1" v-model="history_limit" :thumb-color="color" label="对话轮数限制"
                       thumb-label>
                       <template v-slot:append>
                         <v-text-field v-model="history_limit" class="mt-0 pt-0" type="number" style="width: 60px">
