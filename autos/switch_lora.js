@@ -15,14 +15,14 @@
     问题: async () => {
         lsdh(false)
         Q=app.问题
-        lora_name="model\\chatglm-6b-belle-zh-lora"
+        lora_name="model\\chatglm-6b-belle-zh-lora"//https://huggingface.co/shibing624/chatglm-6b-belle-zh-lora
         await lora_load_adapter(lora_name)
         sources = [{
             title: 'belle_lora',
             content: lora_name
         }]
         await send(Q, keyword = Q, show = true, sources = sources)
-        lora_name="model\\chatglm-6b-csc-zh-lora"
+        lora_name="model\\chatglm-6b-csc-zh-lora"//https://huggingface.co/shibing624/chatglm-6b-csc-zh-lora
         await lora_load_adapter(lora_name)
         sources = [{
             title: '纠错_lora',
