@@ -14,7 +14,7 @@ import sys
 import time
 os.chdir(sys.path[0][:-8])
 
-from common import success_print
+from common import success_print, error_print
 from common import error_helper
 from common import settings
 from common import CounterLock

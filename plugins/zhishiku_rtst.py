@@ -132,13 +132,26 @@ import json
 @route('/api/find_rtst_in_memory', method=("POST","OPTIONS"))
 def api_find():
     allowCROS()
-    data = request.json
-    prompt = data.get('prompt')
-    step = data.get('step')
-    memory_name=data.get("memory_name")
-    if step is None:
-        step = int(settings.library.step)
-    return json.dumps(find(prompt,int(step),memory_name))
+    try:
+        data = request.json
+        prompt = data.get('prompt')
+        step = data.get('step')
+        memory_name=data.get("memory_name")
+        if step is None:
+            step = int(settings.library.step)
+        return json.dumps(find(prompt,int(step),memory_name))
+    except Exception as e:
+        return str(e)
+    
+@route('/api/del_rtst_in_memory', method=("POST","OPTIONS"))
+def api_find():
+    allowCROS()
+    try:
+        data = request.json
+        memory_name=data.get("memory_name")
+        del vectorstores[memory_name]
+    except Exception as e:
+        return str(e)
 
 @route('/api/save_news', method=("POST","OPTIONS"))
 def save_news():

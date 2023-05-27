@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         闻达 Auto 示例：知识库增强
+// @name         知识库
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  先根据不同关键词搜索结果给出粗略回答，再提炼各次回答给出最终回答
+// @description  利用知识库回答问题
 // @author       lyyyyy
 // @match        http://127.0.0.1:17860/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
@@ -26,10 +26,11 @@ get_url_form_md = (s) => {
     }
 }
 功能.push({
-    名称: "知识库增强",
+    名称: "知识库",
+    描述: "通过知识库回答问题",
     问题: async () => {
         let Q = app.问题
-        zsk(false)
+
         lsdh(false)
         app.chat.push({ "role": "user", "content": Q })
         kownladge = (await find(Q, 5)).map(i => ({
@@ -37,25 +38,34 @@ get_url_form_md = (s) => {
             url: get_url_form_md(i.title),
             content: i.content
         }))
-        answer = {
-            role: "AI",
-            content: "",
-            sources: kownladge
+        if (kownladge.length > 0) {
+            answer = {
+                role: "AI",
+                content: "",
+                sources: kownladge
+            }
+            app.chat.push(answer)
+            result = []
+            for (let i in kownladge) {
+                answer.content = '正在查找：' + kownladge[i].title
+                if (i > 3) continue
+                let prompt = app.zsk_总结提示词 + '\n' +
+                    kownladge[i].content + "\n问题：" + Q
+                result.push(await send(prompt, keyword = Q, show = false))
+            }
+            app.chat.pop()
+            app.chat.pop()
+            let prompt = app.zsk_回答提示词 + '\n' +
+                result.join('\n') + "\n问题：" + Q
+            return await send(prompt, keyword = Q, show = true, sources = kownladge)
+        } else {
+            app.chat.pop()
+            sources = [{
+                title: '未匹配到知识库',
+                content: '本次对话内容完全由模型提供'
+            }]
+            return await send(Q, keyword = Q, show = true, sources = sources)
         }
-        app.chat.push(answer)
-        result = []
-        for (let i in kownladge) {
-            answer.content = '正在查找：' + kownladge[i].title
-            if (i > 3) continue
-            let prompt = "总结以下文段中与问题相关的信息。\n" +
-                kownladge[i].content + "\n问题：" + Q
-            result.push(await send(prompt, keyword = Q, show = false))
-        }
-        app.chat.pop()
-        app.chat.pop()
-        let prompt = "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。\n" +
-            result.join('\n') + "\n问题：" + Q
-        await send(prompt, keyword = Q, show = true, sources = kownladge)
     },
 })
 
@@ -65,7 +75,7 @@ if (app.llm_type == "rwkv") {
         名称: "知识库增强(rwkv)",
         问题: async () => {
             let Q = app.问题
-            zsk(false)
+
             lsdh(false)
             kownladge = (await find(Q, 5)).map(i => ({
                 title: get_title_form_md(i.title),
@@ -73,7 +83,7 @@ if (app.llm_type == "rwkv") {
                 content: i.content
             }))
             let prompt = "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。\n" +
-            kownladge.map(i => i.content).join('\n') + "\n问题：" + Q
+                kownladge.map(i => i.content).join('\n') + "\n问题：" + Q
             await send(prompt, keyword = Q, show = true, sources = kownladge)
         }
     }
@@ -93,7 +103,7 @@ if (app.llm_type == "rwkv") {
             { "role": "user", "content": "请提取关键词，使用逗号分隔。" },
             { "role": "AI", "content": '电子社保卡，参保地，错误' },
             { "role": "AI", "content": Q }]
-            zsk(false)
+
             lsdh(true)//打开历史对话
             resp = await send("请提取关键词，使用逗号分隔。")
             lsdh(false)
@@ -125,7 +135,7 @@ else if (app.llm_type == "glm6b") {
             let Q = app.问题
             app.chat = [{ "role": "user", "content": "现在开始,你的任务是提取关键词，提取下列语句中的关键词，并用空格分隔：科普之路是不是任重而道远？" },
             { "role": "AI", "content": '科普 道路 任重 道远' }]
-            zsk(false)
+
             lsdh(true)//打开历史对话
             resp = await send("提取下列语句中的关键词：" + Q)
             lsdh(false)
@@ -154,7 +164,7 @@ else if (app.llm_type == "glm6b") {
     名称: "sgwx知识库全文爬取",
     问题: async () => {
         let Q = app.问题
-        zsk(false)
+
         lsdh(true)//打开历史对话
         lsdh(false)
         app.chat.push({ "role": "user", "content": Q })

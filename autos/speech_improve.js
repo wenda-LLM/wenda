@@ -1,3 +1,15 @@
+// ==UserScript==
+// @name         语音增强
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  通过替换闻达函数，提升语音功能，同时也用于演示如何用外部api提供语音服务
+// @author       lyyyyy
+// @match        http://127.0.0.1:17860/
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
+// @run-at document-idle
+// @grant        none
+// ==/UserScript==
+
 let isSpeaking = true;
 speak = (s) => {
     msg = new SpeechSynthesisUtterance();
