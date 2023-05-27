@@ -26,6 +26,7 @@
 
     <button onclick="showCode()">显示等效代码</button>
     <button onclick="runCode()">载入至闻达</button>
+    <button onclick="saveCodeAsAuto()">保存至闻达</button>
     <button onclick="analyzeCode()">智能分析</button>
     <!-- <button
       onclick="localStorage['wenda_blockly_prog']=JSON.stringify(Blockly.serialization.workspaces.save(demoWorkspace))">
@@ -37,7 +38,7 @@
     <button onclick="另存为(JSON.stringify(Blockly.serialization.workspaces.save(demoWorkspace)))">
       另存为</button>
     <input type="file" onchange="打开(this.files)">
-      </input>
+    </input>
 
   </div>
   <div id="blocklyDiv" style="width: 100%;"></div>
@@ -79,6 +80,8 @@
               "check": "String"
             }
           ],
+          previousStatement: null,
+          nextStatement: null,
           "output": "String",
           "colour": "purple",
           "tooltip": "Returns number of letters in the provided text.",
@@ -89,6 +92,57 @@
       var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
         Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'\'';
       return ["await send(" + argument0 + ')', Blockly.JavaScript.ORDER_MEMBER];
+    }
+    Blockly.Blocks['添加用户会话'] = {
+      init: function () {
+        this.jsonInit({
+          "message0": '添加用户会话 %1',
+          "args0": [
+            {
+              "type": "input_value",
+              "name": "VALUE"
+            }
+          ],
+          previousStatement: null,
+          nextStatement: null,
+          "colour": "purple",
+          "tooltip": "添加用户会话",
+        });
+      }
+    }
+    Blockly.JavaScript['添加用户会话'] = function (block) {
+      var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
+        Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'\'';
+      return "add_conversation(\"user\"," + argument0 + ')\n';
+    }
+    // { message0: module$contents$Blockly$libraryBlocks$texts_Msg.TEXT_PRINT_TITLE,
+    //   args0: [{ type: "input_value", name: "TEXT" }],
+    //    previousStatement: null,
+    //     nextStatement: null, 
+    //     style: "text_blocks",
+    //      tooltip: module$contents$Blockly$libraryBlocks$texts_Msg.TEXT_PRINT_TOOLTIP, 
+    //      helpUrl: module$contents$Blockly$libraryBlocks$texts_Msg.TEXT_PRINT_HELPURL }
+    Blockly.Blocks['添加AI会话'] = {
+      init: function () {
+        this.jsonInit({
+          "message0": '添加AI会话 %1',
+          "args0": [
+            {
+              "type": "input_value",
+              "name": "VALUE",
+            }
+          ],
+          previousStatement: null,
+          nextStatement: null,
+          "colour": "purple",
+          "tooltip": "添加AI会话",
+        });
+      }
+    }
+    Blockly.JavaScript['添加AI会话'] = function (block) {
+      var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
+        Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'\'';
+      return "add_conversation(\"AI\"," + argument0 + ')\n';
     }
     Blockly.Blocks['用户输入'] = {
       init: function () {
@@ -462,6 +516,14 @@
               "kind": "block",
               "type": "用户输入"
             },
+            {
+              "kind": "block",
+              "type": "添加用户会话"
+            },
+            {
+              "kind": "block",
+              "type": "添加AI会话"
+            },
           ]
         }
       ]
@@ -474,7 +536,7 @@
         toolbox: toolbox
       });
 
-    var startBlocks = { "blocks": { "languageVersion": 0, "blocks": [{ "type": "controls_if", "id": "iT,pk#nrYYiuU8PKx;X$", "x": 0, "y": 0, "inline": false, "extraState": { "hasElse": true }, "inputs": { "IF0": { "block": { "type": "logic_compare", "id": "T4+ttZ~C_b*QO*3rX{Em", "fields": { "OP": "EQ" }, "inputs": { "A": { "block": { "type": "用户输入", "id": "o@rNb@2m,1jCereA^pDz" } }, "B": { "block": { "type": "text", "id": "/|Fut]UGF$5;,^1oyrZ.", "fields": { "TEXT": "你好" } } } } } }, "DO0": { "block": { "type": "text_print", "id": "1o4/30[sgFM*ilp0v48=", "inline": false, "inputs": { "TEXT": { "block": { "type": "发送", "id": "|bJf6;$KtPy=XjT5cnnQ", "inputs": { "VALUE": { "block": { "type": "text", "id": "zzQT`a;U(lNXXnBbcy](", "fields": { "TEXT": "你好，闻达" } } } } } } } } }, "ELSE": { "block": { "type": "text_print", "id": "|?MKt8g%`aXLu=ixEn4X", "inline": false, "inputs": { "TEXT": { "block": { "type": "发送", "id": "A3X`8{7G)$yWJjE`H$~G", "inputs": { "VALUE": { "block": { "type": "用户输入", "id": "iEy-%[lUSX}vAu3Y~xgB" } } } } } } } } } }] } }
+    var startBlocks ={"blocks":{"languageVersion":0,"blocks":[{"type":"添加用户会话","id":",g8fJD_C.6HD9wZ*THui","x":355,"y":187,"inputs":{"VALUE":{"block":{"type":"text","id":"zPSMY@7;Z{.E{X+JE@?W","fields":{"TEXT":"程序开始运行"}}}},"next":{"block":{"type":"controls_if","id":"iT,pk#nrYYiuU8PKx;X$","inline":false,"extraState":{"hasElse":true},"inputs":{"IF0":{"block":{"type":"logic_compare","id":"T4+ttZ~C_b*QO*3rX{Em","fields":{"OP":"EQ"},"inputs":{"A":{"block":{"type":"用户输入","id":"o@rNb@2m,1jCereA^pDz"}},"B":{"block":{"type":"text","id":"/|Fut]UGF$5;,^1oyrZ.","fields":{"TEXT":"你好"}}}}}},"DO0":{"block":{"type":"text_print","id":"1o4/30[sgFM*ilp0v48=","inline":false,"inputs":{"TEXT":{"block":{"type":"发送","id":"|bJf6;$KtPy=XjT5cnnQ","inputs":{"VALUE":{"block":{"type":"text","id":"zzQT`a;U(lNXXnBbcy](","fields":{"TEXT":"你好，闻达"}}}}}}}}},"ELSE":{"block":{"type":"text_print","id":"|?MKt8g%`aXLu=ixEn4X","inline":false,"inputs":{"TEXT":{"block":{"type":"发送","id":"A3X`8{7G)$yWJjE`H$~G","inputs":{"VALUE":{"block":{"type":"用户输入","id":"iEy-%[lUSX}vAu3Y~xgB"}}}}}}}}},"next":{"block":{"type":"添加AI会话","id":"-LB?JxOhy({t)+htNW}+","inputs":{"VALUE":{"block":{"type":"text","id":"aY=xvk~..+ub7M#D,V|3","fields":{"TEXT":"程序结束运行"}}}}}}}}}]}}
     Blockly.serialization.workspaces.load(startBlocks, demoWorkspace);
 
     function showCode() {
@@ -492,6 +554,15 @@
       var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
       Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
       parent.postMessage({ from: '猫猫也会的图块化编程', data: code }, '/')
+    }
+    function saveCodeAsAuto() {
+      // Generate JavaScript code and run it.
+      window.LoopTrap = 1000;
+      Blockly.JavaScript.INFINITE_LOOP_TRAP =
+        'if (--window.LoopTrap < 0) throw "Infinite loop.";\n';
+      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      parent.postMessage({ from: '猫猫也会的图块化编程_保存', data: code }, '/')
     }
     function analyzeCode() {
       // Generate JavaScript code and run it.
