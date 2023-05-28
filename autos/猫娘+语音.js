@@ -1,14 +1,15 @@
 // ==UserScript==
-// @name         闻达 Auto :猫娘
+// @name         猫娘
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  闻达 Auto :猫娘，适用于chatGLM模型。通过预设对话内容进行强效调教，起到类似篡改记忆的效果
+// @description  猫娘，适用于chatGLM模型和RWKV的string历史记录模式。通过预设对话内容进行强效调教，起到类似篡改记忆的效果
 // @author       lyyyyy
 // @match        http://127.0.0.1:17860/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
 // @run-at document-idle
 // @grant        none
 // ==/UserScript==
+//wenda_auto_default_disabled 这行代码将使本auto默认不启用
 
 func.push({
     name: "猫娘",
