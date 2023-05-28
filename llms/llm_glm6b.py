@@ -70,7 +70,7 @@ def load_model():
     if not (settings.llm.lora == '' or settings.llm.lora == None):
         print('Lora模型地址', settings.llm.lora)
         from peft import PeftModel
-        model = PeftModel.from_pretrained(model, settings.llm.lora)
+        model = PeftModel.from_pretrained(model, settings.llm.lora,adapter_name=settings.llm.lora)
         
     device, precision = s[0][0], s[0][1]
     # 根据设备执行不同的操作
@@ -120,3 +120,27 @@ def load_model():
     if len(s)>1:
         model = dispatch_model(model, device_map=device_map)
     model = model.eval()
+
+
+from bottle import route, response, request
+@route('/api/lora_load_adapter', method=("POST","OPTIONS"))
+def load_adapter():
+    # allowCROS()
+    try:
+        data = request.json
+        lora_path=data.get("lora_path")
+        adapter_name=data.get("adapter_name")
+        model.load_adapter(lora_path, adapter_name=adapter_name)
+        return "保存成功"
+    except Exception as e:
+        return str(e)
+@route('/api/lora_set_adapter', method=("POST","OPTIONS"))
+def set_adapter():
+    # allowCROS()
+    try:
+        data = request.json
+        adapter_name=data.get("adapter_name")
+        model.set_adapter(adapter_name)
+        return "保存成功"
+    except Exception as e:
+        return str(e)
