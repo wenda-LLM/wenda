@@ -354,10 +354,13 @@
         </v-tab-item>
         <v-tab-item key="setting">
           <v-card elevation="2">
-            <v-card-title>Auto管理</v-card-title>
+            <v-card-title>
+              <v-text-field v-model="autos_search" append-icon="mdi-magnify" label="Auto管理" single-line
+                hide-details></v-text-field>
+            </v-card-title>
             <v-divider></v-divider>
             <v-card-text>
-              <v-data-table item-key="name" show-expand
+              <v-data-table item-key="name" show-expand :search="autos_search"
                 :headers="[{ text: '名称', value: 'name' },{ text: '描述', value: 'description' },{ text: '禁用', value: 'disabled' },  { text: '', value: 'data-table-expand' },]"
                 :items="autos">
                 <template v-slot:item.disabled="{ item }">
@@ -590,7 +593,8 @@
           loading: false,
           drawer: false,
           show_header: true,
-          color: 'purple'
+          color: 'purple',
+          autos_search: ""
         };
       },
       methods: {},
@@ -920,7 +924,7 @@
           name: name,
           description: get_auto_description(plugin),
           content: plugin.content,
-          disabled: get_auto_disabled(plugin,name)
+          disabled: get_auto_disabled(plugin, name)
         }
         app.autos.push(auto)
         if (!auto.disabled) eval(plugin.content)
