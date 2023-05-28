@@ -9,7 +9,7 @@
 // @grant        none
 // ==/UserScript==
 
-app.功能菜单 = 功能 = func.concat([
+app.func_menu = func = func.concat([
     {
         name: "材料改写",
         description: "对指定内容进行多个版本的改写，以避免文本重复",
