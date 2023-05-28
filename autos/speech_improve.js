@@ -45,7 +45,7 @@ listen = () => {
             if (event.results[i].isFinal) {
                 final_transcript += event.results[i][0].transcript;
                 console.log(final_transcript);
-                app.问题 = final_transcript
+                app.question = final_transcript
             } else {
 
                 interim_transcript += event.results[i][0].transcript;
@@ -55,18 +55,18 @@ listen = () => {
     recognition.onerror = function (e) {
         console.log(final_transcript);
         alert('语音识别失败:',e.error)
-        app.语音输入中 = false
+        app.sst_started = false
         console.log('======================' + "error" + '======================', e);
     };
     recognition.onend = function () {
         console.log(final_transcript);
-        app.问题 = final_transcript
+        app.question = final_transcript
         if (final_transcript.length > 1)
             提交()
-        app.语音输入中 = false
+        app.sst_started = false
         console.log('======================' + "end" + '======================');
     }
     recognition.lang = "zh-CN";
     recognition.start()
-    app.语音输入中 = true
+    app.sst_started = true
 }

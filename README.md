@@ -115,10 +115,10 @@ auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos
 ### Auto 开发涉及代码段
 在左侧功能栏添加内容：
 ```
-功能.push({
-    名称: "名称",
-    问题: async () => {
-        let answer=await send(app.问题)
+func.push({
+    name: "名称",
+    question: async () => {
+        let answer=await send(app.question)
         alert(answer)
     },
 })

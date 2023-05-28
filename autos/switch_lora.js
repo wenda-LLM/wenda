@@ -10,11 +10,11 @@
 // ==/UserScript==
 
 
-功能.push({
-    名称: "Lora切换测试",
-    问题: async () => {
+func.push({
+    name: "Lora切换测试",
+    question: async () => {
         lsdh(false)
-        Q=app.问题
+        Q=app.question
         lora_name="model\\chatglm-6b-belle-zh-lora"//https://huggingface.co/shibing624/chatglm-6b-belle-zh-lora
         await lora_load_adapter(lora_name)
         sources = [{

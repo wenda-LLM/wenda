@@ -15,15 +15,15 @@ genID = () => 'xxxxxxxxxxxx'.replace(/x/g, function () {
     return chars[Math.random() * 62 | 0]
 })
 if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
-功能.push({
-    名称: "记忆增强",
-    问题: async () => {
-        Q = app.问题
+func.push({
+    name: "记忆增强",
+    question: async () => {
+        Q = app.question
         memory = await find_memory(Q)
         if (memory.length > 0) {
-            A = await send(app.问题 + memory.map(i => `[在第${i.title}轮的回忆：${i.content}]`).join('\n'))
+            A = await send(app.question + memory.map(i => `[在第${i.title}轮的回忆：${i.content}]`).join('\n'))
         } else {
-            A = await send(app.问题)
+            A = await send(app.question)
         }
         add_memory( Q )//+ " Alice: " + A
     },
