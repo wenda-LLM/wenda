@@ -590,7 +590,7 @@
           loading: false,
           drawer: false,
           show_header: true,
-          color:'purple'
+          color: 'purple'
         };
       },
       methods: {},
@@ -896,6 +896,11 @@
       }
       return ''
     }
+    get_auto_disabled = (plugin, name) => {
+      if (disabled_auto[name] == undefined)
+        return !!plugin.content.match(/wenda_auto_default_disabled/)
+      return disabled_auto[name]
+    }
     get_auto_name = plugin => {
       try {
         return plugin.content.match(/@name (.+)\n/)[1].trim() + `(${plugin.name})`
@@ -915,7 +920,7 @@
           name: name,
           description: get_auto_description(plugin),
           content: plugin.content,
-          disabled: disabled_auto[name]
+          disabled: get_auto_disabled(plugin,name)
         }
         app.autos.push(auto)
         if (!auto.disabled) eval(plugin.content)
