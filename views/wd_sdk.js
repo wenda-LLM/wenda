@@ -1,4 +1,28 @@
 
+send_raw = async (prompt, keyword, QA_history, onmessage = alert) => {
+    let result = ''
+    await new Promise(resolve => {
+      ws = new WebSocket(location.href.replace("http", "ws") + "ws");
+      ws.onmessage = function (event) {
+        result = event.data
+        onmessage(result)
+      };
+      ws.onopen = function () {
+        ws.send(JSON.stringify({
+          prompt: prompt,
+          keyword: keyword,
+          temperature: app.temperature,
+          top_p: app.top_p,
+          max_length: app.max_length,
+          history: QA_history
+        }))
+      };
+      ws.onclose = function () {
+        resolve();
+      }
+    })
+    return result
+  }
 find = async (s, step = 1) => {
     response = await fetch("/api/find", {
         method: "post",

@@ -695,26 +695,11 @@
       }
       setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
       // try {
-      await new Promise(resolve => {
-        ws = new WebSocket(location.href.replace("http", "ws") + "ws");
-        ws.onmessage = function (event) {
-          is_wait_till = true;
-          current_session.content = event.data
-        };
-        ws.onopen = function () {
-          ws.send(JSON.stringify({
-            prompt: app.question,
-            keyword: keyword,
-            temperature: app.temperature,
-            top_p: app.top_p,
-            max_length: app.max_length,
-            history: QA_history,
-            zhishiku: false,
-          }))
-        };
-        ws.onclose = function () {
-          resolve();
-        };
+      await send_raw(app.question, keyword, QA_history, message => {
+
+        is_wait_till = true;
+
+        current_session.content = message
       })
       app.question = "";
 
