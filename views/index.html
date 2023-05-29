@@ -693,9 +693,9 @@
       setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
       // try {
       await new Promise(resolve => {
-        ws = new WebSocket(location.href.replace("http","ws") + "ws");
+        ws = new WebSocket(location.href.replace("http", "ws") + "ws");
         ws.onmessage = function (event) {
-          console.log(event.data)
+          is_wait_till = true;
           current_session.content = event.data
         };
         ws.onopen = function () {
@@ -714,7 +714,7 @@
         };
       })
       app.question = "";
-    
+
       // } catch { }
       if (app.tts_on) {
         if (app.zhishiku_on)

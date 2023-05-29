@@ -283,6 +283,7 @@ from fastapi import FastAPI,WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.wsgi import WSGIMiddleware
 from starlette.requests import Request
+import asyncio
 app = FastAPI(title="Wenda",
               description="Wenda API",
               version="1.0.0",
@@ -319,12 +320,12 @@ async def websocket_endpoint(websocket: WebSocket):
             try:
                 for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
                     if (response):
-                        await websocket.send_text(response) 
+                        await websocket.send_text(response)
+                        await asyncio.sleep(0) 
             except Exception as e:
                 error = str(e)
                 error_print("错误", error)
                 response = ''
-                # raise e
             torch.cuda.empty_cache()
         if response == '':
             await websocket.send_text("发生错误，正在重新加载模型") 
@@ -342,4 +343,4 @@ async def websocket_endpoint(websocket: WebSocket):
 
 app.mount(path="/", app=WSGIMiddleware(bottle.app[0]))
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=settings.port, log_level='debug')
+    uvicorn.run(app, host="0.0.0.0", port=settings.port, log_level='error')
