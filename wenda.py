@@ -193,7 +193,7 @@ def api_chat_box():
     if use_zhishiku is None:
         use_zhishiku = False
     messages = data.get('messages')
-    prompt = messages[-1]['content']
+    prompt = "用中文回答后续问题。"+messages[-1]['content']
     # print(messages)
     history_formatted = LLM.chat_init(messages)
     response_text = ''
