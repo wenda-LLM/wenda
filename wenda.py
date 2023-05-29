@@ -277,5 +277,20 @@ bottle.debug(True)
 # import webbrowser
 # webbrowser.open_new('http://127.0.0.1:'+str(settings.Port))
 
-
-bottle.run(server='paste', host="0.0.0.0", port=settings.port, quiet=True)
+# bottle.run(server='paste', host="0.0.0.0", port=settings.port, quiet=True)
+import uvicorn
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.wsgi import WSGIMiddleware
+app = FastAPI(title="Sample",
+              description="Sample API",
+              version="1.0.0",
+              # docs_url=None,
+              # redoc_url=None,
+              openapi_url="/api/v1/openapi.json",
+              docs_url="/api/v1/docs",
+              redoc_url="/api/v1/redoc")
+app.mount(path="/", app=WSGIMiddleware(bottle.app[0]))
+print(bottle.default_app)
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=settings.port, log_level='debug')

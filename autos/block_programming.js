@@ -16,19 +16,19 @@ window.addEventListener('message', function (e) {
         data = "async ()=>{" + data + "}"
         console.log(data)
         load_feature({
-            名称: "猫猫也会的图块化编程",
-            描述: "",
-            问题: eval(data)
+            name: "猫猫也会的图块化编程",
+            description: "",
+            question: eval(data)
         })
         this.alert("载入成功")
     }
     if (e.data.from == '猫猫也会的图块化编程_保存') {
         let data = e.data.data
         data = `// @name 猫猫编程${Date.now()}
-        功能.push({
-            名称: "猫猫编程${Date.now()}",
-            描述: "根据主题撰写内容翔实、有信服力的论文",
-            问题: async () => {`+ data + "} })"
+        func.push({
+            name: "猫猫编程${Date.now()}",
+            description: "根据主题撰写内容翔实、有信服力的论文",
+            question: async () => {`+ data + "} })"
         add_auto(data)
         this.alert("载入成功")
     }

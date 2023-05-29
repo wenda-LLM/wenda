@@ -1,16 +1,17 @@
 // ==UserScript==
-// @name         闻达 Auto 示例：QQ机器人Auto
+// @name         QQ机器人Auto
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  
+// @description  配置参考:https://drincann.github.io/Mirai-js/#/v2.x/Preparation?id=%e4%b8%8d%e4%bc%9a%e5%bc%80%e5%90%af%ef%bc%9f 中"不会开启"部分
 // @author       lyyyyy
 // @match        http://127.0.0.1:17860/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
 // @run-at document-idle
 // @grant        none
 // ==/UserScript==
+//wenda_auto_default_disabled 这行代码将使本auto默认不启用
 
-//配置参考:https://drincann.github.io/Mirai-js/#/v2.x/Preparation?id=%e4%b8%8d%e4%bc%9a%e5%bc%80%e5%90%af%ef%bc%9f 中"不会开启"部分
+
 my_account = 2323662503
 //my_account改成你的QQ号
 verifyKey='INITKEYzLf3hb8p'
