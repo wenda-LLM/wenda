@@ -597,13 +597,16 @@
           autos_search: ""
         };
       },
-      methods: {},
+      methods: {
+        md2html: (conent) => {
+          // return conent
+          conent = String(conent);
+          let md = new markdownit();
+          // md.disable(['link', 'image'])
+          return md.render(conent).replace(/<a /g, '<a target="_blank"');
+        }
+      },
     });
-    alert = (text) => {
-      app.snackbar_text = text; //.replace(/\n/g,"<br>")
-      app.snackbar = true;
-    };
-
     load_feature = (func) => {
       app.func_mode = func;
       app.drawer = false;
@@ -611,9 +614,6 @@
     delete_current_conversation = (item) => {
       app.chat.splice(Math.floor(app.chat.indexOf(item) / 2) * 2, 2);
       save_history();
-    };
-    save_history = () => {
-      localStorage["wenda_chat_history"] = JSON.stringify(app.chat);
     };
     abort_chatting = () => {
       is_abord = true;
@@ -636,7 +636,27 @@
       else app.question = last_send.content;
 
       submit(last_send.content, last_send.keyword);
-    };
+    }
+    summerize_history = async () => {
+      let zdk_stste = app.zhishiku_on;
+      zsk(false);
+      lsdh(false);
+      let prompt =
+        "提取以下对话中的关键信息。\n" +
+        app.chat
+          .map(
+            (i) =>
+              (i.role == "user" ? "Alice: " : "Bob: ") +
+              i.content.replace(/\n/g, "")
+          )
+          .join("\n");
+      await send(prompt);
+      zsk(zdk_stste);
+      lsdh(true);
+      app.loading = true;
+      app.chat = app.chat.slice(app.chat.length - 2);
+      app.chat[0].content = "提供本次对话中的关键信息。";
+    }
     send = async (s, keyword = "", show = true, sources = []) => {
       if (keyword == "") keyword = s;
       is_abord = false;
@@ -649,24 +669,7 @@
         ) {
           if (app.simplify_historical_information) {
             alert(`历史信息过长，自动进行总结`);
-            let zdk_stste = app.zhishiku_on;
-            zsk(false);
-            lsdh(false);
-            let prompt =
-              "提取以下对话中的关键信息。\n" +
-              app.chat
-                .map(
-                  (i) =>
-                    (i.role == "user" ? "Alice: " : "Bob: ") +
-                    i.content.replace(/\n/g, "")
-                )
-                .join("\n");
-            await send(prompt);
-            zsk(zdk_stste);
-            lsdh(true);
-            app.loading = true;
-            app.chat = app.chat.slice(app.chat.length - 2);
-            app.chat[0].conent = "提供本次对话中的关键信息。";
+            await summerize_history()
             QA_history = app.chat.concat();
           } else {
             alert(
@@ -683,7 +686,7 @@
         QA_history = [];
       }
       is_wait_till = false;
-      setTimeout(read_now, 3000);
+      setTimeout(display_queue_length, 3000);
       app.question = s.replace(/\r\n/g, "\n");
       let current_session = { role: "AI", content: "……", sources: sources };
       if (show) {
@@ -727,152 +730,18 @@
       save_history();
       if (is_abord) throw new MyException("已中断");
       return current_session.content;
-    };
-    function MyException(message) {
-      this.message = message;
     }
-    read_now = async () => {
+    display_queue_length = async () => {
       if (!is_wait_till) {
-        response = await fetch("/api/chat_now", {
-          method: "get",
-        });
-        let j = JSON.parse(await response.text());
-        if (j.queue_length != 0) alert(j.queue_length);
-        setTimeout(read_now, 3000);
+        let queue_length = await get_queue_length()
+        if (queue_length != 0) alert("当前排队数量：" + queue_length);
+        setTimeout(display_queue_length, 3000);
       }
     };
-
-    find = async (s, step = 1) => {
-      response = await fetch("/api/find", {
-        method: "post",
-        body: JSON.stringify({
-          prompt: s,
-          step: step,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      let json = await response.json();
-      console.table(json);
-      app.zhishiku = json;
-      return json;
-    };
-
-    find_dynamic = async (s, step = 1, paraJson) => {
-      console.table(paraJson);
-      response = await fetch("/api/find_dynamic", {
-        method: "post",
-        body: JSON.stringify({
-          prompt: s,
-          step: step,
-          paraJson: paraJson,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      let json = await response.json();
-      console.table(json);
-      app.zhishiku = json;
-      return json;
-    };
-
-    function md2html(conent) {
-      // return conent
-      conent = String(conent);
-      let md = new markdownit();
-      // md.disable(['link', 'image'])
-      return md.render(conent).replace(/<a /g, '<a target="_blank"');
-    }
-    zsk = (b) => {
-      app.zhishiku_on = b;
-    };
-    lsdh = (b) => {
-      app.history_on = b;
-    };
-
-    speak = (s) => {
-      msg = new SpeechSynthesisUtterance();
-      msg.rate = 1;
-      msg.pitch = 10;
-      msg.text = s;
-      msg.volume = 1;
-      speechSynthesis.speak(msg);
-    };
-    stop_listen = () => {
-      recognition.stop();
-      app.loading = true;
-    };
-    listen = () => {
-      recognition = new window.webkitSpeechRecognition();
-      let final_transcript = "";
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.onstart = function () { };
-      recognition.onresult = function (event) {
-        let interim_transcript = "";
-        for (var i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            final_transcript += event.results[i][0].transcript;
-            console.log(final_transcript);
-            app.question = final_transcript;
-          } else {
-            interim_transcript += event.results[i][0].transcript;
-          }
-        }
-      };
-      recognition.onerror = function (e) {
-        console.log(final_transcript);
-        alert("语音识别失败:", e.error);
-        app.sst_started = false;
-        console.log(
-          "======================" + "error" + "======================",
-          e
-        );
-      };
-      recognition.onend = function () {
-        console.log(final_transcript);
-        app.question = final_transcript;
-        if (final_transcript.length > 1) submit();
-        app.sst_started = false;
-        console.log(
-          "======================" + "end" + "======================"
-        );
-      };
-      recognition.lang = "zh-CN";
-      recognition.start();
-      app.sst_started = true;
-    };
-
-    copy = (s) => {
-      navigator.permissions
-        .query({ name: "clipboard-write" })
-        .then((result) => {
-          if (result.state == "granted" || result.state == "prompt") {
-            navigator.clipboard
-              .writeText(s.replace(/\n+/g, "\n"))
-              .then(() => {
-                alert("文本已经成功复制到剪切板");
-                console.log("文本已经成功复制到剪切板");
-              })
-              .catch((err) => { });
-          } else {
-            alert(
-              "当前无操作权限。请使用最新版本Chrome浏览器，并在浏览器高级设置-页面设置中允许访问剪切板"
-            );
-            console.log(
-              "当前无操作权限。请使用最新版本Chrome浏览器，并在浏览器高级设置-页面设置中允许访问剪切板"
-            );
-          }
-        });
-    };
-    add_conversation = (role, content, sources = null) => {
-      app.chat.push({ role: role, content: content, sources: sources });
-    };
     console.warn = function () { };
-    get_user_input = () => app.question;
+
   </script>
+  <script src="wd_sdk.js"></script>
   <script src="api/llm"></script>
   <script>
     get_auto_description = plugin => {
