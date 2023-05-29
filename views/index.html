@@ -617,12 +617,8 @@
     };
     abort_chatting = () => {
       is_abord = true;
-      controller.abort();
-      controller = new AbortController();
-      signal = controller.signal;
+      ws.close()
     };
-    controller = new AbortController();
-    signal = controller.signal;
     submit = async (e) => {
       if (e && e.shiftKey) {
         this.question += "\n";
@@ -695,11 +691,15 @@
         app.chat.push(current_session);
       }
       setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
-      try {
-        response = await fetch("/api/chat_stream", {
-          signal: signal,
-          method: "post",
-          body: JSON.stringify({
+      // try {
+      await new Promise(resolve => {
+        ws = new WebSocket(location.href.replace("http","ws") + "ws");
+        ws.onmessage = function (event) {
+          console.log(event.data)
+          current_session.content = event.data
+        };
+        ws.onopen = function () {
+          ws.send(JSON.stringify({
             prompt: app.question,
             keyword: keyword,
             temperature: app.temperature,
@@ -707,32 +707,15 @@
             max_length: app.max_length,
             history: QA_history,
             zhishiku: false,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        let buffer = "";
-        app.question = "";
-        const reader = response.body.getReader();
-        while (true) {
-          const { value, done } = await reader.read();
-          is_wait_till = true;
-          let res = new TextDecoder("utf-8").decode(value);
-          buffer += res;
-          while (buffer.indexOf("///") > -1) {
-            if (buffer == "/././") {
-              //应对网络问题
-              done = true;
-              break;
-            }
-            buffer = buffer.split("///");
-            current_session.content = buffer[buffer.length - 2];
-            buffer = buffer[buffer.length - 1];
-          }
-          if (done) break;
-        }
-      } catch { }
+          }))
+        };
+        ws.onclose = function () {
+          resolve();
+        };
+      })
+      app.question = "";
+    
+      // } catch { }
       if (app.tts_on) {
         if (app.zhishiku_on)
           speak(current_session.content.replace(/###[\s\S]*/, ""));
