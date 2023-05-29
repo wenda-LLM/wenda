@@ -1,10 +1,10 @@
 app.plugins.push({ icon: 'note-edit-outline', url: "/static/wdnote/index.html" })
 
 
-功能.push({
-    名称: "闻达笔记",
-    问题: async () => {
-        let Q = app.问题
+func.push({
+    name: "闻达笔记",
+    question: async () => {
+        let Q = app.question
         zsk(false)
         lsdh(false)
         app.chat.push({ "role": "user", "content": "以下文段是我准备写笔记的相关素材和观点，请结合如下内容写一篇笔记。\n文段内容：\n" + Q })
@@ -41,8 +41,7 @@ app.plugins.push({ icon: 'note-edit-outline', url: "/static/wdnote/index.html" }
             app.chat.push({ "role": "AI", "content": "非常抱歉，我没有找到相关知识，请再给我一些新的提示。" })
         }
 
-        //app.会话模式={名称: "常规模式",描述: "输入问题",问题: ""}
-    },
+          },
 })
 
 writeNote = (s) => {

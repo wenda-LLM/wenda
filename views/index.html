@@ -203,12 +203,12 @@
 
           <v-divider></v-divider>
 
-          <v-list-item v-for="功能 in 功能菜单" @click.stop="load_feature(功能)">
-            <v-list-item-title v-text="功能.名称"> </v-list-item-title>
+          <v-list-item v-for="func in func_menu" @click.stop="load_feature(func)">
+            <v-list-item-title v-text="func.name"> </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <v-toolbar dark color="purple darken-2" v-if="show_header">
+      <v-toolbar dark :color="color+' darken-2'" v-if="show_header">
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title><a style="text-decoration: none; color: white"
             href="https://github.com/l15y/wenda">{{$t("wenda") }}</a></v-toolbar-title>
@@ -265,12 +265,12 @@
                 <br />
                 <v-expand-transition>
                   <div v-if="hover" class="float">
-                    <v-icon v-if="!loading" large text color="purple"
+                    <v-icon v-if="!loading" large text :color="color"
                       @click="delete_current_conversation(current_conversation)">
                       mdi-delete
                     </v-icon>
 
-                    <v-icon large text color="purple" @click="copy(current_conversation.content)">
+                    <v-icon large text :color="color" @click="copy(current_conversation.content)">
                       mdi-content-copy
                     </v-icon>
                   </div>
@@ -288,7 +288,7 @@
                             margin-top: 0px;
                             max-width: -webkit-fill-available;
                             overflow-x: hidden;
-                          " color="purple" rounded="lg" @click='window.open(source.url,"_blank")' x-small>
+                          " :color="color" rounded="lg" @click='window.open(source.url,"_blank")' x-small>
                         <span class="d-inline-block text-truncate" style="max-width: 150px">
                           {{source.title}}
                         </span>
@@ -303,7 +303,7 @@
           <div v-if="!loading&&chat.length>0">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon color="purple" class="float" large text style="right: 0" v-bind="attrs" v-on="on"
+                <v-icon :color="color" class="float" large text style="right: 0" v-bind="attrs" v-on="on"
                   @click="re_generate()">
                   mdi-refresh
                 </v-icon>
@@ -313,37 +313,37 @@
           </div>
           <br /><br /><br /><br /><br /><br /><br /><br /><br />
           <v-footer fixed class="pr-0">
-            <div style="position: fixed; bottom: 120px; width: 100%; z-index: 20" v-if="语音输入">
-              <v-btn style="margin: auto; display: flex" color="purple" fab dark size="x-large" @click="listen()"
-                :loading="loading" v-if="!语音输入中">
+            <div style="position: fixed; bottom: 120px; width: 100%; z-index: 20" v-if="sst_on">
+              <v-btn style="margin: auto; display: flex" :color="color" fab dark size="x-large" @click="listen()"
+                :loading="loading" v-if="!sst_started">
                 语音<br />输入
               </v-btn>
-              <v-btn style="margin: auto; display: flex" color="purple" fab dark size="x-large" @click="stop_listen"
-                :loading="loading" v-if="语音输入中">
+              <v-btn style="margin: auto; display: flex" :color="color" fab dark size="x-large" @click="stop_listen"
+                :loading="loading" v-if="sst_started">
                 停止<br />输入
               </v-btn>
             </div>
             <v-row no-gutters>
               <v-col cols="8" md="11">
-                <v-textarea hide-details no-resize rows="3" :loading="loading" :placeholder="$t(会话模式.描述)"
-                  @keypress.enter="submit" v-model="问题">
+                <v-textarea hide-details no-resize rows="3" :loading="loading" :placeholder="$t(func_mode.description)"
+                  @keypress.enter="submit" v-model="question">
                 </v-textarea>
               </v-col>
               <v-col cols="4" md="1">
                 <div style="text-align: center">
-                  <v-btn style="margin-bottom: 10px" v-if="loading" color="purple" rounded="lg" dark size="x-large"
-                    @click="中断()">
+                  <v-btn style="margin-bottom: 10px" v-if="loading" :color="color" rounded="lg" dark size="x-large"
+                    @click="abort_chatting()">
                     {{$t("abord")}}
                   </v-btn>
-                  <v-btn style="margin-bottom: 10px" color="purple" rounded="lg" dark size="x-large" @click="submit()"
+                  <v-btn style="margin-bottom: 10px" :color="color" rounded="lg" dark size="x-large" @click="submit()"
                     v-if="!loading">
                     {{$t("send")}}
                   </v-btn>
                   <br />
                   <v-expand-transition>
-                    <v-chip v-if="会话模式.名称!=''" color="purple" outlined close @click:close="zhishiku_on=false">
+                    <v-chip v-if="func_mode.name!=''" :color="color" outlined close @click:close="zhishiku_on=false">
                       <span class="d-inline-block text-truncate" style="max-width: 120px">
-                        {{会话模式.名称}}
+                        {{func_mode.name}}
                       </span>
                     </v-chip>
                   </v-expand-transition>
@@ -354,10 +354,13 @@
         </v-tab-item>
         <v-tab-item key="setting">
           <v-card elevation="2">
-            <v-card-title>Auto管理</v-card-title>
+            <v-card-title>
+              <v-text-field v-model="autos_search" append-icon="mdi-magnify" label="Auto管理" single-line
+                hide-details></v-text-field>
+            </v-card-title>
             <v-divider></v-divider>
             <v-card-text>
-              <v-data-table item-key="name" show-expand
+              <v-data-table item-key="name" show-expand :search="autos_search"
                 :headers="[{ text: '名称', value: 'name' },{ text: '描述', value: 'description' },{ text: '禁用', value: 'disabled' },  { text: '', value: 'data-table-expand' },]"
                 :items="autos">
                 <template v-slot:item.disabled="{ item }">
@@ -372,7 +375,7 @@
               </v-data-table>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="purple" dark size="x-large"
+              <v-btn :color="color" dark size="x-large"
                 @click="disabled_auto={};app.autos.forEach(auto=>disabled_auto[auto.name]=auto.disabled);localStorage['wenda_disabled_auto'] =JSON.stringify(disabled_auto)">
                 保存（刷新后起效）
               </v-btn>
@@ -383,19 +386,19 @@
             <v-divider></v-divider>
             <v-card-text><br />
               <v-form>
-                <v-slider :min="1000" :max="4000" :step="10" v-model="max_length" thumb-color="purple"
+                <v-slider :min="1000" :max="4000" :step="10" v-model="max_length" :thumb-color="color"
                   label="max_length" thumb-label><template v-slot:append>
                     <v-text-field v-model="max_length" class="mt-0 pt-0" type="number" style="width: 60px">
                     </v-text-field>
                   </template>
                 </v-slider>
-                <v-slider :min="0" :max="2" :step="0.1" v-model="temperature" thumb-color="purple" label="temperature"
+                <v-slider :min="0" :max="2" :step="0.1" v-model="temperature" :thumb-color="color" label="temperature"
                   thumb-label><template v-slot:append>
                     <v-text-field v-model="temperature" class="mt-0 pt-0" type="number" style="width: 60px">
                     </v-text-field>
                   </template>
                 </v-slider>
-                <v-slider :min="0" :max="1" :step="0.1" v-model="top_p" thumb-color="purple" label="top_p" thumb-label>
+                <v-slider :min="0" :max="1" :step="0.1" v-model="top_p" :thumb-color="color" label="top_p" thumb-label>
                   <template v-slot:append>
                     <v-text-field v-model="top_p" class="mt-0 pt-0" type="number" style="width: 60px">
                     </v-text-field>
@@ -403,12 +406,12 @@
                 </v-slider>
                 <v-row>
                   <v-col cols="12" sm="2">
-                    <v-switch hide-details :label="$t('simplify_historical_information')" color="purple" inset
+                    <v-switch hide-details :label="$t('simplify_historical_information')" :color="color" inset
                       v-model="simplify_historical_information">
                     </v-switch>
                   </v-col>
                   <v-col cols="12" sm="10">
-                    <v-slider :min="0" :max="10" :step="1" v-model="history_limit" thumb-color="purple" label="对话轮数限制"
+                    <v-slider :min="0" :max="10" :step="1" v-model="history_limit" :thumb-color="color" label="对话轮数限制"
                       thumb-label>
                       <template v-slot:append>
                         <v-text-field v-model="history_limit" class="mt-0 pt-0" type="number" style="width: 60px">
@@ -426,14 +429,14 @@
             <v-card-text><br />
               <v-row>
                 <v-col cols="12" sm="2">
-                  <v-switch hide-details color="purple" inset v-model="语音输入">
+                  <v-switch hide-details :color="color" inset v-model="sst_on">
                     <template v-slot:label>
                       <v-icon text> mdi-microphone </v-icon>
                     </template>
                   </v-switch>
                 </v-col>
                 <v-col cols="12" sm="2">
-                  <v-switch hide-details color="purple" inset v-model="语音播报">
+                  <v-switch hide-details :color="color" inset v-model="tts_on">
                     <template v-slot:label>
                       <v-icon text> mdi-headset </v-icon>
                     </template></v-switch>
@@ -459,7 +462,7 @@
               </v-row>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="purple" dark size="x-large"
+              <v-btn :color="color" dark size="x-large"
                 @click="find=(s, step = 1)=>find_dynamic(s, step, {libraryStategy:zsk_libraryStategy,maxItmes:zsk_maxItmes})">
                 设置
               </v-btn>
@@ -469,9 +472,9 @@
             <v-card-title>知识提取提示词</v-card-title>
             <v-divider></v-divider>
             <v-card-text><br />
-              <v-combobox v-model="zsk_总结提示词" :items="['总结以下文段中与问题相关的信息。']" label="总结提示词"></v-combobox>
+              <v-combobox v-model="zsk_summarize_prompt" :items="['总结以下文段中与问题相关的信息。']" label="总结提示词"></v-combobox>
 
-              <v-combobox v-model="zsk_回答提示词" :items="['学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。']"
+              <v-combobox v-model="zsk_answer_prompt" :items="['学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。']"
                 label="回答提示词"></v-combobox>
             </v-card-text>
           </v-card>
@@ -495,7 +498,7 @@
                 </template>
               </v-data-table>
               <v-card-actions>
-                <v-btn color="purple" dark size="x-large" @click="find(test_zsk_prompt,test_zsk_step)">
+                <v-btn :color="color" dark size="x-large" @click="find(test_zsk_prompt,test_zsk_step)">
                   测试
                 </v-btn>
               </v-card-actions>
@@ -506,8 +509,8 @@
           <iframe frameborder="0" :src="plugin.url" style="width: 100%; height: 100%"></iframe>
         </v-tab-item>
       </v-tabs-items>
-      <v-tabs v-model="tab" color="purple" style="background: #fff">
-        <v-tabs-slider color="purple"></v-tabs-slider>
+      <v-tabs v-model="tab" :color="color" style="background: #fff">
+        <v-tabs-slider :color="color"></v-tabs-slider>
         <v-tab key="chat">
           <v-icon text> mdi-tooltip-edit-outline </v-icon>
         </v-tab>
@@ -525,7 +528,7 @@
     </v-app>
   </div>
   <script>
-    功能 = [];
+    func = [];
     app = new Vue({
       el: "#app",
       vuetify: new Vuetify(),
@@ -533,12 +536,12 @@
       watch: {
         zhishiku_on: (zhishiku_on) => {
           if (zhishiku_on) {
-            app.会话模式 = app.功能菜单.find((i) => i.名称 == "知识库");
+            app.func_mode = app.func_menu.find((i) => i.name == "知识库");
           } else
-            app.会话模式 = {
-              名称: "",
-              描述: "input_question",
-              问题: "",
+            app.func_mode = {
+              name: "",
+              description: "input_question",
+              question: "",
             };
         },
         tab: (val) => {
@@ -553,27 +556,27 @@
       },
       data() {
         return {
-          问题: "",
+          question: "",
           chat: JSON.parse(localStorage["wenda_chat_history"] || "[]"),
           history_on: false,
           history_limit: 5,
-          功能菜单: 功能,
+          func_menu: func,
           zsk_libraryStategy: "",
           zsk_maxItmes: 5,
-          zsk_总结提示词: "总结以下文段中与问题相关的信息。",
-          zsk_回答提示词:
+          zsk_summarize_prompt: "总结以下文段中与问题相关的信息。",
+          zsk_answer_prompt:
             "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。",
-          会话模式: {
-            名称: "",
-            描述: "input_question",
-            问题: "",
+          func_mode: {
+            name: "",
+            description: "input_question",
+            question: "",
           },
           plugins: [],
           autos: [],
           simplify_historical_information: false,
-          语音输入: false,
-          语音播报: false,
-          语音输入中: false,
+          sst_on: false,
+          tts_on: false,
+          sst_started: false,
           test_zsk_prompt: "",
           test_zsk_step: 1,
           zhishiku: [],
@@ -589,7 +592,9 @@
           snackbar_text: "",
           loading: false,
           drawer: false,
-          show_header: true
+          show_header: true,
+          color: 'purple',
+          autos_search: ""
         };
       },
       methods: {},
@@ -599,8 +604,8 @@
       app.snackbar = true;
     };
 
-    load_feature = (功能) => {
-      app.会话模式 = 功能;
+    load_feature = (func) => {
+      app.func_mode = func;
       app.drawer = false;
     };
     delete_current_conversation = (item) => {
@@ -610,7 +615,7 @@
     save_history = () => {
       localStorage["wenda_chat_history"] = JSON.stringify(app.chat);
     };
-    中断 = () => {
+    abort_chatting = () => {
       is_abord = true;
       controller.abort();
       controller = new AbortController();
@@ -620,19 +625,19 @@
     signal = controller.signal;
     submit = async (e) => {
       if (e && e.shiftKey) {
-        this.问题 += "\n";
+        this.question += "\n";
       } else
-        if (typeof app.会话模式.问题 == "function") {
-          app.会话模式.问题();
+        if (typeof app.func_mode.question == "function") {
+          app.func_mode.question();
         } else {
-          send(app.会话模式.问题 + app.问题, app.问题);
+          send(app.func_mode.question + app.question, app.question);
         }
     };
     re_generate = () => {
       let last_send = app.chat[app.chat.length - 2];
       app.chat.splice(app.chat.length - 2, 2);
-      if (last_send.keyword) app.问题 = last_send.keyword;
-      else app.问题 = last_send.content;
+      if (last_send.keyword) app.question = last_send.keyword;
+      else app.question = last_send.content;
 
       submit(last_send.content, last_send.keyword);
     };
@@ -681,13 +686,13 @@
       } else {
         QA_history = [];
       }
-      已排队到 = false;
+      is_wait_till = false;
       setTimeout(read_now, 3000);
-      app.问题 = s.replace(/\r\n/g, "\n");
-      let 当前会话 = { role: "AI", content: "……", sources: sources };
+      app.question = s.replace(/\r\n/g, "\n");
+      let current_session = { role: "AI", content: "……", sources: sources };
       if (show) {
         app.chat.push({ role: "user", content: keyword, keyword: keyword });
-        app.chat.push(当前会话);
+        app.chat.push(current_session);
       }
       setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
       try {
@@ -695,7 +700,7 @@
           signal: signal,
           method: "post",
           body: JSON.stringify({
-            prompt: app.问题,
+            prompt: app.question,
             keyword: keyword,
             temperature: app.temperature,
             top_p: app.top_p,
@@ -708,11 +713,11 @@
           },
         });
         let buffer = "";
-        app.问题 = "";
+        app.question = "";
         const reader = response.body.getReader();
         while (true) {
           const { value, done } = await reader.read();
-          已排队到 = true;
+          is_wait_till = true;
           let res = new TextDecoder("utf-8").decode(value);
           buffer += res;
           while (buffer.indexOf("///") > -1) {
@@ -722,29 +727,29 @@
               break;
             }
             buffer = buffer.split("///");
-            当前会话.content = buffer[buffer.length - 2];
+            current_session.content = buffer[buffer.length - 2];
             buffer = buffer[buffer.length - 1];
           }
           if (done) break;
         }
       } catch { }
-      if (app.语音播报) {
+      if (app.tts_on) {
         if (app.zhishiku_on)
-          speak(当前会话.content.replace(/###[\s\S]*/, ""));
-        else speak(当前会话.content);
+          speak(current_session.content.replace(/###[\s\S]*/, ""));
+        else speak(current_session.content);
       }
 
       app.loading = false;
-      已排队到 = true;
+      is_wait_till = true;
       save_history();
       if (is_abord) throw new MyException("已中断");
-      return 当前会话.content;
+      return current_session.content;
     };
     function MyException(message) {
       this.message = message;
     }
     read_now = async () => {
-      if (!已排队到) {
+      if (!is_wait_till) {
         response = await fetch("/api/chat_now", {
           method: "get",
         });
@@ -828,7 +833,7 @@
           if (event.results[i].isFinal) {
             final_transcript += event.results[i][0].transcript;
             console.log(final_transcript);
-            app.问题 = final_transcript;
+            app.question = final_transcript;
           } else {
             interim_transcript += event.results[i][0].transcript;
           }
@@ -837,7 +842,7 @@
       recognition.onerror = function (e) {
         console.log(final_transcript);
         alert("语音识别失败:", e.error);
-        app.语音输入中 = false;
+        app.sst_started = false;
         console.log(
           "======================" + "error" + "======================",
           e
@@ -845,16 +850,16 @@
       };
       recognition.onend = function () {
         console.log(final_transcript);
-        app.问题 = final_transcript;
+        app.question = final_transcript;
         if (final_transcript.length > 1) submit();
-        app.语音输入中 = false;
+        app.sst_started = false;
         console.log(
           "======================" + "end" + "======================"
         );
       };
       recognition.lang = "zh-CN";
       recognition.start();
-      app.语音输入中 = true;
+      app.sst_started = true;
     };
 
     copy = (s) => {
@@ -883,7 +888,7 @@
       app.chat.push({ role: role, content: content, sources: sources });
     };
     console.warn = function () { };
-    get_user_input = () => app.问题;
+    get_user_input = () => app.question;
   </script>
   <script src="api/llm"></script>
   <script>
@@ -894,6 +899,11 @@
 
       }
       return ''
+    }
+    get_auto_disabled = (plugin, name) => {
+      if (disabled_auto[name] == undefined)
+        return !!plugin.content.match(/wenda_auto_default_disabled/)
+      return disabled_auto[name]
     }
     get_auto_name = plugin => {
       try {
@@ -914,7 +924,7 @@
           name: name,
           description: get_auto_description(plugin),
           content: plugin.content,
-          disabled: disabled_auto[name]
+          disabled: get_auto_disabled(plugin, name)
         }
         app.autos.push(auto)
         if (!auto.disabled) eval(plugin.content)

@@ -25,11 +25,11 @@ get_url_form_md = (s) => {
         return s
     }
 }
-功能.push({
-    名称: "知识库",
-    描述: "通过知识库回答问题",
-    问题: async () => {
-        let Q = app.问题
+func.push({
+    name: "知识库",
+    description: "通过知识库回答问题",
+    question: async () => {
+        let Q = app.question
 
         lsdh(false)
         app.chat.push({ "role": "user", "content": Q })
@@ -49,13 +49,13 @@ get_url_form_md = (s) => {
             for (let i in kownladge) {
                 answer.content = '正在查找：' + kownladge[i].title
                 if (i > 3) continue
-                let prompt = app.zsk_总结提示词 + '\n' +
+                let prompt = app.zsk_summarize_prompt + '\n' +
                     kownladge[i].content + "\n问题：" + Q
                 result.push(await send(prompt, keyword = Q, show = false))
             }
             app.chat.pop()
             app.chat.pop()
-            let prompt = app.zsk_回答提示词 + '\n' +
+            let prompt = app.zsk_answer_prompt + '\n' +
                 result.join('\n') + "\n问题：" + Q
             return await send(prompt, keyword = Q, show = true, sources = kownladge)
         } else {
@@ -71,10 +71,10 @@ get_url_form_md = (s) => {
 
 if (app.llm_type == "rwkv") {
 
-    功能.push({
-        名称: "知识库增强(rwkv)",
-        问题: async () => {
-            let Q = app.问题
+    func.push({
+        name: "知识库增强(rwkv)",
+        question: async () => {
+            let Q = app.question
 
             lsdh(false)
             kownladge = (await find(Q, 5)).map(i => ({
@@ -88,11 +88,11 @@ if (app.llm_type == "rwkv") {
         }
     }
     )
-    功能.push({
-        名称: "知识库增强(根据关键词)",
-        问题: async () => {
+    func.push({
+        name: "知识库增强(根据关键词)",
+        question: async () => {
             app.历史对话轮数限制 = 0
-            let Q = app.问题
+            let Q = app.question
             app.chat = [{ "role": "AI", "content": '科普之路是不是任重而道远？' },
             { "role": "user", "content": "请提取关键词，使用逗号分隔。" },
             { "role": "AI", "content": '科普，道路，任重，道远' },
@@ -124,15 +124,15 @@ if (app.llm_type == "rwkv") {
             let prompt = "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。\n" +
                 result.join('\n') + "\n问题：" + Q
             await send(prompt)
-            //app.会话模式={名称: "常规模式",描述: "输入问题",问题: ""}
+        
         },
     })
 }
 else if (app.llm_type == "glm6b") {
-    功能.push({
-        名称: "知识库增强(根据关键词)",
-        问题: async () => {
-            let Q = app.问题
+    func.push({
+        name: "知识库增强(根据关键词)",
+        question: async () => {
+            let Q = app.question
             app.chat = [{ "role": "user", "content": "现在开始,你的任务是提取关键词，提取下列语句中的关键词，并用空格分隔：科普之路是不是任重而道远？" },
             { "role": "AI", "content": '科普 道路 任重 道远' }]
 
@@ -156,14 +156,14 @@ else if (app.llm_type == "glm6b") {
             let prompt = "学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n" +
                 result.join('\n') + "\n问题：" + Q
             await send(prompt)
-            //app.会话模式={名称: "常规模式",描述: "输入问题",问题: ""}
+       
         },
     })
 }
-功能.push({
-    名称: "sgwx知识库全文爬取",
-    问题: async () => {
-        let Q = app.问题
+func.push({
+    name: "sgwx知识库全文爬取",
+    question: async () => {
+        let Q = app.question
 
         lsdh(true)//打开历史对话
         lsdh(false)
@@ -191,13 +191,13 @@ else if (app.llm_type == "glm6b") {
         let prompt = "根据以下资料，用中文回答问题。\n" +
             result.join('\n') + "\n问题：" + Q
         await send(prompt)
-        //app.会话模式={名称: "常规模式",描述: "输入问题",问题: ""}
+      
     },
 })
-// 功能.push({
-//     名称: "知识库step",
-//     问题: async () => {
-//         let Q = app.问题
+// func.push({
+//     name: "知识库step",
+//     question: async () => {
+//         let Q = app.question
 //         app.chat.push({ "role": "user", "content": "步数为0" })
 //         kownladge = await find(Q, 0)
 //         kownladge=kownladge.map(i => i.content).join('\n\n').replace(/'/g,"")
