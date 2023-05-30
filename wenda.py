@@ -298,7 +298,6 @@ async def websocket_endpoint(websocket: WebSocket):
     global waiting_threads
     await websocket.accept() 
     waiting_threads+=1
-    await asyncio.sleep(5)
     try:
         data = await websocket.receive_json()
         prompt = data.get('prompt')
