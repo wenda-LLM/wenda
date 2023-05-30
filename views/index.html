@@ -182,6 +182,15 @@
       margin: 20px;
       padding: 10px;
     }
+
+    .chat_toolbar {
+      width: 100%;
+    }
+
+    .chat_toolbar .v-input,
+    .chat_toolbar div[aria-haspopup] {
+      margin: 0;
+    }
   </style>
 </head>
 
@@ -193,17 +202,14 @@
           <v-list-item>
             <v-list-item-content>
               <v-list-item-title class="text-h6"> Auto </v-list-item-title>
-
               <br />
               <v-list-item-subtitle>
                 {{$t("feature_selection") }}
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
-
           <v-divider></v-divider>
-
-          <v-list-item v-for="func in func_menu" @click.stop="load_feature(func)">
+          <v-list-item v-for="func in func_menu" @click.stop="load_feature(func)" v-if="func.name!=''">
             <v-list-item-title v-text="func.name"> </v-list-item-title>
           </v-list-item>
         </v-list>
@@ -212,44 +218,8 @@
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title><a style="text-decoration: none; color: white"
             href="https://github.com/l15y/wenda">{{$t("wenda") }}</a></v-toolbar-title>
-        <v-spacer></v-spacer>
 
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <div v-bind="attrs" v-on="on">
-              <v-switch hide-details inset v-model="zhishiku_on">
-                <template v-slot:label>
-                  <v-icon text> mdi-book-open-variant </v-icon>
-                </template>
-              </v-switch>
-            </div>
-          </template>
-          <span>{{$t("zhishiku")}}</span>
-        </v-tooltip>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <div v-bind="attrs" v-on="on">
-              <v-switch hide-details inset v-model="history_on">
-                <template v-slot:label>
-                  <v-icon text> mdi-history </v-icon>
-                </template>
-              </v-switch>
-            </div>
-          </template>
-          <span>{{$t("history")}}</span>
-        </v-tooltip>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <div v-bind="attrs" v-on="on">
-              <v-icon text @click="chat=[];save_history()">
-                mdi-delete-clock-outline
-              </v-icon>
-            </div>
-          </template>
-          <span>{{$t("clear_history")}}</span>
-        </v-tooltip>
       </v-toolbar>
-
       <v-tabs-items v-model="tab" style="margin-bottom: 48px" :style="{marginTop: show_header ? '64px' : '0px'}">
         <v-tab-item key="chat">
           <div v-for="(current_conversation, index) in chat" :key="index"
@@ -313,15 +283,53 @@
           </div>
           <br /><br /><br /><br /><br /><br /><br /><br /><br />
           <v-footer fixed class="pr-0">
-            <div style="position: fixed; bottom: 120px; width: 100%; z-index: 20" v-if="sst_on">
-              <v-btn style="margin: auto; display: flex" :color="color" fab dark size="x-large" @click="listen()"
-                :loading="loading" v-if="!sst_started">
-                语音<br />输入
-              </v-btn>
-              <v-btn style="margin: auto; display: flex" :color="color" fab dark size="x-large" @click="stop_listen"
-                :loading="loading" v-if="sst_started">
-                停止<br />输入
-              </v-btn>
+            <div class="chat_toolbar">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs" v-on="on">
+                    <v-icon :color="current_func=='知识库'?color:''" text
+                      @click="current_func=='知识库'?current_func='':current_func='知识库'"> mdi-book-open-variant
+                    </v-icon>
+                  </div>
+                </template>
+                <span>{{$t("zhishiku")}}</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs" v-on="on">
+                    <v-icon :color="sst_started?color:''" text @click="sst_started?stop_listen():listen()">
+                      mdi-microphone
+                    </v-icon>
+                  </div>
+                </template>
+                <span>语音输入</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs" v-on="on">
+                    <v-icon :color="tts_on?color:''" text @click="tts_on=!tts_on"> mdi-headset </v-icon>
+                  </div>
+                </template>
+                <span>阅读文本</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs" v-on="on">
+                    <v-icon :color="history_on?color:''" text @click="history_on=!history_on"> mdi-history </v-icon>
+                  </div>
+                </template>
+                <span>{{$t("history")}}</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs" v-on="on">
+                    <v-icon :color="color" text @click="chat=[];save_history()">
+                      mdi-delete-clock-outline
+                    </v-icon>
+                  </div>
+                </template>
+                <span>{{$t("clear_history")}}</span>
+              </v-tooltip>
             </div>
             <v-row no-gutters>
               <v-col cols="8" md="11">
@@ -341,7 +349,7 @@
                   </v-btn>
                   <br />
                   <v-expand-transition>
-                    <v-chip v-if="func_mode.name!=''" :color="color" outlined close @click:close="zhishiku_on=false">
+                    <v-chip v-if="func_mode.name!=''" :color="color" outlined close @click:close="current_func=''">
                       <span class="d-inline-block text-truncate" style="max-width: 120px">
                         {{func_mode.name}}
                       </span>
@@ -423,27 +431,7 @@
               </v-form>
             </v-card-text>
           </v-card>
-          <v-card elevation="2">
-            <v-card-title>语音设置</v-card-title>
-            <v-divider></v-divider>
-            <v-card-text><br />
-              <v-row>
-                <v-col cols="12" sm="2">
-                  <v-switch hide-details :color="color" inset v-model="sst_on">
-                    <template v-slot:label>
-                      <v-icon text> mdi-microphone </v-icon>
-                    </template>
-                  </v-switch>
-                </v-col>
-                <v-col cols="12" sm="2">
-                  <v-switch hide-details :color="color" inset v-model="tts_on">
-                    <template v-slot:label>
-                      <v-icon text> mdi-headset </v-icon>
-                    </template></v-switch>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
+
         </v-tab-item>
         <v-tab-item key="zhishiku">
           <h1>知识库管理</h1>
@@ -528,21 +516,18 @@
     </v-app>
   </div>
   <script>
-    func = [];
+    func = [{
+      name: "",
+      description: "input_question",
+      question: "",
+    }];
     app = new Vue({
       el: "#app",
       vuetify: new Vuetify(),
       i18n: i18n,
       watch: {
-        zhishiku_on: (zhishiku_on) => {
-          if (zhishiku_on) {
-            app.func_mode = app.func_menu.find((i) => i.name == "知识库");
-          } else
-            app.func_mode = {
-              name: "",
-              description: "input_question",
-              question: "",
-            };
+        current_func: (current_func) => {
+          app.func_mode = app.func_menu.find((i) => i.name == current_func);
         },
         tab: (val) => {
           if (val > 2) {
@@ -561,20 +546,16 @@
           history_on: false,
           history_limit: 5,
           func_menu: func,
+          current_func: '',
           zsk_libraryStategy: "",
           zsk_maxItmes: 5,
           zsk_summarize_prompt: "总结以下文段中与问题相关的信息。",
           zsk_answer_prompt:
             "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。",
-          func_mode: {
-            name: "",
-            description: "input_question",
-            question: "",
-          },
+          func_mode: func[0],
           plugins: [],
           autos: [],
           simplify_historical_information: false,
-          sst_on: false,
           tts_on: false,
           sst_started: false,
           test_zsk_prompt: "",
@@ -582,7 +563,6 @@
           zhishiku: [],
           setting: {},
           tab: 0,
-          zhishiku_on: false,
           temperature: 0.8,
           max_length: 2048,
           top_p: 0.8,
@@ -638,7 +618,6 @@
       submit(last_send.content, last_send.keyword);
     }
     summerize_history = async () => {
-      let zdk_stste = app.zhishiku_on;
       zsk(false);
       lsdh(false);
       let prompt =
@@ -651,7 +630,6 @@
           )
           .join("\n");
       await send(prompt);
-      zsk(zdk_stste);
       lsdh(true);
       app.loading = true;
       app.chat = app.chat.slice(app.chat.length - 2);
@@ -705,9 +683,7 @@
 
       // } catch { }
       if (app.tts_on) {
-        if (app.zhishiku_on)
-          speak(current_session.content.replace(/###[\s\S]*/, ""));
-        else speak(current_session.content);
+        speak(current_session.content);
       }
 
       app.loading = false;

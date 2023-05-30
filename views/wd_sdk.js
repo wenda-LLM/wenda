@@ -2,27 +2,27 @@
 send_raw = async (prompt, keyword, QA_history, onmessage = alert) => {
     let result = ''
     await new Promise(resolve => {
-      ws = new WebSocket(location.href.replace("http", "ws") + "ws");
-      ws.onmessage = function (event) {
-        result = event.data
-        onmessage(result)
-      };
-      ws.onopen = function () {
-        ws.send(JSON.stringify({
-          prompt: prompt,
-          keyword: keyword,
-          temperature: app.temperature,
-          top_p: app.top_p,
-          max_length: app.max_length,
-          history: QA_history
-        }))
-      };
-      ws.onclose = function () {
-        resolve();
-      }
+        ws = new WebSocket(location.href.replace("http", "ws") + "ws");
+        ws.onmessage = function (event) {
+            result = event.data
+            onmessage(result)
+        };
+        ws.onopen = function () {
+            ws.send(JSON.stringify({
+                prompt: prompt,
+                keyword: keyword,
+                temperature: app.temperature,
+                top_p: app.top_p,
+                max_length: app.max_length,
+                history: QA_history
+            }))
+        };
+        ws.onclose = function () {
+            resolve();
+        }
     })
     return result
-  }
+}
 find = async (s, step = 1) => {
     response = await fetch("/api/find", {
         method: "post",
@@ -60,7 +60,7 @@ find_dynamic = async (s, step = 1, paraJson) => {
 };
 
 zsk = (b) => {
-    app.zhishiku_on = b;
+    b ? app.current_func == '知识库' : app.current_func == ''
 };
 lsdh = (b) => {
     app.history_on = b;
@@ -98,12 +98,9 @@ listen = () => {
     };
     recognition.onerror = function (e) {
         console.log(final_transcript);
-        alert("语音识别失败:", e.error);
+        alert("语音识别失败:"+ e.error);
         app.sst_started = false;
-        console.log(
-            "======================" + "error" + "======================",
-            e
-        );
+        console.log(e);
     };
     recognition.onend = function () {
         console.log(final_transcript);
