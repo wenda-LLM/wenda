@@ -292,7 +292,7 @@ app = FastAPI(title="Wenda",
               openapi_url="/api/v1/openapi.json",
               docs_url="/api/v1/docs",
               redoc_url="/api/v1/redoc")
-# lock = asyncio.Lock()
+lock = asyncio.Lock()
 @app.websocket('/ws')
 async def websocket_endpoint(websocket: WebSocket):
     global waiting_threads
@@ -320,17 +320,18 @@ async def websocket_endpoint(websocket: WebSocket):
         IP = websocket.client.host
         with mutex:
             pass
-        print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
-        try:
-            for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
-                if (response):
-                    await websocket.send_text(response)
-                    asyncio.sleep(0)
-        except Exception as e:
-            error = str(e)
-            error_print("错误", error)
-            response = ''
-        # torch.cuda.empty_cache()
+        async with lock:
+            print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
+            try:
+                for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
+                    if (response):
+                        await websocket.send_text(response)
+                        await asyncio.sleep(0)
+            except Exception as e:
+                error = str(e)
+                error_print("错误", error)
+                response = ''
+            torch.cuda.empty_cache()
         if response == '':
             await websocket.send_text("发生错误，正在重新加载模型") 
             os._exit(0)
@@ -348,4 +349,4 @@ async def websocket_endpoint(websocket: WebSocket):
 
 app.mount(path="/", app=WSGIMiddleware(bottle.app[0]))
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=settings.port, log_level='error', loop="asyncio")
+    uvicorn.run(app, host="0.0.0.0", port=settings.port, log_level='debug', loop="asyncio")
