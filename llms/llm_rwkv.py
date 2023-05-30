@@ -1,15 +1,16 @@
 from plugins.common import settings
-import re
+
 interface = ":"
 if settings.llm.path.lower().find("world")>-1:
     print("rwkv world mode!")
     user = "Question"
-    answer = "Alice"
+    answer = "Answer"
     tokenizers_file="rwkv_vocab_v20230424"
 else:
     user = "Bob"
     answer = "Alice"
     tokenizers_file= "20B_tokenizer.json"
+
 if settings.llm.strategy.startswith("Q"):
     runtime = "cpp"
 
