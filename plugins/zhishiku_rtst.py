@@ -27,6 +27,8 @@ def process_strings(A, C, B):
     else:
         return A + B
     
+def get_title_by_doc(doc):
+    return re.sub('【.+】', '', doc.metadata['source'])
 def get_doc(id,score,step,memory_name):
     doc = get_doc_by_id(id,memory_name)
     final_content=doc.page_content
@@ -35,14 +37,14 @@ def get_doc(id,score,step,memory_name):
         for i in range(1, step+1):
             try:
                 doc_before=get_doc_by_id(id-i,memory_name)
-                if doc_before.metadata['source']==doc.metadata['source']:
+                if get_title_by_doc(doc_before)==get_title_by_doc(doc):
                     final_content=process_strings(doc_before.page_content,divider,final_content)
                     # print("上文分数：",score,doc.page_content)
             except:
                 pass
             try:
                 doc_after=get_doc_by_id(id+i,memory_name)
-                if doc_after.metadata['source']==doc.metadata['source']:
+                if get_title_by_doc(doc_after)==get_title_by_doc(doc):
                     final_content=process_strings(final_content,divider,doc_after.page_content)
             except:
                 pass
