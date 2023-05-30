@@ -193,7 +193,7 @@ def api_chat_box():
     if use_zhishiku is None:
         use_zhishiku = False
     messages = data.get('messages')
-    prompt = messages[-1]['content']
+    prompt = "用中文回答后续问题。"+messages[-1]['content']
     # print(messages)
     history_formatted = LLM.chat_init(messages)
     response_text = ''
@@ -279,18 +279,68 @@ bottle.debug(True)
 
 # bottle.run(server='paste', host="0.0.0.0", port=settings.port, quiet=True)
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI,WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.wsgi import WSGIMiddleware
-app = FastAPI(title="Sample",
-              description="Sample API",
+from starlette.requests import Request
+import asyncio
+app = FastAPI(title="Wenda",
+              description="Wenda API",
               version="1.0.0",
               # docs_url=None,
               # redoc_url=None,
               openapi_url="/api/v1/openapi.json",
               docs_url="/api/v1/docs",
               redoc_url="/api/v1/redoc")
+
+@app.websocket('/ws')
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept() 
+    try:
+        data = await websocket.receive_json()
+        prompt = data.get('prompt')
+        max_length = data.get('max_length')
+        if max_length is None:
+            max_length = 2048
+        top_p = data.get('top_p')
+        if top_p is None:
+            top_p = 0.7
+        temperature = data.get('temperature')
+        if temperature is None:
+            temperature = 0.9
+        keyword = data.get('keyword')
+        if keyword is None:
+            keyword = prompt
+        history = data.get('history')
+        history_formatted = LLM.chat_init(history)
+        response = ''
+        IP = websocket.client.host
+        with mutex:
+            print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
+            try:
+                for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
+                    if (response):
+                        await websocket.send_text(response)
+                        await asyncio.sleep(0) 
+            except Exception as e:
+                error = str(e)
+                error_print("错误", error)
+                response = ''
+            torch.cuda.empty_cache()
+        if response == '':
+            await websocket.send_text("发生错误，正在重新加载模型") 
+            os._exit(0)
+        if logging:
+            with session_maker() as session:
+                jl = 记录(时间=datetime.datetime.now(), IP=IP, 问=prompt, 答=response)
+                session.add(jl)
+                session.commit()
+        print(response)
+        await websocket.close()
+    except WebSocketDisconnect:
+        pass
+        
+
 app.mount(path="/", app=WSGIMiddleware(bottle.app[0]))
-print(bottle.default_app)
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=settings.port, log_level='debug')
+    uvicorn.run(app, host="0.0.0.0", port=settings.port, log_level='error')
