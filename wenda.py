@@ -152,12 +152,12 @@ def index():
     noCache()
     return static_file("index.html", root="views")
 
-
+waiting_threads=0
 @route('/api/chat_now', method=('GET', "OPTIONS"))
 def api_chat_now():
     allowCROS()
     noCache()
-    return {'queue_length': mutex.get_waiting_threads()}
+    return {'queue_length': waiting_threads}
 
 
 
@@ -292,10 +292,13 @@ app = FastAPI(title="Wenda",
               openapi_url="/api/v1/openapi.json",
               docs_url="/api/v1/docs",
               redoc_url="/api/v1/redoc")
-
+lock = asyncio.Lock()
 @app.websocket('/ws')
 async def websocket_endpoint(websocket: WebSocket):
+    global waiting_threads
     await websocket.accept() 
+    waiting_threads+=1
+    await asyncio.sleep(5)
     try:
         data = await websocket.receive_json()
         prompt = data.get('prompt')
@@ -316,12 +319,14 @@ async def websocket_endpoint(websocket: WebSocket):
         response = ''
         IP = websocket.client.host
         with mutex:
+            pass
+        async with lock:
             print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
             try:
                 for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
                     if (response):
                         await websocket.send_text(response)
-                        await asyncio.sleep(0) 
+                        asyncio.sleep(0)
             except Exception as e:
                 error = str(e)
                 error_print("错误", error)
@@ -339,8 +344,9 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.close()
     except WebSocketDisconnect:
         pass
+    waiting_threads-=1
         
 
 app.mount(path="/", app=WSGIMiddleware(bottle.app[0]))
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=settings.port, log_level='error')
+    uvicorn.run(app, host="0.0.0.0", port=settings.port, log_level='debug', loop="asyncio")
