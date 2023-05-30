@@ -270,17 +270,6 @@
               </template>
             </span>
           </div>
-          <div v-if="!loading&&chat.length>0">
-            <v-tooltip left>
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon :color="color" class="float" large text style="right: 0" v-bind="attrs" v-on="on"
-                  @click="re_generate()">
-                  mdi-refresh
-                </v-icon>
-              </template>
-              <span>{{$t("re_generate")}}</span>
-            </v-tooltip>
-          </div>
           <br /><br /><br /><br /><br /><br /><br /><br /><br />
           <v-footer fixed class="pr-0">
             <div class="chat_toolbar">
@@ -319,6 +308,15 @@
                   </div>
                 </template>
                 <span>{{$t("history")}}</span>
+              </v-tooltip>
+              <v-tooltip bottom v-if="!loading&&chat.length>0">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon :color="color" v-bind="attrs" v-on="on"
+                    @click="re_generate()">
+                    mdi-refresh
+                  </v-icon>
+                </template>
+                <span>{{$t("re_generate")}}</span>
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
