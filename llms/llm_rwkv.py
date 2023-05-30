@@ -1,7 +1,7 @@
 from plugins.common import settings
 import re
 interface = ":"
-if settings.llm.path.lower().index("world")>-1:
+if settings.llm.path.lower().find("world")>-1:
     print("rwkv world mode!")
     user = "Question"
     answer = "Alice"
