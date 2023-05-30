@@ -284,6 +284,7 @@ app = FastAPI(title="Wenda",
               openapi_url="/api/v1/openapi.json",
               docs_url="/api/v1/docs",
               redoc_url="/api/v1/redoc")
+import time
 @app.websocket('/ws')
 async def websocket_endpoint(websocket: WebSocket):
     global waiting_threads
@@ -309,13 +310,17 @@ async def websocket_endpoint(websocket: WebSocket):
         history_formatted = LLM.chat_init(history)
         response = ''
         IP = websocket.client.host
+        # cost=0
         async with lock:
             print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
             try:
                 for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
                     if (response):
+                        # start = time.time()
                         await websocket.send_text(response)
                         await asyncio.sleep(0)
+                        end = time.time()
+                        # cost+=end-start
             except Exception as e:
                 error = str(e)
                 error_print("错误", error)

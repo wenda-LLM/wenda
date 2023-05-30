@@ -1,5 +1,6 @@
 bottle
 uvicorn
+websockets
 fastapi
 sqlalchemy
 sqlalchemy_utils
