@@ -185,6 +185,7 @@
 
     .chat_toolbar {
       width: 100%;
+      color: #d0d0d0;
     }
 
     .chat_toolbar .v-input,
@@ -283,6 +284,7 @@
                 </template>
                 <span>{{$t("zhishiku")}}</span>
               </v-tooltip>
+              |
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <div v-bind="attrs" v-on="on">
@@ -301,6 +303,7 @@
                 </template>
                 <span>阅读文本</span>
               </v-tooltip>
+              |
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <div v-bind="attrs" v-on="on">
