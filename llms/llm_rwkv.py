@@ -254,4 +254,4 @@ else:
         #     with torch.no_grad():
 
         from rwkv.utils import PIPELINE, PIPELINE_ARGS
-        pipeline = PIPELINE(model,tokenizers_file)
+        pipeline = PIPELINE(model,tokenizers_file)#更新rwkv：pip install -U rwkv -i https://mirrors.aliyun.com/pypi/simple
