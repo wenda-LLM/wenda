@@ -82,36 +82,6 @@ settings_str=json.dumps(settings)
 settings = json.loads(settings_str, object_hook=object_hook)
 
 
-import threading
-
-class CounterLock:
-    def __init__(self):
-        self.lock = threading.Lock()
-        self.waiting_threads = 0
-        self.waiting_threads_lock = threading.Lock()
-
-    def acquire(self):
-        with self.waiting_threads_lock:
-            self.waiting_threads += 1
-        acquired = self.lock.acquire()
-
-    def release(self):
-        self.lock.release()
-        with self.waiting_threads_lock:
-            self.waiting_threads -= 1
-
-    def get_waiting_threads(self):
-        with self.waiting_threads_lock:
-            return self.waiting_threads
-
-    def __enter__(self):  # 实现 __enter__() 方法，用于在 with 语句的开始获取锁
-        self.acquire()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):  # 实现 __exit__() 方法，用于在 with 语句的结束释放锁
-        self.release()
-
-
 from bottle import route, response, request, static_file, hook
 
 def allowCROS():
