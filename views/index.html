@@ -949,7 +949,7 @@
           QA_history = [];
         }
         // 如果是等待对话状态,则将 is_wait_till 设置为 true
-        var is_wait_till = false;
+        is_wait_till = false;
         setTimeout(display_queue_length, 3000);
         app.question = s.replace(/\r\n/g, "\n");
         let current_session = { role: "AI", content: "……", sources: sources };
