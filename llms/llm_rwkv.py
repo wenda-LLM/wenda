@@ -191,8 +191,6 @@ else:
             ctx=prompt.replace("raw!","")
         else:
             ctx = f"{user}{interface} {prompt}\n\n{answer}{interface}"
-        if settings.llm.historymode=='string':
-            ctx=history+ctx
         # print(ctx)
         yield str(len(ctx))+'字正在计算'
         state=None
@@ -200,6 +198,7 @@ else:
             state=states[history].get()
             print("RWKV match state!")
         except Exception as e:
+            ctx=history+ctx
             print("RWKV string as history!",[e])
             
         all_tokens = []
