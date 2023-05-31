@@ -850,7 +850,7 @@
         methods: {
           md2html: (conent) => {
             // return conent
-            conent = String(conent);
+            conent = String(conent.replace(/[\r\n]+/g,'\n\n'));
             let md = new markdownit();
             // md.disable(['link', 'image'])
             return md.render(conent).replace(/<a /g, '<a target="_blank"');
