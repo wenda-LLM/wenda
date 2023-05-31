@@ -174,8 +174,8 @@ else:
 
     def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
         token_count = max_length
-        presencePenalty = 0.2
-        countPenalty = 0.2
+        presencePenalty = 0.4
+        countPenalty = 0.4
         if history is None or history== "":
             history= ""
         else:
