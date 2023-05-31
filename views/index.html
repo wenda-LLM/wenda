@@ -218,7 +218,7 @@
             <v-divider></v-divider>
             <v-list-item
               v-for="func in func_menu"
-              @click.stop="load_feature(func)"
+              @click.stop="load_func(func)"
               v-if="func.name!=''"
             >
               <v-list-item-title v-text="func.name"> </v-list-item-title>
@@ -857,8 +857,8 @@
           },
         },
       });
-      // 将 app 的 func_mode 和 drawer 属性设置为提供的值
-      load_feature = (func) => {
+      // 加载指定功能
+      load_func = (func) => {
         app.current_func = func.name;
         app.drawer = false;
       };
