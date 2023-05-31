@@ -16,6 +16,9 @@ class State(object):
     def __init__(self,state):
        self.state = state
        self.touch()
+    def get(self):
+       self.touch()
+       return self.state
     def touch(self):
        self.time = time.time()
 
@@ -194,7 +197,7 @@ else:
         yield str(len(ctx))+'字正在计算'
         state=None
         try:
-            state=states[history]
+            state=states[history].get()
             print("RWKV match state!")
         except Exception as e:
             print("RWKV string as history!")
