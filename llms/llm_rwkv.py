@@ -14,7 +14,7 @@ else:
 states={}
 class State(object):
     def __init__(self,state):
-       self.state = state
+       self.state = deepcopy(state)
        self.touch()
     def get(self):
        self.touch()
@@ -200,7 +200,8 @@ else:
             state=states[history].get()
             print("RWKV match state!")
         except Exception as e:
-            print("RWKV string as history!")
+            print("RWKV string as history!",[e])
+            
         all_tokens = []
         out_last = 0
         response = ''
@@ -239,7 +240,7 @@ else:
                 # print(tmp, end='')
                 out_last = i + 1
                 yield response.strip()
-        states[history+ctx+' '+response.strip()+'\n\n']=deepcopy(state)
+        states[history+ctx+' '+response.strip()+'\n\n']=State(state)
 
 
     def remove_suffix(input_string, suffix):  # 兼容python3.8
