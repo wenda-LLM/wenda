@@ -24,16 +24,16 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku
         yield response
 
 def sum_values(dict):
-  total = 0
-  for value in dict.values():
-    total += value
-  return total
+    total = 0
+    for value in dict.values():
+        total += value
+    return total
 
 def dict_to_list(d):
-  l = []
-  for k, v in d.items():
-    l.extend([k] * v)
-  return l
+    l = []
+    for k, v in d.items():
+        l.extend([k] * v)
+    return l
 
 def load_model():
     global model, tokenizer

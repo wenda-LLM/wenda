@@ -8,11 +8,14 @@ import os
 import threading
 import torch
 from plugins.common import error_helper, error_print, success_print
-from plugins.common import CounterLock, allowCROS
+from plugins.common import  allowCROS
 from plugins.common import settings
 import logging
 logging.captureWarnings(True)
 
+
+import asyncio
+lock = asyncio.Lock()
 
 def load_LLM():
     try:
@@ -29,10 +32,6 @@ logging = settings.logging
 if logging:
     from plugins.defineSQL import session_maker, 记录
 
-if not hasattr(LLM, "Lock"):
-    mutex = CounterLock()
-else:
-    mutex = LLM.Lock()
 
 
 model = None
@@ -40,20 +39,18 @@ tokenizer = None
 
 
 def load_model():
-    with mutex:
-        LLM.load_model()
+    LLM.load_model()
     torch.cuda.empty_cache()
     success_print("模型加载完成")
 
-
-thread_load_model = threading.Thread(target=load_model)
-thread_load_model.start()
+if __name__ == '__main__':
+    thread_load_model = threading.Thread(target=load_model)
+    thread_load_model.start()
 zhishiku = None
 
 
 def load_zsk():
     try:
-        from importlib import import_module
         global zhishiku
         import plugins.zhishiku as zsk
         zhishiku = zsk
@@ -63,9 +60,9 @@ def load_zsk():
             "知识库加载失败，请阅读说明", r"https://github.com/l15y/wenda#%E7%9F%A5%E8%AF%86%E5%BA%93")
         raise e
 
-
-thread_load_zsk = threading.Thread(target=load_zsk)
-thread_load_zsk.start()
+if __name__ == '__main__':
+    thread_load_zsk = threading.Thread(target=load_zsk)
+    thread_load_zsk.start()
 
 
 @route('/static/<path:path>')
@@ -152,12 +149,12 @@ def index():
     noCache()
     return static_file("index.html", root="views")
 
-
+waiting_threads=0
 @route('/api/chat_now', method=('GET', "OPTIONS"))
 def api_chat_now():
     allowCROS()
     noCache()
-    return {'queue_length': mutex.get_waiting_threads()}
+    return {'queue_length': waiting_threads}
 
 
 
@@ -201,20 +198,19 @@ def api_chat_box():
     IP = request.environ.get(
         'HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
     error = ""
-    with mutex:
-        print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
-        try:
-            for response_text in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=use_zhishiku):
-                if (response_text):
-                    # yield "data: %s\n\n" %response_text
-                    yield "data: %s\n\n" % json.dumps({"response": response_text})
+    print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
+    try:
+        for response_text in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=use_zhishiku):
+            if (response_text):
+                # yield "data: %s\n\n" %response_text
+                yield "data: %s\n\n" % json.dumps({"response": response_text})
 
-            yield "data: %s\n\n" % "[DONE]"
-        except Exception as e:
-            error = str(e)
-            error_print("错误", error)
-            response_text = ''
-        torch.cuda.empty_cache()
+        yield "data: %s\n\n" % "[DONE]"
+    except Exception as e:
+        error = str(e)
+        error_print("错误", error)
+        response_text = ''
+    torch.cuda.empty_cache()
     if response_text == '':
         yield "data: %s\n\n" % json.dumps({"response": ("发生错误，正在重新加载模型"+error)})
         os._exit(0)
@@ -248,21 +244,17 @@ def api_chat_stream():
     error = ""
     footer = '///'
 
-    with mutex:
-        print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
-        try:
-            for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
-                if (response):
-                    yield response+footer
-        except Exception as e:
-            error = str(e)
-            error_print("错误", error)
-            response = ''
-            # raise e
-        torch.cuda.empty_cache()
-    if response == '':
-        yield "发生错误，正在重新加载模型"+error+'///'
-        os._exit(0)
+    print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
+    try:
+        for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
+            if (response):
+                yield response+footer
+    except Exception as e:
+        error = str(e)
+        error_print("错误", error)
+        response = ''
+        # raise e
+    torch.cuda.empty_cache()
     if logging:
         with session_maker() as session:
             jl = 记录(时间=datetime.datetime.now(), IP=IP, 问=prompt, 答=response)
@@ -283,7 +275,6 @@ from fastapi import FastAPI,WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.wsgi import WSGIMiddleware
 from starlette.requests import Request
-import asyncio
 app = FastAPI(title="Wenda",
               description="Wenda API",
               version="1.0.0",
@@ -292,10 +283,13 @@ app = FastAPI(title="Wenda",
               openapi_url="/api/v1/openapi.json",
               docs_url="/api/v1/docs",
               redoc_url="/api/v1/redoc")
-
+import time
 @app.websocket('/ws')
 async def websocket_endpoint(websocket: WebSocket):
+    global waiting_threads
     await websocket.accept() 
+    waiting_threads+=1
+    # await asyncio.sleep(5)
     try:
         data = await websocket.receive_json()
         prompt = data.get('prompt')
@@ -315,21 +309,22 @@ async def websocket_endpoint(websocket: WebSocket):
         history_formatted = LLM.chat_init(history)
         response = ''
         IP = websocket.client.host
-        with mutex:
+        # cost=0
+        async with lock:
             print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
             try:
                 for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
                     if (response):
+                        # start = time.time()
                         await websocket.send_text(response)
-                        await asyncio.sleep(0) 
+                        await asyncio.sleep(0)
+                        end = time.time()
+                        # cost+=end-start
             except Exception as e:
                 error = str(e)
                 error_print("错误", error)
                 response = ''
             torch.cuda.empty_cache()
-        if response == '':
-            await websocket.send_text("发生错误，正在重新加载模型") 
-            os._exit(0)
         if logging:
             with session_maker() as session:
                 jl = 记录(时间=datetime.datetime.now(), IP=IP, 问=prompt, 答=response)
@@ -339,8 +334,9 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.close()
     except WebSocketDisconnect:
         pass
+    waiting_threads-=1
         
 
 app.mount(path="/", app=WSGIMiddleware(bottle.app[0]))
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=settings.port, log_level='error')
+    uvicorn.run(app, host="0.0.0.0", port=settings.port, log_level='error', loop="asyncio")
