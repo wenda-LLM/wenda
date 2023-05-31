@@ -721,7 +721,7 @@
           <v-tab-item v-for="plugin in plugins" :key="plugin.name">
             <iframe
               frameborder="0"
-              :src="plugin.url"
+              :src="plugin.url+'?time='+new Date().getTime()"
               style="width: 100%; height: 100%"
             ></iframe>
           </v-tab-item>
@@ -850,7 +850,7 @@
         methods: {
           md2html: (conent) => {
             // return conent
-            conent = String(conent.replace(/[\r\n]+/g,'\n\n'));
+            conent = String(conent.replace(/[\r\n]+/g, "\n\n"));
             let md = new markdownit();
             // md.disable(['link', 'image'])
             return md.render(conent).replace(/<a /g, '<a target="_blank"');
