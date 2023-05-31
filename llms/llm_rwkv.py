@@ -1,5 +1,15 @@
 from plugins.common import settings
-import re
+
+interface = ":"
+if settings.llm.path.lower().find("world")>-1:
+    print("rwkv world mode!")
+    user = "Question"
+    answer = "Answer"
+    tokenizers_file="rwkv_vocab_v20230424"
+else:
+    user = "Bob"
+    answer = "Alice"
+    tokenizers_file= "20B_tokenizer.json"
 
 if settings.llm.strategy.startswith("Q"):
     runtime = "cpp"
@@ -36,7 +46,7 @@ if settings.llm.strategy.startswith("Q"):
                 if old_chat['role'] == "user":
                     tmp.append(f"{user}{interface} "+old_chat['content'])
                 elif old_chat['role'] == "AI":
-                    tmp.append(f"{bot}{interface} "+old_chat['content'])
+                    tmp.append(f"{answer}{interface} "+old_chat['content'])
                 else:
                     continue
             history='\n\n'.join(tmp)
@@ -54,18 +64,11 @@ if settings.llm.strategy.startswith("Q"):
 
         resultChat = ""
 
-        if zhishiku:
-            ctx = "\n\n"+prompt.replace('system:',
-                                        'Bob:')\
-                .replace('\n\n',"\n")+f"\n\n{bot}{interface}"
-            ctx = re.sub('网页', '', ctx)
-            ctx = re.sub('原标题：', '', ctx)
+        if prompt.startswith("raw!"):
+            print("RWKV raw mode!")
+            ctx=prompt.replace("raw!","")
         else:
-            if prompt.startswith("raw!"):
-                print("RWKV raw mode!")
-                ctx=prompt.replace("raw!","")
-            else:
-                ctx = f"\n\n{user}{interface} {prompt}\n\n{bot}{interface}"
+            ctx = f"\n\n{user}{interface} {prompt}\n\n{answer}{interface}"
         if settings.llm.historymode=='string':
             ctx=history+ctx
         yield str(len(ctx))+'字正在计算'
@@ -100,12 +103,12 @@ if settings.llm.strategy.startswith("Q"):
 
             if '\uFFFD' not in decoded:
                 resultChat = resultChat + decoded
-                if resultChat.endswith('\n\n') or resultChat.endswith(f"{user}{interface}") or resultChat.endswith(f"{bot}{interface}"):
+                if resultChat.endswith('\n\n') or resultChat.endswith(f"{user}{interface}") or resultChat.endswith(f"{answer}{interface}"):
                     resultChat = remove_suffix(
                         remove_suffix(
                             remove_suffix(
                                 remove_suffix(resultChat, f"{user}{interface}")
-                            , f"{bot}{interface}"),
+                            , f"{answer}{interface}"),
                         '\n'),
                     '\n')
                     yield resultChat
@@ -120,9 +123,6 @@ if settings.llm.strategy.startswith("Q"):
         return input_string
 
 
-    interface = ":"
-    user = "Bob"
-    bot = "Alice"
     model = None
     state = None
     tokenizer = None
@@ -141,7 +141,7 @@ if settings.llm.strategy.startswith("Q"):
         except:
             model = RWKVModel(library, settings.llm.path)
         print('Loading 20B tokenizer')
-        tokenizer = tokenizers.Tokenizer.from_file(str('20B_tokenizer.json'))
+        tokenizer = tokenizers.Tokenizer.from_file(tokenizers_file)
 
 
 else:
@@ -161,7 +161,7 @@ else:
                 if old_chat['role'] == "user":
                     tmp.append(f"{user}{interface} "+old_chat['content'])
                 elif old_chat['role'] == "AI":
-                    tmp.append(f"{bot}{interface} "+old_chat['content'])
+                    tmp.append(f"{answer}{interface} "+old_chat['content'])
                 else:
                     continue
             history='\n\n'.join(tmp)
@@ -180,18 +180,11 @@ else:
                             token_ban=[],  # ban the generation of some tokens
                             token_stop=[0])  # stop generation whenever you see any token here
 
-        if zhishiku:
-            ctx = "\n\n"+prompt.replace('system:',
-                                        'Bob:')\
-                .replace('\n\n',"\n")+f"\n\n{bot}{interface}"
-            ctx = re.sub('网页', '', ctx)
-            ctx = re.sub('原标题：', '', ctx)
+        if prompt.startswith("raw!"):
+            print("RWKV raw mode!")
+            ctx=prompt.replace("raw!","")
         else:
-            if prompt.startswith("raw!"):
-                print("RWKV raw mode!")
-                ctx=prompt.replace("raw!","")
-            else:
-                ctx = f"\n\n{user}{interface} {prompt}\n\n{bot}{interface}"
+            ctx = f"\n\n{user}{interface} {prompt}\n\n{answer}{interface}"
         if settings.llm.historymode=='string':
             ctx=history+ctx
         # print(ctx)
@@ -222,12 +215,12 @@ else:
             tmp = pipeline.decode(all_tokens[out_last:])
             if '\ufffd' not in tmp:
                 response += tmp
-                if response.endswith('\n\n') or response.endswith(f"{user}{interface}") or response.endswith(f"{bot}{interface}"):
+                if response.endswith('\n\n') or response.endswith(f"{user}{interface}") or response.endswith(f"{answer}{interface}"):
                     response = remove_suffix(
                         remove_suffix(
                             remove_suffix(
                                 remove_suffix(response, f"{user}{interface}")
-                            , f"{bot}{interface}"),
+                            , f"{answer}{interface}"),
                         '\n'),
                     '\n')
                     break
@@ -241,10 +234,6 @@ else:
             return input_string[:-len(suffix)]
         return input_string
 
-
-    interface = ":"
-    user = "Bob"
-    bot = "Alice"
     pipeline = None
     PIPELINE_ARGS = None
     model = None
@@ -266,4 +255,4 @@ else:
         #     with torch.no_grad():
 
         from rwkv.utils import PIPELINE, PIPELINE_ARGS
-        pipeline = PIPELINE(model, "20B_tokenizer.json")
+        pipeline = PIPELINE(model,tokenizers_file)#更新rwkv：pip install -U rwkv -i https://mirrors.aliyun.com/pypi/simple

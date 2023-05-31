@@ -81,7 +81,6 @@ print("\033[1;37m")
 settings_str=json.dumps(settings)
 settings = json.loads(settings_str, object_hook=object_hook)
 
-
 import threading
 
 class CounterLock:
@@ -110,7 +109,6 @@ class CounterLock:
 
     def __exit__(self, exc_type, exc_val, exc_tb):  # 实现 __exit__() 方法，用于在 with 语句的结束释放锁
         self.release()
-
 
 from bottle import route, response, request, static_file, hook
 
