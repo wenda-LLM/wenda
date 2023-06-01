@@ -70,7 +70,7 @@ def find(search_query,step = 0):
 
 from bottle import route, response, request, static_file, hook
 import bottle
-@route('/api/find_fess_zhishiku', method=("POST","OPTIONS"))
+@route('/find_fess_zhishiku', method=("POST","OPTIONS"))
 def upload_zhishiku():
     
     data = request.json
