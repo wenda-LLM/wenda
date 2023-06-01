@@ -6,9 +6,7 @@
 4.其他实用化所需能力：对话历史管理、内网部署、多用户同时使用等。
 
 
-交流QQ群：LLM使用和综合讨论群162451840；知识库使用讨论群241773574(满)；Auto开发交流群744842245；
-
-[discussions](https://github.com/l15y/wenda/discussions)
+交流QQ群：LLM使用和综合讨论群162451840；知识库使用讨论群241773574(已满，请去QQ频道讨论)；Auto开发交流群744842245；
 [QQ频道](https://pd.qq.com/s/ej03plxks)
 
 <!--ts-->
@@ -97,17 +95,17 @@ PS:一定要看[example.config.yml](https://github.com/l15y/wenda/blob/main/exam
 auto功能通过JavaScript脚本实现，使用油猴脚本或直接放到`autos`目录的方式注入至程序，为闻达附加各种自动化功能。
 
 ### Auto 开发函数列表
-| 函数 （皆为异步调用）           | 功能                                    | 说明                                                                |
-| ------------------------------- | --------------------------------------- | ------------------------------------------------------------------- |
-| send(s,keyword = "",show=true) | 发送信息至LLM，返回字符串为模型返回值 | s：输入模型文本；keyword:聊天界面显示文本；show：是否在聊天界面显示 |
+| 函数 （皆为异步调用）           | 功能                                  | 说明                                                                |
+| ------------------------------- | ------------------------------------- | ------------------------------------------------------------------- |
+| send(s,keyword = "",show=true)  | 发送信息至LLM，返回字符串为模型返回值 | s：输入模型文本；keyword:聊天界面显示文本；show：是否在聊天界面显示 |
 | add_conversation(role, content) | 添加会话信息                          | role：'AI'、'user'；content：字符串                                 |
-| save_history()                 | 保存会话历史                          | 对话完成后会自动保存，但手动添加的对话须手动保存                    |
-| find(s, step = 1)              | 从知识库查找                          | 返回json数组                                                        |
-| find_dynamic(s,step=1,paraJson) | 从动态知识库查找；参考闻达笔记Auto      | paraJson：{libraryStategy:"sogowx:3",maxItmes:2}                    |
-| zsk(b=true)                    | 开关知识库                            |                                                                     |
-| lsdh(b=true)                   | 开关历史对话                          | 打开知识库时应关闭历史                                              |
-| speak(s)                       | 使用TTS引擎朗读文本。                   | 调用系统引擎                                                        |
-| copy(s)                        | 使用浏览器`clipboard-write`复制文本   | 需要相关权限                                                        |
+| save_history()                  | 保存会话历史                          | 对话完成后会自动保存，但手动添加的对话须手动保存                    |
+| find(s, step = 1)               | 从知识库查找                          | 返回json数组                                                        |
+| find_dynamic(s,step=1,paraJson) | 从动态知识库查找；参考闻达笔记Auto    | paraJson：{libraryStategy:"sogowx:3",maxItmes:2}                    |
+| zsk(b=true)                     | 开关知识库                            |                                                                     |
+| lsdh(b=true)                    | 开关历史对话                          | 打开知识库时应关闭历史                                              |
+| speak(s)                        | 使用TTS引擎朗读文本。                 | 调用系统引擎                                                        |
+| copy(s)                         | 使用浏览器`clipboard-write`复制文本   | 需要相关权限                                                        |
 ### Auto 开发涉及代码段
 在左侧功能栏添加内容：
 ```
