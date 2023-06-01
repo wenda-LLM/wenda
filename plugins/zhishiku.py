@@ -32,7 +32,7 @@ def find(s, step=0):
 # paraJson=参数包，以json字符串的形式编写
 # 知识库配置模式，冒号前面是知识库类别，后面是拟抽取的数量，示例 paraJson.libraryStategy:"bing:2 bingsite:3 fess:2 rtst:3 sogowx:2"
 # 知识库最大抽取条目的数量，paraJson.maxItmes
-@route('/api/find_dynamic', method=("POST", "OPTIONS"))
+@route('/find_dynamic', method=("POST", "OPTIONS"))
 def api_find_dynamic():
     allowCROS()
     data = request.json
