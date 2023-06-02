@@ -49,7 +49,7 @@ def get_doc(id,score,step,memory_name):
             except:
                 pass
     if doc.metadata['source'].endswith(".pdf") or doc.metadata['source'].endswith(".txt"):
-        title=f"[{doc.metadata['source']}](/read_news/{doc.metadata['source']})"
+        title=f"[{doc.metadata['source']}](/txt/{doc.metadata['source']})"
     else:
         title=doc.metadata['source']
     return {'title': title,'content':re.sub(r'\n+', "\n", final_content),"score":int(score)}
@@ -171,8 +171,3 @@ def save_news():
         return 'success'
     except Exception as e:
         return(e)
-#TODO：改成fastapi
-@route('/read_news/:path', method=("GET","OPTIONS"))
-def read_news(path=""):
-    allowCROS()
-    return static_file(path, root="txt/")
