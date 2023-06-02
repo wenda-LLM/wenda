@@ -2,7 +2,7 @@
 send_raw = async (prompt, keyword, QA_history, onmessage = alert) => {
     let result = ''
     await new Promise(resolve => {
-        ws = new WebSocket(location.href.replace("http", "ws") + "ws");
+        ws = new WebSocket(location.origin.replace("http", "ws") + "/ws");
         ws.onmessage = function (event) {
             result = event.data
             onmessage(result)

@@ -11,7 +11,7 @@ headers = {
 proxies = {"http": None,"https": None,}
 
 
-@route('/api/sd_agent', method=("POST","OPTIONS"))
+@route('/sd_agent', method=("POST","OPTIONS"))
 def api_find():
     allowCROS()
     url = "http://127.0.0.1:786"

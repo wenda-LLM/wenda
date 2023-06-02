@@ -44,7 +44,7 @@ def allowCROS():
     response.add_header('Access-Control-Allow-Methods', 'POST,OPTIONS')
     response.add_header('Access-Control-Allow-Headers',
                         'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token')
-@route('/api/read_sgwx', method=("POST","OPTIONS"))
+@route('/read_sgwx', method=("POST","OPTIONS"))
 def read_news():
     allowCROS()
     #获取真实地址

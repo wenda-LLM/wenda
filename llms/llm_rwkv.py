@@ -1,5 +1,6 @@
 from plugins.common import settings
-
+import time
+from copy import deepcopy
 interface = ":"
 if settings.llm.path.lower().find("world")>-1:
     print("rwkv world mode!")
@@ -10,6 +11,16 @@ else:
     user = "Bob"
     answer = "Alice"
     tokenizers_file= "20B_tokenizer.json"
+states={}
+class State(object):
+    def __init__(self,state):
+       self.state = deepcopy(state)
+       self.touch()
+    def get(self):
+       self.touch()
+       return self.state
+    def touch(self):
+       self.time = time.time()
 
 if settings.llm.strategy.startswith("Q"):
     runtime = "cpp"
@@ -148,32 +159,27 @@ else:
     runtime = "torch"
 
     def chat_init(history):
-        global state
-        if settings.llm.historymode!='string':
-            if history is not None and len(history) > 0:
-                pass
+        tmp = []
+        # print(history)
+        for i, old_chat in enumerate(history):
+            if old_chat['role'] == "user":
+                tmp.append(f"{user}{interface} "+old_chat['content'])
+            elif old_chat['role'] == "AI":
+                tmp.append(f"{answer}{interface} "+old_chat['content'])
             else:
-                state = None
-        else:
-            tmp = []
-            # print(history)
-            for i, old_chat in enumerate(history):
-                if old_chat['role'] == "user":
-                    tmp.append(f"{user}{interface} "+old_chat['content'])
-                elif old_chat['role'] == "AI":
-                    tmp.append(f"{answer}{interface} "+old_chat['content'])
-                else:
-                    continue
-            history='\n\n'.join(tmp)
-            state = None
-            return history
+                continue
+        history='\n\n'.join(tmp)
+        return history
 
 
     def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
-        global state
         token_count = max_length
-        presencePenalty = 0.2
-        countPenalty = 0.2
+        presencePenalty = 0.4
+        countPenalty = 0.4
+        if history is None or history== "":
+            history= ""
+        else:
+            history=history+'\n\n'
         args = PIPELINE_ARGS(temperature=max(0.2, float(temperature)), top_p=float(top_p),
                             alpha_frequency=countPenalty,
                             alpha_presence=presencePenalty,
@@ -184,11 +190,17 @@ else:
             print("RWKV raw mode!")
             ctx=prompt.replace("raw!","")
         else:
-            ctx = f"\n\n{user}{interface} {prompt}\n\n{answer}{interface}"
-        if settings.llm.historymode=='string':
-            ctx=history+ctx
+            ctx = f"{user}{interface} {prompt}\n\n{answer}{interface}"
         # print(ctx)
         yield str(len(ctx))+'字正在计算'
+        state=None
+        try:
+            state=states[history].get()
+            print("RWKV match state!")
+        except Exception as e:
+            ctx=history+ctx
+            print("RWKV string as history!",[e])
+            
         all_tokens = []
         out_last = 0
         response = ''
@@ -227,6 +239,7 @@ else:
                 # print(tmp, end='')
                 out_last = i + 1
                 yield response.strip()
+        states[history+ctx+' '+response.strip()+'\n\n']=State(state)
 
 
     def remove_suffix(input_string, suffix):  # 兼容python3.8
@@ -237,8 +250,6 @@ else:
     pipeline = None
     PIPELINE_ARGS = None
     model = None
-    state = None
-
 
     def load_model():
         global pipeline, PIPELINE_ARGS, model
