@@ -295,6 +295,17 @@
                   </template>
                   <span>{{$t("zhishiku")}}</span>
                 </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on">
+                      <v-icon :color="current_func=='知识库快速模式'?color:''" text
+                        @click="current_func=='知识库快速模式'?current_func='':current_func='知识库快速模式'">
+                        mdi-lightning-bolt
+                      </v-icon>
+                    </div>
+                  </template>
+                  <span>{{$t("zhishiku")}}快速模式</span>
+                </v-tooltip>
                 |
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
