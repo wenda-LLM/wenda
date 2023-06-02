@@ -263,6 +263,17 @@ app = FastAPI(title="Wenda",
               docs_url="/api/v1/docs",
               redoc_url="/api/v1/redoc")
 
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers["X-Process-Times"] = str(process_time)
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Cache-Control"]="no-cache,no-store,must-revalidate"
+
+    return response
 
 @app.websocket('/ws')
 async def websocket_endpoint(websocket: WebSocket):
