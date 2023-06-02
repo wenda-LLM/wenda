@@ -76,7 +76,7 @@ func.push({
         let Q = app.question
 
         lsdh(false)
-        kownladge = (await find(Q, zsk_step)).map(i => ({
+        kownladge = (await find(Q, app.zsk_step)).map(i => ({
             title: get_title_form_md(i.title),
             url: get_url_form_md(i.title),
             content: i.content
