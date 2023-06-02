@@ -71,7 +71,7 @@ func.push({
 })
 
 func.push({
-    name: "知识库快速模式",
+    name: "快速知识库",
     question: async () => {
         let Q = app.question
 
@@ -81,8 +81,8 @@ func.push({
             url: get_url_form_md(i.title),
             content: i.content
         }))
-        let prompt = "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。\n" +
-            kownladge.map((e,i) => i+1+"."+e.content).join('\n') + "\n问题：" + Q
+        let prompt = app.zsk_answer_prompt + '\n' +
+            kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n问题：" + Q
         await send(prompt, keyword = Q, show = true, sources = kownladge)
     }
 }
