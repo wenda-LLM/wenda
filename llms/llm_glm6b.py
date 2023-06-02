@@ -127,7 +127,7 @@ def load_model():
 
 
 from bottle import route, response, request
-@route('/api/lora_load_adapter', method=("POST","OPTIONS"))
+@route('/lora_load_adapter', method=("POST","OPTIONS"))
 def load_adapter():
     # allowCROS()
     try:
@@ -138,7 +138,7 @@ def load_adapter():
         return "保存成功"
     except Exception as e:
         return str(e)
-@route('/api/lora_set_adapter', method=("POST","OPTIONS"))
+@route('/lora_set_adapter', method=("POST","OPTIONS"))
 def set_adapter():
     # allowCROS()
     try:
