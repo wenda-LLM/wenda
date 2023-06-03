@@ -295,6 +295,17 @@
                   </template>
                   <span>{{$t("zhishiku")}}</span>
                 </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on">
+                      <v-icon :color="current_func=='快速知识库'?color:''" text
+                        @click="current_func=='快速知识库'?current_func='':current_func='快速知识库'">
+                        mdi-lightning-bolt
+                      </v-icon>
+                    </div>
+                  </template>
+                  <span>{{$t("zhishiku")}}快速模式</span>
+                </v-tooltip>
                 |
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
@@ -517,7 +528,7 @@
                       clearable></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6">
-                    <v-text-field v-model="test_zsk_step" outlined label="上下文数量"
+                    <v-text-field v-model="zsk_step" outlined label="上下文数量"
                       clearable></v-text-field>
                   </v-col>
                 </v-row>
@@ -530,7 +541,7 @@
                 </v-data-table>
                 <v-card-actions>
                   <v-btn :color="color" dark size="x-large"
-                    @click="find(test_zsk_prompt,test_zsk_step)">
+                    @click="find(test_zsk_prompt,zsk_step)">
                     测试
                   </v-btn>
                 </v-card-actions>
@@ -626,7 +637,7 @@
           // 测试知识库的提示
           test_zsk_prompt: "",
           // 测试知识库的步骤
-          test_zsk_step: 1,
+          zsk_step: 2,
           // 知识库
           zhishiku: [],
           // 设置
