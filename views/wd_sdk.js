@@ -97,7 +97,7 @@ listen = () => {
     };
     recognition.onerror = function (e) {
         console.log(final_transcript);
-        alert("语音识别失败:"+ e.error);
+        alert("语音识别失败:" + e.error);
         app.sst_started = false;
         console.log(e);
     };
