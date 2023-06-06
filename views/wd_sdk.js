@@ -1,4 +1,3 @@
-
 send_raw = async (prompt, keyword, QA_history, onmessage = alert) => {
     let result = ''
     await new Promise(resolve => {
