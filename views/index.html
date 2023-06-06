@@ -774,7 +774,6 @@
       // 如果是等待对话状态,则将 is_wait_till 设置为 true
       is_wait_till = false;
       setTimeout(display_queue_length, 3000);
-      app.question = s.replace(/\r\n/g, "\n");
       let current_session = { role: "AI", content: "……", sources: sources };
       if (show) {
         app.chat.push({ role: "user", content: keyword, keyword: keyword });
@@ -782,12 +781,11 @@
       }
       setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
       // 调用websocket聊天，具体函数在wd_sdk.js中
-      await send_raw(app.question, keyword, QA_history, (message) => {
+      await send_raw( s.replace(/\r\n/g, "\n"), keyword, QA_history, (message) => {
         is_wait_till = true;
 
         current_session.content = message;
       });
-      app.question = "";
       if (app.tts_on) {
         speak(current_session.content);
       }
