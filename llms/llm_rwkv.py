@@ -80,7 +80,7 @@ if settings.llm.strategy.startswith("Q"):
         resultChat = ""
 
         if prompt.startswith("raw!"):
-            print("RWKV raw mode!")
+            print("[RWKV raw mode]",end="")
             ctx = prompt.replace("raw!", "")
         else:
             ctx = f"\n\n{user}{interface} {prompt}\n\n{answer}{interface}"
@@ -188,7 +188,7 @@ else:
                              token_stop=[0])  # stop generation whenever you see any token here
 
         if prompt.startswith("raw!"):
-            print("RWKV raw mode!")
+            print("[raw mode]",end="")
             ctx = prompt.replace("raw!", "")
         else:
             ctx = f"{user}{interface} {prompt}\n\n{answer}{interface}"
@@ -196,11 +196,11 @@ else:
         state = None
         try:
             state = states[history].get()
-            print("RWKV match state!")
+            print("[match state]",end="")
         except Exception as e:
             ctx = history+ctx
-            print("RWKV string as history!", [e])
-
+            print("[default stste]",end="")
+            state=default_state
         all_tokens = []
         out_last = 0
         response = ''
