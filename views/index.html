@@ -268,7 +268,7 @@
                             max-width: -webkit-fill-available;
                             overflow-x: hidden;
                           " :color="color" rounded="lg"
-                          @click='window.open(source.url,"_blank")' x-small>
+                          @click='source.url?window.open(source.url,"_blank"):source.click()' x-small>
                           <span class="d-inline-block text-truncate"
                             style="max-width: 150px">
                             {{source.title}}
@@ -284,6 +284,19 @@
             <br /><br /><br /><br /><br /><br /><br /><br /><br />
             <v-footer fixed class="pr-0">
               <div class="chat_toolbar">
+
+                <v-tooltip bottom v-for="button in buttons">
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on">
+                      <v-icon :color="button.color()" text
+                        @click="button.click">
+                        mdi-{{button.icon}}
+                      </v-icon>
+                    </div>
+                  </template>
+                  <span>{{button.description}}</span>
+                </v-tooltip>
+                {{buttons.length>0?"|":""}}
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <div v-bind="attrs" v-on="on">
@@ -626,6 +639,8 @@
           func_mode: func[0],
           // 插件列表
           plugins: [],
+          // 按钮列表
+          buttons: [],
           // auto列表
           autos: [],
           // 是否简化历史记录
@@ -852,23 +867,17 @@
           disabled: get_auto_disabled(plugin, name),
         };
         app.autos.push(auto);
-        try {
-
+       setTimeout(()=>{
           if (!auto.disabled) eval(plugin.content);
-        } catch {
-
-        }
+        },0)
       });
 
       saved_auto = JSON.parse(localStorage["wenda_saved_auto"] || "[]");
       saved_auto.forEach((auto) => {
         app.autos.push(auto);
-        try {
-
+        setTimeout(()=>{
           if (!auto.disabled) eval(auto.content);
-        } catch {
-
-        }
+        },0)
       });
     };
     load_plugins();
