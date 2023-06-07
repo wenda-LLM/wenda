@@ -1,3 +1,4 @@
+import torch
 from plugins.common import settings
 import time
 from copy import deepcopy
@@ -20,12 +21,13 @@ states = {}
 
 class State(object):
     def __init__(self, state):
-        self.state = deepcopy(state)
+        self.state = [tensor.cpu() for tensor in state] if device != torch.device(
+            "cpu") else deepcopy(state)
         self.touch()
 
     def get(self):
         self.touch()
-        return self.state
+        return [tensor.to(device) for tensor in self.state] if device != torch.device("cpu") else self.state
 
     def touch(self):
         self.time = time.time()
@@ -34,7 +36,7 @@ class State(object):
 def gc_states():
     while True:
         time.sleep(3)
-        if len(states) > 30:
+        if len(states) > 1000:
             oldest = [math.inf, '']
             for i in states:
                 if states[i].time < oldest[0]:
@@ -45,11 +47,11 @@ def gc_states():
 # thread_load_model = threading.Thread(target=gc_states)
 # thread_load_model.start()
 
+device = 'cuda:0'
 if settings.llm.strategy.startswith("Q"):
     runtime = "cpp"
 
     from typing import Optional
-    import torch
     import tokenizers
     from llms.rwkvcpp.sampling import sample_logits
     logits: Optional[torch.Tensor] = None
