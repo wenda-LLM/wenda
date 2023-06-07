@@ -26,7 +26,7 @@ get_url_form_md = (s) => {
     }
 }
 window.answer_with_zsk = async (Q) => {
-    lsdh(false)
+    // lsdh(false)
     app.chat.push({ "role": "user", "content": Q })
     kownladge = (await find(Q, 5)).map(i => ({
         title: get_title_form_md(i.title),
@@ -75,7 +75,7 @@ func.push({
     question: async () => {
         let Q = app.question
 
-        lsdh(false)
+        // lsdh(false)
         kownladge = (await find(Q, app.zsk_step)).map(i => ({
             title: get_title_form_md(i.title),
             url: get_url_form_md(i.title),
