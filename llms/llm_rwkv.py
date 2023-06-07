@@ -227,7 +227,7 @@ else:
         response = ''
         occurrence = {}
         tokens = pipeline.encode(ctx)
-        yield str(len(ctx))+'字正在计算\n'+str(len(tokens))+"tokens"
+        yield str(len(ctx))+'字正在计算\n'+str(len(tokens))+" tokens"
         for i in range(int(token_count)):
             out, state = model.forward(tokens if i == 0 else [token], state)
             for n in args.token_ban:
@@ -249,13 +249,11 @@ else:
             tmp = pipeline.decode(all_tokens[out_last:])
             if '\ufffd' not in tmp:
                 response += tmp
-                if response.endswith('\n\n') or response.endswith(f"{user}{interface}") or response.endswith(f"{answer}{interface}"):
+                if response.endswith('\n\n') or response.endswith(f"{user}{interface}"):
                     response = remove_suffix(
-                        remove_suffix(
-                            remove_suffix(
-                                remove_suffix(response, f"{user}{interface}"), f"{answer}{interface}"),
-                            '\n'),
-                        '\n')
+                        remove_suffix(response, '\n\n'),
+                        f"{user}{interface}"
+                    )
                     break
                 # print(tmp, end='')
                 out_last = i + 1
