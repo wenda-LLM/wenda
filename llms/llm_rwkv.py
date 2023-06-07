@@ -295,6 +295,8 @@ else:
 
         out, state = model.forward(pipeline.encode(f'''{user}{interface} hi
 
-{answer}{interface} Hi. I am your assistant and I will provide expert full response in full details. Please feel free to ask any question and I will always answer it.'''), None)
+{answer}{interface} Hi. I am your assistant and I will provide expert full response in full details. Please feel free to ask any question and I will always answer it.
+
+'''), None)
         global default_state
         default_state = state
