@@ -218,7 +218,7 @@ else:
         except Exception as e:
             ctx = history+ctx
             print("[default stste]", end="")
-            
+
             state = default_state
         all_tokens = []
         out_last = 0
@@ -286,8 +286,13 @@ else:
         #     with torch.no_grad():
 
         from rwkv.utils import PIPELINE, PIPELINE_ARGS
-        # 更新rwkv：pip install -U rwkv -i https://mirrors.aliyun.com/pypi/simple
-        pipeline = PIPELINE(model, tokenizers_file)
+        try:
+            pipeline = PIPELINE(model, tokenizers_file)
+
+        except:
+            print(
+                "不能使用world请更新rwkv：pip install -U rwkv -i https://mirrors.aliyun.com/pypi/simple")
+
         out, state = model.forward(pipeline.encode(f'''{user}{interface} hi
 
 {answer}{interface} Hi. I am your assistant and I will provide expert full response in full details. Please feel free to ask any question and I will always answer it.'''), None)
