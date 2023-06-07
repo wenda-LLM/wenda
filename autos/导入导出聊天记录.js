@@ -1,48 +1,38 @@
 // ==UserScript==
-// @name         自动总结问题
+// @name         导入导出聊天记录
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  选择这个功能后，直接点发送，会提示选择本地txt文件
+// @description  使用Ctrl+S、Ctrl+L导入导出聊天记录
 // @author       lyyyyy
 // @match        http://127.0.0.1:17860/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
 // @run-at document-idle
 // @grant        none
 // ==/UserScript==
-
-func.push({
-    name: "自动总结问题",
-    question: async () => {
-        let s = await f_自动总结问题_打开()
-        result = []
-        paragraphs = s.split(/[\r\n]+/)
-        console.log(paragraphs)
-        for (const key in paragraphs) {
-            const paragraph = paragraphs[key]
-            if (!paragraph) continue
-            result.push(
-                {
-                    paragraph: paragraph,
-                    question: await send("请你总结下面这段文字，并根据总结内容，用中文提出一个对总结内容有针对性的问题:\n" + paragraph)
-                }
-            )
-        }
-        f_自动总结问题_另存为(JSON.stringify(result))
-        // 
-    },
-})
-f_自动总结问题_另存为 = (stringData) => {
+document.addEventListener('keydown', async function (e) {
+    if (e.key.toLowerCase() == 's' && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault();
+        f另存为聊天记录(JSON.stringify(app.chat))
+        alert('saved');
+    }
+    if (e.key.toLowerCase() == 'l' && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault();
+        app.chat = JSON.parse(await f打开聊天记录())
+        alert('loaded');
+    }
+});
+f另存为聊天记录 = (stringData) => {
     const blob = new Blob([stringData], {
         type: "text/plain;charset=utf-8"
     })
     const objectURL = URL.createObjectURL(blob)
     const aTag = document.createElement('a')
     aTag.href = objectURL
-    aTag.download = Date.now() + "自动总结问题.json"
+    aTag.download = Date.now() + "-聊天记录.json"
     aTag.click()
     URL.revokeObjectURL(objectURL)
 }
-f_自动总结问题_打开 = async () => {
+f打开聊天记录 = async () => {
     let contents = ''
     await new Promise(resolve => {
         let input = document.createElement('input')

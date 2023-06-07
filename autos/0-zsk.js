@@ -25,39 +25,66 @@ get_url_form_md = (s) => {
         return s
     }
 }
+window.answer_with_zsk = async (Q) => {
+    // lsdh(false)
+    app.chat.push({ "role": "user", "content": Q })
+    kownladge = (await find(Q, 5)).map(i => ({
+        title: get_title_form_md(i.title),
+        url: get_url_form_md(i.title),
+        content: i.content
+    }))
+    if (kownladge.length > 0) {
+        answer = {
+            role: "AI",
+            content: "",
+            sources: kownladge
+        }
+        app.chat.push(answer)
+        result = []
+        for (let i in kownladge) {
+            answer.content = '正在查找：' + kownladge[i].title
+            if (i > 3) continue
+            let prompt = app.zsk_summarize_prompt + '\n' +
+                kownladge[i].content + "\n问题：" + Q
+            result.push(await send(prompt, keyword = Q, show = false))
+        }
+        app.chat.pop()
+        app.chat.pop()
+        let prompt = app.zsk_answer_prompt + '\n' +
+            result.join('\n') + "\n问题：" + Q
+        return await send(prompt, keyword = Q, show = true, sources = kownladge)
+    } else {
+        app.chat.pop()
+        sources = [{
+            title: '未匹配到知识库',
+            content: '本次对话内容完全由模型提供'
+        }]
+        return await send(Q, keyword = Q, show = true, sources = sources)
+    }
+}
 func.push({
     name: "知识库",
     description: "通过知识库回答问题",
     question: async () => {
+        answer_with_zsk(app.question)
+    }
+})
+
+func.push({
+    name: "快速知识库",
+    question: async () => {
         let Q = app.question
 
-        lsdh(false)
-        app.chat.push({ "role": "user", "content": Q })
-        kownladge = (await find(Q, 5)).map(i => ({
+        // lsdh(false)
+        kownladge = (await find(Q, app.zsk_step)).map(i => ({
             title: get_title_form_md(i.title),
             url: get_url_form_md(i.title),
             content: i.content
         }))
         if (kownladge.length > 0) {
-            answer = {
-                role: "AI",
-                content: "",
-                sources: kownladge
-            }
-            app.chat.push(answer)
-            result = []
-            for (let i in kownladge) {
-                answer.content = '正在查找：' + kownladge[i].title
-                if (i > 3) continue
-                let prompt = app.zsk_summarize_prompt + '\n' +
-                    kownladge[i].content + "\n问题：" + Q
-                result.push(await send(prompt, keyword = Q, show = false))
-            }
-            app.chat.pop()
-            app.chat.pop()
             let prompt = app.zsk_answer_prompt + '\n' +
-                result.join('\n') + "\n问题：" + Q
-            return await send(prompt, keyword = Q, show = true, sources = kownladge)
+                kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n问题：" + Q
+            await send(prompt, keyword = Q, show = true, sources = kownladge)
         } else {
             app.chat.pop()
             sources = [{
@@ -66,28 +93,11 @@ func.push({
             }]
             return await send(Q, keyword = Q, show = true, sources = sources)
         }
-    },
-})
-
+    }
+}
+)
 if (app.llm_type == "rwkv") {
 
-    func.push({
-        name: "知识库增强(rwkv)",
-        question: async () => {
-            let Q = app.question
-
-            lsdh(false)
-            kownladge = (await find(Q, 5)).map(i => ({
-                title: get_title_form_md(i.title),
-                url: get_url_form_md(i.title),
-                content: i.content
-            }))
-            let prompt = "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。\n" +
-                kownladge.map(i => i.content).join('\n') + "\n问题：" + Q
-            await send(prompt, keyword = Q, show = true, sources = kownladge)
-        }
-    }
-    )
     func.push({
         name: "知识库增强(根据关键词)",
         question: async () => {
@@ -124,7 +134,7 @@ if (app.llm_type == "rwkv") {
             let prompt = "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。\n" +
                 result.join('\n') + "\n问题：" + Q
             await send(prompt)
-        
+
         },
     })
 }
@@ -156,7 +166,7 @@ else if (app.llm_type == "glm6b") {
             let prompt = "学习以下文段, 用中文回答用户问题。如果无法从中得到答案，忽略文段内容并用中文回答用户问题。\n" +
                 result.join('\n') + "\n问题：" + Q
             await send(prompt)
-       
+
         },
     })
 }
@@ -191,7 +201,7 @@ func.push({
         let prompt = "根据以下资料，用中文回答问题。\n" +
             result.join('\n') + "\n问题：" + Q
         await send(prompt)
-      
+
     },
 })
 // func.push({

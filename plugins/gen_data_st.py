@@ -2,7 +2,6 @@
 import argparse
 import sentence_transformers
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.docstore.document import Document
 import threading
@@ -18,6 +17,10 @@ from common import success_print, error_print
 from common import error_helper
 from common import settings
 from common import CounterLock
+if settings.librarys.rtst.backend=="Annoy":
+    from langchain.vectorstores.annoy import Annoy as Vectorstore
+else:
+    from langchain.vectorstores.faiss import FAISS as Vectorstore
 source_folder = 'txt'
 source_folder_path = os.path.join(os.getcwd(), source_folder)
 
@@ -48,7 +51,7 @@ vectorstore_lock=threading.Lock()
 def clac_embedding(texts, embeddings, metadatas):
     global vectorstore
     with embedding_lock:
-        vectorstore_new = FAISS.from_texts(texts, embeddings, metadatas=metadatas)
+        vectorstore_new = Vectorstore.from_texts(texts, embeddings, metadatas=metadatas)
     with vectorstore_lock:
         if vectorstore is None:
             vectorstore = vectorstore_new
@@ -129,12 +132,13 @@ if len(docs) > 0:
 
 while embedding_lock.get_waiting_threads()>0:
     time.sleep(0.1)
+success_print("处理进度",100,"%")
 with embedding_lock:
     time.sleep(0.1)
     with vectorstore_lock:
         success_print("处理完成")
 try:
-    vectorstore_old = FAISS.load_local(
+    vectorstore_old = Vectorstore.load_local(
         'memory/default', embeddings=embeddings)
     success_print("合并至已有索引。如不需合并请删除 memory/default 文件夹")
     vectorstore_old.merge_from(vectorstore)

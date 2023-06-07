@@ -133,7 +133,7 @@
 
     .v-window-item {
       min-height: 100%;
-      margin: 30px;
+      margin: 3%;
     }
 
     .v-window-item:has(iframe) {
@@ -294,6 +294,17 @@
                     </div>
                   </template>
                   <span>{{$t("zhishiku")}}</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on">
+                      <v-icon :color="current_func=='快速知识库'?color:''" text
+                        @click="current_func=='快速知识库'?current_func='':current_func='快速知识库'">
+                        mdi-lightning-bolt
+                      </v-icon>
+                    </div>
+                  </template>
+                  <span>{{$t("zhishiku")}}快速模式</span>
                 </v-tooltip>
                 |
                 <v-tooltip bottom>
@@ -517,7 +528,7 @@
                       clearable></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6">
-                    <v-text-field v-model="test_zsk_step" outlined label="上下文数量"
+                    <v-text-field v-model="zsk_step" outlined label="上下文数量"
                       clearable></v-text-field>
                   </v-col>
                 </v-row>
@@ -530,7 +541,7 @@
                 </v-data-table>
                 <v-card-actions>
                   <v-btn :color="color" dark size="x-large"
-                    @click="find(test_zsk_prompt,test_zsk_step)">
+                    @click="find(test_zsk_prompt,zsk_step)">
                     测试
                   </v-btn>
                 </v-card-actions>
@@ -626,7 +637,7 @@
           // 测试知识库的提示
           test_zsk_prompt: "",
           // 测试知识库的步骤
-          test_zsk_step: 1,
+          zsk_step: 2,
           // 知识库
           zhishiku: [],
           // 设置
@@ -662,10 +673,10 @@
       methods: {
         md2html: (conent) => {
           // return conent
-          conent = String(conent.replace(/[\r\n]+/g, "\n\n"));
+          conent = String(conent);
           let md = new markdownit();
           // md.disable(['link', 'image'])
-          return md.render(conent).replace(/<a /g, '<a target="_blank"');
+          return md.render(conent).replace(/<a /g, '<a target="_blank"').replace(/[\r\n]+!$/g, "<br>")
         },
       },
     });
@@ -694,7 +705,8 @@
       } else if (typeof app.func_mode.question == "function") {
         app.func_mode.question();
       } else {
-        send(app.func_mode.question + app.question, app.question);
+        let Q=app.question
+        send(app.func_mode.question +Q , Q);
       }
     };
 
@@ -731,6 +743,7 @@
     // 将用户的输入发送到服务器并更新 app 的 chat 数组
     // 参数s为用户输入的内容，keyword为用户输入的关键词，show为是否显示用户输入的内容，sources为知识库的来源
     send = async (s, keyword = "", show = true, sources = []) => {
+      app.question=''
       if (keyword == "") keyword = s;
       is_abord = false;
       app.loading = true;
@@ -763,7 +776,6 @@
       // 如果是等待对话状态,则将 is_wait_till 设置为 true
       is_wait_till = false;
       setTimeout(display_queue_length, 3000);
-      app.question = s.replace(/\r\n/g, "\n");
       let current_session = { role: "AI", content: "……", sources: sources };
       if (show) {
         app.chat.push({ role: "user", content: keyword, keyword: keyword });
@@ -771,12 +783,11 @@
       }
       setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
       // 调用websocket聊天，具体函数在wd_sdk.js中
-      await send_raw(app.question, keyword, QA_history, (message) => {
+      await send_raw( s.replace(/\r\n/g, "\n"), keyword, QA_history, (message) => {
         is_wait_till = true;
 
         current_session.content = message;
       });
-      app.question = "";
       if (app.tts_on) {
         speak(current_session.content);
       }
@@ -854,7 +865,7 @@
         app.autos.push(auto);
         try {
 
-          if (!auto.disabled) eval(plugin.content);
+          if (!auto.disabled) eval(auto.content);
         } catch {
 
         }

@@ -7,7 +7,6 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 import asyncio
-import re
 import functools
 import bottle
 from bottle import route, response, request, static_file, hook
@@ -19,6 +18,7 @@ import torch
 from plugins.common import error_helper, error_print, success_print
 from plugins.common import allowCROS
 from plugins.common import settings
+from plugins.common import app
 import logging
 logging.captureWarnings(True)
 
@@ -254,14 +254,7 @@ bottle.debug(True)
 # webbrowser.open_new('http://127.0.0.1:'+str(settings.Port))
 
 # bottle.run(server='paste', host="0.0.0.0", port=settings.port, quiet=True)
-app = FastAPI(title="Wenda",
-              description="Wenda API",
-              version="1.0.0",
-              # docs_url=None,
-              # redoc_url=None,
-              openapi_url="/api/v1/openapi.json",
-              docs_url="/api/v1/docs",
-              redoc_url="/api/v1/redoc")
+
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
@@ -335,6 +328,7 @@ async def index(request: Request):
 
 app.mount(path="/chat/", app=WSGIMiddleware(bottle.app[0]))
 app.mount(path="/api/", app=WSGIMiddleware(bottle.app[0]))
+app.mount("/txt/", StaticFiles(directory="txt"), name="txt")
 app.mount("/", StaticFiles(directory="views"), name="static")
 
 if __name__ == "__main__":
