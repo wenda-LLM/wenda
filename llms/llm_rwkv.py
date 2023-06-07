@@ -1,6 +1,9 @@
 from plugins.common import settings
 import time
 from copy import deepcopy
+import threading
+import time
+import math
 interface = ":"
 if settings.llm.path.lower().find("world") > -1:
     print("rwkv world mode!")
@@ -11,6 +14,7 @@ else:
     user = "Bob"
     answer = "Alice"
     tokenizers_file = "20B_tokenizer.json"
+
 states = {}
 
 
@@ -26,6 +30,20 @@ class State(object):
     def touch(self):
         self.time = time.time()
 
+
+def gc_states():
+    while True:
+        time.sleep(3)
+        if len(states) > 30:
+            oldest = [math.inf, '']
+            for i in states:
+                if states[i].time < oldest[0]:
+                    oldest = [states[i].time, i]
+            del states[oldest[1]]
+
+
+# thread_load_model = threading.Thread(target=gc_states)
+# thread_load_model.start()
 
 if settings.llm.strategy.startswith("Q"):
     runtime = "cpp"
@@ -80,7 +98,7 @@ if settings.llm.strategy.startswith("Q"):
         resultChat = ""
 
         if prompt.startswith("raw!"):
-            print("[RWKV raw mode]",end="")
+            print("[RWKV raw mode]", end="")
             ctx = prompt.replace("raw!", "")
         else:
             ctx = f"\n\n{user}{interface} {prompt}\n\n{answer}{interface}"
@@ -188,7 +206,7 @@ else:
                              token_stop=[0])  # stop generation whenever you see any token here
 
         if prompt.startswith("raw!"):
-            print("[raw mode]",end="")
+            print("[raw mode]", end="")
             ctx = prompt.replace("raw!", "")
         else:
             ctx = f"{user}{interface} {prompt}\n\n{answer}{interface}"
@@ -196,11 +214,12 @@ else:
         state = None
         try:
             state = states[history].get()
-            print("[match state]",end="")
+            print("[match state]", end="")
         except Exception as e:
             ctx = history+ctx
-            print("[default stste]",end="")
-            state=default_state
+            print("[default stste]", end="")
+            
+            state = default_state
         all_tokens = []
         out_last = 0
         response = ''
@@ -239,6 +258,7 @@ else:
                 # print(tmp, end='')
                 out_last = i + 1
                 yield response.strip()
+        yield response.strip()
         states[history+ctx+' '+response.strip()+'\n\n'] = State(state)
 
     def remove_suffix(input_string, suffix):  # 兼容python3.8
@@ -272,4 +292,4 @@ else:
 
 {answer}{interface} Hi. I am your assistant and I will provide expert full response in full details. Please feel free to ask any question and I will always answer it.'''), None)
         global default_state
-        default_state=state
+        default_state = state

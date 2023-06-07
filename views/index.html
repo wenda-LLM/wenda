@@ -706,7 +706,8 @@
         app.func_mode.question();
       } else {
         let Q=app.question
-        send(app.func_mode.question +Q , Q);
+        await send(app.func_mode.question +Q , Q);
+        app.question=''
       }
     };
 
@@ -717,7 +718,7 @@
       if (last_send.keyword) app.question = last_send.keyword;
       else app.question = last_send.content;
 
-      submit(last_send.content, last_send.keyword);
+      submit();
     };
 
     // 总结聊天历史记录并提示用户提取关键信息
@@ -743,7 +744,6 @@
     // 将用户的输入发送到服务器并更新 app 的 chat 数组
     // 参数s为用户输入的内容，keyword为用户输入的关键词，show为是否显示用户输入的内容，sources为知识库的来源
     send = async (s, keyword = "", show = true, sources = []) => {
-      app.question=''
       if (keyword == "") keyword = s;
       is_abord = false;
       app.loading = true;
