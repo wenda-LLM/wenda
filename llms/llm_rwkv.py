@@ -230,11 +230,13 @@ else:
             raw_mode=False
         # print(ctx)
         state = None
+        history_in_ctx=False
         try:
             state = states[history].get()
             print("[match state]", end="")
         except Exception as e:
             ctx = history+ctx
+            history_in_ctx=True
             print("[default stste]", end="")
             if not raw_mode:
                 state = states['default'].get()
@@ -277,9 +279,13 @@ else:
                 yield response.strip()
         yield response.strip()
         if raw_mode:
-            states[history+prompt+response.strip()+'\n\n'] = State(state)
+            if not history_in_ctx:
+                prompt=history+prompt
+            states[prompt+response.strip()+'\n\n'] = State(state)
         else:
-            states[history+ctx+' '+response.strip()+'\n\n'] = State(state)
+            if not history_in_ctx:
+                ctx=history+ctx
+            states[ctx+' '+response.strip()+'\n\n'] = State(state)
 
     def remove_suffix(input_string, suffix):  # 兼容python3.8
         if suffix and input_string.endswith(suffix):
