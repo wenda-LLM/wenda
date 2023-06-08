@@ -26,7 +26,6 @@ if settings.llm.strategy.startswith("Q"):
         stop=["Human:","### Hum",], temperature=temperature,max_tokens=max_length, top_p=top_p,stream=True)
         # print(output['choices'])
         text=""
-        for output in stream:
             text+=output["choices"][0]["text"]
             yield text
 
@@ -101,7 +100,7 @@ else:
         top_p = top_p
         top_k = -1  # -1 means disable
         max_new_tokens = 256
-        stop_str = '\n\n'
+        stop_str = '\n\n\n'
         echo = False
         stop_token_ids =  []
         stop_token_ids.append(tokenizer.eos_token_id)
