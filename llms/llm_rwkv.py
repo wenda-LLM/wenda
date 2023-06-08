@@ -22,12 +22,12 @@ states = {}
 class State(object):
     def __init__(self, state):
         self.state = [tensor.cpu() for tensor in state] if device != torch.device(
-            "cpu") else deepcopy(state)
+            "cpu") else state
         self.touch()
 
     def get(self):
         self.touch()
-        return [tensor.to(device) for tensor in self.state] if device != torch.device("cpu") else self.state
+        return [tensor.to(device) for tensor in self.state] if device != torch.device("cpu") else deepcopy(self.state)
 
     def touch(self):
         self.time = time.time()
@@ -223,7 +223,7 @@ else:
             ctx = history+ctx
             print("[default stste]", end="")
             if not raw_mode:
-                state = default_state
+                state = states['default'].get()
         all_tokens = []
         out_last = 0
         response = ''
@@ -271,7 +271,6 @@ else:
     pipeline = None
     PIPELINE_ARGS = None
     model = None
-    default_state = None
 
     def load_model():
         global pipeline, PIPELINE_ARGS, model
@@ -300,5 +299,4 @@ else:
 {answer}{interface} Hi. I am your assistant and I will provide expert full response in full details. Please feel free to ask any question and I will always answer it.
 
 '''), None)
-        global default_state
-        default_state = state
+        states['default'] = State(state)
