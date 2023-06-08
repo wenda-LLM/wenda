@@ -210,8 +210,10 @@ else:
         if prompt.startswith("raw!"):
             print("[raw mode]", end="")
             ctx = prompt.replace("raw!", "")
+            raw_mode=True
         else:
             ctx = f"{user}{interface} {prompt}\n\n{answer}{interface}"
+            raw_mode=False
         # print(ctx)
         state = None
         try:
@@ -220,8 +222,8 @@ else:
         except Exception as e:
             ctx = history+ctx
             print("[default stste]", end="")
-
-            state = default_state
+            if not raw_mode:
+                state = default_state
         all_tokens = []
         out_last = 0
         response = ''
