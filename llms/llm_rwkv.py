@@ -5,6 +5,7 @@ from copy import deepcopy
 import threading
 import time
 import math
+import re
 interface = ":"
 if settings.llm.path.lower().find("world") > -1:
     print("rwkv world mode!")
@@ -44,8 +45,8 @@ def gc_states():
             del states[oldest[1]]
 
 
-# thread_load_model = threading.Thread(target=gc_states)
-# thread_load_model.start()
+thread_load_model = threading.Thread(target=gc_states)
+thread_load_model.start()
 
 device = 'cuda:0'
 if settings.llm.strategy.startswith("Q"):
@@ -183,11 +184,20 @@ else:
     def chat_init(history):
         tmp = []
         # print(history)
+        raw_mode=False
         for i, old_chat in enumerate(history):
             if old_chat['role'] == "user":
-                tmp.append(f"{user}{interface} "+old_chat['content'])
+                if old_chat['content'].startswith("raw!"):
+                    raw_mode=True
+                    tmp.append(old_chat['content'])
+                else:
+                    raw_mode=False
+                    tmp.append(f"{user}{interface} "+old_chat['content'])
             elif old_chat['role'] == "AI":
-                tmp.append(f"{answer}{interface} "+old_chat['content'])
+                if raw_mode:
+                    tmp[-1]+=old_chat['content']
+                else:
+                    tmp.append(f"{answer}{interface} "+old_chat['content'])
             else:
                 continue
         history = '\n\n'.join(tmp)
@@ -210,6 +220,10 @@ else:
         if prompt.startswith("raw!"):
             print("[raw mode]", end="")
             ctx = prompt.replace("raw!", "")
+            ctx = re.sub('\\{user\\}',user, ctx)
+            ctx = re.sub('\\{answer\\}',answer, ctx)
+            ctx = re.sub('\\{bot\\}',answer, ctx)
+            ctx = re.sub('\\{interface\\}',interface, ctx)
             raw_mode=True
         else:
             ctx = f"{user}{interface} {prompt}\n\n{answer}{interface}"
@@ -224,6 +238,7 @@ else:
             print("[default stste]", end="")
             if not raw_mode:
                 state = states['default'].get()
+            # print([history],states)
         all_tokens = []
         out_last = 0
         response = ''
@@ -261,7 +276,10 @@ else:
                 out_last = i + 1
                 yield response.strip()
         yield response.strip()
-        states[history+ctx+' '+response.strip()+'\n\n'] = State(state)
+        if raw_mode:
+            states[history+prompt+response.strip()+'\n\n'] = State(state)
+        else:
+            states[history+ctx+' '+response.strip()+'\n\n'] = State(state)
 
     def remove_suffix(input_string, suffix):  # 兼容python3.8
         if suffix and input_string.endswith(suffix):
