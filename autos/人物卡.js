@@ -11,6 +11,7 @@
 app.buttons.push({
     icon: "account-outline",
     click: () => {
+        lsdh(true)
         app.chat = [{
             role: "AI", content: "请选择角色", sources: [{
                 title: '猫娘',
