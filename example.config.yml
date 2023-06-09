@@ -48,9 +48,9 @@ librarys:
      #分块大小"
      overlap: 0
      #分块重叠长度
-     model_path: "model/text2vec-large-chinese"
+     model_path: "model/m3e-base"
      #向量模型存储路径
-     device: cpu
+     device: cuda
      #embedding运行设备
   qdrant: 
      path: txt
