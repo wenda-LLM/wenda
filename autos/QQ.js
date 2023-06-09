@@ -2,7 +2,7 @@
 // @name         QQ机器人Auto
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  配置参考:https://drincann.github.io/Mirai-js/#/v2.x/Preparation?id=%e4%b8%8d%e4%bc%9a%e5%bc%80%e5%90%af%ef%bc%9f 中"不会开启"部分
+// @description  配置参考:https://drincann.github.io/Mirai-js/#/v2.x/Preparation 中"不会开启"部分
 // @author       lyyyyy
 // @match        http://127.0.0.1:17860/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
