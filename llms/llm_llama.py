@@ -26,8 +26,8 @@ if settings.llm.strategy.startswith("Q"):
         stop=["Human:","### Hum",], temperature=temperature,max_tokens=max_length, top_p=top_p,stream=True)
         # print(output['choices'])
         text=""
-            text+=output["choices"][0]["text"]
-            yield text
+        text+=output["choices"][0]["text"]
+        yield text
 
     def load_model():
         global model
