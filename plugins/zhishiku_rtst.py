@@ -65,7 +65,7 @@ def find(s,step = 0,memory_name="default"):
         for j, i in enumerate(indices[0]):
             if i == -1:
                 continue
-            if scores[0][j]>700:continue
+            if scores[0][j]>160:continue
             docs.append(get_doc(i,scores[0][j],step,memory_name))
 
         return docs
