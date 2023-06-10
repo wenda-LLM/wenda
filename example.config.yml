@@ -4,7 +4,7 @@ logging: False
 port: 17860
 #webui 默认启动端口号"
 library: 
-     strategy: "rtst:2 agents:0"
+     strategy: "calc:2 rtst:2 agents:0"
      #库参数，每组参数间用空格分隔，冒号前为知识库类型，后为抽取数量。
 
      #知识库类型:
@@ -44,13 +44,14 @@ librarys:
   rtst: 
      count: 3
      #最大抽取数量
+   #   backend: Annoy
      size: 20
      #分块大小"
      overlap: 0
      #分块重叠长度
-     model_path: "model/text2vec-large-chinese"
+     model_path: "model/m3e-base"
      #向量模型存储路径
-     device: cpu
+     device: cuda
      #embedding运行设备
   qdrant: 
      path: txt
@@ -76,7 +77,7 @@ llm_type: rwkv
 #llm模型类型:glm6b、rwkv、llama、replitcode等，详见相关文件
 llm_models: 
   rwkv: 
-     path: "model/rwkv-4-raven-7b-v11.pth"      #rwkv模型位置"
+     path: "model/RWKV-4-World-7B-v1-OnlyForTest_52%_trained-20230606-ctx4096-i8.pth"      #rwkv模型位置"
      strategy: "cuda fp16i8"
    #   path: "model/rwkv_ggml_q8.bin"           #rwkv模型位置"
    #   strategy: "Q8_0"       #rwkvcpp:运行方式，设置strategy诸如"Q8_0->16"即可开启，代表运行Q8_0模型在16个cpu核心上
@@ -85,14 +86,14 @@ llm_models:
      historymode: state
      #rwkv历史记录实现方式：state、string
   glm6b: 
-     path: "model/chatglm-6b-int4"
+     path: "model/chatglm-6b"
      #glm模型位置"
      strategy: "cuda fp16"
      #cuda fp16	 所有glm模型 要直接跑在gpu上都可以使用这个参数
      #cuda fp16i8	 fp16原生模型 要自行量化为int8跑在gpu上可以使用这个参数
      #cuda fp16i4	 fp16原生模型 要自行量化为int4跑在gpu上可以使用这个参数
      #cuda:0 fp16 *14 -> cuda:1	fp16 多卡流水线并行，使用方法参考RWKV的strategy介绍。总层数28
-     lora: ""
+     lora: "model/lora-450"
      #glm-lora模型位置
   llama: 
      path: "model/stable-vicuna-13B.ggml.q4_2.bin"

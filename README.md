@@ -29,6 +29,7 @@
     - [部分内置 Auto 使用说明](#部分内置-auto-使用说明)
   - [知识库](#知识库)
     - [rtst模式](#rtst模式)
+      - [模型](#模型)
     - [fess模式](#fess模式)
     - [知识库调试](#知识库调试)
     - [清洗知识库文件](#清洗知识库文件)
@@ -235,9 +236,10 @@ Windows预先构建索引运行：`plugins/buils_rtst_default_index.bat`。
 
 Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 
-需下载模型[GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)置于model文件夹，并将txt格式语料置于txt文件夹。
-
-
+需下载模型置于model文件夹，并将txt格式语料置于txt文件夹。
+#### 模型
+1. [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese) 不再推荐，不支持英文且显存占用高
+2. [moka-ai/m3e-base](https://huggingface.co/moka-ai/m3e-base) 推荐
 ### fess模式
 在本机使用默认端口安装fess后可直接运行。否则需修改`config.yml`(复制[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml))中`fess_host`的`127.0.0.1:8080`为相应值。[FESS安装教程](install_fess.md)
 ###  知识库调试
