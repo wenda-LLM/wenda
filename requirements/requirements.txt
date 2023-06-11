@@ -20,3 +20,5 @@ cpm_kernels
 chardet
 rwkv
 pyyaml
+openai
+tiktoken

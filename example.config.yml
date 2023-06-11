@@ -105,6 +105,11 @@ llm_models:
      #模型位置
      strategy: ""
      #模型参数 暂时不用"
+  openai: 
+   #   api_host: "https://gpt.lucent.blog/v1" #网友的反代
+   #   api_host: "https://api.openai.com/v1" #官方地址
+     api_host: "http://127.0.0.1:8000/v1" #rwkv runner
+     
   replitcode: 
      path: "model/replit-code-v1-3b"
      #replitcode模型位置
