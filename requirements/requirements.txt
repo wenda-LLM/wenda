@@ -12,7 +12,6 @@ pdfplumber
 InstructorEmbedding
 tiktoken
 nltk
-olefile
 unstructured
 jieba
 numpy
