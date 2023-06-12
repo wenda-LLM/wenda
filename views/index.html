@@ -268,7 +268,8 @@
                             max-width: -webkit-fill-available;
                             overflow-x: hidden;
                           " :color="color" rounded="lg"
-                          @click='source.url?window.open(source.url,"_blank"):source.click()' x-small>
+                          @click='source.url?window.open(source.url,"_blank"):source.click()'
+                          x-small>
                           <span class="d-inline-block text-truncate"
                             style="max-width: 150px">
                             {{source.title}}
@@ -773,7 +774,7 @@
           if (app.simplify_historical_information) {
             alert(`历史信息过长，自动进行总结`);
             await summerize_history();
-            QA_history = app.chat.concat();
+            QA_history = app.chat
           } else {
             alert(
               `历史信息过长，将仅保留最后${app.history_limit}次chat记忆。setting为0不限制`
@@ -783,8 +784,9 @@
             );
           }
         } else {
-          QA_history = app.chat.concat();
+          QA_history = app.chat
         }
+        QA_history=QA_history.filter(i=>!i.no_history)
       } else {
         QA_history = [];
       }
