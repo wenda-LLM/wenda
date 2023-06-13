@@ -268,7 +268,8 @@
                             max-width: -webkit-fill-available;
                             overflow-x: hidden;
                           " :color="color" rounded="lg"
-                          @click='source.url?window.open(source.url,"_blank"):source.click()' x-small>
+                          @click='source.url?window.open(source.url,"_blank"):source.click()'
+                          x-small>
                           <span class="d-inline-block text-truncate"
                             style="max-width: 150px">
                             {{source.title}}
@@ -634,7 +635,7 @@
           zsk_summarize_prompt: "总结以下文段中与问题相关的信息。",
           // 知识库回答问题的提示
           zsk_answer_prompt:
-            "学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。",
+            "学习以下文段,用中文回答问题。",
           // 载入的auto
           func_mode: func[0],
           // 插件列表
@@ -773,7 +774,7 @@
           if (app.simplify_historical_information) {
             alert(`历史信息过长，自动进行总结`);
             await summerize_history();
-            QA_history = app.chat.concat();
+            QA_history = app.chat
           } else {
             alert(
               `历史信息过长，将仅保留最后${app.history_limit}次chat记忆。setting为0不限制`
@@ -783,8 +784,9 @@
             );
           }
         } else {
-          QA_history = app.chat.concat();
+          QA_history = app.chat
         }
+        QA_history=QA_history.filter(i=>!i.no_history)
       } else {
         QA_history = [];
       }
