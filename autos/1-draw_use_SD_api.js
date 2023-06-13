@@ -35,7 +35,7 @@ func.push({
         })
         try {
             let json = await response.json()
-            add_conversation("AI", '![](data:image/png;base64,' + json.images[0] + ")")
+            add_conversation("AI", '![](data:image/png;base64,' + json.images[0] + ")",no_history=true)
         } catch (error) {
             alert("连接SD API失败，请确认已开启agents库，并将SD API地址设置为127.0.0.1:786")
         }

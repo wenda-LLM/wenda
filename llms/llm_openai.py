@@ -1,5 +1,6 @@
 import os
 import openai
+from plugins.common import settings
 
 
 def chat_init(history):
@@ -36,8 +37,7 @@ chatCompletion = None
 
 def load_model():
     openai.api_key = os.getenv("OPENAI_API_KEY")
-    #openai.api_base = "https://api.openai.com/v1"
-    openai.api_base = "https://gpt.lucent.blog/v1"
+    openai.api_base = settings.llm.api_host
 
 class Lock:
     def __init__(self):

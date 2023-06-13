@@ -137,8 +137,8 @@ copy = (s) => {
             }
         });
 };
-add_conversation = (role, content, sources = null) => {
-    app.chat.push({ role: role, content: content, sources: sources });
+add_conversation = (role, content, sources = null,no_history=false) => {
+    app.chat.push({ role: role, content: content, sources: sources ,no_history:no_history});
 };
 function MyException(message) {
     this.message = message;
