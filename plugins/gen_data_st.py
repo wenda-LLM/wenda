@@ -11,10 +11,11 @@ import chardet
 import os
 import sys
 import time
-from common import success_print, error_print
-from common import error_helper
-from common import settings
-from common import CounterLock
+sys.path.append(os.getcwd())
+from plugins.common import success_print, error_print
+from plugins.common import error_helper
+from plugins.common import settings
+from plugins.common import CounterLock
 if settings.librarys.rtst.backend=="Annoy":
     from langchain.vectorstores.annoy import Annoy as Vectorstore
 else:
