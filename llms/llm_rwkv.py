@@ -22,13 +22,12 @@ states = {}
 
 class State(object):
     def __init__(self, state):
-        self.state = [tensor.cpu() for tensor in state] if device != torch.device(
-            "cpu") else state
+        self.state = [tensor.cpu() for tensor in state] if device != "cpu" else state
         self.touch()
 
     def get(self):
         self.touch()
-        return [tensor.to(device) for tensor in self.state] if device != torch.device("cpu") else deepcopy(self.state)
+        return [tensor.to(device) for tensor in self.state] if device != "cpu" else deepcopy(self.state)
 
     def touch(self):
         self.time = time.time()
@@ -48,7 +47,7 @@ def gc_states():
 thread_load_model = threading.Thread(target=gc_states)
 thread_load_model.start()
 
-device = 'cuda:0'
+device = settings.llm.state_source_device or 'cpu'
 if settings.llm.strategy.startswith("Q"):
     runtime = "cpp"
 
