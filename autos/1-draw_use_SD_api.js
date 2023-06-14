@@ -11,7 +11,7 @@
 
 
 func.push({
-    name: "画图",
+    name: "中文绘图",
     question: async () => {
         lsdh(false)
         zsk(false)

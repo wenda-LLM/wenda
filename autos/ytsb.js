@@ -22,7 +22,8 @@ app.buttons.push({
             click: async () => {
                 yt2prompt_dict = {
                     快速知识库: ['为什么', '我想问一下', '什么是'],
-                    画图: ['帮我画一张', '画一个']
+                    中文绘图: ['帮我画一张', '画一个'],
+                    提问助手: ['请对会议内容提问', '对于上一个回答，你有那些疑问', '帮我提出几个有建设性的问题'],
                 }
                 for (yt in yt2prompt_dict) {
                     for (prompt in yt2prompt_dict[yt]) {
@@ -58,9 +59,17 @@ func.push({
         Q = app.question
         memory = await find_memory_jyzq(Q)
         if (memory.length > 0) {
-            alert('识别到意图为:' + memory[0].title + "，正在调用相应auto")
+            add_conversation("AI", '识别到意图为:' + memory[0].title + "，正在调用相应auto")
             // A = await send(app.question )
-            app.func_menu.find((i) => i.name == memory[0].title).question()
+            let 当前_auot=app.func_menu.find((i) => i.name == memory[0].title)
+            if (typeof 当前_auot.question == "function") {
+                当前_auot.question();
+            } else {
+                let Q = app.question
+                await send(当前_auot.question + Q, Q);
+                app.question = ''
+            }
+            // app.func_menu.find((i) => i.name == memory[0].title).question(Q)
         } else {
             A = await send(app.question)
         }

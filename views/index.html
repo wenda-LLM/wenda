@@ -761,7 +761,7 @@
         is_wait_till = true;
         current_session.content = message;
         now = Date.now()
-        alert("TPS:"+Math.floor(1000/(now - last_token_time)))
+        alert("TPS:"+1000/(now - last_token_time))
         last_token_time = now
       });
       if (app.tts_on) {
