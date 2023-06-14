@@ -81,6 +81,7 @@ llm_models:
      strategy: "cuda fp16i8"
    #   path: "model/rwkv_ggml_q8.bin"           #rwkv模型位置"
    #   strategy: "Q8_0"       #rwkvcpp:运行方式，设置strategy诸如"Q8_0->16"即可开启，代表运行Q8_0模型在16个cpu核心上
+   #记得去https://github.com/saharNooby/rwkv.cpp/releases下最新版本文件替换librwkv.so或rwkv.dll
      #rwkv模型参数"
     
      historymode: state
