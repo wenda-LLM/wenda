@@ -9,7 +9,7 @@ library:
 
      #知识库类型:
      #bing        cn.bing搜索，仅国内可用，目前处于服务降级状态
-     #sosowx      sogo微信公众号搜索，可配合相应auto实现全文内容分析
+     #sogowx      sogo微信公众号搜索，可配合相应auto实现全文内容分析
      #fess        fess搜索引擎
      #rtst        支持实时生成的sentence_transformers
      #remote      调用远程闻达知识库，用于集群化部署
@@ -84,7 +84,12 @@ llm_models:
      #rwkv模型参数"
     
      historymode: state
-     #rwkv历史记录实现方式：state、string
+     #rwkv历史记录实现方式：state、string。注意，对于torch实现，本参数已弃用，因为已经实现自动切换。
+     state_source_device: cpu
+     #torch实现下，会保存每个会话的state。每个占用2M显存，本参数控制将其复制到内存以节约显存。
+     #置为cuda:0，代表state来自cuda:0，且需要将其复制到内存以节约显存。
+     #置为cuda:1，同理。
+     #置为cpu，代表不需要复制，如果使用cpu计算，或多卡计算需这么设置。
   glm6b: 
      path: "model/chatglm-6b-int4"
      #glm模型位置"
