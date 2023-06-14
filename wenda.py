@@ -267,7 +267,14 @@ async def add_process_time_header(request: Request, call_next):
     response.headers["Cache-Control"]="no-cache,no-store,must-revalidate"
 
     return response
-
+if settings.llm_type!='glm6b':
+    class AsyncContextManager:
+        async def __aenter__(self):
+            pass
+    
+        async def __aexit__(self, exc_type, exc, tb):
+            pass
+    lock=AsyncContextManager()
 @app.websocket('/ws')
 async def websocket_endpoint(websocket: WebSocket):
     global waiting_threads
@@ -302,7 +309,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         # start = time.time()
                         await websocket.send_text(response)
                         await asyncio.sleep(0)
-                        end = time.time()
+                        # end = time.time()
                         # cost+=end-start
             except Exception as e:
                 error = str(e)
