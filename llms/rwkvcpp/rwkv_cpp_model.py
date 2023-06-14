@@ -13,7 +13,8 @@ class RWKVModel:
             self,
             shared_library: RWKVSharedLibrary,
             model_path: str,
-            thread_count: int = max(1, multiprocessing.cpu_count() // 2)
+            thread_count: int = max(1, multiprocessing.cpu_count() // 2),
+            gpu_layers_count: int = 4,
     ):
         """
         Loads the model and prepares it for inference.
@@ -31,10 +32,14 @@ class RWKVModel:
 
         assert os.path.isfile(model_path), f'{model_path} is not a file'
         assert thread_count > 0, 'Thread count must be positive'
+        assert gpu_layers_count >= 0, 'GPU layers count must be >= 0'
 
         self._library = shared_library
 
         self._ctx = self._library.rwkv_init_from_file(model_path, thread_count)
+
+        if gpu_layers_count > 0:
+	        self._library.rwkv_gpu_offload_layers(self._ctx, gpu_layers_count)
 
         self._state_buffer_element_count = self._library.rwkv_get_state_buffer_element_count(self._ctx)
         self._logits_buffer_element_count = self._library.rwkv_get_logits_buffer_element_count(self._ctx)
@@ -79,7 +84,7 @@ class RWKVModel:
         if state_in is not None:
             validate_buffer(state_in, 'state_in', self._state_buffer_element_count)
 
-            state_in_ptr = state_in.storage().data_ptr()
+            state_in_ptr = state_in.data_ptr()
         else:
             state_in_ptr = 0
 
@@ -97,8 +102,8 @@ class RWKVModel:
             self._ctx,
             token,
             state_in_ptr,
-            state_out.storage().data_ptr(),
-            logits_out.storage().data_ptr()
+            state_out.data_ptr(),
+            logits_out.data_ptr()
         )
 
         return logits_out, state_out

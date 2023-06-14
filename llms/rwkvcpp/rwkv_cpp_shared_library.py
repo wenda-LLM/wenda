@@ -7,7 +7,6 @@ from typing import Optional
 QUANTIZED_FORMAT_NAMES = (
     'Q4_0',
     'Q4_1',
-    'Q4_2',
     'Q5_0',
     'Q5_1',
     'Q8_0'
@@ -40,6 +39,9 @@ class RWKVSharedLibrary:
 
         self.library.rwkv_init_from_file.argtypes = [ctypes.c_char_p, ctypes.c_uint32]
         self.library.rwkv_init_from_file.restype = ctypes.c_void_p
+
+        self.library.rwkv_gpu_offload_layers.argtypes = [ctypes.c_void_p, ctypes.c_uint32]
+        self.library.rwkv_gpu_offload_layers.restype = ctypes.c_bool
 
         self.library.rwkv_eval.argtypes = [
             ctypes.c_void_p, # ctx
@@ -79,11 +81,27 @@ class RWKVSharedLibrary:
             Path to model file in ggml format.
         thread_count : int
             Count of threads to use, must be positive.
+        gpu_layers_count : int
+            Count of layers to load on gpu, must be positive only enabled with cuBLAS.
         """
 
-        ptr = self.library.rwkv_init_from_file(model_file_path.encode('utf-8'), ctypes.c_uint32(thread_count))
+        ptr = self.library.rwkv_init_from_file(model_file_path.encode('utf-8'),
+                                               ctypes.c_uint32(thread_count))
         assert ptr is not None, 'rwkv_init_from_file failed, check stderr'
         return RWKVContext(ptr)
+
+    def rwkv_gpu_offload_layers(self, ctx: RWKVContext, gpu_layers_count: int) -> None:
+        """
+        Offloads specified layers of context onto GPU using cuBLAS, if it is enabled.
+        If rwkv.cpp was compiled without cuBLAS support, this function is a no-op.
+
+        Parameters
+        ----------
+        gpu_layers_count : int
+            Count of layers to load onto gpu, must be >= 0, only enabled with cuBLAS.
+        """
+
+        assert self.library.rwkv_gpu_offload_layers(ctx.ptr, ctypes.c_uint32(gpu_layers_count)), 'rwkv_gpu_offload_layers failed, check stderr'
 
     def rwkv_eval(
             self,
@@ -187,6 +205,7 @@ class RWKVSharedLibrary:
 
         return self.library.rwkv_get_system_info_string().decode('utf-8')
 
+
 def load_rwkv_shared_library() -> RWKVSharedLibrary:
     """
     Attempts to find rwkv.cpp shared library and load it.
@@ -209,12 +228,18 @@ def load_rwkv_shared_library() -> RWKVSharedLibrary:
         f'../bin/Release/{file_name}',
         # If we are in repo root directory
         f'bin/Release/{file_name}',
+        # If we compiled in build directory
+        f'build/bin/Release/{file_name}',
+        # If we compiled in build directory
+        f'build/{file_name}',
         # Search relative to this file
         str(repo_root_dir / 'bin' / 'Release' / file_name),
         # Fallback
-        str(repo_root_dir / file_name),
-        str(repo_root_dir / 'rwkvcpp' / file_name)
+        str(repo_root_dir / 'rwkvcpp' / file_name),
+        
+    
     ]
+
     for path in paths:
         if os.path.isfile(path):
             return RWKVSharedLibrary(path)
