@@ -38,8 +38,7 @@ def write_state_dict(state_dict: Dict[str, torch.Tensor], dest_path: str, data_t
             '=iiiiii',
             # Magic: 'ggmf' in hex
             0x67676d66,
-            # llama.cpp uses file versions 1+, let's use 100+ for rwkv.cpp
-            100,
+            101,
             n_vocab,
             n_embed,
             n_layer,
