@@ -558,6 +558,7 @@
       watch: {
         current_func: (current_func) => {
           app.func_mode = app.func_menu.find((i) => i.name == current_func);
+          document.location.hash=current_func
         },
         tab: (val) => {
           if (val > 2) {
@@ -873,6 +874,8 @@
       localStorage["wenda_saved_auto"] = JSON.stringify(saved_auto);
       location.reload();
     };
+
+    setTimeout(()=>app.current_func=decodeURI(document.location.hash.replace('#','')),1000)
   </script>
 </body>
 
