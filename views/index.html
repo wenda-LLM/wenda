@@ -354,7 +354,7 @@
                   </template>
                   <span>{{$t("history")}}</span>
                 </v-tooltip>
-                <v-tooltip bottom v-if="!loading&&chat.length>0">
+                <v-tooltip bottom v-if="(!loading)&&(chat.length>0)">
                   <template v-slot:activator="{ on, attrs }">
                     <v-icon :color="color" v-bind="attrs" v-on="on"
                       @click="re_generate()">
@@ -374,7 +374,7 @@
                   </template>
                   <span>{{$t("clear_history")}}</span>
                 </v-tooltip>
-                <b v-if="loading">TPS:{{TPS.toFixed(2)}}</b>
+                <b>TPS:{{TPS.toFixed(2)}}</b>
               </div>
               <v-row no-gutters>
                 <v-col cols="8" md="11">
