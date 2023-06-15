@@ -374,6 +374,7 @@
                   </template>
                   <span>{{$t("clear_history")}}</span>
                 </v-tooltip>
+                <b v-if="loading">TPS:{{TPS.toFixed(2)}}</b>
               </div>
               <v-row no-gutters>
                 <v-col cols="8" md="11">
@@ -684,6 +685,7 @@
           color: "purple",
           //管理界面中，搜索auto的关键词
           autos_search: "",
+          TPS:0
         };
       },
       methods: {
@@ -801,14 +803,12 @@
       setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
       // 调用websocket聊天，具体函数在wd_sdk.js中
       let last_token_time = Date.now()
-      let TPS = 0
       await send_raw(s.replace(/\r\n/g, "\n"), keyword, QA_history, (message) => {
         is_wait_till = true;
         current_session.content = message;
         let now = Date.now()
         let cost = now - last_token_time
-        TPS=TPS*0.9+(100 / cost )*0.1
-        alert("TPS:" + TPS.toFixed(2))
+        app.TPS=app.TPS*0.95+(100 / cost )*0.05
         last_cost = cost
         last_token_time = now
       });
