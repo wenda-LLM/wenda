@@ -4,7 +4,7 @@ websockets
 fastapi
 sqlalchemy
 sqlalchemy_utils
-transformers
+transformers==4.26.1
 faiss-cpu
 sentence_transformers
 langchain
