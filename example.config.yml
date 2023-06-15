@@ -104,8 +104,8 @@ llm_models:
   llama: 
      path: "model/stable-vicuna-13B.ggml.q4_2.bin"
      #llama模型位置
-     strategy: ""
-     #llama模型参数 暂时不用
+   #   strategy: "Q8_0"       #cpp:运行方式，设置strategy诸如"Q8_0"即可开启
+     strategy: "cuda fp16i8"
   moss: 
      path: "model/moss-moon-003-sft-plugin-int4"
      #模型位置
