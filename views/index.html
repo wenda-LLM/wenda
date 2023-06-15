@@ -1,27 +1,28 @@
 <html>
 
-<head>
-  <title>闻达</title>
-  <meta charset="utf-8" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=400,  user-scalable=no" />
-  <link rel="shortcut icon" href="wd.png" />
-  <!-- <link href="https://npm.elemecdn.com/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
+  <head>
+    <title>闻达</title>
+    <meta charset="utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=400,  user-scalable=no" />
+    <link rel="shortcut icon" href="wd.png" />
+    <!-- <link href="https://npm.elemecdn.com/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
 	<link href="https://npm.elemecdn.com/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
 	<script src="https://npm.elemecdn.com/vue@2.x/dist/vue.min.js"></script>
 	<script src="https://npm.elemecdn.com/vuetify@2.x/dist/vuetify.min.js"></script> -->
-  <link rel="manifest" href="manifest.json" />
-  <link href="static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link rel="manifest" href="manifest.json" />
+    <link href="static/mdi_font/css/materialdesignicons.min.css"
+      rel="stylesheet" />
 
-  <link href="static/vuetify.min.css" rel="stylesheet" />
-  <script src="static/vue.js"></script>
-  <script src="static/vue-i18n.js"></script>
-  <script src="static/vuetify.min.js"></script>
-  <script src="static/markdown-it.min.js"></script>
-  <script src="static/strings.js"></script>
-  <style>
+    <link href="static/vuetify.min.css" rel="stylesheet" />
+    <script src="static/vue.js"></script>
+    <script src="static/vue-i18n.js"></script>
+    <script src="static/vuetify.min.js"></script>
+    <script src="static/markdown-it.min.js"></script>
+    <script src="static/strings.js"></script>
+    <style>
     .v-navigation-drawer__content::-webkit-scrollbar {
       width: 5px;
     }
@@ -192,358 +193,400 @@
       margin: 0;
     }
   </style>
-</head>
+  </head>
 
-<body>
-  <div id="app" v-cloak>
-    <v-app>
-      <v-navigation-drawer width="350" v-model="drawer" style="height: 100%; position: fixed" temporary>
-        <v-list>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="text-h6"> Auto </v-list-item-title>
-              <br />
-              <v-list-item-subtitle>
-                {{$t("feature_selection") }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-          <v-divider></v-divider>
-          <v-list-item v-for="func in func_menu" @click.stop="load_func(func)" v-if="func.name!=''">
-            <v-list-item-title v-text="func.name"> </v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-navigation-drawer>
-      <v-toolbar dark :color="color+' darken-2'" v-if="show_header">
-        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title><a style="text-decoration: none; color: white"
-            href="https://github.com/l15y/wenda">{{$t("wenda") }}</a></v-toolbar-title>
-      </v-toolbar>
-      <v-tabs-items v-model="tab" style="margin-bottom: 48px" :style="{marginTop: show_header ? '64px' : '0px'}">
-        <v-tab-item key="chat">
-          <div v-for="(current_conversation, index) in chat" :key="index"
-            :class="['d-flex flex-row align-center my-2', current_conversation.role == 'user' ? 'justify-end': null]">
-            <span v-if="current_conversation.role == 'user'" class="ask" v-text="current_conversation.content"></span>
-            <v-hover v-slot="{ hover }">
-              <div>
-                <v-avatar :class="current_conversation.role == 'user' ? 'user-avatar': 'bot-avatar'" size="36"
-                  class="头像">
-                  <span>{{ {user:"问",AI:'答'}[current_conversation.role]
-                    }}</span>
-                </v-avatar>
+  <body>
+    <div id="app" v-cloak>
+      <v-app>
+        <v-navigation-drawer width="350" v-model="drawer"
+          style="height: 100%; position: fixed" temporary>
+          <v-list>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title class="text-h6"> Auto </v-list-item-title>
                 <br />
-                <v-expand-transition>
-                  <div v-if="hover" class="float">
-                    <v-icon v-if="!loading" large text :color="color"
-                      @click="delete_current_conversation(current_conversation)">
-                      mdi-delete
-                    </v-icon>
+                <v-list-item-subtitle>
+                  {{$t("feature_selection") }}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider></v-divider>
+            <v-list-item v-for="func in func_menu" @click.stop="load_func(func)"
+              v-if="func.name!=''">
+              <v-list-item-title v-text="func.name"> </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-navigation-drawer>
+        <v-toolbar dark :color="color+' darken-2'" v-if="show_header">
+          <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+          <v-toolbar-title><a style="text-decoration: none; color: white"
+              href="https://github.com/l15y/wenda">{{$t("wenda") }}</a></v-toolbar-title>
+        </v-toolbar>
+        <v-tabs-items v-model="tab" style="margin-bottom: 48px"
+          :style="{marginTop: show_header ? '64px' : '0px'}">
+          <v-tab-item key="chat">
+            <div v-for="(current_conversation, index) in chat" :key="index"
+              :class="['d-flex flex-row align-center my-2', current_conversation.role == 'user' ? 'justify-end': null]">
+              <span v-if="current_conversation.role == 'user'" class="ask"
+                v-text="current_conversation.content"></span>
+              <v-hover v-slot="{ hover }">
+                <div>
+                  <v-avatar
+                    :class="current_conversation.role == 'user' ? 'user-avatar': 'bot-avatar'"
+                    size="36"
+                    class="头像">
+                    <span>{{ {user:"问",AI:'答'}[current_conversation.role]
+                      }}</span>
+                  </v-avatar>
+                  <br />
+                  <v-expand-transition>
+                    <div v-if="hover" class="float">
+                      <v-icon v-if="!loading" large text :color="color"
+                        @click="delete_current_conversation(current_conversation)">
+                        mdi-delete
+                      </v-icon>
 
-                    <v-icon large text :color="color" @click="copy(current_conversation.content)">
-                      mdi-content-copy
-                    </v-icon>
-                  </div>
-                </v-expand-transition>
-              </div>
-            </v-hover>
+                      <v-icon large text :color="color"
+                        @click="copy(current_conversation.content)">
+                        mdi-content-copy
+                      </v-icon>
+                    </div>
+                  </v-expand-transition>
+                </div>
+              </v-hover>
 
-            <span v-if="current_conversation.role != 'user'" class="answer">
-              <div v-html="md2html(current_conversation.content)"></div>
-              <template style="margin-top: 10px">
-                <v-tooltip bottom v-for="source in current_conversation.sources" :max-width="500">
-                  <template v-slot:activator="{ on, attrs }">
-                    <div v-bind="attrs" v-on="on" style="margin: 3px">
-                      <v-btn outlined style="
+              <span v-if="current_conversation.role != 'user'" class="answer">
+                <div v-html="md2html(current_conversation.content)"></div>
+                <template style="margin-top: 10px">
+                  <v-tooltip bottom
+                    v-for="source in current_conversation.sources"
+                    :max-width="500">
+                    <template v-slot:activator="{ on, attrs }">
+                      <div v-bind="attrs" v-on="on" style="margin: 3px">
+                        <v-btn outlined style="
                             margin-top: 0px;
                             max-width: -webkit-fill-available;
                             overflow-x: hidden;
                           " :color="color" rounded="lg"
-                        @click='source.url?window.open(source.url,"_blank"):source.click()' x-small>
-                        <span class="d-inline-block text-truncate" style="max-width: 150px">
-                          {{source.title}}
-                        </span>
-                      </v-btn>
+                          @click='source.url?window.open(source.url,"_blank"):source.click()'
+                          x-small>
+                          <span class="d-inline-block text-truncate"
+                            style="max-width: 150px">
+                            {{source.title}}
+                          </span>
+                        </v-btn>
+                      </div>
+                    </template>
+                    <span v-html="source.content"></span>
+                  </v-tooltip>
+                </template>
+              </span>
+            </div>
+            <br /><br /><br /><br /><br /><br /><br /><br /><br />
+            <v-footer fixed class="pr-0">
+              <div class="chat_toolbar">
+
+                <v-tooltip bottom v-for="button in buttons">
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on">
+                      <v-icon :color="button.color()" text @click="button.click">
+                        mdi-{{button.icon}}
+                      </v-icon>
                     </div>
                   </template>
-                  <span v-html="source.content"></span>
+                  <span>{{button.description}}</span>
                 </v-tooltip>
-              </template>
-            </span>
-          </div>
-          <br /><br /><br /><br /><br /><br /><br /><br /><br />
-          <v-footer fixed class="pr-0">
-            <div class="chat_toolbar">
-
-              <v-tooltip bottom v-for="button in buttons">
-                <template v-slot:activator="{ on, attrs }">
-                  <div v-bind="attrs" v-on="on">
-                    <v-icon :color="button.color()" text @click="button.click">
-                      mdi-{{button.icon}}
+                {{buttons.length>0?"|":""}}
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on">
+                      <v-icon :color="current_func=='知识库'?color:''" text
+                        @click="current_func=='知识库'?current_func='':current_func='知识库'">
+                        mdi-book-open-variant
+                      </v-icon>
+                    </div>
+                  </template>
+                  <span>{{$t("zhishiku")}}</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on">
+                      <v-icon :color="current_func=='快速知识库'?color:''" text
+                        @click="current_func=='快速知识库'?current_func='':current_func='快速知识库'">
+                        mdi-lightning-bolt
+                      </v-icon>
+                    </div>
+                  </template>
+                  <span>{{$t("zhishiku")}}快速模式</span>
+                </v-tooltip>
+                |
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on">
+                      <v-icon :color="sst_started?color:''" text
+                        @click="sst_started?stop_listen():listen()">
+                        mdi-microphone
+                      </v-icon>
+                    </div>
+                  </template>
+                  <span>语音输入</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on">
+                      <v-icon :color="tts_on?color:''" text
+                        @click="tts_on=!tts_on">
+                        mdi-headset
+                      </v-icon>
+                    </div>
+                  </template>
+                  <span>阅读文本</span>
+                </v-tooltip>
+                |
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on">
+                      <v-icon :color="history_on?color:''" text
+                        @click="history_on=!history_on">
+                        mdi-history
+                      </v-icon>
+                    </div>
+                  </template>
+                  <span>{{$t("history")}}</span>
+                </v-tooltip>
+                <v-tooltip bottom v-if="!loading&&chat.length>0">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-icon :color="color" v-bind="attrs" v-on="on"
+                      @click="re_generate()">
+                      mdi-refresh
                     </v-icon>
+                  </template>
+                  <span>{{$t("re_generate")}}</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on">
+                      <v-icon :color="color" text
+                        @click="chat=[];save_history()">
+                        mdi-delete-clock-outline
+                      </v-icon>
+                    </div>
+                  </template>
+                  <span>{{$t("clear_history")}}</span>
+                </v-tooltip>
+              </div>
+              <v-row no-gutters>
+                <v-col cols="8" md="11">
+                  <v-textarea hide-details no-resize rows="3" :loading="loading"
+                    :placeholder="$t(func_mode.description)"
+                    @keypress.enter="submit" v-model="question">
+                  </v-textarea>
+                </v-col>
+                <v-col cols="4" md="1">
+                  <div style="text-align: center">
+                    <v-btn style="margin-bottom: 10px" v-if="loading"
+                      :color="color" rounded="lg" dark size="x-large"
+                      @click="abort_chatting()">
+                      {{$t("abord")}}
+                    </v-btn>
+                    <v-btn style="margin-bottom: 10px" :color="color"
+                      rounded="lg" dark size="x-large" @click="submit()"
+                      v-if="!loading">
+                      {{$t("send")}}
+                    </v-btn>
+                    <br />
+                    <v-expand-transition>
+                      <v-chip v-if="func_mode.name!=''" :color="color" outlined
+                        close @click:close="current_func=''">
+                        <span class="d-inline-block text-truncate"
+                          style="max-width: 120px">
+                          {{func_mode.name}}
+                        </span>
+                      </v-chip>
+                    </v-expand-transition>
                   </div>
-                </template>
-                <span>{{button.description}}</span>
-              </v-tooltip>
-              {{buttons.length>0?"|":""}}
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <div v-bind="attrs" v-on="on">
-                    <v-icon :color="current_func=='知识库'?color:''" text
-                      @click="current_func=='知识库'?current_func='':current_func='知识库'">
-                      mdi-book-open-variant
+                </v-col>
+              </v-row>
+            </v-footer>
+          </v-tab-item>
+          <v-tab-item key="setting">
+            <v-card elevation="2">
+              <v-card-title>
+                <v-text-field v-model="autos_search" append-icon="mdi-magnify"
+                  label="Auto管理" single-line
+                  hide-details></v-text-field>
+              </v-card-title>
+              <v-divider></v-divider>
+              <v-card-text>
+                <v-data-table item-key="name" show-expand :search="autos_search"
+                  :headers="[{ text: '名称', value: 'name' },{ text: '描述', value: 'description' },{ text: '禁用', value: 'disabled' },  { text: '', value: 'data-table-expand' },]"
+                  :items="autos">
+                  <template v-slot:item.disabled="{ item }">
+                    <v-switch v-model="item.disabled" :color="color"></v-switch>
+                  </template>
+                  <template v-slot:expanded-item="{ headers, item }">
+                    <v-icon v-if="find_auto(item.name)>-1" large text
+                      @click="del_auto(item.name)">
+                      mdi-delete
                     </v-icon>
-                  </div>
-                </template>
-                <span>{{$t("zhishiku")}}</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <div v-bind="attrs" v-on="on">
-                    <v-icon :color="current_func=='快速知识库'?color:''" text
-                      @click="current_func=='快速知识库'?current_func='':current_func='快速知识库'">
-                      mdi-lightning-bolt
-                    </v-icon>
-                  </div>
-                </template>
-                <span>{{$t("zhishiku")}}快速模式</span>
-              </v-tooltip>
-              |
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <div v-bind="attrs" v-on="on">
-                    <v-icon :color="sst_started?color:''" text @click="sst_started?stop_listen():listen()">
-                      mdi-microphone
-                    </v-icon>
-                  </div>
-                </template>
-                <span>语音输入</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <div v-bind="attrs" v-on="on">
-                    <v-icon :color="tts_on?color:''" text @click="tts_on=!tts_on">
-                      mdi-headset
-                    </v-icon>
-                  </div>
-                </template>
-                <span>阅读文本</span>
-              </v-tooltip>
-              |
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <div v-bind="attrs" v-on="on">
-                    <v-icon :color="history_on?color:''" text @click="history_on=!history_on">
-                      mdi-history
-                    </v-icon>
-                  </div>
-                </template>
-                <span>{{$t("history")}}</span>
-              </v-tooltip>
-              <v-tooltip bottom v-if="!loading&&chat.length>0">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-icon :color="color" v-bind="attrs" v-on="on" @click="re_generate()">
-                    mdi-refresh
-                  </v-icon>
-                </template>
-                <span>{{$t("re_generate")}}</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <div v-bind="attrs" v-on="on">
-                    <v-icon :color="color" text @click="chat=[];save_history()">
-                      mdi-delete-clock-outline
-                    </v-icon>
-                  </div>
-                </template>
-                <span>{{$t("clear_history")}}</span>
-              </v-tooltip>
-            </div>
-            <v-row no-gutters>
-              <v-col cols="8" md="11">
-                <v-textarea hide-details no-resize rows="3" :loading="loading" :placeholder="$t(func_mode.description)"
-                  @keypress.enter="submit" v-model="question">
-                </v-textarea>
-              </v-col>
-              <v-col cols="4" md="1">
-                <div style="text-align: center">
-                  <v-btn style="margin-bottom: 10px" v-if="loading" :color="color" rounded="lg" dark size="x-large"
-                    @click="abort_chatting()">
-                    {{$t("abord")}}
-                  </v-btn>
-                  <v-btn style="margin-bottom: 10px" :color="color" rounded="lg" dark size="x-large" @click="submit()"
-                    v-if="!loading">
-                    {{$t("send")}}
-                  </v-btn>
-                  <br />
-                  <v-expand-transition>
-                    <v-chip v-if="func_mode.name!=''" :color="color" outlined close @click:close="current_func=''">
-                      <span class="d-inline-block text-truncate" style="max-width: 120px">
-                        {{func_mode.name}}
-                      </span>
-                    </v-chip>
-                  </v-expand-transition>
-                </div>
-              </v-col>
-            </v-row>
-          </v-footer>
-        </v-tab-item>
-        <v-tab-item key="setting">
-          <v-card elevation="2">
-            <v-card-title>
-              <v-text-field v-model="autos_search" append-icon="mdi-magnify" label="Auto管理" single-line
-                hide-details></v-text-field>
-            </v-card-title>
-            <v-divider></v-divider>
-            <v-card-text>
-              <v-data-table item-key="name" show-expand :search="autos_search"
-                :headers="[{ text: '名称', value: 'name' },{ text: '描述', value: 'description' },{ text: '禁用', value: 'disabled' },  { text: '', value: 'data-table-expand' },]"
-                :items="autos">
-                <template v-slot:item.disabled="{ item }">
-                  <v-switch v-model="item.disabled" :color="color"></v-switch>
-                </template>
-                <template v-slot:expanded-item="{ headers, item }">
-                  <v-icon v-if="find_auto(item.name)>-1" large text @click="del_auto(item.name)">
-                    mdi-delete
-                  </v-icon>
-                  <pre style="width: 200px" :colspan="headers.length">
+                    <pre style="width: 200px" :colspan="headers.length">
 {{ item.content }}</pre>
-                </template>
-              </v-data-table>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn :color="color" dark size="x-large"
-                @click="disabled_auto={};app.autos.forEach(auto=>disabled_auto[auto.name]=auto.disabled);localStorage['wenda_disabled_auto'] =JSON.stringify(disabled_auto)">
-                保存（刷新后起效）
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-          <v-card elevation="2">
-            <v-card-title>模型运行参数</v-card-title>
-            <v-divider></v-divider>
-            <v-card-text><br />
-              <v-form>
-                <v-slider :min="1000" :max="4000" :step="10" v-model="max_length" :thumb-color="color"
-                  label="max_length" thumb-label><template v-slot:append>
-                    <v-text-field v-model="max_length" class="mt-0 pt-0" type="number" style="width: 60px">
-                    </v-text-field>
                   </template>
-                </v-slider>
-                <v-slider :min="0" :max="2" :step="0.1" v-model="temperature" :thumb-color="color" label="temperature"
-                  thumb-label><template v-slot:append>
-                    <v-text-field v-model="temperature" class="mt-0 pt-0" type="number" style="width: 60px">
-                    </v-text-field>
-                  </template>
-                </v-slider>
-                <v-slider :min="0" :max="1" :step="0.1" v-model="top_p" :thumb-color="color" label="top_p" thumb-label>
-                  <template v-slot:append>
-                    <v-text-field v-model="top_p" class="mt-0 pt-0" type="number" style="width: 60px">
-                    </v-text-field>
-                  </template>
-                </v-slider>
-                <v-row>
-                  <v-col cols="12" sm="2">
-                    <v-switch hide-details :label="$t('simplify_historical_information')" :color="color" inset
-                      v-model="simplify_historical_information">
-                    </v-switch>
-                  </v-col>
-                  <v-col cols="12" sm="10">
-                    <v-slider :min="0" :max="10" :step="1" v-model="history_limit" :thumb-color="color" label="对话轮数限制"
-                      thumb-label>
-                      <template v-slot:append>
-                        <v-text-field v-model="history_limit" class="mt-0 pt-0" type="number" style="width: 60px">
-                        </v-text-field>
-                      </template>
-                    </v-slider>
-                  </v-col>
-                </v-row>
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-tab-item>
-        <v-tab-item key="zhishiku">
-          <h1>知识库管理</h1>
-          <v-card elevation="2">
-            <v-card-title>动态调整知识库</v-card-title>
-            <v-divider></v-divider>
-            <v-card-text>网页刷新后恢复<br />
-              <v-row>
-                <v-col cols="8">
-                  <v-combobox v-model="zsk_libraryStategy" :items="['rtst:3:default agents:0','sogowx:3 bing:3']"
-                    label="库参数"></v-combobox>
-                </v-col>
-                <v-col cols="4">
-                  <v-text-field v-model="zsk_maxItmes" outlined label="最大数量"></v-text-field>
-                </v-col>
-              </v-row>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn :color="color" dark size="x-large"
-                @click="find=(s, step = 1)=>find_dynamic(s, step, {libraryStategy:zsk_libraryStategy,maxItmes:zsk_maxItmes})">
-                设置
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-          <v-card elevation="2">
-            <v-card-title>知识提取提示词</v-card-title>
-            <v-divider></v-divider>
-            <v-card-text><br />
-              <v-combobox v-model="zsk_summarize_prompt" :items="['总结以下文段中与问题相关的信息。']" label="总结提示词"></v-combobox>
-
-              <v-combobox v-model="zsk_answer_prompt" :items="['学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。']"
-                label="回答提示词"></v-combobox>
-            </v-card-text>
-          </v-card>
-          <v-card elevation="2">
-            <v-card-title>查询知识库</v-card-title>
-            <v-divider></v-divider><br />
-            <v-card-text>
-              <v-row>
-                <v-col cols="12" sm="6">
-                  <v-text-field v-model="test_zsk_prompt" outlined label="关键词" clearable></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-text-field v-model="zsk_step" outlined label="上下文数量" clearable></v-text-field>
-                </v-col>
-              </v-row>
-              <v-data-table
-                :headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
-                :items="zhishiku" hide-default-header hide-default-footer>
-                <template v-slot:item.title="{ item }">
-                  <p v-html="md2html(item.title)"></p>
-                </template>
-              </v-data-table>
+                </v-data-table>
+              </v-card-text>
               <v-card-actions>
-                <v-btn :color="color" dark size="x-large" @click="find(test_zsk_prompt,zsk_step)">
-                  测试
+                <v-btn :color="color" dark size="x-large"
+                  @click="disabled_auto={};app.autos.forEach(auto=>disabled_auto[auto.name]=auto.disabled);localStorage['wenda_disabled_auto'] =JSON.stringify(disabled_auto)">
+                  保存（刷新后起效）
                 </v-btn>
               </v-card-actions>
-            </v-card-text>
-          </v-card>
-        </v-tab-item>
-        <v-tab-item v-for="plugin in plugins" :key="plugin.name">
-          <iframe frameborder="0" :src="plugin.url+'?time='+new Date().getTime()"
-            style="width: 100%; height: 100%"></iframe>
-        </v-tab-item>
-      </v-tabs-items>
-      <v-tabs v-model="tab" :color="color" style="background: #fff">
-        <v-tabs-slider :color="color"></v-tabs-slider>
-        <v-tab key="chat">
-          <v-icon text> mdi-tooltip-edit-outline </v-icon>
-        </v-tab>
-        <v-tab key="setting">
-          <v-icon text> mdi-cog </v-icon>
-        </v-tab>
-        <v-tab key="zhishiku">
-          <v-icon text> mdi-book-search-outline </v-icon>
-        </v-tab>
-        <v-tab v-for="plugin in plugins" :key="plugin.name">
-          <v-icon text v-if="plugin.icon"> {{"mdi-"+plugin.icon}} </v-icon>{{plugin.name}}
-        </v-tab>
-      </v-tabs>
-      <v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line">{{snackbar_text}}</v-snackbar>
-    </v-app>
-  </div>
-  <script>
+            </v-card>
+            <v-card elevation="2">
+              <v-card-title>模型运行参数</v-card-title>
+              <v-divider></v-divider>
+              <v-card-text><br />
+                <v-form>
+                  <v-slider :min="1000" :max="4000" :step="10"
+                    v-model="max_length" :thumb-color="color"
+                    label="max_length" thumb-label><template v-slot:append>
+                      <v-text-field v-model="max_length" class="mt-0 pt-0"
+                        type="number" style="width: 60px">
+                      </v-text-field>
+                    </template>
+                  </v-slider>
+                  <v-slider :min="0" :max="2" :step="0.1" v-model="temperature"
+                    :thumb-color="color" label="temperature"
+                    thumb-label><template v-slot:append>
+                      <v-text-field v-model="temperature" class="mt-0 pt-0"
+                        type="number" style="width: 60px">
+                      </v-text-field>
+                    </template>
+                  </v-slider>
+                  <v-slider :min="0" :max="1" :step="0.1" v-model="top_p"
+                    :thumb-color="color" label="top_p" thumb-label>
+                    <template v-slot:append>
+                      <v-text-field v-model="top_p" class="mt-0 pt-0"
+                        type="number" style="width: 60px">
+                      </v-text-field>
+                    </template>
+                  </v-slider>
+                  <v-row>
+                    <v-col cols="12" sm="2">
+                      <v-switch hide-details
+                        :label="$t('simplify_historical_information')"
+                        :color="color" inset
+                        v-model="simplify_historical_information">
+                      </v-switch>
+                    </v-col>
+                    <v-col cols="12" sm="10">
+                      <v-slider :min="0" :max="10" :step="1"
+                        v-model="history_limit" :thumb-color="color"
+                        label="对话轮数限制"
+                        thumb-label>
+                        <template v-slot:append>
+                          <v-text-field v-model="history_limit"
+                            class="mt-0 pt-0" type="number" style="width: 60px">
+                          </v-text-field>
+                        </template>
+                      </v-slider>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+          <v-tab-item key="zhishiku">
+            <h1>知识库管理</h1>
+            <v-card elevation="2">
+              <v-card-title>动态调整知识库</v-card-title>
+              <v-divider></v-divider>
+              <v-card-text>网页刷新后恢复<br />
+                <v-row>
+                  <v-col cols="8">
+                    <v-combobox v-model="zsk_libraryStategy"
+                      :items="['rtst:3:default agents:0','sogowx:3 bing:3']"
+                      label="库参数"></v-combobox>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-text-field v-model="zsk_maxItmes" outlined label="最大数量"></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn :color="color" dark size="x-large"
+                  @click="find=(s, step = 1)=>find_dynamic(s, step, {libraryStategy:zsk_libraryStategy,maxItmes:zsk_maxItmes})">
+                  设置
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+            <v-card elevation="2">
+              <v-card-title>知识提取提示词</v-card-title>
+              <v-divider></v-divider>
+              <v-card-text><br />
+                <v-combobox v-model="zsk_summarize_prompt"
+                  :items="['总结以下文段中与问题相关的信息。']" label="总结提示词"></v-combobox>
+
+                <v-combobox v-model="zsk_answer_prompt"
+                  :items="['学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。']"
+                  label="回答提示词"></v-combobox>
+              </v-card-text>
+            </v-card>
+            <v-card elevation="2">
+              <v-card-title>查询知识库</v-card-title>
+              <v-divider></v-divider><br />
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12" sm="6">
+                    <v-text-field v-model="test_zsk_prompt" outlined label="关键词"
+                      clearable></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-text-field v-model="zsk_step" outlined label="上下文数量"
+                      clearable></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-data-table
+                  :headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
+                  :items="zhishiku" hide-default-header hide-default-footer>
+                  <template v-slot:item.title="{ item }">
+                    <p v-html="md2html(item.title)"></p>
+                  </template>
+                </v-data-table>
+                <v-card-actions>
+                  <v-btn :color="color" dark size="x-large"
+                    @click="find(test_zsk_prompt,zsk_step)">
+                    测试
+                  </v-btn>
+                </v-card-actions>
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+          <v-tab-item v-for="plugin in plugins" :key="plugin.name">
+            <iframe frameborder="0"
+              :src="plugin.url+'?time='+new Date().getTime()"
+              style="width: 100%; height: 100%"></iframe>
+          </v-tab-item>
+        </v-tabs-items>
+        <v-tabs v-model="tab" :color="color" style="background: #fff">
+          <v-tabs-slider :color="color"></v-tabs-slider>
+          <v-tab key="chat">
+            <v-icon text> mdi-tooltip-edit-outline </v-icon>
+          </v-tab>
+          <v-tab key="setting">
+            <v-icon text> mdi-cog </v-icon>
+          </v-tab>
+          <v-tab key="zhishiku">
+            <v-icon text> mdi-book-search-outline </v-icon>
+          </v-tab>
+          <v-tab v-for="plugin in plugins" :key="plugin.name">
+            <v-icon text v-if="plugin.icon"> {{"mdi-"+plugin.icon}} </v-icon>{{plugin.name}}
+          </v-tab>
+        </v-tabs>
+        <v-snackbar v-model="snackbar" :timeout="3000"
+          style="white-space: pre-line">{{snackbar_text}}</v-snackbar>
+      </v-app>
+    </div>
+    <script>
     func = [
       {
         name: "",
@@ -762,7 +805,7 @@
         is_wait_till = true;
         current_session.content = message;
         now = Date.now()
-        alert("TPS:"+1000/(now - last_token_time))
+        alert("TPS:"+(100/(now - last_token_time).toFixed(2)))
         last_token_time = now
       });
       if (app.tts_on) {
@@ -787,9 +830,9 @@
     // 覆盖 console.warn 函数以不执行任何操作
     console.warn = function () { };
   </script>
-  <script src="wd_sdk.js"></script>
-  <script src="api/llm"></script>
-  <script>
+    <script src="wd_sdk.js"></script>
+    <script src="api/llm"></script>
+    <script>
     // 从插件内容中提取描述信息
     get_auto_description = (plugin) => {
       try {
@@ -877,6 +920,6 @@
 
     setTimeout(()=>app.current_func=decodeURI(document.location.hash.replace('#','')),1000)
   </script>
-</body>
+  </body>
 
 </html>
