@@ -19,9 +19,11 @@ def chat_init(history):
 
 def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
     yield str(len(prompt))+'字正在计算'
+    if max_length>100:
+        max_length=100
     inputs = tokenizer(prompt, return_tensors='pt')
     inputs = inputs.to('cuda:0')
-    pred = model.generate(**inputs, max_new_tokens=512, do_sample=True)
+    pred = model.generate(**inputs, max_new_tokens=max_length, do_sample=True)
     yield tokenizer.decode(pred.cpu()[0], skip_special_tokens=True)
 
 # def sum_values(dict):
@@ -44,9 +46,10 @@ def load_model():
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     tokenizer = AutoTokenizer.from_pretrained(settings.llm.path, trust_remote_code=True)
-    model = AutoModelForCausalLM.from_pretrained(settings.llm.path, device_map="auto", trust_remote_code=True)
-
-        
+    model = AutoModelForCausalLM.from_pretrained(settings.llm.path, trust_remote_code=True)
+    model = model.half()
+    model = model.cuda()
+    model = model.eval()
     # device, precision = s[0][0], s[0][1]
     # # 根据设备执行不同的操作
     # if device == 'cpu':
