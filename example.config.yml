@@ -105,6 +105,10 @@ llm_models:
      path: "model/baichuan-7B"
      #模型位置"
      strategy: "cuda fp16"
+  aquila: 
+     path: "model/aquilachat-7b"
+     #模型位置"
+     strategy: "cuda fp16"
   llama: 
      path: "model/stable-vicuna-13B.ggml.q4_2.bin"
      #llama模型位置

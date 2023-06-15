@@ -1,4 +1,5 @@
 from plugins.common import settings
+import torch
 
 def chat_init(history):
     history_formatted = None
@@ -55,7 +56,6 @@ def load_model():
     strategy = ('->'.join([x.strip() for x in settings.llm.strategy.split('->')])).replace('->', ' -> ')
     s = [x.strip().split(' ') for x in strategy.split('->')]
     print(s)
-    import torch
     from transformers import AutoTokenizer, AutoModelForCausalLM
 
     tokenizer = AutoTokenizer.from_pretrained(settings.llm.path)
