@@ -4,7 +4,7 @@ websockets
 fastapi
 sqlalchemy
 sqlalchemy_utils
-git+https://github.com/huggingface/transformers.git
+transformers
 faiss-cpu
 sentence_transformers
 langchain
