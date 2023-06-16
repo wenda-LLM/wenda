@@ -316,10 +316,10 @@ async def websocket_endpoint(websocket: WebSocket):
         if count_before>0:
             time2sleep=(count_before+1)*level
             while time2sleep>0:
-                await websocket.send_text( '正在等待，当前前方用户数：'+str(count_before)+'\n剩余时间：'+str(time2sleep)+"秒")
+                await websocket.send_text( '正在排队，当前计算中用户数：'+str(count_before)+'\n剩余时间：'+str(time2sleep)+"秒")
                 await asyncio.sleep(1)
                 count_before=get_user_count_before(level)
-                if count_before==0:
+                if count_before<4-level:
                     break
                 time2sleep-=1
         lock=Lock(level)
