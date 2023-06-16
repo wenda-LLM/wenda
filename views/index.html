@@ -70,6 +70,19 @@
       line-height: 1.2;
     }
 
+    pre:has(code) {
+      background-color: rgb(0 0 0);
+      color: white;
+      padding: 3px;
+      border-radius: 5px;
+    }
+
+    code::before {
+      content: attr(class);
+      color: yellow;
+      float: right;
+    }
+
     .ask {
       margin-left: auto;
       white-space: break-spaces;
@@ -685,7 +698,7 @@
           color: "purple",
           //管理界面中，搜索auto的关键词
           autos_search: "",
-          TPS:0
+          TPS: 0
         };
       },
       methods: {
@@ -808,7 +821,7 @@
         current_session.content = message;
         let now = Date.now()
         let cost = now - last_token_time
-        app.TPS=app.TPS*0.95+(100 / cost )*0.05
+        app.TPS = app.TPS * 0.95 + (100 / cost) * 0.05
         last_cost = cost
         last_token_time = now
       });
