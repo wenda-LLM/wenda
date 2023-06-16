@@ -9,10 +9,12 @@ import re
 interface = ":"
 if settings.llm.path.lower().find("world") > -1:
     print("rwkv world mode!")
+    tokenizers_type = "world"
     user = "Question"
     answer = "Answer"
     tokenizers_file = "rwkv_vocab_v20230424"
 else:
+    tokenizers_type = "20B"
     user = "Bob"
     answer = "Alice"
     tokenizers_file = "20B_tokenizer.json"
@@ -54,6 +56,7 @@ if settings.llm.strategy.startswith("Q"):
     from typing import Optional
     import tokenizers
     from llms.rwkvcpp.sampling import sample_logits
+    from llms.rwkvcpp.rwkv_tokenizer import get_tokenizer
     logits: Optional[torch.Tensor] = None
     state: Optional[torch.Tensor] = None
 
@@ -110,7 +113,7 @@ if settings.llm.strategy.startswith("Q"):
         new = ctx.strip()
         print(f'{new}', end='')
 
-        process_tokens(tokenizer.encode(new).ids,
+        process_tokens(tokenizer_encode(new),
                        new_line_logit_bias=-999999999)
 
         accumulated_tokens: list[int] = []
@@ -158,10 +161,11 @@ if settings.llm.strategy.startswith("Q"):
 
     model = None
     state = None
-    tokenizer = None
+    tokenizer_encode = None
 
     def load_model():
-        global model, tokenizer
+        global model, tokenizer, tokenizer_encode
+
 
         from llms.rwkvcpp.rwkv_cpp_shared_library import load_rwkv_shared_library
         library = load_rwkv_shared_library()
@@ -173,8 +177,9 @@ if settings.llm.strategy.startswith("Q"):
             model = RWKVModel(library, settings.llm.path, cpu_count)
         except:
             model = RWKVModel(library, settings.llm.path)
-        print('Loading 20B tokenizer')
-        tokenizer = tokenizers.Tokenizer.from_file(tokenizers_file)
+        #print('Loading 20B tokenizer')
+        #tokenizer = tokenizers.Tokenizer.from_file(tokenizers_file)
+        tokenizer , tokenizer_encode = get_tokenizer(tokenizers_type)
 
 
 else:

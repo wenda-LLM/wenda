@@ -27,3 +27,4 @@ config.yml
 memory
 .history
 *.zip
+autos/inner.js

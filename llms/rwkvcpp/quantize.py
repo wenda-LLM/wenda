@@ -1,6 +1,6 @@
 # Quantizes rwkv.cpp model file from FP32 or FP16.
 # Available format names are in rwkv_cpp_shared_library.QUANTIZED_FORMAT_NAMES
-# Usage: python quantize.py bin\Release\rwkv.dll C:\rwkv.cpp-169M-FP32.bin C:\rwkv.cpp-169M-Q4_2.bin Q4_2
+# Usage: python quantize.py bin\Release\rwkv.dll C:\rwkv.cpp-169M-FP32.bin C:\rwkv.cpp-169M-Q5_1.bin Q5_1
 
 import argparse
 import rwkv_cpp_shared_library
@@ -11,7 +11,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Quantize rwkv.cpp model file from FP32 or FP16')
     parser.add_argument('src_path', help='Path to FP32/FP16 checkpoint file')
     parser.add_argument('dest_path', help='Path to resulting checkpoint file, will be overwritten')
-    parser.add_argument('format_name', help='Format name, one of ' + ', '.join(format_names), type=str, choices=format_names, default='Q4_2')
+    parser.add_argument('format_name', help='Format name, one of ' + ', '.join(format_names), type=str, choices=format_names, default='Q5_1')
     return parser.parse_args()
 
 def main() -> None:

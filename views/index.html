@@ -289,8 +289,7 @@
                 <v-tooltip bottom v-for="button in buttons">
                   <template v-slot:activator="{ on, attrs }">
                     <div v-bind="attrs" v-on="on">
-                      <v-icon :color="button.color()" text
-                        @click="button.click">
+                      <v-icon :color="button.color()" text @click="button.click">
                         mdi-{{button.icon}}
                       </v-icon>
                     </div>
@@ -355,7 +354,7 @@
                   </template>
                   <span>{{$t("history")}}</span>
                 </v-tooltip>
-                <v-tooltip bottom v-if="!loading&&chat.length>0">
+                <v-tooltip bottom v-if="(!loading)&&(chat.length>0)">
                   <template v-slot:activator="{ on, attrs }">
                     <v-icon :color="color" v-bind="attrs" v-on="on"
                       @click="re_generate()">
@@ -375,6 +374,7 @@
                   </template>
                   <span>{{$t("clear_history")}}</span>
                 </v-tooltip>
+                <b>TPS:{{TPS.toFixed(2)}}</b>
               </div>
               <v-row no-gutters>
                 <v-col cols="8" md="11">
@@ -602,6 +602,7 @@
       watch: {
         current_func: (current_func) => {
           app.func_mode = app.func_menu.find((i) => i.name == current_func);
+          document.location.hash = current_func
         },
         tab: (val) => {
           if (val > 2) {
@@ -684,6 +685,7 @@
           color: "purple",
           //管理界面中，搜索auto的关键词
           autos_search: "",
+          TPS:0
         };
       },
       methods: {
@@ -721,9 +723,9 @@
       } else if (typeof app.func_mode.question == "function") {
         app.func_mode.question();
       } else {
-        let Q=app.question
-        await send(app.func_mode.question +Q , Q);
-        app.question=''
+        let Q = app.question
+        await send(app.func_mode.question + Q, Q);
+        app.question = ''
       }
     };
 
@@ -786,7 +788,7 @@
         } else {
           QA_history = app.chat
         }
-        QA_history=QA_history.filter(i=>!i.no_history)
+        QA_history = QA_history.filter(i => !i.no_history)
       } else {
         QA_history = [];
       }
@@ -800,10 +802,15 @@
       }
       setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
       // 调用websocket聊天，具体函数在wd_sdk.js中
-      await send_raw( s.replace(/\r\n/g, "\n"), keyword, QA_history, (message) => {
+      let last_token_time = Date.now()
+      await send_raw(s.replace(/\r\n/g, "\n"), keyword, QA_history, (message) => {
         is_wait_till = true;
-
         current_session.content = message;
+        let now = Date.now()
+        let cost = now - last_token_time
+        app.TPS=app.TPS*0.95+(100 / cost )*0.05
+        last_cost = cost
+        last_token_time = now
       });
       if (app.tts_on) {
         speak(current_session.content);
@@ -869,17 +876,17 @@
           disabled: get_auto_disabled(plugin, name),
         };
         app.autos.push(auto);
-       setTimeout(()=>{
+        setTimeout(() => {
           if (!auto.disabled) eval(plugin.content);
-        },0)
+        }, 0)
       });
 
       saved_auto = JSON.parse(localStorage["wenda_saved_auto"] || "[]");
       saved_auto.forEach((auto) => {
         app.autos.push(auto);
-        setTimeout(()=>{
+        setTimeout(() => {
           if (!auto.disabled) eval(auto.content);
-        },0)
+        }, 0)
       });
     };
     load_plugins();
@@ -914,6 +921,8 @@
       localStorage["wenda_saved_auto"] = JSON.stringify(saved_auto);
       location.reload();
     };
+
+    setTimeout(() => app.current_func = decodeURI(document.location.hash.replace('#', '')), 1000)
   </script>
   </body>
 

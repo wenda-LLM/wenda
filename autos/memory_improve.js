@@ -19,16 +19,16 @@ func.push({
     name: "记忆增强",
     question: async () => {
         Q = app.question
-        memory = await find_memory(Q)
+        memory = await find_memory_jyzq(Q)
         if (memory.length > 0) {
             A = await send(app.question + memory.map(i => `[在第${i.title}轮的回忆：${i.content}]`).join('\n'))
         } else {
             A = await send(app.question)
         }
-        add_memory( Q )//+ " Alice: " + A
+        add_memory_jyzq( Q )//+ " Alice: " + A
     },
 })
-find_memory = async (s) => {
+find_memory_jyzq = async (s) => {
     response = await fetch("/api/find_rtst_in_memory", {
         method: 'post',
         body: JSON.stringify({
@@ -45,7 +45,7 @@ find_memory = async (s) => {
     return json
 }
 记忆轮次=1
-add_memory = async (txt) => {
+add_memory_jyzq = async (txt) => {
     response = await fetch("/api/upload_rtst_zhishiku", {
         method: 'post',
         body: JSON.stringify({

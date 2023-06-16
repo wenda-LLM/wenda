@@ -81,6 +81,7 @@ llm_models:
      strategy: "cuda fp16i8"
    #   path: "model/rwkv_ggml_q8.bin"           #rwkv模型位置"
    #   strategy: "Q8_0"       #rwkvcpp:运行方式，设置strategy诸如"Q8_0->16"即可开启，代表运行Q8_0模型在16个cpu核心上
+   #记得去https://github.com/saharNooby/rwkv.cpp/releases下最新版本文件替换librwkv.so或rwkv.dll
      #rwkv模型参数"
     
      historymode: state
@@ -100,11 +101,19 @@ llm_models:
      #cuda:0 fp16 *14 -> cuda:1	fp16 多卡流水线并行，使用方法参考RWKV的strategy介绍。总层数28
    #   lora: "model/lora-450"
      #glm-lora模型位置
+  baichuan: 
+     path: "model/baichuan-7B"
+     #模型位置"
+     strategy: "cuda fp16"
+  aquila: #https://huggingface.co/qhduan/aquilachat-7b
+     path: "model/aquilachat-7b"
+     #模型位置"
+     strategy: "cuda fp16"
   llama: 
      path: "model/stable-vicuna-13B.ggml.q4_2.bin"
      #llama模型位置
-     strategy: ""
-     #llama模型参数 暂时不用
+   #   strategy: "Q8_0"       #cpp:运行方式，设置strategy诸如"Q8_0"即可开启
+     strategy: "cuda fp16i8"
   moss: 
      path: "model/moss-moon-003-sft-plugin-int4"
      #模型位置

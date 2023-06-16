@@ -11,7 +11,7 @@
 
 
 func.push({
-    name: "画图",
+    name: "中文绘图",
     question: async () => {
         lsdh(false)
         zsk(false)
@@ -26,7 +26,12 @@ func.push({
             body: JSON.stringify({
                 prompt: `((masterpiece, best quality)), photorealistic,` + Q,
                 steps: 20,
-                // sampler_name: "DPM++ SDE Karras",
+                // "enable_hr": false,
+                // "hr_scale": 1,
+                // "hr_upscaler": "ESRGAN_4x",
+                // "hr_second_pass_steps": 15,
+                // "denoising_strength": 0.6,
+                "sampler_name": "DPM++ SDE Karras",
                 negative_prompt: `paintings, sketches, (worst quality:2), (low quality:2), (normal quality:2), lowres, normal quality, ((monochrome)), ((grayscale)), skin spots, acnes, skin blemishes, age spot, glans`
             }),
             headers: {
@@ -35,7 +40,7 @@ func.push({
         })
         try {
             let json = await response.json()
-            add_conversation("AI", '![](data:image/png;base64,' + json.images[0] + ")",no_history=true)
+            add_conversation("AI", '![](data:image/png;base64,' + json.images[0] + ")", no_history = true)
         } catch (error) {
             alert("连接SD API失败，请确认已开启agents库，并将SD API地址设置为127.0.0.1:786")
         }
