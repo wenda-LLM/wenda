@@ -614,8 +614,11 @@
       i18n: i18n,
       watch: {
         current_func: (current_func) => {
-          app.func_mode = app.func_menu.find((i) => i.name == current_func);
-          document.location.hash = current_func
+          current_func = app.func_menu.find((i) => i.name == current_func);
+          if (current_func) {
+            app.func_mode = current_func
+            document.location.hash = current_func
+          }
         },
         tab: (val) => {
           if (val > 2) {
