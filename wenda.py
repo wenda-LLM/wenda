@@ -23,8 +23,6 @@ import logging
 logging.captureWarnings(True)
 
 
-
-
 def load_LLM():
     try:
         from importlib import import_module
@@ -263,26 +261,35 @@ async def add_process_time_header(request: Request, call_next):
     process_time = time.time() - start_time
     response.headers["X-Process-Times"] = str(process_time)
     response.headers["Pragma"] = "no-cache"
-    response.headers["Cache-Control"]="no-cache,no-store,must-revalidate"
+    response.headers["Cache-Control"] = "no-cache,no-store,must-revalidate"
 
     return response
-users_count=[0]*4
+users_count = [0]*4
+
+
 def get_user_count_before(level):
-    count=0
+    count = 0
     for i in range(level):
-        count+=users_count[i]
+        count += users_count[i]
     return count
+
+
 class AsyncContextManager:
-    def __init__(self,level):
-        self.level=level
+    def __init__(self, level):
+        self.level = level
+
     async def __aenter__(self):
-        users_count[self.level]+=1
+        users_count[self.level] += 1
         print(users_count)
 
     async def __aexit__(self, exc_type, exc, tb):
-        users_count[self.level]-=1
+        users_count[self.level] -= 1
         print(users_count)
-Lock=AsyncContextManager
+
+
+Lock = AsyncContextManager
+
+
 @app.websocket('/ws')
 async def websocket_endpoint(websocket: WebSocket):
     global waiting_threads
@@ -311,18 +318,18 @@ async def websocket_endpoint(websocket: WebSocket):
         history_formatted = LLM.chat_init(history)
         response = ''
         IP = websocket.client.host
-        count_before=get_user_count_before(4)
-        
-        if count_before>=4-level:
-            time2sleep=(count_before+1)*level
-            while time2sleep>0:
-                await websocket.send_text( '正在排队，当前计算中用户数：'+str(count_before)+'\n剩余时间：'+str(time2sleep)+"秒")
+        count_before = get_user_count_before(4)
+
+        if count_before >= 4-level:
+            time2sleep = (count_before+1)*level
+            while time2sleep > 0:
+                await websocket.send_text('正在排队，当前计算中用户数：'+str(count_before)+'\n剩余时间：'+str(time2sleep)+"秒")
                 await asyncio.sleep(1)
-                count_before=get_user_count_before(4)
-                if count_before<4-level:
+                count_before = get_user_count_before(4)
+                if count_before < 4-level:
                     break
-                time2sleep-=1
-        lock=Lock(level)
+                time2sleep -= 1
+        lock = Lock(level)
         async with lock:
             print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
             try:
