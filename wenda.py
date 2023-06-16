@@ -311,19 +311,18 @@ async def websocket_endpoint(websocket: WebSocket):
         history_formatted = LLM.chat_init(history)
         response = ''
         IP = websocket.client.host
-        count_before=get_user_count_before(level)
-        
-        if count_before>0:
-            time2sleep=(count_before+1)*level
-            while time2sleep>0:
-                await websocket.send_text( '正在等待，当前前方用户数：'+str(count_before)+'\n剩余时间：'+str(time2sleep)+"秒")
-                await asyncio.sleep(1)
-                count_before=get_user_count_before(level)
-                if count_before==0:
-                    break
-                time2sleep-=1
         lock=Lock(level)
         async with lock:
+            count_before=get_user_count_before(level)
+            if count_before>0:
+                time2sleep=(count_before+1)*level
+                while time2sleep>0:
+                    await websocket.send_text( '正在等待，当前前方用户数：'+str(count_before-1)+'\n剩余时间：'+str(time2sleep)+"秒")
+                    await asyncio.sleep(1)
+                    count_before=get_user_count_before(level)
+                    if count_before<2:
+                        break
+                    time2sleep-=1
             print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
             try:
                 for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
