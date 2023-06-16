@@ -11,6 +11,7 @@ city_list = []
 
 session = requests.Session()
 cunnrent_setting=settings.librarys.kg
+qlimit = cunnrent_setting.qlimit
 filePath = os.getcwd()
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36 Edg/94.0.992.31'}
@@ -349,6 +350,157 @@ pattern = [[r"适合种什么",r"种什么好"],
 		   [r"有哪些营养",r"有[\u4e00-\u9fa5]+成分",r"含[\u4e00-\u9fa5]+成分",r"含[\u4e00-\u9fa5]+元素",r"有[\u4e00-\u9fa5]+营养",r"有[\u4e00-\u9fa5]+元素"],
 		   [r"[\u4e00-\u9fa5]+植物学",r"[\u4e00-\u9fa5]+知识"]]
 
+import jieba
+with open("plugins/stopwords_txt",encoding = "utf-8") as f:
+    stopwords=f.read().split('\n')
+
+def replace_strong(s):
+    s=re.sub(r'<strong>', "", s)
+    s=re.sub(r'</strong>', "", s)
+    return s
+def remove_stopwords(search_query):
+    search_query_without_stopwords=[]
+    for i in search_query:
+        try:
+            stopwords.index(i)
+            search_query_without_stopwords.append("########")
+        except:
+            search_query_without_stopwords.append(i)
+    return search_query_without_stopwords
+def removeduplicate(list1):
+    """
+    列表套字典去重复
+    :param list1: 输入一个有重复值的列表
+    :return: 返回一个去掉重复的列表
+    """
+    newlist = []
+    for i in list1:  # 先遍历原始字典
+        flag = True
+        if newlist == []:  # 如果是空的列表就不会有重复，直接往里添加
+            pass
+        else:
+            for j in newlist:
+                for key in i.keys():
+                    if i['entity1']  == j['entity1'] and i['rel']  == j['rel']  and i['entity2']  == j['entity2']:
+                        flag = False
+        if flag:
+            newlist.append(i)
+    return newlist
+
+def merageduplicate(json_array):
+	# 创建字典，用于存储拼合后的结果
+	result_dict = {}
+
+	# 循环处理JSON数组
+	for item in json_array:
+		entity1 = item['entity1']
+		rel = item['rel']
+		entity2 = item['entity2']
+
+		# 构建键，用于在字典中存储结果
+		key = (entity1, rel)
+
+		# 如果键已存在，则将entity2拼接到现有值后面
+		if key in result_dict:
+			result_dict[key] += ', ' + entity2
+		else:
+			result_dict[key] = entity2
+
+	# 将结果转换为JSON格式并打印
+	result = [{'entity1': k[0], 'rel': k[1], 'entity2': v} for k, v in result_dict.items()]
+	# json_result = json.dumps(result, ensure_ascii=False, indent=4)
+	return result
+
+links = []
+
+nodes = []
+
+def get_links(links_data):
+	"""知识图谱关系数据获取"""
+	links_data_str = str(links_data["re1"])
+	links_ = []
+	i = 1
+	dict = {}
+	# 正则匹配
+	links_str = re.sub("[\!\%\[\]\,\。\{\}\-\:\'\(\)\>]", " ", links_data_str).split(' ')
+	for link in links_str:
+		if len(link) > 1:
+			if i == 1:
+				dict['entity1'] = link
+			elif i == 2:
+				dict['rel'] = link + "是"
+			elif i == 3:
+				dict['entity2'] = link
+				links_.append(dict)
+				dict = {}
+				i = 0
+			i += 1
+	dict = {}
+	dict['entity1'] = links_data['p']['fullname']
+	dict['rel'] = "主营业务是"
+	dict['entity2'] = links_data['p1']['name']
+	links_.append(dict)
+	return links_
+
+def get_select_nodes(nodes_data):
+	"""获取知识图谱中所选择的节点数据"""
+	dict_node = {}
+	for node in nodes_data:
+		name = node['n']['name']
+		tag = node['n']['tag']
+		dict_node['name'] = name
+		dict_node['tag'] = tag
+		nodes.append(dict_node)
+		dict_node = {}
+		break
+	for node in nodes_data:
+		name = node['b']['name']
+		tag = node['b']['tag']
+		dict_node['name'] = name
+		dict_node['tag'] = tag
+		nodes.append(dict_node)
+		dict_node = {}
+
+def get_all_nodes(nodes_data):
+	"""获取知识图谱中所有节点数据"""
+	dict_node = {}
+	for node in nodes_data:
+		name = node['n']['name']
+		tag = node['n']['tag']
+		dict_node['name'] = name
+		dict_node['tag'] = tag
+		nodes.append(dict_node)
+		dict_node = {}
+	return nodes
+
+def get_company(entity, qlimit, ret_dict):
+	search_query = jieba.cut(entity)
+	search_query = remove_stopwords(search_query)
+	search_query = " ".join(search_query)
+	print("关键词：", search_query)
+	links = []
+	for i in search_query.split("########"):
+		if i != ' ':
+			i = i.strip(' ').replace("股份",'').replace("公司",'').replace("有限",'').replace("企业",'').replace("产品",'')
+			data_ = db.findEntitiesforCompany((".*" + i.replace(" ", ".*|.*") + ".*").replace("|.*.*",''), qlimit)
+			if len(data_)>0:
+				for datat_ in data_:
+					links.extend(get_links(datat_))
+			data_ = db.findEntitiesforProduct((".*" + i.replace(" ", ".*|.*") + ".*").replace("|.*.*",''), qlimit)
+			if len(data_) > 0:
+				for datat_ in data_:
+					links.extend(get_links(datat_))
+	links = removeduplicate(links)
+	links = merageduplicate(links)
+	return {'ret':{'list':links}}
+				# print("数据",data_[0]["p"]['name'])
+				# print("数据", data_[0]["re1"])
+				# print("数据", get_links(data_[0]["re1"]))
+	# if(len(data_) > 0):
+	# 	if(ret_dict.get('list') is None):
+	# 		ret_dict['list'] = [{'entity1': data_, 'rel': '亚科', 'entity2': yake[0]['n2']['title'], 'entity1_type': '植物',
+	# 							 'entity2_type': '类型'}]
+
 def question_answering_return_data(question):  # index页面需要一开始就加载的内容写在这里
 	context = {'ret':''}
 	cut_statement = thu_lac.cut(question,text=False)
@@ -517,26 +669,33 @@ def question_answering_return_data(question):  # index页面需要一开始就�
 		if(len(zhuyu)>0):
 			ret_dict = get_plant_knowledge(zhuyu,ret_dict)
 
-	print(ret_dict)
+	# print(ret_dict)
 
 	if(len(ret_dict)!=0  and ret_dict!=0):
 		return {'ret':ret_dict}
+	else:
+		ret_dict = get_company(question,qlimit,ret_dict)
+		print(ret_dict)
+		return ret_dict
 	return {'ret':'暂未找到答案'}
 
 def find(search_query,step = 0):
-    # url = cunnrent_setting.kg_qa_host
-    # res = session.get(url, params={
+	# url = cunnrent_setting.kg_qa_host
+	# res = session.get(url, params={
 	# 				"question": search_query
 	# 			})
-    res = question_answering_return_data(search_query)
-    print(type(res))
-    r = res['ret']
-    result = ""
-    if r != '' and r != '暂未找到答案' :
-        if(r['list']):
-            for kg in r['list'] :
-                result += kg['entity1'] + kg['rel'] + kg['entity2'] + ","
-    else:
-        result = "暂未找到答案"
-    return [{'title':'知识图谱','content':result}]
+	res = question_answering_return_data(search_query)
+	print(type(res))
+	r = res['ret']
+	result = ""
+	if r != '' and r != '暂未找到答案' :
+		if (r['list']) :
+			for kg in r['list'] :
+				if (not kg['entity1'] is None) and (not kg['rel'] is None) and (not kg['entity2'] is None):
+					result += kg['entity1'] + kg['rel'] + kg['entity2'] + ","
+
+			print("result", result)
+	else:
+		result = "暂未找到答案"
+	return [{'title':'知识图谱','content':result}]
 
