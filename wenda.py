@@ -269,7 +269,7 @@ async def add_process_time_header(request: Request, call_next):
 users_count=[0]*4
 def get_user_count_before(level):
     count=0
-    for i in range(level+1):
+    for i in range(level):
         count+=users_count[i]
     return count
 class AsyncContextManager:
@@ -311,14 +311,14 @@ async def websocket_endpoint(websocket: WebSocket):
         history_formatted = LLM.chat_init(history)
         response = ''
         IP = websocket.client.host
-        count_before=get_user_count_before(level)
+        count_before=get_user_count_before(4)
         
-        if count_before>0:
+        if count_before>=4-level:
             time2sleep=(count_before+1)*level
             while time2sleep>0:
                 await websocket.send_text( '正在排队，当前计算中用户数：'+str(count_before)+'\n剩余时间：'+str(time2sleep)+"秒")
                 await asyncio.sleep(1)
-                count_before=get_user_count_before(level)
+                count_before=get_user_count_before(4)
                 if count_before<4-level:
                     break
                 time2sleep-=1
