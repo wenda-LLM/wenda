@@ -105,7 +105,7 @@ llm_models:
      path: "model/baichuan-7B"
      #模型位置"
      strategy: "cuda fp16"
-  aquila: #https://huggingface.co/qhduan/aquilachat-7b
+  aquila: #https://model.ks3-cn-beijing.ksyuncs.com/99999/AquilaChat-7B.zip
      path: "AquilaChat-7B" #注意没有model/
      #模型位置"
      strategy: "cuda fp16"
