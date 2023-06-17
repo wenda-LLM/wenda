@@ -280,11 +280,9 @@ class AsyncContextManager:
 
     async def __aenter__(self):
         users_count[self.level] += 1
-        print(users_count)
 
     async def __aexit__(self, exc_type, exc, tb):
         users_count[self.level] -= 1
-        print(users_count)
 
 
 Lock = AsyncContextManager
