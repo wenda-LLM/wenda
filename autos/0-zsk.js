@@ -81,7 +81,7 @@ window.answer_with_fast_zsk = async () => {
     if (kownladge.length > 0) {
         let prompt = app.zsk_answer_prompt + '\n' +
             kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n问题：" + Q
-        await send(prompt, keyword = Q, show = true, sources = kownladge)
+        return await send(prompt, keyword = Q, show = true, sources = kownladge)
     } else {
         app.chat.pop()
         sources = [{
