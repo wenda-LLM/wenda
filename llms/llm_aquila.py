@@ -12,30 +12,28 @@ import torch
 
 def chat_init(history):
     history_formatted = None
+    history_formatted = default_conversation.copy()
     if history is not None:
-        history_formatted = []
         tmp = []
         for i, old_chat in enumerate(history):
             if len(tmp) == 0 and old_chat['role'] == "user":
-                tmp.append(old_chat['content'])
+                    history_formatted.append_message(history_formatted.roles[0], old_chat['content'])
             elif old_chat['role'] == "AI" or old_chat['role'] == 'assistant':
-                tmp.append(old_chat['content'])
-                history_formatted.append(tuple(tmp))
-                tmp = []
+                    history_formatted.append_message(history_formatted.roles[0], old_chat['content'])
             else:
                 continue
     return history_formatted
 
 
 def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
-    yield str(len(prompt))+'字正在计算'
-    conv = default_conversation.copy()
-    conv.append_message(conv.roles[0], prompt)
-    conv.append_message(conv.roles[1], None)
+    history_formatted.append_message(history_formatted.roles[0], prompt)
+    history_formatted.append_message(history_formatted.roles[1], None)
+    prompt=history_formatted.get_prompt()
 
     tokens = tokenizer.encode_plus(
-        f"{conv.get_prompt()}", None, max_length=None)['input_ids']
+        f"{prompt}", None, max_length=None)['input_ids']
     tokens = tokens[1:-1]
+    yield str(len(prompt))+'字正在计算\n'+str(len(tokens))+"tokens"
 
     with torch.no_grad():
         out = aquila_generate(tokenizer, model, [
