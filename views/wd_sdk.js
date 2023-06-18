@@ -1,7 +1,8 @@
+llm_server=location.origin.replace("http", "ws")
 send_raw = async (prompt, keyword, QA_history, onmessage = alert) => {
     let result = ''
     await new Promise(resolve => {
-        ws = new WebSocket(location.origin.replace("http", "ws") + "/ws");
+        ws = new WebSocket(llm_server + "/ws");
         ws.onmessage = function (event) {
             result = event.data
             onmessage(result)
@@ -143,8 +144,8 @@ add_conversation = (role, content, sources = null,no_history=false) => {
 function MyException(message) {
     this.message = message;
 }
-get_queue_length = async () => {
-    let response = await fetch("/api/chat_now", {
+get_queue_length = async (server='/') => {
+    let response = await fetch(server+"api/chat_now", {
         method: "get",
     })
     let j = JSON.parse(await response.text());
