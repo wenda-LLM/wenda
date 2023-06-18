@@ -617,7 +617,7 @@
           current_func = app.func_menu.find((i) => i.name == current_func);
           if (current_func) {
             app.func_mode = current_func
-            document.location.hash = current_func
+            document.location.hash = current_func.name
           }
         },
         tab: (val) => {
