@@ -159,6 +159,13 @@ alert = (text) => {
     app.snackbar_text = text; //.replace(/\n/g,"<br>")
     app.snackbar = true;
 }
+
+
+chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
+genID = () => 'xxxxxxxxxxxx'.replace(/x/g, function () {
+    return chars[Math.random() * 62 | 0]
+})
+if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
 find_rtst_memory = async (s,suffix='') => {
     response = await fetch("/api/find_rtst_in_memory", {
         method: 'post',

@@ -48,11 +48,6 @@ app.buttons.push({
     color: () => app.color,
     description: "意图识别"
 })
-chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
-genID = () => 'xxxxxxxxxxxx'.replace(/x/g, function () {
-    return chars[Math.random() * 62 | 0]
-})
-if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
 func.push({
     name: "意图识别",
     question: async () => {
