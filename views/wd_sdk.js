@@ -159,3 +159,39 @@ alert = (text) => {
     app.snackbar_text = text; //.replace(/\n/g,"<br>")
     app.snackbar = true;
 }
+find_rtst_memory = async (s,suffix='') => {
+    response = await fetch("/api/find_rtst_in_memory", {
+        method: 'post',
+        body: JSON.stringify({
+            prompt: s,
+            step: 0,
+            memory_name: localStorage['wenda_rtst_ID'] + suffix
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    let json = await response.json()
+    console.table(json)
+    return json
+}
+add_rtst_memory = async (title, txt,suffix='') => {
+    response = await fetch("/api/upload_rtst_zhishiku", {
+        method: 'post',
+        body: JSON.stringify({
+            title: title,
+            txt: txt,
+            memory_name: localStorage['wenda_rtst_ID'] + suffix
+        }),
+        headers: { 'Content-Type': 'application/json' }
+    })
+}
+del_rtst_memory = async (suffix='') => {
+    response = await fetch("/api/del_rtst_in_memory", {
+        method: 'post',
+        body: JSON.stringify({
+            memory_name: localStorage['wenda_rtst_ID'] + suffix
+        }),
+        headers: { 'Content-Type': 'application/json' }
+    })
+}
