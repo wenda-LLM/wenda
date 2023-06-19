@@ -66,9 +66,8 @@
 | moss                                    | 不支持                                                                  |
 ### 懒人包
 #### 百度云
-链接：https://pan.baidu.com/s/105nOsldGt5mEPoT2np1ZoA?pwd=lyqz 
+https://pan.baidu.com/s/1idvot-XhEvLLKCbjDQuhyg?pwd=wdai 
 
-提取码：lyqz
 #### 夸克
 链接：https://pan.quark.cn/s/c4cb08de666e
 提取码：4b4R
