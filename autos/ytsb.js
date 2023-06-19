@@ -27,17 +27,17 @@ app.buttons.push({
                 }
                 for (yt in yt2prompt_dict) {
                     for (prompt in yt2prompt_dict[yt]) {
-                        await add_memory_jyzq(yt, yt2prompt_dict[yt][prompt])
+                        await add_rtst_memory(yt, yt2prompt_dict[yt][prompt],"_ytsb")
                     }
                 }
-                alert("完成")
+                alert("初始化完成")
             }
         }, {
             title: '删除意图向量库',
             content: '本功能用于测试',
             click: async () => {
-                await del_memory_jyzq()
-                alert("完成")
+                await del_rtst_memory("_ytsb")
+                alert("删除完成")
             }
         }
         ],
@@ -48,16 +48,11 @@ app.buttons.push({
     color: () => app.color,
     description: "意图识别"
 })
-chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
-genID = () => 'xxxxxxxxxxxx'.replace(/x/g, function () {
-    return chars[Math.random() * 62 | 0]
-})
-if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
 func.push({
     name: "意图识别",
     question: async () => {
         Q = app.question
-        memory = await find_memory_jyzq(Q)
+        memory = await find_rtst_memory(Q,"_ytsb")
         if (memory.length > 0) {
             add_conversation("AI", '识别到意图为:' + memory[0].title + "，正在调用相应auto")
             // A = await send(app.question )
@@ -76,39 +71,3 @@ func.push({
         //+ " Alice: " + A
     },
 })
-find_memory_jyzq = async (s) => {
-    response = await fetch("/api/find_rtst_in_memory", {
-        method: 'post',
-        body: JSON.stringify({
-            prompt: s,
-            step: 0,
-            memory_name: localStorage['wenda_rtst_ID'] + "_ytsb"
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    let json = await response.json()
-    console.table(json)
-    return json
-}
-add_memory_jyzq = async (title, txt) => {
-    response = await fetch("/api/upload_rtst_zhishiku", {
-        method: 'post',
-        body: JSON.stringify({
-            title: title,
-            txt: txt,
-            memory_name: localStorage['wenda_rtst_ID'] + "_ytsb"
-        }),
-        headers: { 'Content-Type': 'application/json' }
-    })
-}
-del_memory_jyzq = async () => {
-    response = await fetch("/api/del_rtst_in_memory", {
-        method: 'post',
-        body: JSON.stringify({
-            memory_name: localStorage['wenda_rtst_ID'] + "_ytsb"
-        }),
-        headers: { 'Content-Type': 'application/json' }
-    })
-}

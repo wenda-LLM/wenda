@@ -1,7 +1,8 @@
+llm_server = location.origin.replace("http", "ws")
 send_raw = async (prompt, keyword, QA_history, onmessage = alert) => {
     let result = ''
     await new Promise(resolve => {
-        ws = new WebSocket(location.origin.replace("http", "ws") + "/ws");
+        ws = new WebSocket(llm_server + "/ws");
         ws.onmessage = function (event) {
             result = event.data
             onmessage(result)
@@ -137,14 +138,14 @@ copy = (s) => {
             }
         });
 };
-add_conversation = (role, content, sources = null,no_history=false) => {
-    app.chat.push({ role: role, content: content, sources: sources ,no_history:no_history});
+add_conversation = (role, content, sources = null, no_history = false) => {
+    app.chat.push({ role: role, content: content, sources: sources, no_history: no_history });
 };
 function MyException(message) {
     this.message = message;
 }
-get_queue_length = async () => {
-    let response = await fetch("/api/chat_now", {
+get_queue_length = async (server = '/') => {
+    let response = await fetch(server + "api/chat_now", {
         method: "get",
     })
     let j = JSON.parse(await response.text());
@@ -157,4 +158,50 @@ save_history = () => {
 alert = (text) => {
     app.snackbar_text = text; //.replace(/\n/g,"<br>")
     app.snackbar = true;
+}
+
+
+chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
+genID = () => 'xxxxxxxxxxxx'.replace(/x/g, function () {
+    return chars[Math.random() * 62 | 0]
+})
+if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
+find_rtst_memory = async (s, name = '', no_prefix = false) => {
+    if (!no_prefix) name = localStorage['wenda_rtst_ID'] + name
+    response = await fetch("/api/find_rtst_in_memory", {
+        method: 'post',
+        body: JSON.stringify({
+            prompt: s,
+            step: 0,
+            memory_name: name
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    let json = await response.json()
+    console.table(json)
+    return json
+}
+add_rtst_memory = async (title, txt, name = '', no_prefix = false) => {
+    if (!no_prefix) name = localStorage['wenda_rtst_ID'] + name
+    response = await fetch("/api/upload_rtst_zhishiku", {
+        method: 'post',
+        body: JSON.stringify({
+            title: title,
+            txt: txt,
+            memory_name: name
+        }),
+        headers: { 'Content-Type': 'application/json' }
+    })
+}
+del_rtst_memory = async (name = '', no_prefix = false) => {
+    if (!no_prefix) name = localStorage['wenda_rtst_ID'] + name
+    response = await fetch("/api/del_rtst_in_memory", {
+        method: 'post',
+        body: JSON.stringify({
+            memory_name: name
+        }),
+        headers: { 'Content-Type': 'application/json' }
+    })
 }

@@ -70,6 +70,19 @@
       line-height: 1.2;
     }
 
+    pre:has(code) {
+      background-color: rgb(0 0 0);
+      color: white;
+      padding: 3px;
+      border-radius: 5px;
+    }
+
+    code::before {
+      content: attr(class);
+      color: yellow;
+      float: right;
+    }
+
     .ask {
       margin-left: auto;
       white-space: break-spaces;
@@ -601,8 +614,11 @@
       i18n: i18n,
       watch: {
         current_func: (current_func) => {
-          app.func_mode = app.func_menu.find((i) => i.name == current_func);
-          document.location.hash = current_func
+          current_func = app.func_menu.find((i) => i.name == current_func);
+          if (current_func) {
+            app.func_mode = current_func
+            document.location.hash = current_func.name
+          }
         },
         tab: (val) => {
           if (val > 2) {
@@ -685,7 +701,7 @@
           color: "purple",
           //管理界面中，搜索auto的关键词
           autos_search: "",
-          TPS:0
+          TPS: 0
         };
       },
       methods: {
@@ -792,9 +808,6 @@
       } else {
         QA_history = [];
       }
-      // 如果是等待对话状态,则将 is_wait_till 设置为 true
-      is_wait_till = false;
-      setTimeout(display_queue_length, 3000);
       let current_session = { role: "AI", content: "……", sources: sources };
       if (show) {
         app.chat.push({ role: "user", content: keyword, keyword: keyword });
@@ -804,11 +817,10 @@
       // 调用websocket聊天，具体函数在wd_sdk.js中
       let last_token_time = Date.now()
       await send_raw(s.replace(/\r\n/g, "\n"), keyword, QA_history, (message) => {
-        is_wait_till = true;
         current_session.content = message;
         let now = Date.now()
         let cost = now - last_token_time
-        app.TPS=app.TPS*0.95+(100 / cost )*0.05
+        app.TPS = app.TPS * 0.95 + (100 / cost) * 0.05
         last_cost = cost
         last_token_time = now
       });
@@ -816,20 +828,11 @@
         speak(current_session.content);
       }
       app.loading = false;
-      is_wait_till = true;
       save_history();
       if (is_abord) throw new MyException("已中断");
       return current_session.content;
     };
 
-    // 在用户等待超过 3 秒后显示当前队列长度
-    display_queue_length = async () => {
-      if (!is_wait_till) {
-        let queue_length = await get_queue_length();
-        if (queue_length != 0) alert("当前排队数量：" + queue_length);
-        setTimeout(display_queue_length, 3000);
-      }
-    };
 
     // 覆盖 console.warn 函数以不执行任何操作
     console.warn = function () { };

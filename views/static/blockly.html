@@ -37,8 +37,7 @@
 
     <button onclick="另存为(JSON.stringify(Blockly.serialization.workspaces.save(demoWorkspace)))">
       另存为</button>
-    <input type="file" onchange="打开(this.files)">
-    </input>
+    <input type="file" onchange="打开(this.files)"></input>
 
   </div>
   <div id="blocklyDiv" style="width: 100%;"></div>
@@ -84,7 +83,7 @@
           nextStatement: null,
           "output": "String",
           "colour": "purple",
-          "tooltip": "Returns number of letters in the provided text.",
+          "tooltip": "发送",
         });
       }
     }
@@ -114,6 +113,52 @@
       var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
         Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'\'';
       return "add_conversation(\"user\"," + argument0 + ')\n';
+    }
+    Blockly.Blocks['使用知识库回答'] = {
+      init: function () {
+        this.jsonInit({
+          "message0": '使用知识库回答 %1',
+          "args0": [
+            {
+              "type": "input_value",
+              "name": "VALUE"
+            }
+          ],
+          previousStatement: null,
+          nextStatement: null,
+          "output": "String",
+          "colour": "purple",
+          "tooltip": "使用知识库回答",
+        });
+      }
+    }
+    Blockly.JavaScript['使用知识库回答'] = function (block) {
+      var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
+        Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'\'';
+      return ["await answer_with_zsk(" + argument0 + ')\n', Blockly.JavaScript.ORDER_MEMBER];
+    }
+    Blockly.Blocks['使用快速知识库回答'] = {
+      init: function () {
+        this.jsonInit({
+          "message0": '使用快速知识库回答 %1',
+          "args0": [
+            {
+              "type": "input_value",
+              "name": "VALUE"
+            }
+          ],
+          previousStatement: null,
+          nextStatement: null,
+          "output": "String",
+          "colour": "purple",
+          "tooltip": "使用快速知识库回答",
+        });
+      }
+    }
+    Blockly.JavaScript['使用快速知识库回答'] = function (block) {
+      var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE',
+        Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'\'';
+      return ["await answer_with_fast_zsk(" + argument0 + ')\n', Blockly.JavaScript.ORDER_MEMBER];
     }
     // { message0: module$contents$Blockly$libraryBlocks$texts_Msg.TEXT_PRINT_TITLE,
     //   args0: [{ type: "input_value", name: "TEXT" }],
@@ -523,6 +568,14 @@
             {
               "kind": "block",
               "type": "添加AI会话"
+            },
+            {
+              "kind": "block",
+              "type": "使用知识库回答"
+            },
+            {
+              "kind": "block",
+              "type": "使用快速知识库回答"
             },
           ]
         }

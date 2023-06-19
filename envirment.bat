@@ -10,6 +10,13 @@ set "PATH=%WINPYDIR%\;%WINPYDIR%\DLLs;%WINPYDIR%\Scripts;%PATH%;"
 set "PYTHON=%WINPYDIR%\python.exe "
 goto end
 ) 
+set "WINPYDIR=%~dp0\..\WPy64-31110\python-3.11.1.amd64"
+IF EXIST %WINPYDIR% (
+echo 检测到集成环境
+set "PATH=%WINPYDIR%\;%WINPYDIR%\DLLs;%WINPYDIR%\Scripts;%PATH%;"
+set "PYTHON=%WINPYDIR%\python.exe "
+goto end
+) 
 set "WINPYDIR=%~dp0\..\runner\py310"
 IF EXIST %WINPYDIR% (
 echo 检测到RWKV-Runner集成环境
