@@ -734,14 +734,15 @@
 
     // 处理表单提交事件并将用户的输入发送到服务器
     submit = async (e) => {
+      e&&e.preventDefault()
       if (e && e.shiftKey) {
         this.question += "\n";
       } else if (typeof app.func_mode.question == "function") {
-        app.func_mode.question();
+        await app.func_mode.question(app.question);
+        app.question = ''
       } else {
         let Q = app.question
         await send(app.func_mode.question + Q, Q);
-        app.question = ''
       }
     };
 
@@ -778,6 +779,7 @@
     // 将用户的输入发送到服务器并更新 app 的 chat 数组
     // 参数s为用户输入的内容，keyword为用户输入的关键词，show为是否显示用户输入的内容，sources为知识库的来源
     send = async (s, keyword = "", show = true, sources = []) => {
+      app.question = ''
       if (keyword == "") keyword = s;
       is_abord = false;
       app.loading = true;
