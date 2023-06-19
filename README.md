@@ -2,19 +2,17 @@
 本项目设计目标为实现针对特定环境的高效内容生成，同时考虑个人和中小企业的计算资源局限性，以及知识安全和私密性问题。为达目标，平台化集成了以下能力：
 
 1. 知识库：支持对接[本地离线向量库](#rtst模式)、[本地搜索引擎](#fess模式)、在线搜索引擎等。
-2. 多种大语言模型：目前支持离线部署模型有`chatGLM-6B`、`chatRWKV`、`llama系列`以及`moss`，在线API访问`openai api`和`chatGLM-130b api`。
+2. 多种大语言模型：目前支持离线部署模型有`chatGLM-6B`、`chatRWKV`、`llama系列(不推荐中文用户)`、`moss(不推荐)`、`baichuan(不推荐)`、`Aquila-7B`，在线API访问`openai api`和`chatGLM-130b api`。
 3. Auto脚本：通过开发插件形式的JavaScript脚本，为平台附件功能，实现包括但不限于自定义对话流程、访问外部API、在线切换LoRA模型。
 4. 其他实用化所需能力：对话历史管理、内网部署、多用户同时使用等。
 
 
-交流QQ群：LLM使用和综合讨论群`162451840`；知识库使用讨论群`241773574(已满，请去QQ频道讨论)`；Auto开发交流群`744842245`；
-
-[QQ频道](https://pd.qq.com/s/ej03plxks)
+交流QQ群：LLM使用和综合讨论群`162451840`；知识库使用讨论群`241773574(已满，请去QQ频道讨论)`；Auto开发交流群`744842245`；[QQ频道](https://pd.qq.com/s/ej03plxks)
 
 <!--ts-->
 - [闻达：一个大规模语言模型调用平台](#闻达一个大规模语言模型调用平台)
   - [安装部署](#安装部署)
-    - [各版本功能及安装说明](#各版本功能及安装说明)
+    - [Windows懒人包功能说明](#windows懒人包功能说明)
     - [懒人包](#懒人包)
       - [百度云](#百度云)
       - [夸克](#夸克)
@@ -39,6 +37,7 @@
       - [torch](#torch)
       - [cpp](#cpp)
     - [llama](#llama)
+    - [Aquila-7B](#aquila-7b)
 - [基于本项目的二次开发](#基于本项目的二次开发)
   - [wenda-webui](#wenda-webui)
 
@@ -49,21 +48,22 @@
 ![](imgs/setting.png)
 ![](imgs/setting2.png)
 ## 安装部署
-### 各版本功能及安装说明
-| 功能                                    | Windows懒人包                                                           | 自部署 |
-| --------------------------------------- | ----------------------------------------------------------------------- | ------ |
-| [知识库](#知识库) [rtst模式](#rtst模式) | 须下载模型text2vec-large-chinese                                        | 同上   |
-| [知识库](#知识库) [fess模式](#fess模式) | 须安装fess                                                              | 同上   |
-| [知识库](#知识库) 网络模式              | 支持                                                                    | 同上   |
-| [Auto](#auto)                           | 全部支持，[部分内置Auto使用说明](#部分内置auto使用说明)                 | 同上   |
-| [chatGLM-6B](#chatglm-6b)               | 支持CUDA，须自行下载模型 。可自行安装组件以支持CPU                      | 同上   |
-| RWKV [torch](#torch)版                  | 全部功能支持，须自行下载模型。在安装vc后支持一键启动CUDA加速            | 同上   |
-| RWKV [cpp](#cpp)版                      | 全部功能支持，须自行下载模型，也可使用内置脚本对torch版模型转换和量化。 | 同上   |
-| replit                                  | 支持，须自行下载模型。                                                  | 同上   |
-| chatglm130b api                         | 支持，须设置自己的key                                                   | 支持   |
-| openai api                              | 支持，须设置自己的key                                                   | 支持   |
-| [llama](#llama).cpp                     | 不支持                                                                  | 支持   |
-| moss                                    | 不支持                                                                  | 支持   |
+### Windows懒人包功能说明
+| 功能                                    | Windows懒人包                                                           |
+| --------------------------------------- | ----------------------------------------------------------------------- |
+| [知识库](#知识库) [rtst模式](#rtst模式) | 须下载模型text2vec-large-chinese                                        |
+| [知识库](#知识库) [fess模式](#fess模式) | 须安装fess                                                              |
+| [知识库](#知识库) 网络模式              | 支持                                                                    |
+| [Auto](#auto)                           | 全部支持，[部分内置Auto使用说明](#部分内置auto使用说明)                 |
+| [chatGLM-6B](#chatglm-6b)               | 支持CUDA，须自行下载模型 。可自行安装组件以支持CPU                      |
+| RWKV [torch](#torch)版                  | 全部功能支持，须自行下载模型。在安装vc后支持一键启动CUDA加速            |
+| RWKV [cpp](#cpp)版                      | 全部功能支持，须自行下载模型，也可使用内置脚本对torch版模型转换和量化。 |
+| Aquila-7B                               | 支持，须自行下载模型。                                                  |
+| replit                                  | 不支持                                                                  |
+| chatglm130b api                         | 支持，须设置自己的key                                                   |
+| openai api                              | 支持，须设置自己的key                                                   |
+| [llama](#llama).cpp                     | 不支持                                                                  |
+| moss                                    | 不支持                                                                  |
 ### 懒人包
 #### 百度云
 链接：https://pan.baidu.com/s/105nOsldGt5mEPoT2np1ZoA?pwd=lyqz 
@@ -281,9 +281,11 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 可以查看：[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)，下载其他版本，或者自行编译。
 
 ### llama
-运行：`run_llama.bat`。
+### Aquila-7B
+1. 运行`pip install FlagAI`。注意FlagAI依赖很多旧版本的包，需要自己编译，所以如果想基于python3.11运行或者想在一个环境同时跑其他模型，建议去下懒人包
+2. 运行：`run_Aquila.bat`。
 
-模型位置等参数：见`config.yml`(复制[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml))。
+模型位置等参数：见`config.yml`(复制[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml))。注意模型要在这里下：https://model.baai.ac.cn/model-detail/100101
 
 # 基于本项目的二次开发
 ## [wenda-webui](https://github.com/AlanLee1996/wenda-webui)

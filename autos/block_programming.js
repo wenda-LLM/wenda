@@ -15,12 +15,16 @@ window.addEventListener('message', function (e) {
         let data = e.data.data
         data = "async ()=>{" + data + "}"
         console.log(data)
-        load_feature({
+        let my_func=app.func_menu.find((i) => i.name == "猫猫也会的图块化编程")
+        if(my_func)my_func.question=eval(data)
+        else func.push({
             name: "猫猫也会的图块化编程",
             description: "",
             question: eval(data)
         })
+        app.current_func= "猫猫也会的图块化编程"
         this.alert("载入成功")
+        app.tab = 0
     }
     if (e.data.from == '猫猫也会的图块化编程_保存') {
         let data = e.data.data

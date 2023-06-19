@@ -10,50 +10,18 @@
 // @grant        none
 // ==/UserScript==
 
-chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
-genID = () => 'xxxxxxxxxxxx'.replace(/x/g, function () {
-    return chars[Math.random() * 62 | 0]
-})
-if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
 func.push({
     name: "记忆增强",
     question: async () => {
         Q = app.question
-        memory = await find_memory_jyzq(Q)
+        memory = await find_rtst_memory(Q, 'jyzq')
         if (memory.length > 0) {
             A = await send(app.question + memory.map(i => `[在第${i.title}轮的回忆：${i.content}]`).join('\n'))
         } else {
             A = await send(app.question)
         }
-        add_memory_jyzq( Q )//+ " Alice: " + A
+        add_rtst_memory(记忆轮次, Q, 'jyzq')//+ " Alice: " + A
+        记忆轮次 += 1
     },
 })
-find_memory_jyzq = async (s) => {
-    response = await fetch("/api/find_rtst_in_memory", {
-        method: 'post',
-        body: JSON.stringify({
-            prompt: s,
-            step: 3,
-            memory_name: localStorage['wenda_rtst_ID']
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    let json = await response.json()
-    console.table(json)
-    return json
-}
-记忆轮次=1
-add_memory_jyzq = async (txt) => {
-    response = await fetch("/api/upload_rtst_zhishiku", {
-        method: 'post',
-        body: JSON.stringify({
-            title:  ""+ 记忆轮次,
-            txt: txt,
-            memory_name: localStorage['wenda_rtst_ID']
-        }),
-        headers: { 'Content-Type': 'application/json' }
-    })
-    记忆轮次+=1
-}
+记忆轮次 = 1
