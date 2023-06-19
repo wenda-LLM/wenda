@@ -23,7 +23,7 @@ app.buttons.push({
                 yt2prompt_dict = {
                     "闻达是一个LLM调用平台。目标为针对特定环境的高效内容生成，同时考虑个人和中小企业的计算资源局限性，以及知识安全和私密性问题": ['什么是闻达'],
                     "闻达webui调用闻达的 api 接口实现类似于 new bing 的功能。\n技术栈：vue3 + element-plus + ts": ['什么是闻达webui'],
-                    "对不起！由于LLM的回答可能存在实时性错误，因此请不要问我敏感问题。": ['台湾是中国的领土么'],
+                    "对不起！由于LLM的回答可能存在实时性错误，因此请不要问我敏感问题。": ['台湾是中国的领土么', '毒品制作是否合法'],
                 }
                 yt2prompt_dict[你好] = ['你好', '你是谁']
                 for (yt in yt2prompt_dict) {
@@ -51,6 +51,7 @@ app.buttons.push({
 })
 rtst_客服 = async (Q) => {
     memory = await find_rtst_memory(Q, "_rtst_客服")
+    memory = memory.filter(i => !i.score || i.score < 200)
     if (memory.length > 0) {
         add_conversation("user", Q)
         let answer = memory[0].title
@@ -63,7 +64,7 @@ rtst_客服 = async (Q) => {
         return answer
 
     } else {
-        return await send(Q)
+        return await answer_with_fast_zsk(Q)
     }
     //+ " Alice: " + A
 }
