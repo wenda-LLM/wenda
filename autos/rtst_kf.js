@@ -28,7 +28,7 @@ app.buttons.push({
                 yt2prompt_dict[你好] = ['你好', '你是谁']
                 for (yt in yt2prompt_dict) {
                     for (prompt in yt2prompt_dict[yt]) {
-                        await add_memory_rtst_客服(yt, yt2prompt_dict[yt][prompt])
+                        await add_rtst_memory(yt, yt2prompt_dict[yt][prompt], "_rtst_客服")
                     }
                 }
                 alert("完成")
@@ -37,7 +37,7 @@ app.buttons.push({
             title: '删除意图向量库',
             content: '本功能用于测试',
             click: async () => {
-                await del_memory_rtst_客服()
+                await del_rtst_memory("_rtst_客服")
                 alert("完成")
             }
         }
@@ -49,13 +49,8 @@ app.buttons.push({
     color: () => app.color,
     description: "rtst_客服"
 })
-chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
-genID = () => 'xxxxxxxxxxxx'.replace(/x/g, function () {
-    return chars[Math.random() * 62 | 0]
-})
-if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
 rtst_客服 = async (Q) => {
-    memory = await find_memory_rtst_客服(Q)
+    memory = await find_rtst_memory(Q, "_rtst_客服")
     if (memory.length > 0) {
         add_conversation("user", Q)
         let answer = memory[0].title
@@ -78,39 +73,3 @@ func.push({
         return await rtst_客服(Q)
     }
 })
-find_memory_rtst_客服 = async (s) => {
-    response = await fetch("/api/find_rtst_in_memory", {
-        method: 'post',
-        body: JSON.stringify({
-            prompt: s,
-            step: 0,
-            memory_name: localStorage['wenda_rtst_ID'] + "_rtst_客服"
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    let json = await response.json()
-    console.table(json)
-    return json
-}
-add_memory_rtst_客服 = async (title, txt) => {
-    response = await fetch("/api/upload_rtst_zhishiku", {
-        method: 'post',
-        body: JSON.stringify({
-            title: title,
-            txt: txt,
-            memory_name: localStorage['wenda_rtst_ID'] + "_rtst_客服"
-        }),
-        headers: { 'Content-Type': 'application/json' }
-    })
-}
-del_memory_rtst_客服 = async () => {
-    response = await fetch("/api/del_rtst_in_memory", {
-        method: 'post',
-        body: JSON.stringify({
-            memory_name: localStorage['wenda_rtst_ID'] + "_rtst_客服"
-        }),
-        headers: { 'Content-Type': 'application/json' }
-    })
-}
