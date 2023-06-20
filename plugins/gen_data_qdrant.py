@@ -1,125 +1,188 @@
 import re
-import os,sys
+import os
+import sys
+import math
+import threading
+import loguru
+from hashlib import md5
+
 os.chdir(sys.path[0][:-8])
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.document_loaders import DirectoryLoader
-from sentence_transformers import SentenceTransformer
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.document_loaders import DirectoryLoader
 from qdrant_client import QdrantClient
-from qdrant_client.http.models import Distance, VectorParams
 from qdrant_client.http import models as rest
+from langchain.docstore.document import Document
 from typing import Dict, Iterable, List, Optional, Union
-import uuid
+from langchain.embeddings import HuggingFaceEmbeddings
 
-from common import settings
-source_folder = settings.librarys.qdrant.Path
-target_folder = source_folder + '_out'
+import logging, time
+logging.basicConfig()
+logger = logging.getLogger()
+logger.setLevel(logging.ERROR)
+import chardet
+import pdfplumber
+from qdrant import Qdrant
+from common import CounterLock
+from common import settings, error_print, error_helper, success_print
+
+
+source_folder = settings.librarys.qdrant.path
 source_folder_path = os.path.join(os.getcwd(), source_folder)
-target_folder_path = os.path.join(os.getcwd(), target_folder)
+root_path_list = source_folder_path.split(os.sep)
+docs = []
+texts_count = 0
 
 MetadataFilter = Dict[str, Union[str, int, bool]]
-COLLECTION_NAME = settings.librarys.qdrant.Collection
+COLLECTION_NAME = settings.librarys.qdrant.collection  # 向量库名字
+model_path = settings.librarys.qdrant.model_path
 
-class QdrantIndex():
+try:
+    encode_kwargs = {'batch_size': settings.librarys.qdrant.batch_size}
+    model_kwargs = {"device": settings.librarys.qdrant.device}
+    embedding = HuggingFaceEmbeddings(model_name=model_path, encode_kwargs=encode_kwargs, model_kwargs=model_kwargs)
+except Exception as e:
+    error_helper("embedding加载失败，请下载相应模型",
+                 r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
+    raise e
 
-    def __init__(self,embedding_model):
-        self.qdrant_client = QdrantClient(
-                url=settings.librarys.qdrant.Qdrant_Host,
-        )
-        self.embedding_model =  embedding_model
-        self.embedding_size = self.embedding_model.get_sentence_embedding_dimension()
-        self.collection_name = COLLECTION_NAME
-        print(f"Collection {COLLECTION_NAME} is successfully created.")
+success_print("Embedding model加载完成")
 
-    def insert_into_index(self, filepath: str):
-        self.qdrant_client.recreate_collection(
-            collection_name=self.collection_name,
-            vectors_config=VectorParams(size=self.embedding_size, distance=Distance.COSINE),
-        ) 
-        loader = DirectoryLoader(filepath, glob='**/*.txt')
-        docs = loader.load()
-        text_splitter = CharacterTextSplitter(hunk_size=500, chunk_overlap=30)#
-        documents = text_splitter.split_documents(docs)
-        texts = [doc.page_content for doc in documents]
-        metadatas = [doc.metadata for doc in documents]
-        ids = [uuid.uuid4().hex for _ in texts]
-        vectors = self.embedding_model.encode(texts, show_progress_bar=False, batch_size=128).tolist()
-        payloads = self.build_payloads(
-                    texts,
-                    metadatas,
-                    'page_content',
-                    'metadata',
-                )
-        # Upload points in bactches
-        self.qdrant_client.upsert(
-            collection_name=COLLECTION_NAME,
-            points=rest.Batch(
-                ids=ids,
-                vectors=vectors,
-                payloads=payloads
-            ),
-        )
-        print("Index update successfully done!")
-        
-    # Adopted from lanchain github            
-    def build_payloads(self,
-        texts: Iterable[str],
-        metadatas: Optional[List[dict]],
-        content_payload_key: str,
-        metadata_payload_key: str,
-    ) -> List[dict]:
-        payloads = []
-        for i, text in enumerate(texts):
-            if text is None:
-                raise ValueError(
-                    "At least one of the texts is None. Please remove it before "
-                    "calling .from_texts or .add_texts on Qdrant instance."
-                )
-            metadata = metadatas[i] if metadatas is not None else None
-            payloads.append(
-                {
-                    content_payload_key: text,
-                    metadata_payload_key: metadata,
-                }
-            )
+try:
+    client = QdrantClient(url=settings.librarys.qdrant.qdrant_host, timeout=10, prefer_grpc=True)
+    client.get_collection(COLLECTION_NAME)
+    vectorstore = Qdrant(client, COLLECTION_NAME, embedding)
+except:
+    del client
+    vectorstore = None
+# vectorstore = None
 
-        return payloads
-    
+embedding_lock = CounterLock()
+vectorstore_lock = threading.Lock()
 
-if not os.path.exists(target_folder_path):
-    os.mkdir(target_folder_path)
 
-root_path_list = source_folder_path.split(os.sep)
+def clac_embedding(texts, embedding, metadatas):
+    global vectorstore
+    with embedding_lock:
+        embeddings = embedding.embed_documents(texts)
+    with vectorstore_lock:
+        ids = gen_ids(metadatas)
+        if vectorstore is None:
+            # 如需插入大规模数据可以将prefer_grpc参数置为True
+            vectorstore = Qdrant.from_texts(texts, embedding, embeddings, ids, metadatas=metadatas,
+                                            url=settings.librarys.qdrant.qdrant_host, prefer_grpc=True,
+                                            collection_name=settings.librarys.qdrant.collection, timeout=10)
+        else:
+            vectorstore.add_texts(texts, embeddings, ids, metadatas)
 
-print("预处理数据")
+
+# 生成该id的方法仅供参考
+def gen_ids(metadatas):
+    ids = []
+    same_title_count = 0
+    last_text_title = ""
+    for metadata in metadatas:
+        text_title = md5(metadata["source"].encode("utf-8")).hexdigest()
+        if last_text_title != text_title:
+            last_text_title = text_title
+            same_title_count = 0
+        else:
+            same_title_count += 1
+        origin = text_title[:30] + str(hex(same_title_count))[2:].zfill(3)  # 最后三位为十六进制的文章段落数 前二十九位为文章title哈希
+        origin = f"{origin[:8]}-{origin[8:12]}-{origin[12:16]}-{origin[16:20]}-{origin[-12:]}"
+        ids.append(origin)
+
+    return ids
+
+
+def make_index():
+    global docs, texts_count
+    if hasattr(settings.librarys.qdrant, "size") and hasattr(settings.librarys.qdrant, "overlap"):
+        text_splitter = CharacterTextSplitter(
+            chunk_size=int(settings.librarys.qdrant.size), chunk_overlap=int(settings.librarys.qdrant.overlap), separator='\n')
+    else:
+        text_splitter = CharacterTextSplitter(
+            chunk_size=20, chunk_overlap=0, separator='\n')
+    doc_texts = text_splitter.split_documents(docs)
+    docs = []
+    texts = [d.page_content for d in doc_texts]
+    metadatas = [d.metadata for d in doc_texts]
+    texts_count += len(texts)
+    thread = threading.Thread(target=clac_embedding, args=(texts, embedding, metadatas))
+    thread.start()
+    while embedding_lock.get_waiting_threads() > 1:
+        time.sleep(0.1)
+
+
+all_files = []
+
 for root, dirs, files in os.walk(source_folder_path):
-    path_list = root.split(os.sep)
     for file in files:
-        try:
-            file_path = os.path.join(root, file)
-            with open(file_path, "r", encoding='utf-16') as f:
+        all_files.append([root, file])
+success_print("文件列表生成完成", len(all_files))
+length_of_read = 0
+for i in range(len(all_files)):
+    root, file = all_files[i]
+    data = ""
+    title = ""
+    try:
+        file_path = os.path.join(root, file)
+        _, ext = os.path.splitext(file_path)
+        if ext.lower() == '.pdf':
+            # pdf
+            with pdfplumber.open(file_path) as pdf:
+                data_list = []
+                for page in pdf.pages:
+                    print(page.extract_text())
+                    data_list.append(page.extract_text())
+                data = "\n".join(data_list)
+        elif ext.lower() == '.txt':
+            # txt
+            with open(file_path, 'rb') as f:
+                b = f.read()
+                result = chardet.detect(b)
+            with open(file_path, 'r', encoding=result['encoding']) as f:
                 data = f.read()
-        except:
-            file_path = os.path.join(root, file)
-            with open(file_path, "r", encoding='utf-8') as f:
-                data = f.read()
-        data = re.sub(r'！', "！\n", data)
-        data = re.sub(r'：', "：\n", data)
-        data = re.sub(r'。', "。\n", data)
-        data = re.sub(r'\n+', "\n", data)
-        filename_prefix_list = [
-            item for item in path_list if item not in root_path_list]
-        file_name_prefix = '_'.join(x for x in filename_prefix_list if x)
-        cut_file_name = file_name_prefix + '_' + file if file_name_prefix else file
-        cut_file_path = os.path.join(target_folder_path, cut_file_name)
-        with open(cut_file_path, 'w', encoding='utf-8') as f:
-            f.write(data)
-            f.close()
+        else:
+            print("目前还不支持文件格式：", ext)
+    except Exception as e:
+        print("文件读取失败，当前文件已被跳过：", file, "。错误信息：", e)
+    data = re.sub(r'！', "！\n", data)
+    data = re.sub(r'：', "：\n", data)
+    data = re.sub(r'。', "。\n", data)
+    data = re.sub(r'\r', "\n", data)
+    data = re.sub(r'\n\n', "\n", data)
+    data = re.sub(r"\n\s*\n", "\n", data)
+    length_of_read += len(data)
+    docs.append(Document(page_content=data, metadata={"source": file}))
+    if length_of_read > 1e5:  # 大于10万字的先处理（即不作为最后的统一处理）
+        success_print("处理进度", int(100*i/len(all_files)), f"%\t({i}/{len(all_files)})")
+        make_index()
+        length_of_read = 0
+    length_of_read += len(data)
+    docs.append(Document(page_content=data, metadata={"source": file}))
+    if length_of_read > 1e5:
+        success_print("处理进度", int(100 * i / len(all_files)), f"%\t({i}/{len(all_files)})")
+        make_index()
+        length_of_read = 0
 
-print("开始读取数据")
-embedding_model = SentenceTransformer(settings.librarys.qdrant.model_path,device=settings.librarys.qdrant.device)
-qdrant = QdrantIndex(embedding_model)
-qdrant.insert_into_index(target_folder)
 
-print("保存完成")
+if len(all_files) == 0:
+    error_print("指定目录{}没有数据".format(settings.librarys.qdrant.path))
+    sys.exit(0)
+
+if len(docs) > 0:
+    make_index()
+
+while embedding_lock.get_waiting_threads() > 0:
+    time.sleep(0.1)
+with embedding_lock:
+    time.sleep(0.1)
+    success_print("数据上装完成")
+    with vectorstore_lock:
+        print("开始构建索引，需要一定时间")
+        vectorstore.client.update_collection(
+            collection_name=COLLECTION_NAME,
+            optimizer_config=rest.OptimizersConfigDiff(
+                indexing_threshold=20000
+            )
+        )
+        success_print("索引处理完成")
