@@ -8,7 +8,6 @@ library:
      #库参数，每组参数间用空格分隔，冒号前为知识库类型，后为抽取数量。
 
      #知识库类型:
-     #serper      基于serper API的Google搜索，需在环境变量设置SERPER_API_KEY（https://serper.dev）
      #bing        cn.bing搜索，仅国内可用，目前处于服务降级状态
      #sogowx      sogo微信公众号搜索，可配合相应auto实现全文内容分析
      #fess        fess搜索引擎
@@ -54,17 +53,27 @@ librarys:
      #向量模型存储路径
      device: cuda
      #embedding运行设备
-  qdrant: 
+  qdrant:
+     count: 3
+     #最大抽取数量
+     size: 20
+     #分块大小
+     overlap: 0
+     #分块重叠长度
      path: txt
      #知识库文本路径
-     model_path: "model/text2vec-large-chinese"
+     model_path: "model/m3e-base"
      #向量模型存储路径
      qdrant_host: "http://localhost:6333"
      #qdrant服务地址"
-     device: cpu
+     device: cuda
      #qdrant运行设备
+     batch_size: 32
+     #向量模型批处理大小
      collection: qa_collection
      #qdrant集合名称
+     similarity_threshold: 0.8
+     #相似度阈值
   kg: 
      count: 5
      #最大抽取数量

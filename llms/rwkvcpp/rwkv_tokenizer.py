@@ -91,7 +91,7 @@ class TRIE_TOKENIZER():
         return self.encodeBytes(src.encode("utf-8"))
 
     def decode(self, tokens):
-        return self.decodeBytes(tokens).decode('utf-8')
+        return self.decodeBytes(tokens).decode('utf-8','replace')
 
     def printTokens(self, tokens):
         for i in tokens:
