@@ -6,6 +6,7 @@ import threading
 import time
 import math
 import re
+from typing import List,Dict
 interface = ":"
 if settings.llm.path.lower().find("world") > -1:
     print("rwkv world mode!")
@@ -62,7 +63,7 @@ if settings.llm.strategy.startswith("Q"):
 
     END_OF_LINE_TOKEN: int = 187
 
-    def process_tokens(_tokens: list[int], new_line_logit_bias: float = 0.0) -> None:
+    def process_tokens(_tokens: List[int], new_line_logit_bias: float = 0.0) -> None:
         global logits, state
 
         for _token in _tokens:
@@ -116,8 +117,8 @@ if settings.llm.strategy.startswith("Q"):
         process_tokens(tokenizer_encode(new),
                        new_line_logit_bias=-999999999)
 
-        accumulated_tokens: list[int] = []
-        token_counts: dict[int, int] = {}
+        accumulated_tokens: List[int] = []
+        token_counts: Dict[int, int] = {}
 
         for i in range(int(token_count)):
             for n in token_counts:
