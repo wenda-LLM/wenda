@@ -21,16 +21,18 @@ from plugins.common import settings
 from plugins.common import app
 import logging
 logging.captureWarnings(True)
-
-from loguru import logger
-
+logger=None
+try:
+    from loguru import logger
+except:
+    pass
 def load_LLM():
     try:
         from importlib import import_module
         LLM = import_module('llms.llm_'+settings.llm_type)
         return LLM
     except Exception as e:
-        logger.exception(e)
+        logger and logger.exception(e)
         print("LLM模型加载失败，请阅读说明：https://github.com/l15y/wenda", e)
 
 
@@ -64,7 +66,7 @@ def load_zsk():
         zhishiku = zsk
         success_print("知识库加载完成")
     except Exception as e:
-        logger.exception(e)
+        logger and logger.exception(e)
         error_helper(
             "知识库加载失败，请阅读说明", r"https://github.com/l15y/wenda#%E7%9F%A5%E8%AF%86%E5%BA%93")
         raise e
