@@ -1,4 +1,5 @@
 llm_server = location.origin.replace("http", "ws")
+global_onmessage=undefined
 send_raw = async (prompt, keyword, QA_history, onmessage = alert) => {
     let result = ''
     await new Promise(resolve => {
@@ -6,6 +7,7 @@ send_raw = async (prompt, keyword, QA_history, onmessage = alert) => {
         ws.onmessage = function (event) {
             result = event.data
             onmessage(result)
+            global_onmessage&&global_onmessage(result)
         };
         ws.onopen = function () {
             ws.send(JSON.stringify({

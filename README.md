@@ -40,6 +40,7 @@
     - [Aquila-7B](#aquila-7b)
 - [基于本项目的二次开发](#基于本项目的二次开发)
   - [wenda-webui](#wenda-webui)
+  - [接入Word文档软件](#接入word文档软件)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sun May 14 12:45:00 UTC 2023 -->
@@ -66,9 +67,8 @@
 | moss                                    | 不支持                                                                  |
 ### 懒人包
 #### 百度云
-链接：https://pan.baidu.com/s/105nOsldGt5mEPoT2np1ZoA?pwd=lyqz 
+https://pan.baidu.com/s/1idvot-XhEvLLKCbjDQuhyg?pwd=wdai 
 
-提取码：lyqz
 #### 夸克
 链接：https://pan.quark.cn/s/c4cb08de666e
 提取码：4b4R
@@ -291,5 +291,7 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 ## [wenda-webui](https://github.com/AlanLee1996/wenda-webui)
 项目调用闻达的 api 接口实现类似于 new bing 的功能。 技术栈：vue3 + element-plus + ts
 ![](imgs/webui.jpg)
-
+## [接入Word文档软件](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=20s7Vs0iZMx&contentID=1mlnYv&businessType=2&from=181174&shareSource=5&biz=ka)
+通过宏，调用闻达HTTP API
+![](imgs/Word.png)
 [![Star History Chart](https://api.star-history.com/svg?repos=l15y/wenda&type=Date)](https://star-history.com/#l15y/wenda&Date)

@@ -28,7 +28,7 @@ get_url_form_md = (s) => {
 window.answer_with_zsk = async (Q) => {
     // lsdh(false)
     app.chat.push({ "role": "user", "content": Q })
-    kownladge = (await find(Q, 5)).map(i => ({
+    kownladge = (await find(Q, 5)).filter(i=>!i.score||i.score<120).map(i => ({
         title: get_title_form_md(i.title),
         url: get_url_form_md(i.title),
         content: i.content
@@ -65,15 +65,13 @@ window.answer_with_zsk = async (Q) => {
 func.push({
     name: "知识库",
     description: "通过知识库回答问题",
-    question: async () => {
-        answer_with_zsk(app.question)
+    question: async (Q) => {
+        answer_with_zsk(Q)
     }
 })
-window.answer_with_fast_zsk = async () => {
-    let Q = app.question
-
+window.answer_with_fast_zsk = async (Q) => {
     // lsdh(false)
-    kownladge = (await find(Q, app.zsk_step)).map(i => ({
+    kownladge = (await find(Q, app.zsk_step)).filter(i=>!i.score||i.score<120).map(i => ({
         title: get_title_form_md(i.title),
         url: get_url_form_md(i.title),
         content: i.content

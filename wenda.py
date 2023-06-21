@@ -201,56 +201,41 @@ def api_chat_box():
 def api_chat_stream():
     allowCROS()
     data = request.json
-    if not data:
-        return '0'
-    prompt = data.get('prompt')
-    max_length = data.get('max_length')
-    if max_length is None:
-        max_length = 2048
-    top_p = data.get('top_p')
-    if top_p is None:
-        top_p = 0.7
-    temperature = data.get('temperature')
-    if temperature is None:
-        temperature = 0.9
-    keyword = data.get('keyword')
-    if keyword is None:
-        keyword = prompt
-    history = data.get('history')
-    history_formatted = LLM.chat_init(history)
-    response = ''
-    # print(request.environ)
-    IP = request.environ.get(
-        'HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
-    error = ""
-    footer = '///'
-
-    print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
+    data=json.dumps(data)
+    from websocket import create_connection
+    ws = create_connection("ws://127.0.0.1:"+str(settings.port)+"/ws")
+    ws.send(data)
     try:
-        for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
-            if (response):
-                yield response+footer
-    except Exception as e:
-        error = str(e)
-        error_print("错误", error)
-        response = ''
-        # raise e
-    torch.cuda.empty_cache()
-    if logging:
-        with session_maker() as session:
-            jl = 记录(时间=datetime.datetime.now(), IP=IP, 问=prompt, 答=response)
-            session.add(jl)
-            session.commit()
-    print(response)
-    yield "/././"
+        while True:
+            new_result =  ws.recv()
+            if len(new_result)>0:
+                result=new_result
+                yield result
+    except:
+        pass
+    ws.close()
+
+@route('/chat', method=("POST", "OPTIONS"))
+def api_chat():
+    allowCROS()
+    data = request.json
+    data=json.dumps(data)
+    from websocket import create_connection
+    ws = create_connection("ws://127.0.0.1:"+str(settings.port)+"/ws")
+    ws.send(data)
+    try:
+        while True:
+            new_result =  ws.recv()
+            if len(new_result)>0:
+                result=new_result
+    except:
+        pass
+    ws.close()
+    print([result])
+    return result
 
 
 bottle.debug(True)
-
-# import webbrowser
-# webbrowser.open_new('http://127.0.0.1:'+str(settings.Port))
-
-# bottle.run(server='paste', host="0.0.0.0", port=settings.port, quiet=True)
 
 
 @app.middleware("http")
