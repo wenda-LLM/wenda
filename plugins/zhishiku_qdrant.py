@@ -13,9 +13,15 @@ divider = "\n"
 
 class QdrantIndex(object):
     def __init__(self, embedding_model):
-        self.qdrant_client = QdrantClient(
-            path="memory/q",
-        )
+        if(settings.librarys.qdrant.qdrant_path):
+            self.qdrant_client = QdrantClient(
+                path=settings.librarys.qdrant.qdrant_path,
+            )
+        elif(settings.librarys.qdrant.qdrant_host):
+            self.qdrant_client = QdrantClient(
+                url=settings.librarys.qdrant.qdrant_host,
+            )
+
         self.embedding_model = embedding_model
         self.collection_name = COLLECTION_NAME
 

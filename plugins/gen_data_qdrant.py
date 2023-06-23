@@ -67,8 +67,13 @@ def clac_embedding(texts, embedding, metadatas):
         ids = gen_ids(metadatas)
         if vectorstore is None:
             # 如需插入大规模数据可以将prefer_grpc参数置为True
-            vectorstore = Qdrant.from_texts(texts, embedding, embeddings, ids, metadatas=metadatas,
-                                            path="memory/q", prefer_grpc=True,
+            if(settings.librarys.qdrant.qdrant_path):
+                vectorstore = Qdrant.from_texts(texts, embedding, embeddings, ids, metadatas=metadatas,
+                                            path=settings.librarys.qdrant.qdrant_path, prefer_grpc=True,
+                                            collection_name=settings.librarys.qdrant.collection, timeout=10)
+            elif(settings.librarys.qdrant.qdrant_host):
+                vectorstore = Qdrant.from_texts(texts, embedding, embeddings, ids, metadatas=metadatas,
+                                            url=settings.librarys.qdrant.qdrant_host, prefer_grpc=True,
                                             collection_name=settings.librarys.qdrant.collection, timeout=10)
         else:
             vectorstore.add_texts(texts, embeddings, ids, metadatas)
