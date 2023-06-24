@@ -1,6 +1,6 @@
-from peft import PeftModel
+from transformers import TextIteratorStreamer
 from plugins.common import settings
-
+from threading import Thread
 user = "<human>"
 answer = "<bot>"
 interface = ":"
@@ -35,22 +35,16 @@ def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
     inputs = tokenizer(prompt, return_tensors='pt')
     yield str(len(prompt))+'字正在计算'
     inputs = inputs.to('cuda:0')
-    pred = model.generate(
-        **inputs, max_new_tokens=max_length, repetition_penalty=1.1)
-    yield tokenizer.decode(pred.cpu()[0], skip_special_tokens=True)[len(prompt):]
+    streamer = TextIteratorStreamer(tokenizer)
+    thread = Thread(target=model.generate, kwargs=dict(
+        inputs, max_new_tokens=max_length, repetition_penalty=1.1, streamer=streamer))
+    thread.start()
+    generated_text = ""
+    for new_text in streamer:
+        generated_text += new_text
+        yield generated_text[len(prompt):].removesuffix("</s>")
 
-# def sum_values(dict):
-#     total = 0
-#     for value in dict.values():
-#         total += value
-#     return total
-
-# def dict_to_list(d):
-#     l = []
-#     for k, v in d.items():
-#         l.extend([k] * v)
-#     return l
-
+import torch
 
 def load_model():
     global model, tokenizer
@@ -59,8 +53,10 @@ def load_model():
     tokenizer = AutoTokenizer.from_pretrained(
         settings.llm.path, trust_remote_code=True, revision="1")
     model = AutoModelForCausalLM.from_pretrained(
-        settings.llm.path, trust_remote_code=True, revision="1")
-    model = model.half()
+        settings.llm.path, trust_remote_code=True,
+        low_cpu_mem_usage=True,
+        torch_dtype=torch.float16,
+        revision="1")
     if not (settings.llm.lora == '' or settings.llm.lora == None):
         print('Lora模型地址', settings.llm.lora)
         from peft import PeftModel
