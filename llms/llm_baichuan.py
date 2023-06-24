@@ -6,6 +6,16 @@ answer = "<bot>"
 interface = ":"
 
 
+ 
+class ThreadWithReturnValue(Thread):
+    def run(self):
+        if self._target is not None:
+            self._return = self._target(*self._args, **self._kwargs)
+ 
+    def join(self):
+        super().join()
+        return self._return
+
 def chat_init(history):
     tmp = []
     # print(history)
@@ -36,13 +46,15 @@ def chat_one(prompt, history, max_length, top_p, temperature, data):
     yield str(len(prompt))+'字正在计算'
     inputs = inputs.to('cuda:0')
     streamer = TextIteratorStreamer(tokenizer,skip_prompt=True)
-    thread = Thread(target=model.generate, kwargs=dict(
+    thread = ThreadWithReturnValue(target=model.generate, kwargs=dict(
         inputs, max_new_tokens=max_length, repetition_penalty=1.1, streamer=streamer))
     thread.start()
     generated_text = ""
     for new_text in streamer:
         generated_text += new_text
         yield generated_text.removesuffix("</s>")
+    pred=thread.join()
+    yield tokenizer.decode(pred.cpu()[0], skip_special_tokens=True)[len(prompt):]
 
 import torch
 
