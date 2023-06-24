@@ -103,6 +103,8 @@ llm_models:
      #置为cuda:0，代表state来自cuda:0，且需要将其复制到内存以节约显存。
      #置为cuda:1，同理。
      #置为cpu，代表不需要复制，如果使用cpu计算，或多卡计算需这么设置。
+     presence_penalty: 0.2
+     count_penalty: 0.2
   glm6b: 
      path: "model/chatglm-6b-int4"
      #glm模型位置"
@@ -152,4 +154,3 @@ llm_models:
      #return fibonacci(n-1) + fibonacci(n-2)
      #print(fibonacci(10))
      strategy: "cuda fp16"
-    #因我的3070只有8g内存，所以是先把模理加载到内存进行精度转换，至少要32g系统内存， fp16 占用不到6g显存,fp32 超过8g未测试"
