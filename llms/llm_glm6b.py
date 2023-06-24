@@ -122,25 +122,26 @@ def load_model():
     model = model.eval()
 
 
-from bottle import route, response, request
-@route('/lora_load_adapter', method=("POST","OPTIONS"))
-def load_adapter():
-    # allowCROS()
-    try:
-        data = request.json
-        lora_path=data.get("lora_path")
-        adapter_name=data.get("adapter_name")
-        model.load_adapter(lora_path, adapter_name=adapter_name)
-        return "保存成功"
-    except Exception as e:
-        return str(e)
-@route('/lora_set_adapter', method=("POST","OPTIONS"))
-def set_adapter():
-    # allowCROS()
-    try:
-        data = request.json
-        adapter_name=data.get("adapter_name")
-        model.set_adapter(adapter_name)
-        return "保存成功"
-    except Exception as e:
-        return str(e)
+if not (settings.llm.lora == '' or settings.llm.lora == None):
+    from bottle import route, response, request
+    @route('/lora_load_adapter', method=("POST","OPTIONS"))
+    def load_adapter():
+        # allowCROS()
+        try:
+            data = request.json
+            lora_path=data.get("lora_path")
+            adapter_name=data.get("adapter_name")
+            model.load_adapter(lora_path, adapter_name=adapter_name)
+            return "保存成功"
+        except Exception as e:
+            return str(e)
+    @route('/lora_set_adapter', method=("POST","OPTIONS"))
+    def set_adapter():
+        # allowCROS()
+        try:
+            data = request.json
+            adapter_name=data.get("adapter_name")
+            model.set_adapter(adapter_name)
+            return "保存成功"
+        except Exception as e:
+            return str(e)
