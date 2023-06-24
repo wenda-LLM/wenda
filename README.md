@@ -36,7 +36,6 @@
     - [chatRWKV](#chatrwkv)
       - [torch](#torch)
       - [cpp](#cpp)
-    - [llama](#llama)
     - [Aquila-7B](#aquila-7b)
 - [基于本项目的二次开发](#基于本项目的二次开发)
   - [wenda-webui](#wenda-webui)
@@ -50,18 +49,18 @@
 ![](imgs/setting2.png)
 ## 安装部署
 ### 各模型功能说明
-| 功能                      | 多用户并行 | 流式输出 | CPU推理      | GPU推理 | 量化 | 外挂LoRa |
+| 功能                      | 多用户并行 | 流式输出   | CPU推理      | GPU推理 | 量化 | 外挂LoRa |
 | ------------------------- | ---------- |
-| [chatGLM-6B](#chatglm-6b) | 支持       | 支持     | 需安装编译器 | 支持    | 支持 | 支持     |
-| RWKV [torch](#torch)版    | 支持       | 支持     | 支持         | 支持    | 支持 |          |
-| RWKV [cpp](#cpp)版        | 支持       | 支持     | 支持         |         | 支持 |          |
-| Baichuan-7B               | 支持       | 支持     | 支持         | 支持    |      | 支持     |
-| Aquila-7B                 | 支持       |          | 支持         | 支持    |      |
-| replit                    |            |          | 支持         | 支持    |      |          |
-| chatglm130b api           | 支持       | 支持     |              |         |      |          |
-| openai api                | 支持       | 支持     |              |         |      |          |
-| [llama](#llama).cpp       | 支持       | 支持     | 支持         |         |      |          |
-| [llama](#llama) torch     | 支持       | 支持     | 支持         | 支持    |      |          |
+| [chatGLM-6B](#chatglm-6b) | 支持       | 支持       | 需安装编译器 | 支持    | 支持 | 支持     |
+| RWKV [torch](#torch)版    | 支持       | 支持       | 支持         | 支持    | 支持 |          |
+| RWKV [cpp](#cpp)版        | 支持       | 支持       | 支持         |         | 支持 |          |
+| Baichuan-7B               | 支持       | 支持       | 支持         | 支持    |      | 支持     |
+| [Aquila-7B](#aquila-7b)   |            | 官方未实现 | 支持         | 支持    |      |          |
+| replit                    |            |            | 支持         | 支持    |      |          |
+| chatglm130b api           | 支持       |            |              |         |      |          |
+| openai api                | 支持       | 支持       |              |         |      |          |
+| llama.cpp                 | 支持       | 支持       | 支持         |         |      |          |
+| llama torch               | 支持       | 支持       | 支持         | 支持    |      |          |
 ### 懒人包
 #### 百度云
 https://pan.baidu.com/s/1idvot-XhEvLLKCbjDQuhyg?pwd=wdai 
@@ -277,7 +276,6 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 
 可以查看：[saharNooby/rwkv.cpp](https://github.com/saharNooby/rwkv.cpp)，下载其他版本，或者自行编译。
 
-### llama
 ### Aquila-7B
 1. 运行`pip install FlagAI`。注意FlagAI依赖很多旧版本的包，需要自己编译，所以如果想基于python3.11运行或者想在一个环境同时跑其他模型，建议去下懒人包
 2. 运行：`run_Aquila.bat`。
