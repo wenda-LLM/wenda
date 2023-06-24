@@ -51,8 +51,9 @@ def chat_one(prompt, history, max_length, top_p, temperature, data):
     thread.start()
     generated_text = ""
     for new_text in streamer:
-        generated_text += new_text
-        yield generated_text.removesuffix("</s>")
+        if new_text!='':
+            generated_text += new_text
+            yield generated_text.removesuffix("</s>")
     pred=thread.join()
     yield tokenizer.decode(pred.cpu()[0], skip_special_tokens=True)[len(prompt):]
 
