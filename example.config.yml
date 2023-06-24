@@ -64,9 +64,11 @@ librarys:
      #知识库文本路径
      model_path: "model/m3e-base"
      #向量模型存储路径
-     qdrant_host: "http://localhost:6333"
-     #qdrant服务地址"
-     device: cuda
+     #qdrant_host: "http://localhost:6333"
+     #qdrant服务地址
+     qdrant_path: "memory/q"
+     #qdrant本地目录   qdrant_path   qdrant_host  同时只能存在一个
+     device: cpu
      #qdrant运行设备
      batch_size: 32
      #向量模型批处理大小
