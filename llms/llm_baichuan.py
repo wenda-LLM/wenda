@@ -20,7 +20,7 @@ def chat_init(history):
     return history
 
 
-def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
+def chat_one(prompt, history, max_length, top_p, temperature, data):
 
     if prompt.startswith("raw!"):
         print("[raw mode]", end="")

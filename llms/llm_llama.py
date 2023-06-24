@@ -17,11 +17,8 @@ if settings.llm.strategy.startswith("Q"):
         return history_formatted+" "
 
 
-    def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
-        if zhishiku:
-            prompt=history_formatted+"%s\nAssistant: "%prompt
-        else:
-            prompt=history_formatted+"Human: %s\nAssistant: "%prompt
+    def chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
+        prompt=history_formatted+"Human: %s\nAssistant: "%prompt
         stream = model(prompt,
         stop=["Human:","### Hum",], temperature=temperature,max_tokens=max_length, top_p=top_p,stream=True)
         # print(output['choices'])
@@ -241,7 +238,7 @@ else:
         gc.collect()
         torch.cuda.empty_cache()
 
-    def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
+    def chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
         if prompt.startswith("raw!"):
             print("LLAMA raw mode!")
             ctx=prompt.replace("raw!","")

@@ -29,7 +29,7 @@ def chat_init(history):
     return history_data
 
 
-def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
+def chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
     response = openai_api.Completion.create(
     api_key = account.key,
     prompt  = prompt,

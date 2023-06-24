@@ -25,7 +25,7 @@ def chat_init(history):
     return history_formatted
 
 
-def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
+def chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
     history_formatted.append_message(history_formatted.roles[0], prompt)
     history_formatted.append_message(history_formatted.roles[1], None)
     prompt=history_formatted.get_prompt()

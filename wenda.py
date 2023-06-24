@@ -321,7 +321,7 @@ async def websocket_endpoint(websocket: WebSocket):
         async with lock:
             print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
             try:
-                for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
+                for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
                     if (response):
                         # start = time.time()
                         await websocket.send_text(response)

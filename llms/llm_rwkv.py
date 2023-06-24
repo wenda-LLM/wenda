@@ -100,7 +100,7 @@ if settings.llm.strategy.startswith("Q"):
             logits = None
             return history
 
-    def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
+    def chat_one(prompt, history, max_length, top_p, temperature, data):
         global state, resultChat, token_stop, logits
         token_count = max_length
         token_stop = [0]
@@ -212,7 +212,7 @@ else:
         history = '\n\n'.join(tmp)
         return history
 
-    def chat_one(prompt, history, max_length, top_p, temperature, zhishiku=False):
+    def chat_one(prompt, history, max_length, top_p, temperature, data):
         token_count = max_length
         if history is None or history == "":
             history = ""
