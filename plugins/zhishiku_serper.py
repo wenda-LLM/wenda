@@ -20,7 +20,7 @@ def find(search_query,step = 0):
     try:
         if data.get("answerBox"):
             answer_box = data.get("answerBox", {})
-            l.insert(0,{'title': "["+answer_box["title"]+"]("+answer_box["link"]+")", 'content':answer_box["snippet"]})
+            l.insert(0,{'title': "[answer："+answer_box["title"]+"]("+answer_box["link"]+")", 'content':answer_box["snippet"]})
     except:
         pass
     return l
