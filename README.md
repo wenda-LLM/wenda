@@ -2,7 +2,7 @@
 本项目设计目标为实现针对特定环境的高效内容生成，同时考虑个人和中小企业的计算资源局限性，以及知识安全和私密性问题。为达目标，平台化集成了以下能力：
 
 1. 知识库：支持对接[本地离线向量库](#rtst模式)、[本地搜索引擎](#fess模式)、在线搜索引擎等。
-2. 多种大语言模型：目前支持离线部署模型有`chatGLM-6B`、`chatRWKV`、`llama系列(不推荐中文用户)`、`moss(不推荐)`、`baichuan(需配合lora使用，否则效果差)`、`Aquila-7B`，在线API访问`openai api`和`chatGLM-130b api`。
+2. 多种大语言模型：目前支持离线部署模型有`chatGLM-6B\chatGLM2-6B`、`chatRWKV`、`llama系列(不推荐中文用户)`、`moss(不推荐)`、`baichuan(需配合lora使用，否则效果差)`、`Aquila-7B`，在线API访问`openai api`和`chatGLM-130b api`。
 3. Auto脚本：通过开发插件形式的JavaScript脚本，为平台附件功能，实现包括但不限于自定义对话流程、访问外部API、在线切换LoRA模型。
 4. 其他实用化所需能力：对话历史管理、内网部署、多用户同时使用等。
 
@@ -32,7 +32,7 @@
     - [知识库调试](#知识库调试)
     - [清洗知识库文件](#清洗知识库文件)
   - [模型配置](#模型配置)
-    - [chatGLM-6B](#chatglm-6b)
+    - [chatGLM-6B/chatGLM2-6B](#chatglm-6bchatglm2-6b)
     - [chatRWKV](#chatrwkv)
       - [torch](#torch)
       - [cpp](#cpp)
@@ -49,18 +49,18 @@
 ![](imgs/setting2.png)
 ## 安装部署
 ### 各模型功能说明
-| 功能                      | 多用户并行 | 流式输出   | CPU            | GPU | 量化               | 外挂LoRa |
-| ------------------------- | ---------- | ---------- | -------------- | --- | ------------------ | -------- |
-| [chatGLM-6B](#chatglm-6b) | √          | √          | 需安装编译器   | √   | 预先量化和在线量化 | √        |
-| RWKV [torch](#torch)      | √          | √          | √              | √   | 预先量化和在线量化 |          |
-| RWKV.[cpp](#cpp)          | √          | √          | 可用指令集加速 |     | 预先量化           |          |
-| Baichuan-7B               | √          | √          | √              | √   |                    | √        |
-| [Aquila-7B](#aquila-7b)   |            | 官方未实现 | √              | √   |                    |          |
-| replit                    |            |            | √              | √   |                    |          |
-| chatglm130b api           | √          |            |                |     |                    |          |
-| openai api                | √          | √          |                |     |                    |          |
-| llama.cpp                 | √          | √          | 可用指令集加速 |     | 预先量化           |          |
-| llama torch               | √          | √          | √              | √   | 预先量化和在线量化 |          |
+| 功能                                             | 多用户并行 | 流式输出   | CPU            | GPU | 量化               | 外挂LoRa |
+| ------------------------------------------------ | ---------- | ---------- | -------------- | --- | ------------------ | -------- |
+| [chatGLM-6B/chatGLM2-6B](#chatglm-6bchatglm2-6b) | √          | √          | 需安装编译器   | √   | 预先量化和在线量化 | √        |
+| RWKV [torch](#torch)                             | √          | √          | √              | √   | 预先量化和在线量化 |          |
+| RWKV.[cpp](#cpp)                                 | √          | √          | 可用指令集加速 |     | 预先量化           |          |
+| Baichuan-7B                                      | √          | √          | √              | √   |                    | √        |
+| [Aquila-7B](#aquila-7b)                          |            | 官方未实现 | √              | √   |                    |          |
+| replit                                           |            |            | √              | √   |                    |          |
+| chatglm130b api                                  | √          |            |                |     |                    |          |
+| openai api                                       | √          | √          |                |     |                    |          |
+| llama.cpp                                        | √          | √          | 可用指令集加速 |     | 预先量化           |          |
+| llama torch                                      | √          | √          | √              | √   | 预先量化和在线量化 |          |
 ### 懒人包
 #### 百度云
 https://pan.baidu.com/s/1idvot-XhEvLLKCbjDQuhyg?pwd=wdai 
@@ -252,7 +252,7 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 - 插件“文件批量重命名”，用于使用正则匹配和修改文件名，并将分类后的文件名进行知识库的分区操作。
 
 ##  模型配置
-### chatGLM-6B
+### chatGLM-6B/chatGLM2-6B
 运行：`run_GLM6B.bat`。
 
 模型位置等参数：修改`config.yml`(复制[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml))。
