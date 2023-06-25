@@ -17,7 +17,7 @@ def chat_init(history):
     return history_formatted
 
 
-def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
+def chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
     yield str(len(prompt))+'字正在计算'
     for response, history in model.stream_chat(tokenizer, prompt, history_formatted,
                                                max_length=max_length, top_p=top_p, temperature=temperature):
@@ -122,25 +122,26 @@ def load_model():
     model = model.eval()
 
 
-from bottle import route, response, request
-@route('/lora_load_adapter', method=("POST","OPTIONS"))
-def load_adapter():
-    # allowCROS()
-    try:
-        data = request.json
-        lora_path=data.get("lora_path")
-        adapter_name=data.get("adapter_name")
-        model.load_adapter(lora_path, adapter_name=adapter_name)
-        return "保存成功"
-    except Exception as e:
-        return str(e)
-@route('/lora_set_adapter', method=("POST","OPTIONS"))
-def set_adapter():
-    # allowCROS()
-    try:
-        data = request.json
-        adapter_name=data.get("adapter_name")
-        model.set_adapter(adapter_name)
-        return "保存成功"
-    except Exception as e:
-        return str(e)
+if not (settings.llm.lora == '' or settings.llm.lora == None):
+    from bottle import route, response, request
+    @route('/lora_load_adapter', method=("POST","OPTIONS"))
+    def load_adapter():
+        # allowCROS()
+        try:
+            data = request.json
+            lora_path=data.get("lora_path")
+            adapter_name=data.get("adapter_name")
+            model.load_adapter(lora_path, adapter_name=adapter_name)
+            return "保存成功"
+        except Exception as e:
+            return str(e)
+    @route('/lora_set_adapter', method=("POST","OPTIONS"))
+    def set_adapter():
+        # allowCROS()
+        try:
+            data = request.json
+            adapter_name=data.get("adapter_name")
+            model.set_adapter(adapter_name)
+            return "保存成功"
+        except Exception as e:
+            return str(e)

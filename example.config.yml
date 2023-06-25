@@ -64,9 +64,11 @@ librarys:
      #知识库文本路径
      model_path: "model/m3e-base"
      #向量模型存储路径
-     qdrant_host: "http://localhost:6333"
-     #qdrant服务地址"
-     device: cuda
+     #qdrant_host: "http://localhost:6333"
+     #qdrant服务地址
+     qdrant_path: "memory/q"
+     #qdrant本地目录   qdrant_path   qdrant_host  同时只能存在一个
+     device: cpu
      #qdrant运行设备
      batch_size: 32
      #向量模型批处理大小
@@ -101,8 +103,10 @@ llm_models:
      #置为cuda:0，代表state来自cuda:0，且需要将其复制到内存以节约显存。
      #置为cuda:1，同理。
      #置为cpu，代表不需要复制，如果使用cpu计算，或多卡计算需这么设置。
+     presence_penalty: 0.2
+     count_penalty: 0.2
   glm6b: 
-     path: "model/chatglm-6b-int4"
+     path: "model\\chatglm-6b-int4"
      #glm模型位置"
      strategy: "cuda fp16"
      #cuda fp16	 所有glm模型 要直接跑在gpu上都可以使用这个参数
@@ -112,9 +116,9 @@ llm_models:
    #   lora: "model/lora-450"
      #glm-lora模型位置
   baichuan: 
-     path: "model/baichuan-7B"
+     path: "model\\baichuan-7B"
      #模型位置"
-     strategy: "cuda fp16"
+   #   lora: "model/64rank"
   aquila: #https://model.baai.ac.cn/model-detail/100101
      path: "AquilaChat-7B" #注意没有model/
      #模型位置"
@@ -135,7 +139,7 @@ llm_models:
      api_host: "http://127.0.0.1:8000/v1" #rwkv runner
      
   replitcode: 
-     path: "model/replit-code-v1-3b"
+     path: "model\\replit-code-v1-3b"
      #replitcode模型位置
      #说明：目前模型参数和chat模型差异较大，写死了，不能通过wenda界面配置，需要调整自行到llm_replitcode.py 文件中调整，或放开wenda界面参数
      #y = model.generate(x, max_length=100, do_sample=true, top_p=0.95, top_k=4, temperature=0.2, num_return_sequences=1, eos_token_id=tokenizer.eos_token_id)
@@ -150,4 +154,3 @@ llm_models:
      #return fibonacci(n-1) + fibonacci(n-2)
      #print(fibonacci(10))
      strategy: "cuda fp16"
-    #因我的3070只有8g内存，所以是先把模理加载到内存进行精度转换，至少要32g系统内存， fp16 占用不到6g显存,fp32 超过8g未测试"

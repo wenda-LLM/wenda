@@ -7,7 +7,7 @@ def chat_init(history):
     return history
 
 
-def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
+def chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
     history_data = [ {"role": "system", "content": "You are a helpful assistant."}]
     if history_formatted is not None:
         for i, old_chat in enumerate(history_formatted):

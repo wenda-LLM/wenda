@@ -47,7 +47,7 @@ except Exception as e:
 success_print("Embedding model加载完成")
 
 try:
-    client = QdrantClient(url=settings.librarys.qdrant.qdrant_host, timeout=10, prefer_grpc=True)
+    client = QdrantClient(path="memory/q")
     client.get_collection(COLLECTION_NAME)
     vectorstore = Qdrant(client, COLLECTION_NAME, embedding)
 except:
@@ -67,7 +67,12 @@ def clac_embedding(texts, embedding, metadatas):
         ids = gen_ids(metadatas)
         if vectorstore is None:
             # 如需插入大规模数据可以将prefer_grpc参数置为True
-            vectorstore = Qdrant.from_texts(texts, embedding, embeddings, ids, metadatas=metadatas,
+            if(settings.librarys.qdrant.qdrant_path):
+                vectorstore = Qdrant.from_texts(texts, embedding, embeddings, ids, metadatas=metadatas,
+                                            path=settings.librarys.qdrant.qdrant_path, prefer_grpc=True,
+                                            collection_name=settings.librarys.qdrant.collection, timeout=10)
+            elif(settings.librarys.qdrant.qdrant_host):
+                vectorstore = Qdrant.from_texts(texts, embedding, embeddings, ids, metadatas=metadatas,
                                             url=settings.librarys.qdrant.qdrant_host, prefer_grpc=True,
                                             collection_name=settings.librarys.qdrant.collection, timeout=10)
         else:
@@ -137,6 +142,7 @@ for i in range(len(all_files)):
         elif ext.lower() == '.txt':
             # txt
             with open(file_path, 'rb') as f:
+                print("open:",file_path)
                 b = f.read()
                 result = chardet.detect(b)
             with open(file_path, 'r', encoding=result['encoding']) as f:

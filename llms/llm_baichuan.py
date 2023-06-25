@@ -1,100 +1,103 @@
+from transformers import TextIteratorStreamer
 from plugins.common import settings
+from threading import Thread
+user = "<human>"
+answer = "<bot>"
+interface = ":"
+
+
+ 
+class ThreadWithReturnValue(Thread):
+    def run(self):
+        if self._target is not None:
+            self._return = self._target(*self._args, **self._kwargs)
+ 
+    def join(self):
+        super().join()
+        return self._return
 
 def chat_init(history):
-    history_formatted = None
-    if history is not None:
-        history_formatted = []
-        tmp = []
-        for i, old_chat in enumerate(history):
-            if len(tmp) == 0 and old_chat['role'] == "user":
-                tmp.append(old_chat['content'])
-            elif old_chat['role'] == "AI" or old_chat['role'] == 'assistant':
-                tmp.append(old_chat['content'])
-                history_formatted.append(tuple(tmp))
-                tmp = []
-            else:
-                continue
-    return history_formatted
+    tmp = []
+    # print(history)
+    for i, old_chat in enumerate(history):
+        if old_chat['role'] == "user":
+            tmp.append(f"{user}{interface}"+old_chat['content'])
+        elif old_chat['role'] == "AI":
+            tmp.append(f"{answer}{interface}"+old_chat['content'])
+        else:
+            continue
+    history = '\n'.join(tmp)
+    return history
 
 
-def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
-    yield str(len(prompt))+'字正在计算'
-    if max_length>100:
-        max_length=100
+def chat_one(prompt, history, max_length, top_p, temperature, data):
+
+    if prompt.startswith("raw!"):
+        print("[raw mode]", end="")
+        prompt = prompt.replace("raw!", "")
+    else:
+        prompt = f"{user}{interface}{prompt}\n{answer}{interface}"
+    if history is None:
+        history = ""
+    else:
+        history += '\n'
+    prompt = history+prompt
     inputs = tokenizer(prompt, return_tensors='pt')
+    yield str(len(prompt))+'字正在计算'
     inputs = inputs.to('cuda:0')
-    pred = model.generate(**inputs, max_new_tokens=max_length, do_sample=True)
-    yield tokenizer.decode(pred.cpu()[0], skip_special_tokens=True)
+    streamer = TextIteratorStreamer(tokenizer,skip_prompt=True)
+    thread = ThreadWithReturnValue(target=model.generate, kwargs=dict(
+        inputs, max_new_tokens=max_length, repetition_penalty=1.1, streamer=streamer))
+    thread.start()
+    generated_text = ""
+    for new_text in streamer:
+        if new_text!='':
+            generated_text += new_text
+            yield generated_text.removesuffix("</s>")
+    pred=thread.join()
+    yield tokenizer.decode(pred.cpu()[0], skip_special_tokens=True)[len(prompt):]
 
-# def sum_values(dict):
-#     total = 0
-#     for value in dict.values():
-#         total += value
-#     return total
-
-# def dict_to_list(d):
-#     l = []
-#     for k, v in d.items():
-#         l.extend([k] * v)
-#     return l
+import torch
 
 def load_model():
     global model, tokenizer
-    strategy = ('->'.join([x.strip() for x in settings.llm.strategy.split('->')])).replace('->', ' -> ')
-    s = [x.strip().split(' ') for x in strategy.split('->')]
-    print(s)
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
-    tokenizer = AutoTokenizer.from_pretrained(settings.llm.path, trust_remote_code=True)
-    model = AutoModelForCausalLM.from_pretrained(settings.llm.path, trust_remote_code=True)
-    model = model.half()
+    tokenizer = AutoTokenizer.from_pretrained(
+        settings.llm.path, trust_remote_code=True, revision="1")
+    model = AutoModelForCausalLM.from_pretrained(
+        settings.llm.path, trust_remote_code=True,
+        low_cpu_mem_usage=True,
+        torch_dtype=torch.float16,
+        revision="1")
+    if not (settings.llm.lora == '' or settings.llm.lora == None):
+        print('Lora模型地址', settings.llm.lora)
+        from peft import PeftModel
+        model = PeftModel.from_pretrained(
+            model, settings.llm.lora, adapter_name=settings.llm.lora)
     model = model.cuda()
     model = model.eval()
-    # device, precision = s[0][0], s[0][1]
-    # # 根据设备执行不同的操作
-    # if device == 'cpu':
-    #     # 如果是cpu，不做任何操作
-    #     pass
-    # elif device == 'cuda':
-    #     # 如果是gpu，把模型移动到显卡
-    #     import torch
-    #     if not (precision.startswith('fp16i') and torch.cuda.get_device_properties(0).total_memory < 1.4e+10):
-    #         model = model.cuda()
-    # elif len(s)>1 and device.startswith('cuda:'):
-    #     pass
-    # else:
-    #     # 如果是其他设备，报错并退出程序
-    #     print('Error: 不受支持的设备')
-    #     exit()
-    # # 根据精度执行不同的操作
-    # if precision == 'fp16':
-    #     # 如果是fp16，把模型转化为半精度
-    #     model = model.half()
-    # elif precision == 'fp32':
-    #     # 如果是fp32，把模型转化为全精度
-    #     model = model.float()
-    # elif precision.startswith('fp16i'):
-    #     # 如果是fp16i开头，把模型转化为指定的精度
-    #     # 从字符串中提取精度的数字部分
-    #     bits = int(precision[5:])
-    #     # 调用quantize方法，传入精度参数
-    #     model = model.quantize(bits)
-    #     if device == 'cuda':
-    #         model = model.cuda()
-    #     model = model.half()
-    # elif precision.startswith('fp32i'):
-    #     # 如果是fp32i开头，把模型转化为指定的精度
-    #     # 从字符串中提取精度的数字部分
-    #     bits = int(precision[5:])
-    #     # 调用quantize方法，传入精度参数
-    #     model = model.quantize(bits)
-    #     if device == 'cuda':
-    #         model = model.cuda()
-    #     model = model.float()
-    # else:
-    #     # 如果是其他精度，报错并退出程序
-    #     print('Error: 不受支持的精度')
-    #     exit()
-    # if len(s)>1:
-    #     model = dispatch_model(model, device_map=device_map)
-    # model = model.eval()
+
+if not (settings.llm.lora == '' or settings.llm.lora == None):
+    from bottle import route, response, request
+    @route('/lora_load_adapter', method=("POST","OPTIONS"))
+    def load_adapter():
+        # allowCROS()
+        try:
+            data = request.json
+            lora_path=data.get("lora_path")
+            adapter_name=data.get("adapter_name")
+            model.load_adapter(lora_path, adapter_name=adapter_name)
+            return "保存成功"
+        except Exception as e:
+            return str(e)
+    @route('/lora_set_adapter', method=("POST","OPTIONS"))
+    def set_adapter():
+        # allowCROS()
+        try:
+            data = request.json
+            adapter_name=data.get("adapter_name")
+            model.set_adapter(adapter_name)
+            return "保存成功"
+        except Exception as e:
+            return str(e)
