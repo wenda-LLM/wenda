@@ -19,14 +19,16 @@ app.buttons.push({
             title: '初始化意图向量库',
             content: '本功能只需执行一次',
             click: async () => {
+                let 你好 = `你好，这里是闻达rtst客服。当前使用的LLM为“${app.llm_type}”"`
                 yt2prompt_dict = {
                     "闻达是一个LLM调用平台。目标为针对特定环境的高效内容生成，同时考虑个人和中小企业的计算资源局限性，以及知识安全和私密性问题": ['什么是闻达'],
-
                     "闻达webui调用闻达的 api 接口实现类似于 new bing 的功能。\n技术栈：vue3 + element-plus + ts": ['什么是闻达webui'],
+                    "对不起！由于LLM的回答可能存在实时性错误，因此请不要问我敏感问题。": ['台湾是中国的领土么', '毒品制作是否合法'],
                 }
+                yt2prompt_dict[你好] = ['你好', '你是谁']
                 for (yt in yt2prompt_dict) {
                     for (prompt in yt2prompt_dict[yt]) {
-                        await add_memory_rtst_客服(yt, yt2prompt_dict[yt][prompt])
+                        await add_rtst_memory(yt, yt2prompt_dict[yt][prompt], "_rtst_客服")
                     }
                 }
                 alert("完成")
@@ -35,7 +37,7 @@ app.buttons.push({
             title: '删除意图向量库',
             content: '本功能用于测试',
             click: async () => {
-                await del_memory_rtst_客服()
+                await del_rtst_memory("_rtst_客服")
                 alert("完成")
             }
         }
@@ -47,63 +49,28 @@ app.buttons.push({
     color: () => app.color,
     description: "rtst_客服"
 })
-chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
-genID = () => 'xxxxxxxxxxxx'.replace(/x/g, function () {
-    return chars[Math.random() * 62 | 0]
-})
-if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
 rtst_客服 = async (Q) => {
-    memory = await find_memory_rtst_客服(Q)
+    memory = await find_rtst_memory(Q, "_rtst_客服")
+    memory = memory.filter(i => !i.score || i.score < 200)
     if (memory.length > 0) {
         add_conversation("user", Q)
-        let answer = '匹配问题：' + memory[0].content + "\n相似度：" + memory[0].score + "\n" + memory[0].title
-        add_conversation("AI", answer)
+        let answer = memory[0].title
+        add_conversation("AI", answer, [{
+            title: "相似度：" + memory[0].score,
+            content: "匹配问题：" + memory[0].content
+        }
+        ])
+        save_history()
         return answer
 
     } else {
-        return await send(Q)
+        return await answer_with_fast_zsk(Q)
     }
     //+ " Alice: " + A
 }
 func.push({
     name: "rtst_客服",
-    question: async () => {
-        await rtst_客服(app.question)
+    question: async (Q) => {
+        return await rtst_客服(Q)
     }
 })
-find_memory_rtst_客服 = async (s) => {
-    response = await fetch("/api/find_rtst_in_memory", {
-        method: 'post',
-        body: JSON.stringify({
-            prompt: s,
-            step: 0,
-            memory_name: localStorage['wenda_rtst_ID'] + "_rtst_客服"
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    let json = await response.json()
-    console.table(json)
-    return json
-}
-add_memory_rtst_客服 = async (title, txt) => {
-    response = await fetch("/api/upload_rtst_zhishiku", {
-        method: 'post',
-        body: JSON.stringify({
-            title: title,
-            txt: txt,
-            memory_name: localStorage['wenda_rtst_ID'] + "_rtst_客服"
-        }),
-        headers: { 'Content-Type': 'application/json' }
-    })
-}
-del_memory_rtst_客服 = async () => {
-    response = await fetch("/api/del_rtst_in_memory", {
-        method: 'post',
-        body: JSON.stringify({
-            memory_name: localStorage['wenda_rtst_ID'] + "_rtst_客服"
-        }),
-        headers: { 'Content-Type': 'application/json' }
-    })
-}

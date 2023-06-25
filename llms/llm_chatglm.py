@@ -24,7 +24,7 @@ def chat_init(history):
     return history_data
 
 
-def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
+def chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
     # 请求参数样例
     data = {
     "top_p": top_p,

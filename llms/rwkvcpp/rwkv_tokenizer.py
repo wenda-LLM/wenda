@@ -73,9 +73,9 @@ class TRIE_TOKENIZER():
         for t, i in self.token2idx.items():
             _ = self.root.add(t, val=(t, i))
 
-    def encodeBytes(self, src:bytes) -> list[int]:
+    def encodeBytes(self, src:bytes) -> List[int]:
         idx:int = 0
-        tokens:list[int] = []
+        tokens:List[int] = []
         while (idx < len(src)):
             _idx:int = idx
             idx, _, values = self.root.find_longest(src, idx)
@@ -91,7 +91,7 @@ class TRIE_TOKENIZER():
         return self.encodeBytes(src.encode("utf-8"))
 
     def decode(self, tokens):
-        return self.decodeBytes(tokens).decode('utf-8')
+        return self.decodeBytes(tokens).decode('utf-8','replace')
 
     def printTokens(self, tokens):
         for i in tokens:

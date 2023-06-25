@@ -4,7 +4,7 @@ def chat_init(history):
     return []
 
 
-def chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=False):
+def chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
     yield str(len(prompt))+'字正在计算'
     
     x = tokenizer.encode(prompt, return_tensors='pt').to(model.device)
