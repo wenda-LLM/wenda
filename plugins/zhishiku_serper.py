@@ -15,4 +15,12 @@ def find(search_query,step = 0):
     res = conn.getresponse()
     data = res.read()
     data=json.loads(data)
-    return [{'title': "["+organic["title"]+"]("+organic["link"]+")", 'content':organic["snippet"]} for organic in data['organic']]
+    print(data)
+    l=[{'title': "["+organic["title"]+"]("+organic["link"]+")", 'content':organic["snippet"]} for organic in data['organic']]
+    try:
+        if data.get("answerBox"):
+            answer_box = data.get("answerBox", {})
+            l.insert(0,{'title': "[answer："+answer_box["title"]+"]("+answer_box["link"]+")", 'content':answer_box["snippet"]})
+    except:
+        pass
+    return l
