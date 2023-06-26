@@ -15,6 +15,10 @@
 	<script src="/static/vuetify.min.js"></script>
 	<script src="/static/markdown-it.min.js"></script>
 	<style>
+		div{
+			
+			transition: all 1s;
+		}
 		.v-sheet.v-card {
 			margin: 20px;
 			padding: 10px;
@@ -34,7 +38,6 @@
 			width: 100%;
 			font-size: xx-large;
 			position: relative;
-			transition: all 1s;
 		}
 
 		.input-box {
@@ -53,7 +56,7 @@
 <body>
 	<div id="app" v-cloak>
 		<v-app>
-			<div :class="results.length==0?'logo-center':'logo-left'"><b style="color: purple;">闻达</b><b>搜索</b></div>
+			<div :class="s关键词.length==0?'logo-center':'logo-left'"><b style="color: purple;">闻达</b><b>搜索</b></div>
 
 			<v-row class="input-box">
 				<v-col cols="10" sm="10">
@@ -66,10 +69,10 @@
 				</v-col>
 			</v-row>
 			<pre>{{s回答}}</pre>
-			<v-card elevation="2" v-for="result in results" @click.stop='window.open(result.url,"_blank")'>
+			<v-card  v-ripple elevation="2" v-for="result in results" @click.stop='window.open(result.url,"_blank")'>
 				<v-card-title>{{result.title}}<v-chip class="ma-2" :color="result.score<i分数阈值?'green':'red'"
 						text-color="white" v-text="result.score" v-if="result.score"></v-chip></v-card-title>
-				<v-divider></v-divider><br>
+				<v-divider></v-divider>
 				<v-card-text v-text="result.content">
 			</v-card>
 			<v-snackbar v-model="b显示提示文本" :timeout="3000" style="white-space: pre-line">{{s提示文本}}</v-snackbar>
