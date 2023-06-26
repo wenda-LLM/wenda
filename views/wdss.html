@@ -1,7 +1,7 @@
 <html>
 
 <head>
-	<title>闻达</title>
+	<title>闻达搜索</title>
 	<meta charset="utf-8">
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="mobile-web-app-capable" content="yes" />
@@ -21,22 +21,20 @@
 		}
 
 		.logo-center {
-			left: calc(50% - 160px);
+			left: calc(50% - 140px);
 			width: 256px;
 			font-size: 4em;
-			padding-top: 1em;
-			padding-bottom: 0.5em;
+			padding-top: 2.5em;
+			padding-bottom: 0.8em;
 			position: relative;
 		}
 
 		.logo-left {
 			left: 20px;
-			top: 30px;
 			width: 100%;
 			font-size: xx-large;
 			position: relative;
 			transition: all 1s;
-			line-height: 0;
 		}
 
 		.input-box {
@@ -94,6 +92,7 @@
 				temperature:0.8,
 				top_p:0.2,
 				max_length:500,
+				llm_type:""
 			}),
 			methods: {
 			}
@@ -111,9 +110,15 @@
 			app.results = kownladge
 			kownladge = kownladge.filter(i => !i.score || i.score < app.i分数阈值)
 			if (kownladge.length > 0) {
-				let prompt = '总结下列与问题相关的信息。\n' +
-					kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n问题：" + app.s关键词
-				return await send_raw(prompt, '', [], (s) => { app.s回答 = s })
+				if (app.llm_type == "rwkv") {
+					let prompt = 'raw!lnstruction: 根据下面的信息完成问答\n\nlnput: \n' +
+						kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n\nResponse: Question: " + app.s关键词+"\nAnswer: "
+						return await send_raw(prompt, '', [], (s) => { app.s回答 = s })
+				} else {
+					let prompt = '总结下列与问题相关的信息。\n' +
+						kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n问题：" + app.s关键词
+					return await send_raw(prompt, '', [], (s) => { app.s回答 = s })
+				}
 			} else {
 				alert("没有找到")
 				//return await send(Q, keyword = Q, show = true, sources = sources)
@@ -139,6 +144,7 @@
 		}
 	</script>
 	<script src="wd_sdk.js"></script>
+    <script src="api/llm"></script>
 </body>
 
 </html>
