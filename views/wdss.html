@@ -72,9 +72,9 @@
 				</v-col>
 			</v-row>
 			<pre>{{s回答}}</pre>
-			<v-card  v-ripple elevation="2" v-for="result in results" @click.stop='window.open(result.url,"_blank")'>
+			<v-card  v-ripple elevation="2" v-for="result in results" @click.stop='result.url&&window.open(result.url,"_blank")'>
 				<v-card-title>{{result.title}}<v-chip class="ma-2" :color="result.score<i分数阈值?'green':'red'"
-						text-color="white" v-text="result.score" v-if="result.score"></v-chip></v-card-title>
+						text-color="white" v-text="result.score" v-if="result.score!=undefined"></v-chip></v-card-title>
 				<v-divider></v-divider>
 				<v-card-text v-text="result.content">
 			</v-card>
@@ -106,6 +106,18 @@
 		submit = async (e) => {
 			e && e.preventDefault()
 			window.ws && await ws.close();
+			memory = await find_rtst_memory(app.s关键词, "rtst_kf",true)
+			memory = memory.filter(i => !i.score || i.score < 200)
+			if (memory.length > 0) {
+				app.s回答 = memory[0].title
+					 app.results = memory.map(i => ({
+						title: i.content,
+						score: i.score,
+						content: i.title
+					}))
+				return
+		
+			}
 			kownladge = await find_dynamic(app.s关键词, 3, { libraryStategy: app.s查询参数, maxItmes: 10 })
 			kownladge = kownladge.map(i => ({
 				title: get_title_form_md(i.title),
