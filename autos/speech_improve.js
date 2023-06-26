@@ -10,7 +10,7 @@
 // @grant        none
 // ==/UserScript==
 
-let isSpeaking = true;
+let isSpeaking = false;
 speak = (s) => {
     msg = new SpeechSynthesisUtterance();
     msg.rate = 1;
@@ -23,7 +23,7 @@ speak = (s) => {
     }
 
     msg.onend = (event) => {
-        isSpeaking = true;
+        isSpeaking = false;
     }
 
 }
@@ -32,7 +32,7 @@ stop_listen = () => {
     app.loading = true
 }
 listen = () => {
-    if (isSpeaking == false) return;
+    if (isSpeaking) return;
     recognition = new window.webkitSpeechRecognition;
     let final_transcript = '';
     recognition.continuous = true;
@@ -54,7 +54,7 @@ listen = () => {
     };
     recognition.onerror = function (e) {
         console.log(final_transcript);
-        alert('语音识别失败:',e.error)
+        alert('语音识别失败:', e.error)
         app.sst_started = false
         console.log('======================' + "error" + '======================', e);
     };
@@ -62,7 +62,7 @@ listen = () => {
         console.log(final_transcript);
         app.question = final_transcript
         if (final_transcript.length > 1)
-            提交()
+            submit()
         app.sst_started = false
         console.log('======================' + "end" + '======================');
     }
