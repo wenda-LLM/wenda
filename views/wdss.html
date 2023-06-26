@@ -50,6 +50,9 @@
 			margin: 20px;
 			white-space: break-spaces;
 		}
+		.v-application--wrap {
+			display: unset;
+		}
 	</style>
 </head>
 
@@ -59,10 +62,10 @@
 			<div :class="(s关键词.length!=0||results.length!=0)?'logo-left':'logo-center'"><b style="color: purple;">闻达</b><b>搜索</b></div>
 
 			<v-row class="input-box">
-				<v-col cols="10" sm="10">
+				<v-col cols="10">
 					<v-textarea autofocus v-model="s关键词" label="关键词" no-resize rows="1" @keypress.enter="submit"></v-textarea>
 				</v-col>
-				<v-col cols="2" sm="2">
+				<v-col cols="2">
 					<v-btn color="purple" dark size="x-large" @click="submit()">
 						搜索
 					</v-btn>
