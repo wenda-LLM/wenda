@@ -1,20 +1,20 @@
 <html>
 
-<head>
-	<title>闻达搜索</title>
-	<meta charset="utf-8">
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="mobile-web-app-capable" content="yes" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=650,  user-scalable=no">
-	<link rel="shortcut icon" href="#" />
+	<head>
+		<title>闻达搜索</title>
+		<meta charset="utf-8">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=650,  user-scalable=no">
+		<link rel="shortcut icon" href="#" />
 
-	<link href="/static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet">
-	<link href="/static/vuetify.min.css" rel="stylesheet">
-	<script src="/static/vue.js"></script>
-	<script src="/static/vuetify.min.js"></script>
-	<script src="/static/markdown-it.min.js"></script>
-	<style>
+		<link href="/static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet">
+		<link href="/static/vuetify.min.css" rel="stylesheet">
+		<script src="/static/vue.js"></script>
+		<script src="/static/vuetify.min.js"></script>
+		<script src="/static/markdown-it.min.js"></script>
+		<style>
 		div{
 			
 			transition: all 1s;
@@ -54,39 +54,45 @@
 			display: unset;
 		}
 	</style>
-</head>
+	</head>
 
-<body>
-	<div id="app" v-cloak>
-		<v-app>
-			<div :class="(s关键词.length!=0||results.length!=0)?'logo-left':'logo-center'"><b style="color: purple;">闻达</b><b>搜索</b></div>
+	<body>
+		<div id="app" v-cloak>
+			<v-app>
+				<v-combobox multiple small-chips dense hide-details="auto" v-model="s查询参数" solo
+					:items="items"></v-combobox>
+				<div :class="(s关键词.length!=0||results.length!=0)?'logo-left':'logo-center'"><b
+						style="color: purple;">闻达</b><b>搜索</b></div>
 
-			<v-row class="input-box">
-				<v-col cols="10">
-					<v-textarea autofocus v-model="s关键词" label="关键词" no-resize rows="1" @keypress.enter="submit"></v-textarea>
-				</v-col>
-				<v-col cols="2">
-					<v-btn color="purple" dark size="x-large" @click="submit()">
-						搜索
-					</v-btn>
-				</v-col>
-			</v-row>
-			<pre>{{s回答}}</pre>
-			<v-card  v-ripple elevation="2" v-for="result in results" @click.stop='result.url&&window.open(result.url,"_blank")'>
-				<v-card-title>{{result.title}}<v-chip class="ma-2" :color="result.score<i分数阈值?'green':'red'"
-						text-color="white" v-text="result.score" v-if="result.score!=undefined"></v-chip></v-card-title>
-				<v-divider></v-divider>
-				<v-card-text v-text="result.content">
-			</v-card>
-			<v-snackbar v-model="b显示提示文本" :timeout="3000" style="white-space: pre-line">{{s提示文本}}</v-snackbar>
-		</v-app>
-	</div>
-	<script>
+				<v-row class="input-box">
+					<v-col cols="10">
+						<v-textarea autofocus v-model="s关键词" label="关键词" no-resize rows="1"
+							hide-details="auto"
+							@keypress.enter="submit"></v-textarea>
+					</v-col>
+					<v-col cols="2">
+						<v-btn color="purple" dark size="x-large" @click="submit()">
+							搜索
+						</v-btn>
+					</v-col>
+				</v-row>
+				<pre>{{s回答}}</pre>
+				<v-card v-ripple elevation="2" v-for="result in results"
+					@click.stop='result.url&&window.open(result.url,"_blank")'>
+					<v-card-title>{{result.title}}<v-chip class="ma-2"
+							:color="result.score<i分数阈值?'green':'red'"
+							text-color="white" v-text="result.score" v-if="result.score!=undefined"></v-chip></v-card-title>
+					<v-divider></v-divider>
+					<v-card-text v-text="result.content">
+					</v-card>
+					<v-snackbar v-model="b显示提示文本" :timeout="3000" style="white-space: pre-line">{{s提示文本}}</v-snackbar>
+				</v-app>
+			</div>
+			<script>
 		app = new Vue({
 			el: '#app',
 			vuetify: new Vuetify(),
 			data: () => ({
-				s查询参数: 'rtst:5:default',
 				s关键词: "",
 				s回答: "",
 				i分数阈值: 120,
@@ -98,7 +104,14 @@
 				temperature:0.8,
 				top_p:0.2,
 				max_length:500,
-				llm_type:""
+				llm_type:"",
+				s查询参数: ['rtst:5:default'],
+				items: [
+				  'rtst:5:default',
+				  'calc:5',
+				  'serper:5',
+				  'bing:5',
+				],
 			}),
 			methods: {
 			}
@@ -118,7 +131,7 @@
 				return
 		
 			}
-			kownladge = await find_dynamic(app.s关键词, 3, { libraryStategy: app.s查询参数, maxItmes: 10 })
+			kownladge = await find_dynamic(app.s关键词, 3, { libraryStategy: app.s查询参数.join(" "), maxItmes: 100 })
 			kownladge = kownladge.map(i => ({
 				title: get_title_form_md(i.title),
 				score: i.score,
@@ -161,8 +174,8 @@
 			app.b显示提示文本 = true;
 		}
 	</script>
-	<script src="wd_sdk.js"></script>
-    <script src="api/llm"></script>
-</body>
+			<script src="wd_sdk.js"></script>
+			<script src="api/llm"></script>
+		</body>
 
-</html>
+	</html>
