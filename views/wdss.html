@@ -59,7 +59,7 @@
 	<body>
 		<div id="app" v-cloak>
 			<v-app>
-				<v-combobox multiple small-chips dense hide-details="auto" v-model="s查询参数" solo
+				<v-combobox multiple small-chips dense hide-details="auto" v-model="s查询参数" outlined  label="知识库" class="ma-2"
 					:items="items"></v-combobox>
 				<div :class="(s关键词.length!=0||results.length!=0)?'logo-left':'logo-center'"><b
 						style="color: purple;">闻达</b><b>搜索</b></div>
@@ -103,7 +103,7 @@
 				s提示文本: "",
 				temperature:0.8,
 				top_p:0.2,
-				max_length:500,
+				max_length:1000,
 				llm_type:"",
 				s查询参数: ['rtst:5:default'],
 				items: [
