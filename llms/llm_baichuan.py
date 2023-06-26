@@ -47,7 +47,7 @@ def chat_one(prompt, history, max_length, top_p, temperature, data):
     inputs = inputs.to('cuda:0')
     streamer = TextIteratorStreamer(tokenizer,skip_prompt=True)
     thread = ThreadWithReturnValue(target=model.generate, kwargs=dict(
-        inputs, max_new_tokens=max_length, repetition_penalty=1.1, streamer=streamer))
+        inputs, max_new_tokens=max_length, temperature=temperature, top_p=top_p, repetition_penalty=1.1, streamer=streamer))
     thread.start()
     generated_text = ""
     for new_text in streamer:

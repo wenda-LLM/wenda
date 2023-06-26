@@ -778,7 +778,7 @@
 
     // 将用户的输入发送到服务器并更新 app 的 chat 数组
     // 参数s为用户输入的内容，keyword为用户输入的关键词，show为是否显示用户输入的内容，sources为知识库的来源
-    let last_cost = 100
+    let last_cost = []
     send = async (s, keyword = "", show = true, sources = []) => {
       app.question = ''
       if (keyword == "") keyword = s;
@@ -823,9 +823,12 @@
         current_session.content = message;
         let now = Date.now()
         let cost = now - last_token_time
-        last_cost = last_cost * 0.95 + cost * 0.05
-        app.TPS = 1000 / last_cost
-        last_cost = cost
+        last_cost.push(cost)
+        if (last_cost.length > 10) last_cost.shift()
+        let avg_cost = 0
+        last_cost.forEach(v => avg_cost += v)
+        avg_cost /= last_cost.length
+        app.TPS = 1000 / avg_cost
         last_token_time = now
       });
       if (app.tts_on) {
