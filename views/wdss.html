@@ -1,0 +1,141 @@
+<html>
+
+<head>
+	<title>闻达</title>
+	<meta charset="utf-8">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="mobile-web-app-capable" content="yes" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=650,  user-scalable=no">
+	<link rel="shortcut icon" href="#" />
+
+	<link href="/static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet">
+	<link href="/static/vuetify.min.css" rel="stylesheet">
+	<script src="/static/vue.js"></script>
+	<script src="/static/vuetify.min.js"></script>
+	<script src="/static/markdown-it.min.js"></script>
+	<style>
+		.v-sheet.v-card {
+			margin: 20px;
+			padding: 10px;
+		}
+
+		.logo-center {
+			left: calc(50% - 160px);
+			width: 256px;
+			font-size: 4em;
+			padding-top: 1em;
+			padding-bottom: 0.5em;
+			position: relative;
+		}
+
+		.logo-left {
+			left: 20px;
+			top: 30px;
+			width: 100%;
+			font-size: xx-large;
+			position: relative;
+			transition: all 1s;
+			line-height: 0;
+		}
+
+		.input-box {
+			margin: auto;
+			width: fit-content;
+			min-width: 600px;
+		}
+
+		pre {
+			margin: 20px;
+			white-space: break-spaces;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="app" v-cloak>
+		<v-app>
+			<div :class="results.length==0?'logo-center':'logo-left'"><b style="color: purple;">闻达</b><b>搜索</b></div>
+
+			<v-row class="input-box">
+				<v-col cols="10" sm="10">
+					<v-textarea autofocus v-model="s关键词" label="关键词" no-resize rows="1" @keypress.enter="submit"></v-textarea>
+				</v-col>
+				<v-col cols="2" sm="2">
+					<v-btn color="purple" dark size="x-large" @click="submit()">
+						搜索
+					</v-btn>
+				</v-col>
+			</v-row>
+			<pre>{{s回答}}</pre>
+			<v-card elevation="2" v-for="result in results" @click.stop='window.open(result.url,"_blank")'>
+				<v-card-title>{{result.title}}<v-chip class="ma-2" :color="result.score<i分数阈值?'green':'red'"
+						text-color="white" v-text="result.score" v-if="result.score"></v-chip></v-card-title>
+				<v-divider></v-divider><br>
+				<v-card-text v-text="result.content">
+			</v-card>
+			<v-snackbar v-model="b显示提示文本" :timeout="3000" style="white-space: pre-line">{{s提示文本}}</v-snackbar>
+		</v-app>
+	</div>
+	<script>
+		app = new Vue({
+			el: '#app',
+			vuetify: new Vuetify(),
+			data: () => ({
+				s查询参数: 'rtst:5:default',
+				s关键词: "",
+				s回答: "",
+				i分数阈值: 120,
+				results: [],
+				// 是否显示snackbar
+				b显示提示文本: false,
+				// snackbar的文本
+				s提示文本: "",
+			}),
+			methods: {
+			}
+		})
+		submit = async (e) => {
+			e && e.preventDefault()
+			window.ws && await ws.close();
+			kownladge = await find_dynamic(app.s关键词, 3, { libraryStategy: app.s查询参数, maxItmes: 10 })
+			kownladge = kownladge.map(i => ({
+				title: get_title_form_md(i.title),
+				score: i.score,
+				url: get_url_form_md(i.title),
+				content: i.content
+			}))
+			app.results = kownladge
+			kownladge = kownladge.filter(i => !i.score || i.score < app.i分数阈值)
+			if (kownladge.length > 0) {
+				let prompt = '总结下列与问题相关的信息。\n' +
+					kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n问题：" + app.s关键词
+				return await send_raw(prompt, '', [], (s) => { app.s回答 = s })
+			} else {
+				alert("没有找到")
+				//return await send(Q, keyword = Q, show = true, sources = sources)
+			}
+		}
+		get_title_form_md = (s) => {
+			try {
+				return s.match('\\[(.+)\\]')[1]
+			} catch {
+				return s
+			}
+		}
+		get_url_form_md = (s) => {
+			try {
+				return s.match('\\((.+)\\)')[1]
+			} catch {
+				return s
+			}
+		}
+		alert = (text) => {
+			app.s提示文本 = text; //.replace(/\n/g,"<br>")
+			app.b显示提示文本 = true;
+		}
+	</script>
+	<script src="wd_sdk.js"></script>
+</body>
+
+</html>

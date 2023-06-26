@@ -933,6 +933,10 @@
     };
 
     setTimeout(() => app.current_func = decodeURI(document.location.hash.replace('#', '')), 1000)
+    alert = (text) => {
+        app.snackbar_text = text; //.replace(/\n/g,"<br>")
+        app.snackbar = true;
+    }
   </script>
   </body>
 
