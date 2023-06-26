@@ -95,7 +95,7 @@
 			data: () => ({
 				s关键词: "",
 				s回答: "",
-				i分数阈值: 120,
+				i分数阈值: 130,
 				results: [],
 				// 是否显示snackbar
 				b显示提示文本: false,
@@ -103,14 +103,15 @@
 				s提示文本: "",
 				temperature:0.8,
 				top_p:0.2,
-				max_length:1000,
+				max_length:2000,
 				llm_type:"",
-				s查询参数: ['rtst:5:default'],
+				s查询参数: ['rtst:5:春秋战国艺术史'],
 				items: [
-				  'rtst:5:default',
+				'rtst:5:春秋战国艺术史',
+				'rtst:5:新闻',
 				  'calc:5',
 				  'serper:5',
-				  'bing:5',
+				  'sogowx:5',
 				],
 			}),
 			methods: {
@@ -131,7 +132,7 @@
 				return
 		
 			}
-			kownladge = await find_dynamic(app.s关键词, 3, { libraryStategy: app.s查询参数.join(" "), maxItmes: 100 })
+			kownladge = await find_dynamic(app.s关键词, 5, { libraryStategy: app.s查询参数.map(encodeURI).join(" "), maxItmes: 100 })
 			kownladge = kownladge.map(i => ({
 				title: get_title_form_md(i.title),
 				score: i.score,

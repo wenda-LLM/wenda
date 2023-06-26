@@ -47,10 +47,9 @@ def api_find_dynamic():
 
     if paraJson is None:
         paraJson = {
-            'libraryStategy': "sogowx:2 bingsite:3 fess:2 rtst:3 bing:2", 'maxItmes': 10}
+            'libraryStategy': "rtst:3", 'maxItmes': 10}
 
-    print(type(paraJson))
-    print(paraJson)
+    print(prompt,paraJson)
 
     return json.dumps(find_dynamic(prompt, int(step), paraJson))
 
