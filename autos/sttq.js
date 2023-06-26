@@ -13,7 +13,7 @@ func.push({
     name: "实体提取",
     question: async () => {
         let Q = app.question
-        app.chat = [{ "role": "user", "content": "现在开始,你的任务是提取关键词，提取下列语句中的关键词，并用json返回：科普之路是不是任重而道远？" },
+        app.chat = [{ "role": "user", "content": "提取下列语句中的关键词，并用json返回：科普之路是不是任重而道远？" },
         { "role": "AI", "content": '["科普","道路","任重","道远"]' }]
 
         lsdh(true)//打开历史对话
