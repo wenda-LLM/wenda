@@ -27,6 +27,7 @@ get_url_form_md = (s) => {
 }
 window.answer_with_zsk = async (Q) => {
     // lsdh(false)
+    app.top_p=0.2
     app.chat.push({ "role": "user", "content": Q })
     kownladge = (await find(Q, 5)).filter(i => !i.score || i.score < 120).map(i => ({
         title: get_title_form_md(i.title),
@@ -71,6 +72,7 @@ func.push({
 })
 window.answer_with_fast_zsk = async (Q) => {
     // lsdh(false)
+    app.top_p=0.2
     kownladge = (await find(Q, app.zsk_step)).filter(i => !i.score || i.score < 120).map(i => ({
         title: get_title_form_md(i.title),
         url: get_url_form_md(i.title),
@@ -78,7 +80,7 @@ window.answer_with_fast_zsk = async (Q) => {
     }))
     if (kownladge.length > 0) {
         if (app.llm_type == "rwkv") {
-            let prompt = 'raw!lnstruction: 根据下面的信息完成问答\n\nlnput: \n' +
+            let prompt = 'raw!lnstruction: 总结以下文段中与问题相关的信息。\n\nlnput: \n' +
                 kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n\nResponse: Question: " + Q+"\nAnswer: "
             return await send(prompt, keyword = Q, show = true, sources = kownladge)
         } else {
