@@ -63,16 +63,20 @@ def load_model():
         for i in range(num_trans_layers):
             device_map[f'transformer.layers.{i}'] = n[i]
 
+    device, precision = s[0][0], s[0][1]
+    
     tokenizer = AutoTokenizer.from_pretrained(
         settings.llm.path, local_files_only=True, trust_remote_code=True,revision="v1.1.0")
-    model = AutoModel.from_pretrained(
-        settings.llm.path, local_files_only=True, trust_remote_code=True,revision="v1.1.0")
+    if "chatglm2" in settings.llm.path:
+        model = AutoModel.from_pretrained(settings.llm.path, local_files_only=True, trust_remote_code=True, device=device, revision="v1.1.0")
+    else:
+        model = AutoModel.from_pretrained(settings.llm.path, local_files_only=True, trust_remote_code=True, revision="v1.1.0")
+
     if not (settings.llm.lora == '' or settings.llm.lora == None):
         print('Lora模型地址', settings.llm.lora)
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, settings.llm.lora,adapter_name=settings.llm.lora)
         
-    device, precision = s[0][0], s[0][1]
     # 根据设备执行不同的操作
     if device == 'cpu':
         # 如果是cpu，不做任何操作
