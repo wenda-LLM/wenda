@@ -174,12 +174,10 @@ def api_chat_box():
         if old_chat['role'] == "user":
             history.append(old_chat)
         elif old_chat['role'] == "assistant":
-            old_chat['role'] == "AI"
+            old_chat['role'] = "AI"
             history.append(old_chat)
-
         else:
             continue
-
     data['history'] = history
     data['level'] = 0
     from websocket import create_connection
