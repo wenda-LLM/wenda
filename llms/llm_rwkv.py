@@ -267,6 +267,8 @@ else:
             if token in args.token_stop:
                 break
             all_tokens += [token]
+            for i in occurrence:
+                occurrence[i]*=0.996
             if token not in occurrence:
                 occurrence[token] = 1
             else:
