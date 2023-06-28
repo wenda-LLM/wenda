@@ -285,7 +285,6 @@ else:
                     break
                 # print(tmp, end='')
                 out_last = i + 1
-                print(response.strip())
                 yield response.strip()
         yield response.strip()
         if raw_mode:

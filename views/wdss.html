@@ -80,7 +80,7 @@
 				<v-card v-ripple elevation="2" v-for="result in results"
 					@click.stop='result.url&&window.open(result.url,"_blank")'>
 					<v-card-title>{{result.title}}<v-chip class="ma-2"
-							:color="result.score<i分数阈值?'green':'red'"
+							:color="result.score>i分数阈值?'green':'red'"
 							text-color="white" v-text="result.score" v-if="result.score!=undefined"></v-chip></v-card-title>
 					<v-divider></v-divider>
 					<v-card-text v-text="result.content">
@@ -95,7 +95,7 @@
 			data: () => ({
 				s关键词: "",
 				s回答: "",
-				i分数阈值: 130,
+				i分数阈值: 60,
 				results: [],
 				// 是否显示snackbar
 				b显示提示文本: false,
@@ -135,7 +135,7 @@
 			kownladge = await find_dynamic(app.s关键词, 5, { libraryStategy: app.s查询参数.map(encodeURI).join(" "), maxItmes: 100 })
 			kownladge = kownladge.map(i => ({
 				title: get_title_form_md(i.title),
-				score: i.score,
+				score: ((220-i.score)/220*100).toFixed(0),
 				url: get_url_form_md(i.title),
 				content: i.content
 			}))
