@@ -21,11 +21,13 @@ from plugins.common import settings
 from plugins.common import app
 import logging
 logging.captureWarnings(True)
-logger=None
+logger = None
 try:
     from loguru import logger
 except:
     pass
+
+
 def load_LLM():
     try:
         from importlib import import_module
@@ -162,77 +164,72 @@ def api_chat_box():
     response.content_type = "text/event-stream"
     response.add_header("Connection", "keep-alive")
     response.add_header("Cache-Control", "no-cache")
+    response.add_header("X-Accel-Buffering", "no")
     data = request.json
-    max_length = data.get('max_tokens')
-    if max_length is None:
-        max_length = 2048
-    top_p = data.get('top_p')
-    if top_p is None:
-        top_p = 0.2
-    temperature = data.get('temperature')
-    if temperature is None:
-        temperature = 0.8
-    use_zhishiku = data.get('zhishiku')
-    if use_zhishiku is None:
-        use_zhishiku = False
     messages = data.get('messages')
-    prompt = "用中文回答后续问题。"+messages[-1]['content']
-    # print(messages)
-    history_formatted = LLM.chat_init(messages)
-    response_text = ''
-    # print(request.environ)
-    IP = request.environ.get(
-        'HTTP_X_REAL_IP') or request.environ.get('REMOTE_ADDR')
-    error = ""
-    print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
-    try:
-        for response_text in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, zhishiku=use_zhishiku):
-            if (response_text):
-                # yield "data: %s\n\n" %response_text
-                yield "data: %s\n\n" % json.dumps({"response": response_text})
+    prompt = messages[-1]['content']
+    data['prompt'] = prompt
+    history = []
+    for i, old_chat in enumerate(messages[1:len(messages)-1]):
+        if old_chat['role'] == "user":
+            history.append(old_chat)
+        elif old_chat['role'] == "assistant":
+            old_chat['role'] == "AI"
+            history.append(old_chat)
 
-        yield "data: %s\n\n" % "[DONE]"
-    except Exception as e:
-        error = str(e)
-        error_print("错误", error)
-        response_text = ''
-    torch.cuda.empty_cache()
-    if response_text == '':
-        yield "data: %s\n\n" % json.dumps({"response": ("发生错误，正在重新加载模型"+error)})
-        os._exit(0)
+        else:
+            continue
+
+    data['history'] = history
+    data['level'] = 0
+    from websocket import create_connection
+    ws = create_connection("ws://127.0.0.1:"+str(settings.port)+"/ws")
+    ws.send(json.dumps(data))
+    try:
+        while True:
+            result = ws.recv()
+            if len(result) > 0:
+                yield "data: %s\n\n" % json.dumps({"response": result})
+    except:
+        pass
+    yield "data: %s\n\n" % "[DONE]"
+    ws.close()
 
 
 @route('/chat_stream', method=("POST", "OPTIONS"))
 def api_chat_stream():
     allowCROS()
+    response.add_header("Connection", "keep-alive")
+    response.add_header("Cache-Control", "no-cache")
+    response.add_header("X-Accel-Buffering", "no")
     data = request.json
-    data=json.dumps(data)
+    data = json.dumps(data)
     from websocket import create_connection
     ws = create_connection("ws://127.0.0.1:"+str(settings.port)+"/ws")
     ws.send(data)
     try:
         while True:
-            new_result =  ws.recv()
-            if len(new_result)>0:
-                result=new_result
+            result = ws.recv()
+            if len(result) > 0:
                 yield result
     except:
         pass
     ws.close()
 
+
 @route('/chat', method=("POST", "OPTIONS"))
 def api_chat():
     allowCROS()
     data = request.json
-    data=json.dumps(data)
+    data = json.dumps(data)
     from websocket import create_connection
     ws = create_connection("ws://127.0.0.1:"+str(settings.port)+"/ws")
     ws.send(data)
     try:
         while True:
-            new_result =  ws.recv()
-            if len(new_result)>0:
-                result=new_result
+            new_result = ws.recv()
+            if len(new_result) > 0:
+                result = new_result
     except:
         pass
     ws.close()
