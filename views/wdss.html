@@ -143,7 +143,7 @@
 			kownladge = kownladge.filter(i => !i.score || i.score < app.i分数阈值)
 			if (kownladge.length > 0) {
 				if (app.llm_type == "rwkv") {
-					let prompt = 'raw!lnstruction: 根据下面的信息完成问答\n\nlnput: \n' +
+					let prompt = 'raw!Instruction: 根据下面的信息完成问答\n\nlnput: \n' +
 						kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n\nResponse: Question: " + app.s关键词+"\nAnswer: "
 						return await send_raw(prompt, '', [], (s) => { app.s回答 = s })
 				} else {
