@@ -68,7 +68,8 @@ def load_model():
     tokenizer = AutoTokenizer.from_pretrained(
         settings.llm.path, local_files_only=True, trust_remote_code=True,revision="v1.1.0")
     if "chatglm2" in settings.llm.path:
-        model = AutoModel.from_pretrained(settings.llm.path, local_files_only=True, trust_remote_code=True, device=device, revision="v1.1.0")
+        #解决加载chatglm2爆显存的问题。
+        model = AutoModel.from_pretrained(settings.llm.path, local_files_only=True, trust_remote_code=True,revision="v1.1.0").cuda()
     else:
         model = AutoModel.from_pretrained(settings.llm.path, local_files_only=True, trust_remote_code=True, revision="v1.1.0")
 
