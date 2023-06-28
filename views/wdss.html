@@ -15,10 +15,11 @@
 		<script src="/static/vuetify.min.js"></script>
 		<script src="/static/markdown-it.min.js"></script>
 		<style>
-		div{
-			
-			transition: all 1s;
+		div {
+
+			transition: all 0.3s;
 		}
+
 		.v-sheet.v-card {
 			margin: 20px;
 			padding: 10px;
@@ -50,6 +51,7 @@
 			margin: 20px;
 			white-space: break-spaces;
 		}
+
 		.v-application--wrap {
 			display: unset;
 		}
@@ -59,7 +61,8 @@
 	<body>
 		<div id="app" v-cloak>
 			<v-app>
-				<v-combobox multiple small-chips dense hide-details="auto" v-model="s查询参数" outlined  label="知识库" class="ma-2"
+				<v-combobox multiple small-chips dense hide-details="auto" v-model="s查询参数"
+					outlined label="知识库" class="ma-2"
 					:items="items"></v-combobox>
 				<div :class="(s关键词.length!=0||results.length!=0)?'logo-left':'logo-center'"><b
 						style="color: purple;">闻达</b><b>搜索</b></div>
@@ -76,7 +79,8 @@
 						</v-btn>
 					</v-col>
 				</v-row>
-				<pre>{{s回答}}</pre>
+				<v-card v-ripple elevation="2" v-if="s回答.length"> <pre>{{s回答}}</pre>
+				</v-card>
 				<v-card v-ripple elevation="2" v-for="result in results"
 					@click.stop='result.url&&window.open(result.url,"_blank")'>
 					<v-card-title>{{result.title}}<v-chip class="ma-2"
@@ -101,17 +105,17 @@
 				b显示提示文本: false,
 				// snackbar的文本
 				s提示文本: "",
-				temperature:0.8,
-				top_p:0.2,
-				max_length:2000,
-				llm_type:"",
+				temperature: 0.8,
+				top_p: 0.2,
+				max_length: 2000,
+				llm_type: "",
 				s查询参数: ['rtst:5:春秋战国艺术史'],
 				items: [
-				'rtst:5:春秋战国艺术史',
-				'rtst:5:新闻',
-				  'calc:5',
-				  'serper:5',
-				  'sogowx:5',
+					'rtst:5:春秋战国艺术史',
+					'rtst:5:新闻',
+					'calc:5',
+					'serper:5',
+					'sogowx:5',
 				],
 			}),
 			methods: {
@@ -120,32 +124,32 @@
 		submit = async (e) => {
 			e && e.preventDefault()
 			window.ws && await ws.close();
-			memory = await find_rtst_memory(app.s关键词, "rtst_kf",true)
+			memory = await find_rtst_memory(app.s关键词, "rtst_kf", true)
 			memory = memory.filter(i => !i.score || i.score < 200)
 			if (memory.length > 0) {
 				app.s回答 = memory[0].title
-					 app.results = memory.map(i => ({
-						title: i.content,
-						score: i.score,
-						content: i.title
-					}))
+				app.results = memory.map(i => ({
+					title: i.content,
+					score: i.score,
+					content: i.title
+				}))
 				return
-		
+
 			}
 			kownladge = await find_dynamic(app.s关键词, 5, { libraryStategy: app.s查询参数.map(encodeURI).join(" "), maxItmes: 100 })
 			kownladge = kownladge.map(i => ({
 				title: get_title_form_md(i.title),
-				score: ((220-i.score)/220*100).toFixed(0),
+				score: ((220 - i.score) / 220 * 100).toFixed(0),
 				url: get_url_form_md(i.title),
 				content: i.content
 			}))
 			app.results = kownladge
-			kownladge = kownladge.filter(i => !i.score || i.score < app.i分数阈值)
+			kownladge = kownladge.filter(i => !i.score || i.score > app.i分数阈值)
 			if (kownladge.length > 0) {
 				if (app.llm_type == "rwkv") {
-					let prompt = 'raw!Instruction: 根据下面的信息完成问答\n\nlnput: \n' +
-						kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n\nResponse: Question: " + app.s关键词+"\nAnswer: "
-						return await send_raw(prompt, '', [], (s) => { app.s回答 = s })
+					let prompt = 'raw!Instruction: 根据下面的信息完成问答\n\nInput: \n' +
+						kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n\nResponse: Question: " + app.s关键词 + "\nAnswer: "
+					return await send_raw(prompt, '', [], (s) => { app.s回答 = s })
 				} else {
 					let prompt = '总结下列与问题相关的信息。\n' +
 						kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n问题：" + app.s关键词
