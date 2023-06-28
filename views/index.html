@@ -423,38 +423,32 @@
               </v-row>
             </v-footer>
           </v-tab-item>
+          <v-tab-item key="apps">
+            <v-text-field v-model="autos_search" append-icon="mdi-magnify"
+              label="搜索应用" single-line
+              hide-details></v-text-field>
+            <v-divider></v-divider>
+            <v-data-table item-key="name" show-expand :search="autos_search"
+              :headers="[{ text: '名称', value: 'name' },{ text: '描述', value: 'description' },{ text: '禁用', value: 'disabled' },  { text: '', value: 'data-table-expand' },]"
+              :items="autos">
+              <template v-slot:item.disabled="{ item }">
+                <v-switch v-model="item.disabled" :color="color"></v-switch>
+              </template>
+              <template v-slot:expanded-item="{ headers, item }">
+                <v-icon v-if="find_auto(item.name)>-1" large text
+                  @click="del_auto(item.name)">
+                  mdi-delete
+                </v-icon>
+                <pre style="width: 200px" :colspan="headers.length">{{ item.content }}</pre>
+              </template>
+            </v-data-table>
+            <v-btn :color="color" dark size="x-large"
+              @click="disabled_auto={};app.autos.forEach(auto=>disabled_auto[auto.name]=auto.disabled);localStorage['wenda_disabled_auto'] =JSON.stringify(disabled_auto)">
+              保存（刷新后起效）
+            </v-btn>
+          </v-tab-item>
           <v-tab-item key="setting">
-            <v-card elevation="2">
-              <v-card-title>
-                <v-text-field v-model="autos_search" append-icon="mdi-magnify"
-                  label="Auto管理" single-line
-                  hide-details></v-text-field>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text>
-                <v-data-table item-key="name" show-expand :search="autos_search"
-                  :headers="[{ text: '名称', value: 'name' },{ text: '描述', value: 'description' },{ text: '禁用', value: 'disabled' },  { text: '', value: 'data-table-expand' },]"
-                  :items="autos">
-                  <template v-slot:item.disabled="{ item }">
-                    <v-switch v-model="item.disabled" :color="color"></v-switch>
-                  </template>
-                  <template v-slot:expanded-item="{ headers, item }">
-                    <v-icon v-if="find_auto(item.name)>-1" large text
-                      @click="del_auto(item.name)">
-                      mdi-delete
-                    </v-icon>
-                    <pre style="width: 200px" :colspan="headers.length">
-{{ item.content }}</pre>
-                  </template>
-                </v-data-table>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn :color="color" dark size="x-large"
-                  @click="disabled_auto={};app.autos.forEach(auto=>disabled_auto[auto.name]=auto.disabled);localStorage['wenda_disabled_auto'] =JSON.stringify(disabled_auto)">
-                  保存（刷新后起效）
-                </v-btn>
-              </v-card-actions>
-            </v-card>
+            <h1>参数管理</h1>
             <v-card elevation="2">
               <v-card-title>模型运行参数</v-card-title>
               <v-divider></v-divider>
@@ -508,9 +502,6 @@
                 </v-form>
               </v-card-text>
             </v-card>
-          </v-tab-item>
-          <v-tab-item key="zhishiku">
-            <h1>知识库管理</h1>
             <v-card elevation="2">
               <v-card-title>动态调整知识库</v-card-title>
               <v-divider></v-divider>
@@ -586,11 +577,11 @@
           <v-tab key="chat">
             <v-icon text> mdi-tooltip-edit-outline </v-icon>
           </v-tab>
+          <v-tab key="apps">
+            <v-icon text> mdi-application-parentheses </v-icon>
+          </v-tab>
           <v-tab key="setting">
             <v-icon text> mdi-cog </v-icon>
-          </v-tab>
-          <v-tab key="zhishiku">
-            <v-icon text> mdi-book-search-outline </v-icon>
           </v-tab>
           <v-tab v-for="plugin in plugins" :key="plugin.name">
             <v-icon text v-if="plugin.icon"> {{"mdi-"+plugin.icon}} </v-icon>{{plugin.name}}
@@ -652,7 +643,7 @@
           zsk_summarize_prompt: "总结以下文段中与问题相关的信息。",
           // 知识库回答问题的提示
           zsk_answer_prompt:
-            "学习以下文段,用中文回答问题。",
+            "总结以下文段中与问题相关的信息。",
           // 载入的auto
           func_mode: func[0],
           // 插件列表
@@ -933,6 +924,10 @@
     };
 
     setTimeout(() => app.current_func = decodeURI(document.location.hash.replace('#', '')), 1000)
+    alert = (text) => {
+        app.snackbar_text = text; //.replace(/\n/g,"<br>")
+        app.snackbar = true;
+    }
   </script>
   </body>
 

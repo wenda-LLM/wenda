@@ -106,7 +106,7 @@ llm_models:
      presence_penalty: 0.2
      count_penalty: 0.2
   glm6b: 
-     path: "model\\chatglm-6b-int4"
+     path: "model\\chatglm2-6b-int4"
      #glm模型位置"
      strategy: "cuda fp16"
      #cuda fp16	 所有glm模型 要直接跑在gpu上都可以使用这个参数

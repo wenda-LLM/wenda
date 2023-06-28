@@ -157,10 +157,6 @@ get_user_input = () => app.question
 save_history = () => {
     localStorage["wenda_chat_history"] = JSON.stringify(app.chat);
 };
-alert = (text) => {
-    app.snackbar_text = text; //.replace(/\n/g,"<br>")
-    app.snackbar = true;
-}
 
 
 chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
