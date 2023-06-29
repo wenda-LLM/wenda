@@ -81,7 +81,9 @@ def load_model():
     elif device == 'cuda':
         # 如果是gpu，把模型移动到显卡
         import torch
-        if not (precision.startswith('fp16i') and torch.cuda.get_device_properties(0).total_memory < 1.4e+10):
+        if "chatglm2" in settings.llm.path and "int4" in settings.llm.path:
+            model = model.cuda()
+        elif not (precision.startswith('fp16i') and torch.cuda.get_device_properties(0).total_memory < 1.4e+10):
             model = model.cuda()
     elif len(s)>1 and device.startswith('cuda:'):
         pass
