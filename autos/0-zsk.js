@@ -80,7 +80,7 @@ window.answer_with_fast_zsk = async (Q) => {
     }))
     if (kownladge.length > 0) {
         if (app.llm_type == "rwkv") {
-            let prompt = 'raw!lnstruction: 总结以下文段中与问题相关的信息。\n\nlnput: \n' +
+            let prompt = 'raw!Instruction: 深刻理解下面提供的信息，根据信息完成问答。\n\nInput: ' +
                 kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n\nResponse: Question: " + Q+"\nAnswer: "
             return await send(prompt, keyword = Q, show = true, sources = kownladge)
         } else {

@@ -250,9 +250,9 @@ else:
             # print([history],states)
         all_tokens = []
         out_last = 0
-        response = ''
         occurrence = {}
         tokens = pipeline.encode(ctx)
+        response = ''
         yield str(len(ctx))+'字正在计算\n'+str(len(tokens))+" tokens"
         for i in range(int(token_count)):
             out, state = model.forward(tokens if i == 0 else [token], state)
@@ -267,6 +267,8 @@ else:
             if token in args.token_stop:
                 break
             all_tokens += [token]
+            for occurrence_i in occurrence:
+                occurrence[occurrence_i]*=0.996
             if token not in occurrence:
                 occurrence[token] = 1
             else:
