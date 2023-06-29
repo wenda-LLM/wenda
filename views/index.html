@@ -609,6 +609,8 @@
           if (current_func) {
             app.func_mode = current_func
             document.location.hash = current_func.name
+          }else{
+            app.current_func = ''
           }
         },
         tab: (val) => {
