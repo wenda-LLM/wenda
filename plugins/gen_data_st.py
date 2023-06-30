@@ -17,9 +17,6 @@ from plugins.common import error_helper
 from plugins.common import settings
 from plugins.common import CounterLock
 
-import torch
-torch.set_num_threads(4)
-
 if settings.librarys.rtst.backend=="Annoy":
     from langchain.vectorstores.annoy import Annoy as Vectorstore
 else:
