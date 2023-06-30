@@ -24,7 +24,7 @@ if settings.librarys.rtst.backend=="Annoy":
     from langchain.vectorstores.annoy import Annoy as Vectorstore
 else:
     from langchain.vectorstores.faiss import FAISS as Vectorstore
-source_folder = 'txt'
+source_folder = 'zskjjb'
 source_folder_path = os.path.join(os.getcwd(), source_folder)
 
 
@@ -41,7 +41,7 @@ model_path = settings.librarys.rtst.model_path
 try:
     embeddings = HuggingFaceEmbeddings(model_name='')
     embeddings.client = sentence_transformers.SentenceTransformer(
-        model_path, device="cpu")
+        model_path, device="cuda")
 except Exception as e:
     error_helper("embedding加载失败，请下载相应模型",
                  r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
