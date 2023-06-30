@@ -145,7 +145,7 @@
 				app.s回答 = memory[0].title
 				app.results = memory.map(i => ({
 					title: i.content,
-					score: i.score,
+					score: ((220 - i.score) / 220 * 100).toFixed(0),
 					content: i.title
 				}))
 				return
