@@ -79,7 +79,8 @@
 						</v-btn>
 					</v-col>
 				</v-row>
-				<v-card v-ripple elevation="2" v-if="s回答.length"> <pre>{{s回答}}</pre>
+				<v-card v-ripple elevation="2" v-if="s回答.length">
+					<pre>{{s回答}}</pre>
 				</v-card>
 				<v-card v-ripple elevation="2" v-for="result in results"
 					@click.stop='result.url&&window.open(result.url,"_blank")'>
@@ -93,6 +94,21 @@
 				</v-app>
 			</div>
 			<script>
+		hash = decodeURI(document.location.hash.replace('#', ''))
+		items = [
+			'rtst:5:客服',
+			'rtst:5:春秋战国艺术史',
+			'rtst:5:新闻',
+			'calc:5',
+			'serper:5',
+			'sogowx:5',
+		]
+		if (hash) {
+			hash = hash.split(',')
+		}
+		else {
+			hash = [items[0]]
+		}
 		app = new Vue({
 			el: '#app',
 			vuetify: new Vuetify(),
@@ -109,16 +125,15 @@
 				top_p: 0.2,
 				max_length: 2000,
 				llm_type: "",
-				s查询参数: ['rtst:5:春秋战国艺术史'],
-				items: [
-					'rtst:5:春秋战国艺术史',
-					'rtst:5:新闻',
-					'calc:5',
-					'serper:5',
-					'sogowx:5',
-				],
+				s查询参数:hash,
+				items: items,
 			}),
 			methods: {
+			},
+			watch: {
+				s查询参数: (s查询参数) => {
+					document.location.hash=s查询参数.join(',')
+				}
 			}
 		})
 		submit = async (e) => {
@@ -130,7 +145,7 @@
 				app.s回答 = memory[0].title
 				app.results = memory.map(i => ({
 					title: i.content,
-					score: i.score,
+					score: ((220 - i.score) / 220 * 100).toFixed(0),
 					content: i.title
 				}))
 				return
@@ -146,7 +161,7 @@
 			app.results = kownladge
 			kownladge = kownladge.filter(i => !i.score || i.score > app.i分数阈值)
 			if (kownladge.length > 0) {
-				if (app.llm_type == "rwkv") {
+				`if (app.llm_type == "rwkv") {
 					let prompt = 'raw!Instruction: 深刻理解下面提供的信息，根据信息完成问答。\n\nInput: ' +
 						kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n\nResponse: Question: " + app.s关键词 + "\nAnswer: "
 					return await send_raw(prompt, '', [], (s) => { app.s回答 = s })
@@ -154,7 +169,7 @@
 					let prompt = '总结下列与问题相关的信息。\n' +
 						kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n问题：" + app.s关键词
 					return await send_raw(prompt, '', [], (s) => { app.s回答 = s })
-				}
+				}`
 			} else {
 				alert("没有找到")
 				//return await send(Q, keyword = Q, show = true, sources = sources)
