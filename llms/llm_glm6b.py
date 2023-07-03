@@ -67,8 +67,11 @@ def load_model():
     
     tokenizer = AutoTokenizer.from_pretrained(
         settings.llm.path, local_files_only=True, trust_remote_code=True,revision="v1.1.0")
-    model = AutoModel.from_pretrained(
-        settings.llm.path, local_files_only=True, trust_remote_code=True, device=device, revision="v1.1.0")
+    if "chatglm2" in settings.llm.path:
+        model = AutoModel.from_pretrained(settings.llm.path, local_files_only=True, trust_remote_code=True, device=device, revision="v1.1.0")
+    else:
+        model = AutoModel.from_pretrained(settings.llm.path, local_files_only=True, trust_remote_code=True, revision="v1.1.0")
+
     if not (settings.llm.lora == '' or settings.llm.lora == None):
         print('Lora模型地址', settings.llm.lora)
         from peft import PeftModel
@@ -81,9 +84,7 @@ def load_model():
     elif device == 'cuda':
         # 如果是gpu，把模型移动到显卡
         import torch
-        if "chatglm2" in settings.llm.path and "int4" in settings.llm.path:
-            model = model.cuda()
-        elif not (precision.startswith('fp16i') and torch.cuda.get_device_properties(0).total_memory < 1.4e+10):
+        if not (precision.startswith('fp16i') and torch.cuda.get_device_properties(0).total_memory < 1.4e+10):
             model = model.cuda()
     elif len(s)>1 and device.startswith('cuda:'):
         pass
