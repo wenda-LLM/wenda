@@ -243,6 +243,10 @@ async def add_process_time_header(request: Request, call_next):
 
     start_time = time.time()
     response = await call_next(request)
+    path=request.scope['path']
+    if path.startswith('/static/') and not path.endswith(".html"):
+        return response
+        
     process_time = time.time() - start_time
     response.headers["X-Process-Times"] = str(process_time)
     response.headers["Pragma"] = "no-cache"
