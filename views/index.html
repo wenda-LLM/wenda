@@ -230,9 +230,9 @@
             </v-list-item>
           </v-list>
         </v-navigation-drawer>
-        <v-toolbar dark :color="color+' darken-2'" v-if="show_header">
+        <v-toolbar v-if="show_header" style="opacity: 80%">
           <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-          <v-toolbar-title><a style="text-decoration: none; color: white"
+          <v-toolbar-title><a :style="'filter: brightness(50%);font-size: larger;text-decoration: none; color: '+color"
               href="https://github.com/l15y/wenda">{{$t("wenda") }}</a></v-toolbar-title>
         </v-toolbar>
         <v-tabs-items v-model="tab" style="margin-bottom: 48px"
