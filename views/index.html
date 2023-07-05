@@ -241,7 +241,7 @@
             <div v-for="(current_conversation, index) in chat" :key="index"
               :class="['d-flex flex-row align-center my-2', current_conversation.role == 'user' ? 'justify-end': null]">
               <span v-if="current_conversation.role == 'user'" class="ask"
-                v-text="current_conversation.content"></span>
+                v-text="current_conversation.keyword||current_conversation.content"></span>
               <v-hover v-slot="{ hover }">
                 <div>
                   <v-avatar
@@ -806,7 +806,7 @@
       }
       let current_session = { role: "AI", content: "……", sources: sources };
       if (show) {
-        app.chat.push({ role: "user", content: keyword, keyword: keyword });
+        app.chat.push({ role: "user", content: s, keyword: keyword });
         app.chat.push(current_session);
       }
       setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
