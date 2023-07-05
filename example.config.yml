@@ -33,7 +33,9 @@ librarys:
      #最大抽取数量
      site: "www.12371.cn"
      #搜索网站
-  fess: 
+  fess:
+    #fess版本，默认采用14.8以上
+     version: 14.8
      count: 1
      #最大抽取数量
      fess_host: "127.0.0.1:8080"

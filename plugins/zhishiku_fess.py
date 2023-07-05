@@ -60,14 +60,18 @@ def find(search_query, step=0):
         rest = []
         for i in search_query.split("########"):
             if len(i.strip()) > 0:
-                # url = 'http://' + settings.librarys.fess.fess_host + '/json/?q={}&num=10&sort=score.desc&lang=zh_CN'.format(i)
-                # adapt for >fess14.8
-                url = 'http://' + settings.librarys.fess.fess_host + '/api/v1/documents/?q={}&num=10&sort=score.desc&lang=zh_CN'.format(
+                if settings.librarys.fess.version is not None and settings.librarys.fess.version < 14.8:
+                    url = 'http://' + settings.librarys.fess.fess_host + '/json/?q={}&num=10&sort=score.desc&lang=zh_CN'.format(i)
+                else:
+                    # adapt for >fess14.8
+                    url = 'http://' + settings.librarys.fess.fess_host + '/api/v1/documents/?q={}&num=10&sort=score.desc&lang=zh_CN'.format(
                     i)
                 res = session.get(url, headers=headers, proxies=proxies)
                 r = res.json()
-                # r=r["response"]['result']
-                r = r["data"]
+                if settings.librarys.fess.version is not None and settings.librarys.fess.version < 14.8:
+                   r = r["response"]['result']
+                else:
+                   r = r["data"]
                 # print('rrrrrrrrrrrrrrr',r)
                 rest.extend(r)
             else:
@@ -91,14 +95,19 @@ def upload_zhishiku():
     data = request.json
     prompt = data.get('prompt')
     try:
-        # url = 'http://' + settings.librarys.fess.fess_host + '/json/?q={}&num=10&sort=score.desc&lang=zh_CN'.format(prompt)
-        # adapt for >fess14.8
-        url = 'http://' + settings.librarys.fess.fess_host + '/api/v1/documents/?q={}&num=10&sort=score.desc&lang=zh_CN'.format(
-            i)
+        if settings.librarys.fess.version is not None and settings.librarys.fess.version < 14.8:
+            url = 'http://' + settings.librarys.fess.fess_host + '/json/?q={}&num=10&sort=score.desc&lang=zh_CN'.format(
+                i)
+        else:
+            # adapt for >fess14.8
+            url = 'http://' + settings.librarys.fess.fess_host + '/api/v1/documents/?q={}&num=10&sort=score.desc&lang=zh_CN'.format(
+                i)
         res = session.get(url, headers=headers, proxies=proxies)
         r = res.json()
-        # r=r["response"]['result']
-        r = r["data"]
+        if settings.librarys.fess.version is not None and settings.librarys.fess.version < 14.8:
+            r = r["response"]['result']
+        else:
+            r = r["data"]
         # "<strong>""</strong>"
         return json.dumps([{'title': r[i]['title'], 'content': replace_strong(r[i]['content_description'])}
                            for i in range(min(int(settings.librarys.fess.count), len(r)))])
