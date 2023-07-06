@@ -154,7 +154,7 @@
 				body: JSON.stringify({
 					prompt: s,
 					step: step,
-					memory_name: app.memory_name
+					memory_name: encodeURI(app.memory_name)
 				}),
 				headers: {
 					'Content-Type': 'application/json'
@@ -171,7 +171,7 @@
 				body: JSON.stringify({
 					title: title,
 					txt: txt,
-					memory_name: app.memory_name
+					memory_name: encodeURI(app.memory_name)
 				}),
 				headers: { 'Content-Type': 'application/json' }
 			})
@@ -181,7 +181,7 @@
 			response = await fetch("/api/save_rtst_zhishiku", {
 				method: 'post',
 				body: JSON.stringify({
-					memory_name: app.memory_name
+					memory_name: encodeURI(app.memory_name)
 				}),
 				headers: { 'Content-Type': 'application/json' }
 			})
