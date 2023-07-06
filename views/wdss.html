@@ -27,7 +27,7 @@
 
 		.logo-center {
 			left: calc(50% - 140px);
-			width: 256px;
+			width: 260px;
 			font-size: 4em;
 			padding-top: 2.5em;
 			padding-bottom: 0.8em;
@@ -44,7 +44,7 @@
 		.input-box {
 			margin: auto;
 			width: fit-content;
-			min-width: 600px;
+			min-width: 580px;
 		}
 
 		pre {
@@ -64,6 +64,7 @@
 				<v-combobox multiple small-chips dense hide-details="auto" v-model="s查询参数"
 					outlined label="知识库" class="ma-2"
 					:items="items"></v-combobox>
+				<a style="float: right;" href="/static/st.html">资料管理</a>
 				<div :class="(s关键词.length!=0||results.length!=0)?'logo-left':'logo-center'"><b
 						style="color: purple;">闻达</b><b>搜索</b></div>
 
