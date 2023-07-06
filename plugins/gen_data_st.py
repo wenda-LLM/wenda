@@ -21,7 +21,7 @@ if settings.librarys.rtst.backend=="Annoy":
     from langchain.vectorstores.annoy import Annoy as Vectorstore
 else:
     from langchain.vectorstores.faiss import FAISS as Vectorstore
-source_folder = 'zskjjb'
+source_folder = 'lnfgw'
 source_folder_path = os.path.join(os.getcwd(), source_folder)
 
 
