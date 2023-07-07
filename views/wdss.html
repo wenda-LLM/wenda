@@ -95,20 +95,27 @@
 				</v-app>
 			</div>
 			<script>
-		hash = decodeURI(document.location.hash.replace('#', ''))
 		items = [
-			'rtst:5:客服',
-			'rtst:5:春秋战国艺术史',
-			'rtst:5:新闻',
-			'calc:5',
-			'serper:5',
-			'sogowx:5',
+			'calc:50',
+			'serper:50',
+			'sogowx:50',
 		]
-		if (hash) {
-			hash = hash.split(',')
-		}
-		else {
-			hash = [items[0]]
+		f读取现有库 = async () => {
+			response = await fetch("/api/list_rtst_in_disk", {
+				method: 'post',
+			})
+			let list_rtst_in_disk = await response.json()
+			list_rtst_in_disk = list_rtst_in_disk.map(decodeURI).map(s => "rtst:10:" + s)
+			list_rtst_in_disk.push(localStorage['wenda_rtst_ID'])
+			app.items = list_rtst_in_disk.concat(app.items)
+			let hash = decodeURI(document.location.hash.replace('#', ''))
+			if (hash) {
+				hash = hash.split(',')
+			}
+			else {
+				hash = [app.items[0]]
+			}
+			app.s查询参数 = hash
 		}
 		app = new Vue({
 			el: '#app',
@@ -126,17 +133,18 @@
 				top_p: 0.2,
 				max_length: 2000,
 				llm_type: "",
-				s查询参数:hash,
+				s查询参数: '',
 				items: items,
 			}),
 			methods: {
 			},
 			watch: {
 				s查询参数: (s查询参数) => {
-					document.location.hash=s查询参数.join(',')
+					document.location.hash = s查询参数.join(',')
 				}
 			}
 		})
+		f读取现有库()
 		submit = async (e) => {
 			e && e.preventDefault()
 			window.ws && await ws.close();

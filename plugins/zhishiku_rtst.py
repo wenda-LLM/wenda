@@ -149,6 +149,11 @@ def api_find():
     except Exception as e:
         return str(e)
     
+@route('/list_rtst_in_disk', method=("POST","OPTIONS"))
+def api_find():
+    allowCROS()
+    return json.dumps(os.listdir('memory'))
+    
 @route('/del_rtst_in_memory', method=("POST","OPTIONS"))
 def api_find():
     allowCROS()

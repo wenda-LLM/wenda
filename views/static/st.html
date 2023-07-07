@@ -45,8 +45,7 @@
 				<v-card-text>
 					<v-row>
 						<v-col cols="12" sm="6">
-							<v-combobox v-model="memory_name" :items="['default',localStorage['wenda_rtst_ID']]"
-								:label='$t("memory_name")'></v-combobox>
+							<v-combobox v-model="memory_name" :items="l现有库" :label='$t("memory_name")'></v-combobox>
 						</v-col>
 						<v-col cols="12" sm="2">
 						</v-col>
@@ -72,8 +71,8 @@
 					</v-btn>
 					<v-btn color="purple" dark size="x-large" @click="f批量上传()" :loading="b批量上传中">
 						{{$t("upload")}}
-						
-					</v-btn><template v-if="b批量上传中" >{{i批量上传进度}}/{{l表格读取结果.length}}</template>
+
+					</v-btn><template v-if="b批量上传中">{{i批量上传进度}}/{{l表格读取结果.length}}</template>
 				</v-card-actions>
 			</v-card>
 			<v-card elevation="2">
@@ -124,11 +123,21 @@
 		</v-app>
 	</div>
 	<script>
-		let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
-		genID = () => 'xxxxxxxxxxxx'.replace(/x/g, function () {
-			return chars[Math.random() * 62 | 0]
-		})
-		if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
+		f读取现有库 = async () => {
+
+			response = await fetch("/api/list_rtst_in_disk", {
+				method: 'post',
+			})
+			let list_rtst_in_disk = await response.json()
+			list_rtst_in_disk = list_rtst_in_disk.map(decodeURI)
+			let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
+			genID = () => 'xxxxxxxxxxxx'.replace(/x/g, function () {
+				return chars[Math.random() * 62 | 0]
+			})
+			if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
+			list_rtst_in_disk.push(localStorage['wenda_rtst_ID'])
+			app.l现有库=list_rtst_in_disk
+		}
 		app = new Vue({
 			el: '#app',
 			vuetify: new Vuetify(),
@@ -141,20 +150,21 @@
 				test_zsk_step: 1,
 				zhishiku: [],
 				l表格读取结果: [],
-				b批量上传中:false,
-				i批量上传进度:0
+				b批量上传中: false,
+				i批量上传进度: 0,
+				l现有库: []
 			}),
 			methods: {
 			}
 		})
-
+		f读取现有库()
 		find_in_memory = async (s, step, memory_name) => {
 			response = await fetch("/api/find_rtst_in_memory", {
 				method: 'post',
 				body: JSON.stringify({
 					prompt: s,
 					step: step,
-					memory_name: app.memory_name
+					memory_name: encodeURI(app.memory_name)
 				}),
 				headers: {
 					'Content-Type': 'application/json'
@@ -165,23 +175,23 @@
 			app.zhishiku = json
 			return json
 		}
-		upload_rtst_zhishiku = async (title, txt,show_result=true) => {
+		upload_rtst_zhishiku = async (title, txt, show_result = true) => {
 			response = await fetch("/api/upload_rtst_zhishiku", {
 				method: 'post',
 				body: JSON.stringify({
 					title: title,
 					txt: txt,
-					memory_name: app.memory_name
+					memory_name: encodeURI(app.memory_name)
 				}),
 				headers: { 'Content-Type': 'application/json' }
 			})
-			show_result&&alert(await response.text())
+			show_result && alert(await response.text())
 		}
 		save_rtst = async () => {
 			response = await fetch("/api/save_rtst_zhishiku", {
 				method: 'post',
 				body: JSON.stringify({
-					memory_name: app.memory_name
+					memory_name: encodeURI(app.memory_name)
 				}),
 				headers: { 'Content-Type': 'application/json' }
 			})
@@ -209,15 +219,15 @@
 			})
 		}
 
-		
+
 		f批量上传 = async () => {
-			app.b批量上传中=true
+			app.b批量上传中 = true
 			for (question_index in app.l表格读取结果) {
-				app.i批量上传进度=question_index
-				let question=app.l表格读取结果[question_index]
-				await upload_rtst_zhishiku(question.问题, question.回答,false)
+				app.i批量上传进度 = question_index
+				let question = app.l表格读取结果[question_index]
+				await upload_rtst_zhishiku(question.问题, question.回答, false)
 			}
-			app.b批量上传中=false
+			app.b批量上传中 = false
 		}
 	</script>
 </body>
