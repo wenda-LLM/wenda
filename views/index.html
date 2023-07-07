@@ -92,6 +92,7 @@
       margin-bottom: auto;
       color: #fff !important;
       position: unset;
+      filter: brightness(150%) grayscale(50%);
     }
 
     .answer img {
@@ -243,7 +244,7 @@
               <span v-if="current_conversation.role == 'user'" class="ask"
                 v-text="current_conversation.keyword||current_conversation.content"></span>
               <v-hover v-slot="{ hover }">
-                <div>
+                <div style="margin-bottom: auto;">
                   <v-avatar
                     :class="current_conversation.role == 'user' ? 'user-avatar': 'bot-avatar'"
                     size="36"
