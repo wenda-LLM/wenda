@@ -117,6 +117,9 @@ llm_models:
      #cuda:0 fp16 *14 -> cuda:1	fp16 多卡流水线并行，使用方法参考RWKV的strategy介绍。总层数28
    #   lora: "model/lora-450"
      #glm-lora模型位置
+  internlm: 
+     path: "model/internlm-chat-7b-8k"
+     #模型位置"
   baichuan: 
      path: "model\\baichuan-7B"
      #模型位置"
