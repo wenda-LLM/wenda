@@ -118,7 +118,7 @@ llm_models:
    #   lora: "model/lora-450"
      #glm-lora模型位置
   internlm: 
-     path: "model/internlm-chat-7b-8k"
+     path: model\internlm-chat-7b-8k
      #模型位置"
   baichuan: 
      path: "model\\baichuan-7B"
