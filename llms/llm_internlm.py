@@ -36,16 +36,8 @@ def chat_one(prompt, history, max_length, top_p, temperature, data):
         temperature=temperature
     )
     prompt = history + cur_query_prompt.replace("{user}", prompt)
-    for i in generate_interactive(prompt, generation_config):
+    for i in generate_interactive(prompt, (generation_config),additional_eos_token_id=103028):
         yield i
-
-
-@dataclass
-class GenerationConfig:
-    max_length: Optional[int] = None
-    top_p: Optional[float] = None
-    temperature: Optional[float] = None
-    do_sample: Optional[bool] = True
 
 
 def load_model():
@@ -76,37 +68,7 @@ def generate_interactive(
     if generation_config is None:
         generation_config = model.generation_config
     generation_config = copy.deepcopy(generation_config)
-    model_kwargs = generation_config.update(**kwargs)
-    bos_token_id, eos_token_id = generation_config.bos_token_id, generation_config.eos_token_id
-    if isinstance(eos_token_id, int):
-        eos_token_id = [eos_token_id]
-    if additional_eos_token_id is not None:
-        eos_token_id.append(additional_eos_token_id)
-    has_default_max_length = kwargs.get(
-        "max_length") is None and generation_config.max_length is not None
-    if has_default_max_length and generation_config.max_new_tokens is None:
-        print(
-            f"Using `max_length`'s default ({generation_config.max_length}) to control the generation length. "
-            "This behaviour is deprecated and will be removed from the config in v5 of Transformers -- we"
-            " recommend using `max_new_tokens` to control the maximum length of the generation."
-        )
-    elif generation_config.max_new_tokens is not None:
-        generation_config.max_length = generation_config.max_new_tokens + input_ids_seq_length
-        if not has_default_max_length:
-            print(
-                f"Both `max_new_tokens` (={generation_config.max_new_tokens}) and `max_length`(="
-                f"{generation_config.max_length}) seem to have been set. `max_new_tokens` will take precedence. "
-                "Please refer to the documentation for more information. "
-                "(https://huggingface.co/docs/transformers/main/en/main_classes/text_generation)"
-            )
-
-    if input_ids_seq_length >= generation_config.max_length:
-        input_ids_string = "input_ids"
-        print(
-            f"Input length of {input_ids_string} is {input_ids_seq_length}, but `max_length` is set to"
-            f" {generation_config.max_length}. This can lead to unexpected behavior. You should consider"
-            " increasing `max_new_tokens`."
-        )
+    eos_token_id=[additional_eos_token_id]
 
     # 2. Set generation parameters if not already defined
     logits_processor = logits_processor if logits_processor is not None else LogitsProcessorList()
@@ -127,6 +89,7 @@ def generate_interactive(
 
     unfinished_sequences = input_ids.new(input_ids.shape[0]).fill_(1)
     scores = None
+    model_kwargs = generation_config.update(**kwargs)
     while True:
         model_inputs = model.prepare_inputs_for_generation(
             input_ids, **model_kwargs)
