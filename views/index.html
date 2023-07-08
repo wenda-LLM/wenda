@@ -730,7 +730,7 @@
     submit = async (e) => {
       e && e.preventDefault()
       if (e && e.shiftKey) {
-        this.question += "\n";
+        app.question += "\n";
       } else if (typeof app.func_mode.question == "function") {
         await app.func_mode.question(app.question);
         app.question = ''
