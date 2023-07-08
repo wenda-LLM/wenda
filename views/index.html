@@ -233,7 +233,8 @@
         </v-navigation-drawer>
         <v-toolbar v-if="show_header" style="opacity: 80%">
           <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-          <v-toolbar-title><a :style="'filter: brightness(50%);font-size: larger;text-decoration: none; color: '+color"
+          <v-toolbar-title><a
+              :style="'filter: brightness(50%);font-size: larger;text-decoration: none; color: '+color"
               href="https://github.com/l15y/wenda">{{$t("wenda") }}</a></v-toolbar-title>
         </v-toolbar>
         <v-tabs-items v-model="tab" style="margin-bottom: 48px"
@@ -263,6 +264,10 @@
                       <v-icon large text :color="color"
                         @click="copy(current_conversation.content)">
                         mdi-content-copy
+                      </v-icon>
+                      <v-icon large text :color="color"
+                        @click="edit(current_conversation)">
+                        mdi-pencil
                       </v-icon>
                     </div>
                   </v-expand-transition>
@@ -590,6 +595,29 @@
         </v-tabs>
         <v-snackbar v-model="snackbar" :timeout="3000"
           style="white-space: pre-line">{{snackbar_text}}</v-snackbar>
+        <v-dialog v-model="show_dialog" persistent max-width="600px">
+          <v-card class="ma-0 pa0">
+            <v-card-title>
+              <span class="text-h5">{{dialog_title}}</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-text-field v-model="dialog_input"></v-text-field>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text
+                @click="show_dialog = false;dialog_input='';window.dialog_input_resolver()">
+                取消
+              </v-btn>
+              <v-btn color="blue darken-1" text
+                @click="show_dialog = false;window.dialog_input_resolver()">
+                确认
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-app>
     </div>
     <script>
@@ -610,7 +638,7 @@
           if (current_func) {
             app.func_mode = current_func
             document.location.hash = current_func.name
-          }else{
+          } else {
             app.current_func = ''
           }
         },
@@ -695,7 +723,13 @@
           color: "purple",
           //管理界面中，搜索auto的关键词
           autos_search: "",
-          TPS: 0
+          TPS: 0,
+          //显示对话框
+          show_dialog: false,
+          //对话框标题
+          dialog_title: "",
+          //对话框用户输入
+          dialog_input: ""
         };
       },
       methods: {
@@ -708,6 +742,26 @@
         },
       },
     });
+    //获取用户输入
+    input = async (title = '请输入', input = '') => {
+      app.dialog_title = title
+      app.dialog_input = input
+      app.show_dialog = true
+
+      await new Promise(resolve => {
+        window.dialog_input_resolver = resolve
+      })
+      return app.dialog_input
+    }
+    //编辑用户输入
+    edit = async (current_conversation) => {
+      let s修改后的内容 = await input('请输入修改后的内容', current_conversation.content)
+      if (s修改后的内容) {
+        current_conversation.content = s修改后的内容
+        alert('修改成功')
+      }else
+      alert('取消修改')
+    }
     // 加载指定功能
     load_func = (func) => {
       app.current_func = func.name;
@@ -928,8 +982,8 @@
 
     setTimeout(() => app.current_func = decodeURI(document.location.hash.replace('#', '')), 1000)
     alert = (text) => {
-        app.snackbar_text = text; //.replace(/\n/g,"<br>")
-        app.snackbar = true;
+      app.snackbar_text = text; //.replace(/\n/g,"<br>")
+      app.snackbar = true;
     }
   </script>
   </body>
