@@ -46,8 +46,16 @@ def load_model():
     if len(s)>1:
         from accelerate import dispatch_model
         start_device = int(s[0][0].split(':')[1])
-        device_map = {'transformer.word_embeddings': start_device,
-                  'transformer.final_layernorm': start_device, 'lm_head': start_device}
+        #根据路径名判断，如果是glm2则使用专用devicemap，参见https://github.com/THUDM/ChatGLM2-6B/blob/main/utils.py Line23
+        if "chatglm2" in settings.llm.path.lower():
+            device_map = {'transformer.embedding.word_embeddings': 0,
+            'transformer.encoder.final_layernorm': 0,
+            'transformer.output_layer': 0,
+            'transformer.rotary_pos_emb': 0,
+            'lm_head': 0}
+        else:
+            device_map = {'transformer.word_embeddings': start_device,
+            'transformer.final_layernorm': start_device, 'lm_head': start_device}
         
         n = {}
         for i in range(len(s)):
@@ -61,7 +69,11 @@ def load_model():
         n[start_device] -= 2
         n = dict_to_list(n)
         for i in range(num_trans_layers):
-            device_map[f'transformer.layers.{i}'] = n[i]
+            #根据路径名判断，如果是glm2则使用专用devicemap，参见https://github.com/THUDM/ChatGLM2-6B/blob/main/utils.py Line23
+            if "chatglm2" in settings.llm.path.lower():
+                device_map[f'transformer.encoder.layers.{i}'] = n[i]
+            else:
+                device_map[f'transformer.layers.{i}'] = n[i]
 
     device, precision = s[0][0], s[0][1]
     
