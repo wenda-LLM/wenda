@@ -759,8 +759,8 @@
       if (s修改后的内容) {
         current_conversation.content = s修改后的内容
         alert('修改成功')
-      }else
-      alert('取消修改')
+      } else
+        alert('取消修改')
     }
     // 加载指定功能
     load_func = (func) => {
@@ -920,34 +920,6 @@
       return plugin.name;
     };
 
-    // 加载所有插件并将其添加到 app.autos 数组中
-    load_plugins = async () => {
-      disabled_auto = JSON.parse(localStorage["wenda_disabled_auto"] || "{}");
-      server_auto = await fetch("/api/plugins");
-      server_auto = await server_auto.json();
-      server_auto.forEach((plugin) => {
-        let name = get_auto_name(plugin);
-        let auto = {
-          name: name,
-          description: get_auto_description(plugin),
-          content: plugin.content,
-          disabled: get_auto_disabled(plugin, name),
-        };
-        app.autos.push(auto);
-        setTimeout(() => {
-          if (!auto.disabled) eval(plugin.content);
-        }, 0)
-      });
-
-      saved_auto = JSON.parse(localStorage["wenda_saved_auto"] || "[]");
-      saved_auto.forEach((auto) => {
-        app.autos.push(auto);
-        setTimeout(() => {
-          if (!auto.disabled) eval(auto.content);
-        }, 0)
-      });
-    };
-    load_plugins();
     // 将启用的插件内容添加到 app.autos 数组中，显示在菜单中
     add_auto = (content) => {
       let plugin = { content: content, name: "用户添加" };
@@ -980,7 +952,36 @@
       location.reload();
     };
 
-    setTimeout(() => app.current_func = decodeURI(document.location.hash.replace('#', '')), 1000)
+    // 加载所有插件并将其添加到 app.autos 数组中
+    load_plugins = async () => {
+      disabled_auto = JSON.parse(localStorage["wenda_disabled_auto"] || "{}");
+      server_auto = await fetch("/api/plugins");
+      server_auto = await server_auto.json();
+      server_auto.forEach((plugin) => {
+        let name = get_auto_name(plugin);
+        let auto = {
+          name: name,
+          description: get_auto_description(plugin),
+          content: plugin.content,
+          disabled: get_auto_disabled(plugin, name),
+        };
+        app.autos.push(auto);
+        setTimeout(() => {
+          if (!auto.disabled) eval(plugin.content);
+        }, 0)
+      });
+
+      saved_auto = JSON.parse(localStorage["wenda_saved_auto"] || "[]");
+      saved_auto.forEach((auto) => {
+        app.autos.push(auto);
+        setTimeout(() => {
+          if (!auto.disabled) eval(auto.content);
+        }, 0)
+      });
+
+      setTimeout(() => app.current_func = decodeURI(document.location.hash.replace('#', '')), 10)
+    };
+    load_plugins();
     alert = (text) => {
       app.snackbar_text = text; //.replace(/\n/g,"<br>")
       app.snackbar = true;
