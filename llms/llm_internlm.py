@@ -33,7 +33,8 @@ def chat_one(prompt, history, max_length, top_p, temperature, data):
     generation_config = GenerationConfig(
         max_length=max_length,
         top_p=top_p,
-        temperature=temperature
+        temperature=temperature,
+        repetition_penalty=1.05
     )
     prompt = history + cur_query_prompt.replace("{user}", prompt)
     for i in generate_interactive(prompt, (generation_config),additional_eos_token_id=103028):
