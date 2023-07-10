@@ -8,8 +8,14 @@ import math
 import re
 from typing import List,Dict
 interface = ":"
-if settings.llm.path.lower().find("world") > -1:
-    print("rwkv world mode!")
+if settings.llm.path.lower().find("chntuned") > -1:
+    print("RWKV CHNtuned mode")
+    tokenizers_type = "world"
+    user = "User"
+    answer = "Assistant"
+    tokenizers_file = "rwkv_vocab_v20230424"
+elif settings.llm.path.lower().find("world") > -1:
+    print("RWKV world mode")
     tokenizers_type = "world"
     user = "Question"
     answer = "Answer"
