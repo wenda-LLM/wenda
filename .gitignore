@@ -28,3 +28,6 @@ memory
 .history
 *.zip
 autos/inner.js
+llms/convert_rwkv.py
+convert_safetensors.py
+llms/convert_rwkv.py

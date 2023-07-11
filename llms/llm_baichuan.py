@@ -98,6 +98,8 @@ def load_model():
             from peft import PeftModel
             model = PeftModel.from_pretrained(
                 model, settings.llm.lora, adapter_name=settings.llm.lora)
+        if settings.llm.path.lower().find("13b"):
+            model=model.quantize(8)
         model = model.cuda()
         model = model.eval()
 
