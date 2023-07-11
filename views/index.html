@@ -460,7 +460,7 @@
               <v-divider></v-divider>
               <v-card-text><br />
                 <v-form>
-                  <v-slider :min="1000" :max="4000" :step="10"
+                  <v-slider :min="2000" :max="8192" :step="100"
                     v-model="max_length" :thumb-color="color"
                     label="max_length" thumb-label><template v-slot:append>
                       <v-text-field v-model="max_length" class="mt-0 pt-0"
@@ -702,7 +702,7 @@
           // 生成回答的温度
           temperature: 0.8,
           // 生成回答的最大长度
-          max_length: 2048,
+          max_length: 4096,
           // 生成回答的top_p
           top_p: 0.8,
           // 语言模型类型
