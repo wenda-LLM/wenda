@@ -2,7 +2,7 @@
 本项目设计目标为实现针对特定环境的高效内容生成，同时考虑个人和中小企业的计算资源局限性，以及知识安全和私密性问题。为达目标，平台化集成了以下能力：
 
 1. 知识库：支持对接[本地离线向量库](#rtst模式)、[本地搜索引擎](#fess模式)、在线搜索引擎等。
-2. 多种大语言模型：目前支持离线部署模型有`chatGLM-6B\chatGLM2-6B`、`chatRWKV`、`llama系列(不推荐中文用户)`、`moss(不推荐)`、`baichuan(需配合lora使用，否则效果差)`、`Aquila-7B`，在线API访问`openai api`和`chatGLM-130b api`。
+2. 多种大语言模型：目前支持离线部署模型有`chatGLM-6B\chatGLM2-6B`、`chatRWKV`、`llama系列(不推荐中文用户)`、`moss(不推荐)`、`baichuan(需配合lora使用，否则效果差)`、`Aquila-7B`、`InternLM`，在线API访问`openai api`和`chatGLM-130b api`。
 3. Auto脚本：通过开发插件形式的JavaScript脚本，为平台附件功能，实现包括但不限于自定义对话流程、访问外部API、在线切换LoRA模型。
 4. 其他实用化所需能力：对话历史管理、内网部署、多用户同时使用等。
 
@@ -27,6 +27,7 @@
     - [部分内置 Auto 使用说明](#部分内置-auto-使用说明)
   - [知识库](#知识库)
     - [rtst模式](#rtst模式)
+    - [使用微调模型提高知识库回答准确性](#使用微调模型提高知识库回答准确性)
       - [模型](#模型)
     - [fess模式](#fess模式)
     - [知识库调试](#知识库调试)
@@ -55,12 +56,14 @@
 | RWKV [torch](#torch)                             | √          | √          | √              | √   | 预先量化和在线量化 |          |
 | RWKV.[cpp](#cpp)                                 | √          | √          | 可用指令集加速 |     | 预先量化           |          |
 | Baichuan-7B                                      | √          | √          | √              | √   |                    | √        |
+| Baichuan-7B (GPTQ)                               | √          | √          |                | √   | 预先量化           |          |
 | [Aquila-7B](#aquila-7b)                          |            | 官方未实现 | √              | √   |                    |          |
 | replit                                           |            |            | √              | √   |                    |          |
 | chatglm130b api                                  | √          |            |                |     |                    |          |
 | openai api                                       | √          | √          |                |     |                    |          |
 | llama.cpp                                        | √          | √          | 可用指令集加速 |     | 预先量化           |          |
 | llama torch                                      | √          | √          | √              | √   | 预先量化和在线量化 |          |
+| InternLM                                         | √          | √          | √              | √   | 在线量化           |          |
 ### 懒人包
 #### 百度云
 https://pan.baidu.com/s/1idvot-XhEvLLKCbjDQuhyg?pwd=wdai 
@@ -233,6 +236,8 @@ Windows预先构建索引运行：`plugins/buils_rtst_default_index.bat`。
 Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 
 需下载模型置于model文件夹，并将txt格式语料置于txt文件夹。
+### 使用微调模型提高知识库回答准确性
+闻达用户“帛凡”，训练并提供的权重合并模型和lora权重文件，详细信息见https://huggingface.co/fb700/chatglm-fitness-RLHF，使用该模型或者lora权重文件，对比hatglm-6b、chatglm2-6b、百川等模型，在闻达知识库平台中，总结能力可获得显著提升。
 #### 模型
 1. [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese) 不再推荐，不支持英文且显存占用高
 2. [moka-ai/m3e-base](https://huggingface.co/moka-ai/m3e-base) 推荐

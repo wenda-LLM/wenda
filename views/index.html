@@ -92,6 +92,7 @@
       margin-bottom: auto;
       color: #fff !important;
       position: unset;
+      filter: brightness(150%) grayscale(50%);
     }
 
     .answer img {
@@ -232,7 +233,8 @@
         </v-navigation-drawer>
         <v-toolbar v-if="show_header" style="opacity: 80%">
           <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-          <v-toolbar-title><a :style="'filter: brightness(50%);font-size: larger;text-decoration: none; color: '+color"
+          <v-toolbar-title><a
+              :style="'filter: brightness(50%);font-size: larger;text-decoration: none; color: '+color"
               href="https://github.com/l15y/wenda">{{$t("wenda") }}</a></v-toolbar-title>
         </v-toolbar>
         <v-tabs-items v-model="tab" style="margin-bottom: 48px"
@@ -243,7 +245,7 @@
               <span v-if="current_conversation.role == 'user'" class="ask"
                 v-text="current_conversation.keyword||current_conversation.content"></span>
               <v-hover v-slot="{ hover }">
-                <div>
+                <div style="margin-bottom: auto;">
                   <v-avatar
                     :class="current_conversation.role == 'user' ? 'user-avatar': 'bot-avatar'"
                     size="36"
@@ -262,6 +264,10 @@
                       <v-icon large text :color="color"
                         @click="copy(current_conversation.content)">
                         mdi-content-copy
+                      </v-icon>
+                      <v-icon large text :color="color"
+                        @click="edit(current_conversation)">
+                        mdi-pencil
                       </v-icon>
                     </div>
                   </v-expand-transition>
@@ -454,7 +460,7 @@
               <v-divider></v-divider>
               <v-card-text><br />
                 <v-form>
-                  <v-slider :min="1000" :max="4000" :step="10"
+                  <v-slider :min="2000" :max="8192" :step="100"
                     v-model="max_length" :thumb-color="color"
                     label="max_length" thumb-label><template v-slot:append>
                       <v-text-field v-model="max_length" class="mt-0 pt-0"
@@ -589,6 +595,29 @@
         </v-tabs>
         <v-snackbar v-model="snackbar" :timeout="3000"
           style="white-space: pre-line">{{snackbar_text}}</v-snackbar>
+        <v-dialog v-model="show_dialog" persistent max-width="600px">
+          <v-card class="ma-0 pa0">
+            <v-card-title>
+              <span class="text-h5">{{dialog_title}}</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-text-field v-model="dialog_input"></v-text-field>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text
+                @click="show_dialog = false;dialog_input='';window.dialog_input_resolver()">
+                取消
+              </v-btn>
+              <v-btn color="blue darken-1" text
+                @click="show_dialog = false;window.dialog_input_resolver()">
+                确认
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-app>
     </div>
     <script>
@@ -609,7 +638,7 @@
           if (current_func) {
             app.func_mode = current_func
             document.location.hash = current_func.name
-          }else{
+          } else {
             app.current_func = ''
           }
         },
@@ -673,7 +702,7 @@
           // 生成回答的温度
           temperature: 0.8,
           // 生成回答的最大长度
-          max_length: 2048,
+          max_length: 4096,
           // 生成回答的top_p
           top_p: 0.8,
           // 语言模型类型
@@ -694,7 +723,13 @@
           color: "purple",
           //管理界面中，搜索auto的关键词
           autos_search: "",
-          TPS: 0
+          TPS: 0,
+          //显示对话框
+          show_dialog: false,
+          //对话框标题
+          dialog_title: "",
+          //对话框用户输入
+          dialog_input: ""
         };
       },
       methods: {
@@ -707,6 +742,26 @@
         },
       },
     });
+    //获取用户输入
+    input = async (title = '请输入', input = '') => {
+      app.dialog_title = title
+      app.dialog_input = input
+      app.show_dialog = true
+
+      await new Promise(resolve => {
+        window.dialog_input_resolver = resolve
+      })
+      return app.dialog_input
+    }
+    //编辑用户输入
+    edit = async (current_conversation) => {
+      let s修改后的内容 = await input('请输入修改后的内容', current_conversation.content)
+      if (s修改后的内容) {
+        current_conversation.content = s修改后的内容
+        alert('修改成功')
+      } else
+        alert('取消修改')
+    }
     // 加载指定功能
     load_func = (func) => {
       app.current_func = func.name;
@@ -729,7 +784,7 @@
     submit = async (e) => {
       e && e.preventDefault()
       if (e && e.shiftKey) {
-        this.question += "\n";
+        app.question += "\n";
       } else if (typeof app.func_mode.question == "function") {
         await app.func_mode.question(app.question);
         app.question = ''
@@ -865,34 +920,6 @@
       return plugin.name;
     };
 
-    // 加载所有插件并将其添加到 app.autos 数组中
-    load_plugins = async () => {
-      disabled_auto = JSON.parse(localStorage["wenda_disabled_auto"] || "{}");
-      server_auto = await fetch("/api/plugins");
-      server_auto = await server_auto.json();
-      server_auto.forEach((plugin) => {
-        let name = get_auto_name(plugin);
-        let auto = {
-          name: name,
-          description: get_auto_description(plugin),
-          content: plugin.content,
-          disabled: get_auto_disabled(plugin, name),
-        };
-        app.autos.push(auto);
-        setTimeout(() => {
-          if (!auto.disabled) eval(plugin.content);
-        }, 0)
-      });
-
-      saved_auto = JSON.parse(localStorage["wenda_saved_auto"] || "[]");
-      saved_auto.forEach((auto) => {
-        app.autos.push(auto);
-        setTimeout(() => {
-          if (!auto.disabled) eval(auto.content);
-        }, 0)
-      });
-    };
-    load_plugins();
     // 将启用的插件内容添加到 app.autos 数组中，显示在菜单中
     add_auto = (content) => {
       let plugin = { content: content, name: "用户添加" };
@@ -925,10 +952,39 @@
       location.reload();
     };
 
-    setTimeout(() => app.current_func = decodeURI(document.location.hash.replace('#', '')), 1000)
+    // 加载所有插件并将其添加到 app.autos 数组中
+    load_plugins = async () => {
+      disabled_auto = JSON.parse(localStorage["wenda_disabled_auto"] || "{}");
+      server_auto = await fetch("/api/plugins");
+      server_auto = await server_auto.json();
+      server_auto.forEach((plugin) => {
+        let name = get_auto_name(plugin);
+        let auto = {
+          name: name,
+          description: get_auto_description(plugin),
+          content: plugin.content,
+          disabled: get_auto_disabled(plugin, name),
+        };
+        app.autos.push(auto);
+        setTimeout(() => {
+          if (!auto.disabled) eval(plugin.content);
+        }, 0)
+      });
+
+      saved_auto = JSON.parse(localStorage["wenda_saved_auto"] || "[]");
+      saved_auto.forEach((auto) => {
+        app.autos.push(auto);
+        setTimeout(() => {
+          if (!auto.disabled) eval(auto.content);
+        }, 0)
+      });
+
+      setTimeout(() => app.current_func = decodeURI(document.location.hash.replace('#', '')), 10)
+    };
+    load_plugins();
     alert = (text) => {
-        app.snackbar_text = text; //.replace(/\n/g,"<br>")
-        app.snackbar = true;
+      app.snackbar_text = text; //.replace(/\n/g,"<br>")
+      app.snackbar = true;
     }
   </script>
   </body>

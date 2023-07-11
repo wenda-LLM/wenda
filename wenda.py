@@ -329,8 +329,9 @@ async def websocket_endpoint(websocket: WebSocket):
                         # cost+=end-start
             except Exception as e:
                 error = str(e)
-                error_print("错误", error)
-                response = ''
+                await websocket.send_text("错误"+ error)
+                await websocket.close()
+                raise e
             torch.cuda.empty_cache()
         if logging:
             with session_maker() as session:

@@ -16,11 +16,11 @@ func.push({
         Q = app.question
         memory = await find_rtst_memory(Q, 'jyzq')
         if (memory.length > 0) {
-            A = await send(app.question + memory.map(i => `[在第${i.title}轮的回忆：${i.content}]`).join('\n'))
+            A = await send(app.question + memory.map(i => `\n[在第${i.title}的回忆：${i.content}]`).join(''))
         } else {
             A = await send(app.question)
         }
-        add_rtst_memory(记忆轮次, Q, 'jyzq')//+ " Alice: " + A
+        add_rtst_memory(记忆轮次+"轮", Q, 'jyzq')//+ " Alice: " + A
         记忆轮次 += 1
     },
 })
