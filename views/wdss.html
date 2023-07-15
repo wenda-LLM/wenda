@@ -106,7 +106,6 @@
 			})
 			let list_rtst_in_disk = await response.json()
 			list_rtst_in_disk = list_rtst_in_disk.map(decodeURI).map(s => "rtst:10:" + s)
-			list_rtst_in_disk.push(localStorage['wenda_rtst_ID'])
 			app.items = list_rtst_in_disk.concat(app.items)
 			let hash = decodeURI(document.location.hash.replace('#', ''))
 			if (hash) {

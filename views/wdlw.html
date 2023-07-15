@@ -96,12 +96,14 @@
 				</v-card>
 				<v-card elevation="2" v-for="result in results">
 					<v-card-title>{{result.title}} <v-spacer></v-spacer>
-						<v-icon @click="copy(result.content)"
-							v-if="result.prompt">
+						<v-icon @click="copy(result.content)" v-if="result.prompt">
 							mdi-content-copy
 						</v-icon>
 						<v-icon @click="f重新生成(result)" v-if="result.prompt">
 							mdi-refresh
+						</v-icon>
+						<v-icon @click="f知识库重新生成(result)" v-if="result.prompt">
+							mdi-book-open-variant
 						</v-icon>
 					</v-card-title>
 
@@ -227,6 +229,19 @@
 		f重新生成 = async (paragraph) => {
 			await edit(paragraph)
 			await send_raw(paragraph.prompt, '', [], (s) => { paragraph.content = s })
+		}
+		f知识库重新生成 = async (paragraph) => {
+		`	response = await fetch("/api/list_rtst_in_disk", {
+				method: 'post',
+			})
+			let list_rtst_in_disk = await response.json()
+			list_rtst_in_disk = list_rtst_in_disk.map(decodeURI).map(s => "rtst:10:" + s)
+			kownladge = await find_dynamic(paragraph.title.split(".")[1], 5, { libraryStategy:list_rtst_in_disk.map(encodeURI).join(" "), maxItmes: 100 })
+			`
+			kownladge = await find(paragraph.title.split(".")[1], 5)
+			kownladge = kownladge.filter(i => !i.score || i.score < 150)
+			await send_raw(paragraph.prompt+'\n参考下列资料：\n' +
+			kownladge.map((e, i) => i + 1 + "." + e.content).join('\n'), '', [], (s) => { paragraph.content = s })
 		}
 		f复制正文 = async () => {
 			copy(app.results.map(i => i.title + "\n" + i.content).join("\n"))
