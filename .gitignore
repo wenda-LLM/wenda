@@ -18,6 +18,7 @@ record.db
 
 #environment
 /venv/
+.venv
 venv.bat
 WPy64-*
 
@@ -28,3 +29,7 @@ memory
 .history
 *.zip
 autos/inner.js
+llms/convert_rwkv.py
+convert_safetensors.py
+llms/convert_rwkv.py
+

@@ -129,7 +129,7 @@ llm_models:
       #模型位置"
       lora: "model/64rank"
    aquila: #https://model.baai.ac.cn/model-detail/100101
-      path: "AquilaChat-7B" #注意没有model/
+      path: "model/AquilaChat-7B" 
       #模型位置"
       strategy: "cuda fp16"
    llama:

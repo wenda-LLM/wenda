@@ -43,8 +43,7 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
 
 def load_model():
     global model, tokenizer
-    state_dict = "./model"
-    model_name = settings.llm.path
+    state_dict, model_name = os.path.split(settings.llm.path)
 
     loader = AutoLoader(
         "lm",

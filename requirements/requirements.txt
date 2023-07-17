@@ -23,3 +23,4 @@ pyyaml
 openai
 tiktoken
 loguru
+transformers_stream_generator

@@ -1,0 +1,278 @@
+<html>
+
+	<head>
+		<title>闻达论文</title>
+		<meta charset="utf-8">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=650,  user-scalable=no">
+		<link rel="shortcut icon" href="#" />
+
+		<link href="/static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet">
+		<link href="/static/vuetify.min.css" rel="stylesheet">
+		<script src="/static/vue.js"></script>
+		<script src="/static/vuetify.min.js"></script>
+		<script src="/static/markdown-it.min.js"></script>
+		<style>
+		div {
+
+			transition: all 0.3s;
+		}
+
+		.v-sheet.v-card {
+			margin: 20px;
+			padding: 10px;
+		}
+
+		.logo-center {
+			left: calc(50% - 140px);
+			width: 260px;
+			font-size: 4em;
+			padding-top: 2.5em;
+			padding-bottom: 0.8em;
+			position: relative;
+		}
+
+		.logo-left {
+			left: 20px;
+			width: 100%;
+			font-size: xx-large;
+			position: relative;
+		}
+
+		.input-box {
+			margin: auto;
+			width: fit-content;
+			min-width: 580px;
+		}
+
+		pre {
+			margin: 20px;
+			white-space: break-spaces;
+		}
+
+		.v-application--wrap {
+			display: unset;
+		}
+	</style>
+	</head>
+
+	<body>
+		<div id="app" v-cloak>
+			<v-app>
+				<div :class="(s题目.length!=0||s提纲.length!=0)?'logo-left':'logo-center'"><b
+						style="color: purple;">闻达</b><b>论文</b></div>
+
+				<v-row class="input-box">
+					<v-col cols="10">
+						<v-textarea autofocus v-model="s题目" label="题目" no-resize rows="1"
+							hide-details="auto"
+							@keypress.enter="sctg"></v-textarea>
+					</v-col>
+					<v-col cols="2">
+						<v-btn color="purple" dark size="x-large" @click="f生成提纲()">
+							生成提纲
+						</v-btn>
+					</v-col>
+				</v-row>
+
+				<v-card elevation="2" v-if="s提纲">
+					<v-card-title>提纲</v-card-title>
+					<v-divider></v-divider>
+					<v-card-text>
+						<v-textarea autofocus v-model="s提纲" label="提纲" rows="15"
+							hide-details="auto"></v-textarea>
+					</v-card-text>
+					<v-card-action>
+						<v-btn color="purple" dark size="x-large" @click="f生成正文()">
+							生成正文
+						</v-btn>
+						<v-btn color="purple" dark size="x-large" @click="f复制正文()"
+							v-if="results.length">
+							复制正文
+						</v-btn>
+					</v-card-action>
+				</v-card>
+				<v-card elevation="2" v-for="result in results">
+					<v-card-title>{{result.title}} <v-spacer></v-spacer>
+						<v-icon @click="copy(result.content)" v-if="result.prompt">
+							mdi-content-copy
+						</v-icon>
+						<v-icon @click="f重新生成(result)" v-if="result.prompt">
+							mdi-refresh
+						</v-icon>
+						<v-icon @click="f知识库重新生成(result)" v-if="result.prompt">
+							mdi-book-open-variant
+						</v-icon>
+					</v-card-title>
+
+					<v-divider v-if="result.prompt"></v-divider>
+					<pre v-text="result.content"></pre>
+				</v-card>
+				<v-snackbar v-model="b显示提示文本" :timeout="3000" style="white-space: pre-line">{{s提示文本}}</v-snackbar>
+				<v-dialog v-model="show_dialog" persistent max-width="600px">
+					<v-card class="ma-0 pa0">
+						<v-card-title>
+							<span class="text-h5">{{dialog_title}}</span>
+						</v-card-title>
+						<v-card-text>
+							<v-container>
+								<v-textarea autofocus v-model="dialog_input" no-resize rows="2"
+									hide-details="auto"
+									@keypress.enter="show_dialog = false;window.dialog_input_resolver()"></v-textarea>
+							</v-container>
+						</v-card-text>
+						<v-card-actions>
+							<v-spacer></v-spacer>
+							<v-btn color="blue darken-1" text
+								@click="show_dialog = false;dialog_input='';window.dialog_input_resolver()">
+								取消
+							</v-btn>
+							<v-btn color="blue darken-1" text
+								@click="show_dialog = false;window.dialog_input_resolver()">
+								确认
+							</v-btn>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+			</v-app>
+		</div>
+		<script>
+
+		let RomanNumeralsMap = {
+			'III': 3,
+			'II': 2,
+			'IV': 4,
+			'IX': 9,
+			'XL': 40,
+			'XC': 90,
+			'CD': 400,
+			'CM': 900,
+			'I': 1,
+			'V': 5,
+			'X': 10,
+			'L': 50,
+			'C': 100,
+			'D': 500,
+			'M': 1000
+		}
+
+		function find_RomanNumerals(str) {
+			let number = 0;
+			for (var p in RomanNumeralsMap) {
+				if (str.indexOf(p) != -1) {
+					str = str.split(p).join("");
+					number += RomanNumeralsMap[p];
+				}
+			}
+			return number
+		}
+		app = new Vue({
+			el: '#app',
+			vuetify: new Vuetify(),
+			data: () => ({
+				s题目: "",
+				s提纲: "",
+				results: [],
+				// 是否显示snackbar
+				b显示提示文本: false,
+				// snackbar的文本
+				s提示文本: "",
+				temperature: 0.8,
+				top_p: 0.2,
+				max_length: 2000,
+				llm_type: "",
+				//显示对话框
+				show_dialog: false,
+				//对话框标题
+				dialog_title: "",
+				//对话框用户输入
+				dialog_input: ""
+			}),
+			methods: {
+			},
+			watch: {
+			}
+		})
+		f生成提纲 = async (e) => {
+			e && e.preventDefault()
+			let prompt = '根据以下主题，写一篇高度凝练且全面的论文提纲：' + app.s题目
+			return await send_raw(prompt, '', [], (s) => { app.s提纲 = s })
+		}
+		sctg = f生成提纲
+		f生成正文 = async (e) => {
+			resp = app.s提纲
+				.replace(/\n- /g, '\n1.')//兼容不同格式
+				.split("\n")
+			for (let i in resp) {
+				let line = resp[i]
+				if (line == "") continue
+				line = line.split(".")
+				if (line.length < 2) {
+					continue  // 判断非提纲内容
+				}
+				let num = find_RomanNumerals(line[0])
+				if (num <= 0 || num == 100) {
+					let paragraph = {
+						title: resp[i],
+						content: '',
+						prompt: "根据主题：" + app.s题目 + "\n对下列段落进行详细的撰写：" + line[1]
+					}
+					app.results.push(paragraph)
+					await send_raw(paragraph.prompt, '', [], (s) => { paragraph.content = s })
+				} else {
+					app.results.push({ title: resp[i], content: "" })   // 保存提纲
+				}
+			}
+		}
+		f重新生成 = async (paragraph) => {
+			await edit(paragraph)
+			await send_raw(paragraph.prompt, '', [], (s) => { paragraph.content = s })
+		}
+		f知识库重新生成 = async (paragraph) => {
+		`	response = await fetch("/api/list_rtst_in_disk", {
+				method: 'post',
+			})
+			let list_rtst_in_disk = await response.json()
+			list_rtst_in_disk = list_rtst_in_disk.map(decodeURI).map(s => "rtst:10:" + s)
+			kownladge = await find_dynamic(paragraph.title.split(".")[1], 5, { libraryStategy:list_rtst_in_disk.map(encodeURI).join(" "), maxItmes: 100 })
+			`
+			kownladge = await find(paragraph.title.split(".")[1], 5)
+			kownladge = kownladge.filter(i => !i.score || i.score < 150)
+			await send_raw(paragraph.prompt+'\n参考下列资料：\n' +
+			kownladge.map((e, i) => i + 1 + "." + e.content).join('\n'), '', [], (s) => { paragraph.content = s })
+		}
+		f复制正文 = async () => {
+			copy(app.results.map(i => i.title + "\n" + i.content).join("\n"))
+		}
+		alert = (text) => {
+			app.s提示文本 = text; //.replace(/\n/g,"<br>")
+			app.b显示提示文本 = true;
+		}
+		//编辑prompt
+		edit = async (current_conversation) => {
+			let s修改后的内容 = await input('请输入新的提示词', current_conversation.prompt)
+			if (s修改后的内容) {
+				current_conversation.prompt = s修改后的内容
+				alert('修改成功')
+			} else
+				alert('取消修改')
+		}
+		//获取用户输入
+		input = async (title = '请输入', input = '') => {
+			app.dialog_title = title
+			app.dialog_input = input
+			app.show_dialog = true
+
+			await new Promise(resolve => {
+				window.dialog_input_resolver = resolve
+			})
+			return app.dialog_input
+		}
+	</script>
+		<script src="wd_sdk.js"></script>
+		<script src="api/llm"></script>
+	</body>
+
+</html>
