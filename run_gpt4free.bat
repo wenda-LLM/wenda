@@ -1,5 +1,5 @@
 @echo off
-call envirment.bat
+call environment.bat
 :a
 "%PYTHON%" wenda.py -t gpt4free_writesonic
 rem "%PYTHON%" wenda.py -t "gpt4free_you"
