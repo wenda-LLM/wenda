@@ -2,9 +2,9 @@ import torch
 from transformers import TextIteratorStreamer
 from plugins.common import settings
 from threading import Thread
-user = "<human>"
-answer = "<bot>"
-interface = ":"
+user = settings.llm.user
+answer = settings.llm.answer
+interface =settings.llm.interface
 gptq = False
 if settings.llm.path.lower().find("gptq") > -1:
     print("gptq mode!")

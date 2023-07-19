@@ -122,12 +122,18 @@ llm_models:
       path: model\internlm-chat-7b-8k
       #模型位置"
    baichuan:
-      # path: "model\\baichuan-7B"
-      path: model\baichuan-vicuna-7B-GPTQ #https://huggingface.co/TheBloke/baichuan-vicuna-7B-GPTQ#chinese-model-card
+      # path: "model\\Baichuan-13B-Chat"
+      path: model\Vicuna-33B-v1.3-GPTQ #https://huggingface.co/TheBloke/baichuan-vicuna-7B-GPTQ#chinese-model-card
       #模型名字中有gptq会进入gptq模式，不加载lora，且会加载basename中的模型
-      basename: baichuan-vicuna-7b-GPTQ-4bit-128g.no-act.order
+      basename: vicuna-33b-GPTQ-4bit--1g.act.order
+      # user: "<human>" #百川
+      # answer: "<bot>" #百川
+      # interface: ":" #百川
+      user: "Human"        #vicuna
+      answer: "Assistant"  #vicuna
+      interface: ": "      #vicuna
       #模型位置"
-      lora: "model/64rank"
+      # lora: "model/64rank"
    aquila: #https://model.baai.ac.cn/model-detail/100101
       path: "model/AquilaChat-7B" 
       #模型位置"
