@@ -82,7 +82,7 @@ https://pan.baidu.com/s/1idvot-XhEvLLKCbjDQuhyg?pwd=wdai
 ### 自行安装
 PS:一定要看[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml)，里面对各功能有更详细的说明！！！
 #### 1.安装库
-通用依赖：```pip install -r requirements.txt```
+通用依赖：```pip install -r requirements/requirements.txt```
 根据使用的 [知识库](#知识库)进行相应配置
 
 #### 2.下载模型
