@@ -103,9 +103,13 @@ def upload_zhishiku():
         data = request.json
         title=data.get("title")
         memory_name=data.get("memory_name")
-        data = re.sub(r'！', "！\n", data.get("txt"))
-        data = re.sub(r'。', "。\n", data)
-        data = re.sub(r'[\n\r]+', "\n", data)
+        data = data.get("txt")
+        # data = re.sub(r'！', "！\n", data)
+        # data = re.sub(r'：', "：\n", data)
+        # data = re.sub(r'。', "。\n", data)
+        data = re.sub(r"\n\s*\n", "\n", data)
+        data = re.sub(r'\r', "\n", data)
+        data = re.sub(r'\n\n', "\n", data)
         docs=[Document(page_content=data, metadata={"source":title })]
         print(docs)
         
