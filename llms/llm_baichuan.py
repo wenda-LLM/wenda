@@ -53,7 +53,7 @@ def chat_one(prompt, history, max_length, top_p, temperature, data):
     else:
         inputs = inputs.to('cuda:0')
     yield str(len(prompt))+'字正在计算'
-    streamer = TextIteratorStreamer(tokenizer, skip_prompt=True)
+    streamer = TextIteratorStreamer(tokenizer, skip_prompt=True,timeout=5)
     if gptq:
         thread = ThreadWithReturnValue(target=model.generate, kwargs=dict(
             inputs=inputs, max_new_tokens=max_length, temperature=temperature, top_p=top_p, repetition_penalty=1.1, streamer=streamer))
@@ -81,7 +81,7 @@ def load_model():
         model = AutoGPTQForCausalLM.from_quantized(settings.llm.path,
                                                    model_basename=settings.llm.basename,
                                                    use_safetensors=True,
-                                                   trust_remote_code=False,
+                                                   trust_remote_code=True,
                                                    device="cuda:0",
                                                    use_triton=False,
                                                    quantize_config=None)
