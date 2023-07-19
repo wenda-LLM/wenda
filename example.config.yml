@@ -121,9 +121,26 @@ llm_models:
    internlm:
       path: model\internlm-chat-7b-8k
       #模型位置"
+   generic_transformers:
+      #模型名字中有gptq会进入gptq模式，不加载lora，且会加载basename中的模型
+      #百川
+      # path: "model\\Baichuan-13B-Chat"
+      # user: "<human>" 
+      # answer: "<bot>"
+      # interface: ":"
+      #LLama
+      # path: model\Vicuna-33B-v1.3-GPTQ
+      path: model\Llama-2-13B-chat-GPTQ
+      user: "Human"        
+      answer: "Assistant" 
+      interface: ": "   
+      basename: gptq_model-4bit-128g
+      stopping_text: "\nHuman:" #only for Llama-2
+      #lora模型位置"
+      # lora: "model/64rank"
    baichuan:
       # path: "model\\Baichuan-13B-Chat"
-      path: model\Vicuna-33B-v1.3-GPTQ #https://huggingface.co/TheBloke/baichuan-vicuna-7B-GPTQ#chinese-model-card
+      path: model\Vicuna-33B-v1.3-GPTQ
       #模型名字中有gptq会进入gptq模式，不加载lora，且会加载basename中的模型
       basename: vicuna-33b-GPTQ-4bit--1g.act.order
       # user: "<human>" #百川
