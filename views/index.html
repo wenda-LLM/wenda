@@ -602,7 +602,9 @@
             </v-card-title>
             <v-card-text>
               <v-container>
-                <v-text-field v-model="dialog_input"></v-text-field>
+								<v-textarea autofocus v-model="dialog_input"  rows="5"
+									hide-details="auto"
+									@keypress.enter="show_dialog = false;window.dialog_input_resolver()"></v-textarea>
               </v-container>
             </v-card-text>
             <v-card-actions>
