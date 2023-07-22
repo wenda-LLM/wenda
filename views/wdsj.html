@@ -74,7 +74,7 @@
 			</div>
 			<v-row class="input-box" v-if="l表格内容.length!=0">
 				<v-col cols="10">
-					<v-textarea autofocus v-model="s检索内容" label="检索内容" no-resize rows="1" hide-details="auto"
+					<v-textarea autofocus v-model="s检索内容" :label="'当前文档实体：'+entrys.join('、')" no-resize rows="1" hide-details="auto"
 						:loading="loading" @keypress.enter="find_entrey"></v-textarea>
 				</v-col>
 				<v-col cols="2">
@@ -138,6 +138,7 @@
 			data: () => ({
 				l表格内容: [],
 				headers: [],
+				entrys:[],
 				loading: false,
 				s检索内容: '',
 				temperature: 0.8,
@@ -168,6 +169,7 @@
 						app.l表格内容 = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]])
 						app.headers = []
 						for (i in app.l表格内容[0]) if (i) app.headers.push({ text: i, value: i })
+						app.entrys = app.headers.map(i => i.text)
 						resolve()
 					};
 					reader.readAsArrayBuffer(file);
@@ -196,8 +198,7 @@
 			)
 		}
 		f提取实体 = async () => {
-			entrys = app.headers.map(i => i.text)
-			prompt = `从${JSON.stringify(entrys)}这些实体中，使用JSON格式提取问题对应的已知实体和内容以及未知实体。\n问题:` + app.s检索内容
+			prompt = `从${JSON.stringify(app.entrys)}这些实体中，使用JSON格式提取问题对应的已知实体和内容以及未知实体。\n问题:` + app.s检索内容
 			return await send_raw(prompt, '', [
 				{
 					"role": "user",
