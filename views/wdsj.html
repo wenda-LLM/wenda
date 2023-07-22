@@ -180,11 +180,11 @@
 		find_entrey = async (e) => {
 			e && e.preventDefault()
 			app.loading = true
-			let entrys = (await f提取实体()).match(/\[.+?\]/g)
+			let entrys = JSON.parse((await f提取实体()).replace(/'/g,'"'))
 			app.loading = false
 			console.log(entrys)
-			app.l已知 = eval(entrys[0])
-			app.l求解 = eval(entrys[1])
+			app.l已知 = entrys.knowen
+			app.l求解 = entrys.question
 			app.l匹配 = app.l表格内容.filter(e => {
 				let score = app.l已知.filter(条件 => e[条件.n] == 条件.v).length
 				if (score > 0) {
