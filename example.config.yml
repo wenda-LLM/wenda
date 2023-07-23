@@ -52,7 +52,7 @@ librarys:
       #分块大小"
       overlap: 0
       #分块重叠长度
-      # model_path: "http://127.0.0.1:3000/v1" #在线embedding
+      # model_path: "http://127.0.0.1:8000/v1" #在线embedding
       model_path: "model/m3e-base"
       #向量模型存储路径
       device: cuda
