@@ -1,21 +1,24 @@
+from transformers import StoppingCriteriaList
 import torch
 from transformers import TextIteratorStreamer
 from plugins.common import settings
 from threading import Thread
+from transformers import AutoModelForCausalLM, AutoTokenizer
 user = settings.llm.user
 answer = settings.llm.answer
-interface =settings.llm.interface
-gptq = False
+interface = settings.llm.interface
 
-from transformers import StoppingCriteria, StoppingCriteriaList
-stopping_criteria_text="\nHuman:"
-if stopping_criteria_text:
-    stopping_criteria = StoppingCriteriaList([lambda input_ids, scores: tokenizer.decode(input_ids[0]).endswith(stopping_criteria_text)])
+stopping_text = settings.llm.stopping_text
+if stopping_text:
+    stopping_criteria = StoppingCriteriaList(
+        [lambda input_ids, scores: tokenizer.decode(input_ids[0]).endswith(stopping_text)])
 else:
-    stopping_criteria=[]
+    stopping_criteria = []
 if settings.llm.path.lower().find("gptq") > -1:
     print("gptq mode!")
     gptq = True
+else:
+    gptq = False
 
 
 class ThreadWithReturnValue(Thread):
@@ -60,13 +63,13 @@ def chat_one(prompt, history, max_length, top_p, temperature, data):
     else:
         inputs = inputs.to('cuda:0')
     yield str(len(prompt))+'字正在计算'
-    streamer = TextIteratorStreamer(tokenizer, skip_prompt=True,timeout=5)
+    streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, timeout=5)
     if gptq:
         thread = ThreadWithReturnValue(target=model.generate, kwargs=dict(
-            inputs=inputs, max_new_tokens=max_length, temperature=temperature, top_p=top_p, repetition_penalty=1.1,stopping_criteria=stopping_criteria, streamer=streamer))
+            inputs=inputs, max_new_tokens=max_length, temperature=temperature, top_p=top_p, repetition_penalty=1.1, stopping_criteria=stopping_criteria, streamer=streamer))
     else:
         thread = ThreadWithReturnValue(target=model.generate, kwargs=dict(
-            inputs, max_new_tokens=max_length, temperature=temperature, top_p=top_p, repetition_penalty=1.1, streamer=streamer))
+            inputs, max_new_tokens=max_length, temperature=temperature, top_p=top_p, repetition_penalty=1.1, stopping_criteria=stopping_criteria, streamer=streamer))
     thread.start()
     generated_text = ""
     for new_text in streamer:
@@ -74,18 +77,18 @@ def chat_one(prompt, history, max_length, top_p, temperature, data):
             generated_text += new_text
             yield generated_text.removesuffix("</s>")
     pred = thread.join()
-    output=tokenizer.decode(pred.cpu()[0], skip_special_tokens=True)[len(prompt):]
-    if stopping_criteria_text:
-        if output.endswith(stopping_criteria_text):
-                output = output[:-len(stopping_criteria_text)]
+    output = tokenizer.decode(pred.cpu()[0], skip_special_tokens=True)[
+        len(prompt):]
+    if stopping_text:
+        if output.endswith(stopping_text):
+            output = output[:-len(stopping_text)]
     yield output
+
 
 def load_model():
     global model, tokenizer
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-
     if gptq:
-        from auto_gptq import AutoGPTQForCausalLM, BaseQuantizeConfig
+        from auto_gptq import AutoGPTQForCausalLM
         tokenizer = AutoTokenizer.from_pretrained(
             settings.llm.path, use_fast=True)
         model = AutoGPTQForCausalLM.from_quantized(settings.llm.path,
@@ -109,13 +112,13 @@ def load_model():
             model = PeftModel.from_pretrained(
                 model, settings.llm.lora, adapter_name=settings.llm.lora)
         if settings.llm.path.lower().find("13b"):
-            model=model.quantize(8)
+            model = model.quantize(8)
         model = model.cuda()
         model = model.eval()
 
 
 if not (settings.llm.lora == '' or settings.llm.lora == None):
-    from bottle import route, response, request
+    from bottle import route,  request
 
     @route('/lora_load_adapter', method=("POST", "OPTIONS"))
     def load_adapter():

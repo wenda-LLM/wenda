@@ -2,7 +2,6 @@
 import argparse
 import sentence_transformers
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.docstore.document import Document
 import threading
 import pdfplumber
@@ -36,12 +35,26 @@ vectorstore = None
 
 model_path = settings.librarys.rtst.model_path
 try:
-    embeddings = HuggingFaceEmbeddings(model_name='')
-    embeddings.client = sentence_transformers.SentenceTransformer(
-        model_path, device="cuda")
+    if model_path.startswith("http"):#"http://127.0.0.1:3000/"
+        from langchain.embeddings import OpenAIEmbeddings
+        import os
+        os.environ["OPENAI_API_TYPE"] = "open_ai"
+        os.environ["OPENAI_API_BASE"] = model_path
+        os.environ["OPENAI_API_KEY"] = "your OpenAI key"
+
+        from langchain.embeddings.openai import OpenAIEmbeddings
+        embeddings = OpenAIEmbeddings(
+            deployment="text-embedding-ada-002",
+            model="text-embedding-ada-002"
+        )
+    else:
+        from langchain.embeddings import HuggingFaceEmbeddings
+        embeddings = HuggingFaceEmbeddings(model_name='')
+        embeddings.client = sentence_transformers.SentenceTransformer(
+            model_path, device="cuda")
 except Exception as e:
-    error_helper("embedding加载失败，请下载相应模型",
-                 r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
+    error_helper("embedding加载失败",
+                 r"https://github.com/l15y/wenda")
     raise e
 
 success_print("Embedding 加载完成")
@@ -108,12 +121,12 @@ for i in range(len(all_files)):
             print("目前还不支持文件格式：", ext)
     except Exception as e:
         print("文件读取失败，当前文件已被跳过：",file,"。错误信息：",e)
-    data = re.sub(r'！', "！\n", data)
-    data = re.sub(r'：', "：\n", data)
-    data = re.sub(r'。', "。\n", data)
+    # data = re.sub(r'！', "！\n", data)
+    # data = re.sub(r'：', "：\n", data)
+    # data = re.sub(r'。', "。\n", data)
+    data = re.sub(r"\n\s*\n", "\n", data)
     data = re.sub(r'\r', "\n", data)
     data = re.sub(r'\n\n', "\n", data)
-    data = re.sub(r"\n\s*\n", "\n", data)
     length_of_read+=len(data)
     docs.append(Document(page_content=data, metadata={"source": file}))
     if length_of_read > 1e5:

@@ -1,0 +1,221 @@
+<html>
+
+<head>
+	<title>闻达数据</title>
+	<meta charset="utf-8">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="mobile-web-app-capable" content="yes" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=400,  user-scalable=no">
+	<link rel="shortcut icon" href="#" />
+
+	<link href="/static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet">
+
+	<link href="/static/vuetify.min.css" rel="stylesheet">
+	<script src="/static/vue.js"></script>
+	<script src="/static/vue-i18n.js"></script>
+	<script src="/static/vuetify.min.js"></script>
+	<script src="/static/markdown-it.min.js"></script>
+	<script src="/static/strings.js"></script>
+	<script defer src="/static/xlsx.core.min.js"></script>
+	<style>
+		div {
+
+			transition: all 0.3s;
+		}
+
+		.v-sheet.v-card {
+			margin: 20px;
+			padding: 10px;
+		}
+
+		.logo-center {
+			left: calc(50% - 140px);
+			width: 260px;
+			font-size: 4em;
+			padding-top: 2.5em;
+			padding-bottom: 0.8em;
+			position: relative;
+		}
+
+		.logo-left {
+			left: 20px;
+			width: 100%;
+			font-size: xx-large;
+			position: relative;
+		}
+
+		.input-box {
+			margin: auto;
+			width: fit-content;
+			min-width: 580px;
+		}
+
+		pre {
+			margin: 20px;
+			white-space: break-spaces;
+		}
+
+		.v-application--wrap {
+			display: unset;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="app" v-cloak>
+		<v-app>
+			<div :class="l表格内容.length!=0?'logo-left':'logo-center'"><b style="color: purple;">闻达</b><b>数据</b></div>
+
+			<div class="input-box" v-if="l表格内容.length==0">
+				<v-btn color="purple" large outlined @click="f载入表格()" style="margin-left: 240px;" fab>
+					<v-icon>mdi-microsoft-excel</v-icon>
+				</v-btn>
+			</div>
+			<v-row class="input-box" v-if="l表格内容.length!=0">
+				<v-col cols="10">
+					<v-textarea autofocus v-model="s检索内容" :label="'当前文档实体：'+entrys.join('、')" no-resize rows="1" hide-details="auto"
+						:loading="loading" @keypress.enter="find_entrey"></v-textarea>
+				</v-col>
+				<v-col cols="2">
+					<v-btn color="purple" dark size="x-large" @click="find_entrey()" :loading="loading">
+						<v-icon left>
+							mdi-magnify
+						</v-icon>
+						检索
+					</v-btn>
+				</v-col>
+			</v-row>
+			<div style="margin: auto;width: fit-content;">
+			<v-chip class="ma-2" color="green" outlined v-for="o已知 in l已知">
+				<v-icon left>
+					mdi-chat
+				</v-icon>【{{o已知.n}}】{{o已知.v}}
+			</v-chip>
+			<v-chip class="ma-2" color="red" outlined v-for="s求解 in l求解">
+				<v-icon left>
+					mdi-chat-question
+				</v-icon>
+				{{s求解}}
+			</v-chip>
+			</div>
+			<v-card elevation="2" v-if="l解.length!=0">
+				<v-card-title>结果</v-card-title>
+				<v-divider></v-divider><br>
+				<v-card-text>
+					<v-chip class="ma-2" color="green" outlined v-for="s解 in l解">{{s解}}
+					</v-chip>
+				</v-card-text>
+				<v-card-actions>
+				</v-card-actions>
+			</v-card>
+
+			<v-card elevation="2" v-if="l匹配.length!=0">
+				<v-card-title>匹配项目</v-card-title>
+				<v-divider></v-divider><br>
+				<v-card-text>
+					<v-data-table :headers="headers" :items="l匹配"></v-data-table>
+				</v-card-text>
+				<v-card-actions>
+				</v-card-actions>
+			</v-card>
+			<v-card elevation="2" v-if="l表格内容.length!=0">
+				<v-card-title>表格内容</v-card-title>
+				<v-divider></v-divider><br>
+				<v-card-text>
+					<v-data-table :headers="headers" :items="l表格内容"></v-data-table>
+				</v-card-text>
+				<v-card-actions>
+				</v-card-actions>
+			</v-card>
+		</v-app>
+	</div>
+	<script>
+		app = new Vue({
+			el: '#app',
+			vuetify: new Vuetify(),
+			i18n: i18n,
+			data: () => ({
+				l表格内容: [],
+				headers: [],
+				entrys:[],
+				loading: false,
+				s检索内容: '',
+				temperature: 0.8,
+				top_p: 0.2,
+				max_length: 2000,
+				llm_type: "",
+				l已知: [],
+				l求解: [],
+				l匹配: [],
+				l解: []
+			}),
+			methods: {
+			}
+		})
+		f载入表格 = async () => {
+			await new Promise(resolve => {
+				let input = document.createElement('input')
+				input.type = 'file'
+				input.accept = '.xlsx'
+				input.onchange = function () {
+					var file = input.files[0];
+					var reader = new FileReader();
+					reader.onload = function (e) {
+						let contents = e.target.result;
+						workbook = XLSX.read(new Uint8Array(contents), {
+							type: 'array'
+						});
+						app.l表格内容 = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]])
+						app.headers = []
+						for (i in app.l表格内容[0]) if (i) app.headers.push({ text: i, value: i })
+						app.entrys = app.headers.map(i => i.text)
+						resolve()
+					};
+					reader.readAsArrayBuffer(file);
+				}
+				input.click()
+			})
+		}
+		find_entrey = async (e) => {
+			e && e.preventDefault()
+			app.loading = true
+			let entrys = JSON.parse((await f提取实体()).replace(/'/g,'"'))
+			app.loading = false
+			console.log(entrys)
+			app.l已知 = entrys.knowen
+			app.l求解 = entrys.question
+			app.l匹配 = app.l表格内容.filter(e => {
+				let score = app.l已知.filter(条件 => e[条件.n] == 条件.v).length
+				if (score > 0) {
+					e.__score = score
+					console.log(e, score)
+					return true
+				}
+			})
+			app.l解 = app.l匹配.map(e =>
+				app.l求解.map(n => '【'+n + '】' + e[n]).join('\n')
+			)
+		}
+		f提取实体 = async () => {
+			prompt = `从${JSON.stringify(app.entrys)}这些实体中，使用JSON格式提取问题对应的已知实体和内容以及未知实体。\n问题:` + app.s检索内容
+			return await send_raw(prompt, '', [
+				{
+					"role": "user",
+					"content": "从['地名','天气','日期','温度','湿度']这些实体中，使用JSON格式提取问题对应的已知实体和内容以及未知实体。\n问题:今天北京的天气",
+					"keyword": "从['地名','天气','日期','温度','湿度']这些实体中，使用JSON格式提取问题对应的已知实体和内容以及未知实体。\n问题:今天北京的天气"
+				},
+				{
+					"role": "AI",
+					"content": "{'knowen':[{'n':'地名','v':'北京'},{'n':'日期','v':'今天'}],'question':['天气']}",
+					"sources": []
+				}
+			], (s) => { })
+		}
+
+	</script>
+	<script src="wd_sdk.js"></script>
+	<script src="api/llm"></script>
+</body>
+
+</html>

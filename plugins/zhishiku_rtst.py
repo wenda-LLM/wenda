@@ -72,12 +72,29 @@ def find(s,step = 0,memory_name="default"):
     except Exception as e:
         print(e)
         return []
+model_path=cunnrent_setting.model_path
+
 try:
-    embeddings = HuggingFaceEmbeddings(model_name='')
-    embeddings.client = sentence_transformers.SentenceTransformer(cunnrent_setting.model_path,
-                                                                            device=cunnrent_setting.device)
-except Exception  as e:
-    error_helper("embedding加载失败，请下载语义知识库计算模型",r"https://github.com/l15y/wenda#st%E6%A8%A1%E5%BC%8F")
+    if model_path.startswith("http"):#"http://127.0.0.1:3000/"
+        from langchain.embeddings import OpenAIEmbeddings
+        import os
+        os.environ["OPENAI_API_TYPE"] = "open_ai"
+        os.environ["OPENAI_API_BASE"] = model_path
+        os.environ["OPENAI_API_KEY"] = "your OpenAI key"
+
+        from langchain.embeddings.openai import OpenAIEmbeddings
+        embeddings = OpenAIEmbeddings(
+            deployment="text-embedding-ada-002",
+            model="text-embedding-ada-002"
+        )
+    else:
+        from langchain.embeddings import HuggingFaceEmbeddings
+        embeddings = HuggingFaceEmbeddings(model_name='')
+        embeddings.client = sentence_transformers.SentenceTransformer(
+            model_path, device="cuda")
+except Exception as e:
+    error_helper("embedding加载失败",
+                 r"https://github.com/l15y/wenda")
     raise e
 vectorstores={}
 def get_vectorstore(memory_name):
@@ -103,9 +120,13 @@ def upload_zhishiku():
         data = request.json
         title=data.get("title")
         memory_name=data.get("memory_name")
-        data = re.sub(r'！', "！\n", data.get("txt"))
-        data = re.sub(r'。', "。\n", data)
-        data = re.sub(r'[\n\r]+', "\n", data)
+        data = data.get("txt")
+        # data = re.sub(r'！', "！\n", data)
+        # data = re.sub(r'：', "：\n", data)
+        # data = re.sub(r'。', "。\n", data)
+        data = re.sub(r"\n\s*\n", "\n", data)
+        data = re.sub(r'\r', "\n", data)
+        data = re.sub(r'\n\n', "\n", data)
         docs=[Document(page_content=data, metadata={"source":title })]
         print(docs)
         

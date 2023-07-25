@@ -1,5 +1,5 @@
 @echo off
 cd ..
-call envirment.bat
+call environment.bat
 %PYTHON% plugins/gen_data_qdrant.py
 pause

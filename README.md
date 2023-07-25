@@ -28,7 +28,7 @@
   - [知识库](#知识库)
     - [rtst模式](#rtst模式)
     - [使用微调模型提高知识库回答准确性](#使用微调模型提高知识库回答准确性)
-      - [模型](#模型)
+    - [模型](#模型)
     - [fess模式](#fess模式)
     - [知识库调试](#知识库调试)
     - [清洗知识库文件](#清洗知识库文件)
@@ -82,7 +82,7 @@ https://pan.baidu.com/s/1idvot-XhEvLLKCbjDQuhyg?pwd=wdai
 ### 自行安装
 PS:一定要看[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml)，里面对各功能有更详细的说明！！！
 #### 1.安装库
-通用依赖：```pip install -r requirements.txt```
+通用依赖：```pip install -r requirements/requirements.txt```
 根据使用的 [知识库](#知识库)进行相应配置
 
 #### 2.下载模型
@@ -237,8 +237,8 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 
 需下载模型置于model文件夹，并将txt格式语料置于txt文件夹。
 ### 使用微调模型提高知识库回答准确性
-闻达用户“帛凡”，训练并提供的权重合并模型和lora权重文件，详细信息见https://huggingface.co/fb700/chatglm-fitness-RLHF，使用该模型或者lora权重文件，对比hatglm-6b、chatglm2-6b、百川等模型，在闻达知识库平台中，总结能力可获得显著提升。
-#### 模型
+闻达用户“帛凡”，训练并提供的权重合并模型和lora权重文件，详细信息见https://huggingface.co/fb700/chatglm-fitness-RLHF ，使用该模型或者lora权重文件，对比hatglm-6b、chatglm2-6b、百川等模型，在闻达知识库平台中，总结能力可获得显著提升。
+### 模型
 1. [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese) 不再推荐，不支持英文且显存占用高
 2. [moka-ai/m3e-base](https://huggingface.co/moka-ai/m3e-base) 推荐
 ### fess模式

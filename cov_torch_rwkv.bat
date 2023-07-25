@@ -1,5 +1,5 @@
 @echo off
-call envirment.bat
+call environment.bat
 :a
 %PYTHON% llms/convert_rwkv.py
 pause
