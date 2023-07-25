@@ -185,6 +185,7 @@ def api_chat_box():
     ws = create_connection("ws://127.0.0.1:"+str(settings.port)+"/ws")
     ws.send(json.dumps(data))
     if not stream:
+        response.content_type = "application/json"
         temp_result = ''
         try:
             while True:
@@ -193,7 +194,7 @@ def api_chat_box():
                     temp_result = result
         except:
             pass
-        yield "data: %s\n\n" % json.dumps({"response": temp_result})
+        yield json.dumps({"response": temp_result})
 
     else:
         try:
