@@ -460,30 +460,73 @@
               <v-divider></v-divider>
               <v-card-text><br />
                 <v-form>
-                  <v-slider :min="2000" :max="8192" :step="100"
-                    v-model="max_length" :thumb-color="color"
-                    label="max_length" thumb-label><template v-slot:append>
-                      <v-text-field v-model="max_length" class="mt-0 pt-0"
-                        type="number" style="width: 60px">
-                      </v-text-field>
+
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <div v-bind="attrs" v-on="on" style="width: 100%;">
+                        <v-slider :min="2000" :max="8192" :step="100"
+                          v-model="max_length" :thumb-color="color"
+                          label="max_length" thumb-label><template v-slot:append>
+                            <v-text-field v-model="max_length" class="mt-0 pt-0"
+                              type="number" style="width: 60px">
+                            </v-text-field>
+                          </template>
+                        </v-slider>
+                      </div>
                     </template>
-                  </v-slider>
-                  <v-slider :min="0" :max="2" :step="0.1" v-model="temperature"
-                    :thumb-color="color" label="temperature"
-                    thumb-label><template v-slot:append>
-                      <v-text-field v-model="temperature" class="mt-0 pt-0"
-                        type="number" style="width: 60px">
-                      </v-text-field>
+                    <span>最大生成token数（注意，不同模型对此参数实现不同。部分会将输入token计入）</span>
+                  </v-tooltip>
+
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <div v-bind="attrs" v-on="on" style="width: 100%;">
+                        <v-slider :min="0" :max="2" :step="0.1"
+                          v-model="temperature"
+                          :thumb-color="color" label="temperature"
+                          thumb-label><template v-slot:append>
+                            <v-text-field v-model="temperature"
+                              class="mt-0 pt-0"
+                              type="number" style="width: 60px">
+                            </v-text-field>
+                          </template>
+                        </v-slider>
+                      </div>
                     </template>
-                  </v-slider>
-                  <v-slider :min="0" :max="1" :step="0.1" v-model="top_p"
-                    :thumb-color="color" label="top_p" thumb-label>
-                    <template v-slot:append>
-                      <v-text-field v-model="top_p" class="mt-0 pt-0"
-                        type="number" style="width: 60px">
-                      </v-text-field>
+                    <span>温度（随机性）</span>
+                  </v-tooltip>
+
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <div v-bind="attrs" v-on="on"  style="width: 100%;">
+                        <v-slider :min="0" :max="1" :step="0.1" v-model="top_p"
+                          :thumb-color="color" label="top_p" thumb-label>
+                          <template v-slot:append>
+                            <v-text-field v-model="top_p" class="mt-0 pt-0"
+                              type="number" style="width: 60px">
+                            </v-text-field>
+                          </template>
+                        </v-slider>
+                      </div>
                     </template>
-                  </v-slider>
+                    <span>选取的前p个输出数量</span>
+                  </v-tooltip>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <div v-bind="attrs" v-on="on" style="width: 100%;">
+                        <v-slider :min="0.2" :max="1.8" :step="0.1"
+                          v-model="cfg_factor"
+                          :thumb-color="color" label="cfg_factor" thumb-label>
+                          <template v-slot:append>
+                            <v-text-field v-model="cfg_factor"
+                              class="mt-0 pt-0" type="number"
+                              style="width: 60px">
+                            </v-text-field>
+                          </template>
+                        </v-slider>
+                      </div>
+                    </template>
+                    <span>classifier free guidence 因子，当前仅支持rwkv</span>
+                  </v-tooltip>
                   <v-row>
                     <v-col cols="12" sm="2">
                       <v-switch hide-details
@@ -602,9 +645,9 @@
             </v-card-title>
             <v-card-text>
               <v-container>
-								<v-textarea autofocus v-model="dialog_input"  rows="5"
-									hide-details="auto"
-									@keypress.enter="show_dialog = false;window.dialog_input_resolver()"></v-textarea>
+                <v-textarea autofocus v-model="dialog_input" rows="5"
+                  hide-details="auto"
+                  @keypress.enter="show_dialog = false;window.dialog_input_resolver()"></v-textarea>
               </v-container>
             </v-card-text>
             <v-card-actions>
@@ -707,6 +750,8 @@
           max_length: 4096,
           // 生成回答的top_p
           top_p: 0.8,
+          //classifier free guidence 因子，当前仅支持rwkv
+          cfg_factor:1,
           // 语言模型类型
           llm_type: "",
           // tab列表
@@ -829,7 +874,7 @@
     // 将用户的输入发送到服务器并更新 app 的 chat 数组
     // 参数s为用户输入的内容，keyword为用户输入的关键词，show为是否显示用户输入的内容，sources为知识库的来源
     let last_cost = []
-    send = async (s, keyword = "", show = true, sources = []) => {
+    send = async (s, keyword = "", show = true, sources = [],addition_args={}) => {
       app.question = ''
       if (keyword == "") keyword = s;
       is_abord = false;
@@ -880,7 +925,7 @@
         avg_cost /= last_cost.length
         app.TPS = 1000 / avg_cost
         last_token_time = now
-      });
+      },addition_args);
       if (app.tts_on) {
         speak(current_session.content);
       }
