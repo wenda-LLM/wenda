@@ -198,6 +198,7 @@ def api_chat_box():
     response.add_header("X-Accel-Buffering", "no")
     data = request.json
     messages = data.get('messages')
+    stream = data.get('stream')
     prompt = messages[-1]['content']
     data['prompt'] = prompt
     history = []
@@ -214,14 +215,28 @@ def api_chat_box():
     from websocket import create_connection
     ws = create_connection("ws://127.0.0.1:"+str(settings.port)+"/ws")
     ws.send(json.dumps(data))
-    try:
-        while True:
-            result = ws.recv()
-            if len(result) > 0:
-                yield "data: %s\n\n" % json.dumps({"response": result})
-    except:
-        pass
-    yield "data: %s\n\n" % "[DONE]"
+    if not stream:
+        response.content_type = "application/json"
+        temp_result = ''
+        try:
+            while True:
+                result = ws.recv()
+                if len(result) > 0:
+                    temp_result = result
+        except:
+            pass
+        yield json.dumps({"response": temp_result})
+
+    else:
+        try:
+            while True:
+                result = ws.recv()
+                if len(result) > 0:
+                    yield "data: %s\n\n" % json.dumps({"response": result})
+        except:
+            pass
+        yield "data: %s\n\n" % "[DONE]"
+
     ws.close()
 
 

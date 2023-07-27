@@ -5,10 +5,14 @@ from sqlalchemy.orm import Session
 from sqlalchemy.ext.declarative import declarative_base
 import sqlalchemy
 from contextlib import contextmanager
+from plugins.common import settings
 
 # 创建对象的基类:
 Base = declarative_base()
-engine = create_engine("sqlite:///record.db?check_same_thread=False")
+if not settings.logging_path:
+    engine = create_engine("sqlite:///../record.db?check_same_thread=False")
+else:
+    engine = create_engine(settings.logging_path)
 if not sqlalchemy_utils.database_exists(engine.url):
     sqlalchemy_utils.create_database(engine.url)
 

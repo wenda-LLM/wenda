@@ -1,23 +1,24 @@
 llm_server = location.origin.replace("http", "ws")
-global_onmessage=undefined
-send_raw = async (prompt, keyword, QA_history, onmessage = alert) => {
+global_onmessage = undefined
+send_raw = async (prompt, keyword, QA_history, onmessage = alert, addition_args = {}) => {
     let result = ''
     await new Promise(resolve => {
         ws = new WebSocket(llm_server + "/ws");
         ws.onmessage = function (event) {
             result = event.data
             onmessage(result)
-            global_onmessage&&global_onmessage(result)
+            global_onmessage && global_onmessage(result)
         };
+        Object.assign(addition_args, {
+            prompt: prompt,
+            keyword: keyword,
+            temperature: app.temperature,
+            top_p: app.top_p,
+            max_length: app.max_length,
+            history: QA_history
+        })
         ws.onopen = function () {
-            ws.send(JSON.stringify({
-                prompt: prompt,
-                keyword: keyword,
-                temperature: app.temperature,
-                top_p: app.top_p,
-                max_length: app.max_length,
-                history: QA_history
-            }))
+            ws.send(JSON.stringify(addition_args))
         };
         ws.onclose = function () {
             resolve();

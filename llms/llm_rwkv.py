@@ -219,6 +219,23 @@ else:
         return history
 
     def chat_one(prompt, history, max_length, top_p, temperature, data):
+        cfg_factor = data.get('cfg_factor')
+        cfg_ctx = data.get('cfg_ctx')
+        cfg_ctx_history = data.get('cfg_ctx_history')
+        if cfg_factor is None :
+            cfg_factor=1
+        elif cfg_factor!=1:
+            if cfg_ctx is None:
+                cfg_ctx=prompt
+            if cfg_ctx_history is None:
+                cfg_ctx_history=[]
+            print('CFG参数',[cfg_factor,cfg_ctx,cfg_ctx_history])
+            cfg_ctx_history=chat_init(cfg_ctx_history)
+            if cfg_ctx_history == "":
+                pass
+            else:
+                cfg_ctx_history = cfg_ctx_history+'\n\n'
+            
         token_count = max_length
         if history is None or history == "":
             history = ""
@@ -258,10 +275,16 @@ else:
         out_last = 0
         occurrence = {}
         tokens = pipeline.encode(ctx)
+        if cfg_factor!=1:
+            cfg_token = pipeline.encode(cfg_ctx_history+cfg_ctx)
+            cfg_state=states['default'].get() #todo:使用缓存的state
         response = ''
         yield str(len(ctx))+'字正在计算\n'+str(len(tokens))+" tokens"
         for i in range(int(token_count)):
             out, state = model.forward(tokens if i == 0 else [token], state)
+            if cfg_factor!=1:
+                cfg_out, cfg_state = model.forward(cfg_token if i == 0 else [token], cfg_state)
+                out = out * cfg_factor + cfg_out * (1 - cfg_factor)
             for n in args.token_ban:
                 out[n] = -float('inf')
             for n in occurrence:
