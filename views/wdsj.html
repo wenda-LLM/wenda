@@ -74,8 +74,8 @@
 			</div>
 			<v-row class="input-box" v-if="l表格内容.length!=0">
 				<v-col cols="10">
-					<v-textarea autofocus v-model="s检索内容" :label="'当前文档实体：'+entrys.join('、')" no-resize rows="1" hide-details="auto"
-						:loading="loading" @keypress.enter="find_entrey"></v-textarea>
+					<v-textarea autofocus v-model="s检索内容" :label="'当前文档实体：'+entrys.join('、')" no-resize rows="1"
+						hide-details="auto" :loading="loading" @keypress.enter="find_entrey"></v-textarea>
 				</v-col>
 				<v-col cols="2">
 					<v-btn color="purple" dark size="x-large" @click="find_entrey()" :loading="loading">
@@ -87,17 +87,17 @@
 				</v-col>
 			</v-row>
 			<div style="margin: auto;width: fit-content;">
-			<v-chip class="ma-2" color="green" outlined v-for="o已知 in l已知">
-				<v-icon left>
-					mdi-chat
-				</v-icon>【{{o已知.n}}】{{o已知.v}}
-			</v-chip>
-			<v-chip class="ma-2" color="red" outlined v-for="s求解 in l求解">
-				<v-icon left>
-					mdi-chat-question
-				</v-icon>
-				{{s求解}}
-			</v-chip>
+				<v-chip class="ma-2" color="green" outlined v-for="o已知 in l已知">
+					<v-icon left>
+						mdi-chat
+					</v-icon>【{{o已知.n}}】{{o已知.v}}
+				</v-chip>
+				<v-chip class="ma-2" color="red" outlined v-for="s求解 in l求解">
+					<v-icon left>
+						mdi-chat-question
+					</v-icon>
+					{{s求解}}
+				</v-chip>
 			</div>
 			<v-card elevation="2" v-if="l解.length!=0">
 				<v-card-title>结果</v-card-title>
@@ -138,7 +138,7 @@
 			data: () => ({
 				l表格内容: [],
 				headers: [],
-				entrys:[],
+				entrys: [],
 				loading: false,
 				s检索内容: '',
 				temperature: 0.8,
@@ -180,7 +180,7 @@
 		find_entrey = async (e) => {
 			e && e.preventDefault()
 			app.loading = true
-			let entrys = JSON.parse((await f提取实体()).replace(/'/g,'"'))
+			let entrys = JSON.parse((await f提取实体()).replace(/'/g, '"'))
 			app.loading = false
 			console.log(entrys)
 			app.l已知 = entrys.knowen
@@ -194,23 +194,24 @@
 				}
 			})
 			app.l解 = app.l匹配.map(e =>
-				app.l求解.map(n => '【'+n + '】' + e[n]).join('\n')
+				app.l求解.map(n => '【' + n + '】' + e[n]).join('\n')
 			)
 		}
 		f提取实体 = async () => {
-			prompt = `从${JSON.stringify(app.entrys)}这些实体中，使用JSON格式提取问题对应的已知实体和内容以及未知实体。\n问题:` + app.s检索内容
+			let prompt = `从${JSON.stringify(app.entrys)}这些实体中，使用 JSON 格式提取问题对应的已知实体和内容以及未知实体，忽略不存在的实体。\n问题:` + app.s检索内容
 			return await send_raw(prompt, '', [
 				{
 					"role": "user",
-					"content": "从['地名','天气','日期','温度','湿度']这些实体中，使用JSON格式提取问题对应的已知实体和内容以及未知实体。\n问题:今天北京的天气",
-					"keyword": "从['地名','天气','日期','温度','湿度']这些实体中，使用JSON格式提取问题对应的已知实体和内容以及未知实体。\n问题:今天北京的天气"
+					"content": '从["地名","天气","日期","温度","湿度"]这些实体中，使用JSON格式提取问题对应的已知实体和内容以及未知实体，忽略不存在的实体。\n问题:今天北京的天气',
+					"keyword": '从["地名","天气","日期","温度","湿度"]这些实体中，使用JSON格式提取问题对应的已知实体和内容以及未知实体，忽略不存在的实体。\n问题:今天北京的天气'
 				},
 				{
 					"role": "AI",
-					"content": "{'knowen':[{'n':'地名','v':'北京'},{'n':'日期','v':'今天'}],'question':['天气']}",
+					"content": "{'knowen':[{'n':'地名','v':'北京'},{'n':'日期','v':'今天'}],'question':['天气']}",//.replace(/'/g, '"'),
 					"sources": []
 				}
-			], (s) => { })
+			], (s) => { },
+				addition_args = { cfg_factor: 1.5, cfg_ctx: prompt })
 		}
 
 	</script>
