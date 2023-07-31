@@ -284,7 +284,7 @@ else:
             out, state = model.forward(tokens if i == 0 else [token], state)
             if cfg_factor!=1:
                 cfg_out, cfg_state = model.forward(cfg_token if i == 0 else [token], cfg_state)
-                out = out * cfg_factor + cfg_out * (1 - cfg_factor)
+                out = cfg_out * cfg_factor + out * (1 - cfg_factor)
             for n in args.token_ban:
                 out[n] = -float('inf')
             for n in occurrence:
