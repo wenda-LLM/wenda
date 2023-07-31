@@ -69,6 +69,12 @@
 					<v-btn color="purple" dark size="x-large" @click="f载入表格()">
 						载入表格
 					</v-btn>
+					<v-btn color="purple" dark size="x-large" @click="f载入自动总结问题json()">
+						载入问题JSON
+					</v-btn>
+					<v-btn color="purple" dark size="x-large" @click="f保存自动总结问题()">
+						保存问题为表格
+					</v-btn>
 					<v-btn color="purple" dark size="x-large" @click="f批量上传()" :loading="b批量上传中">
 						{{$t("upload")}}
 
@@ -136,7 +142,7 @@
 			})
 			if (!localStorage['wenda_rtst_ID']) localStorage['wenda_rtst_ID'] = genID()
 			list_rtst_in_disk.push(localStorage['wenda_rtst_ID'])
-			app.l现有库=list_rtst_in_disk
+			app.l现有库 = list_rtst_in_disk
 		}
 		app = new Vue({
 			el: '#app',
@@ -219,7 +225,68 @@
 			})
 		}
 
+		f载入自动总结问题json = async () => {
+			let contents = ''
+			await new Promise(resolve => {
+				let input = document.createElement('input')
+				input.type = 'file'
+				input.accept = '.json'
+				input.onchange = function () {
+					var file = input.files[0];
+					var reader = new FileReader();
+					reader.onload = function (e) {
+						contents = e.target.result;
+						resolve()
+					};
+					reader.readAsText(file);
+				}
+				input.click()
+			})
+			contents = JSON.parse(contents)
+			let l = [];
+			contents.forEach(e => { e.question.forEach(qa => { l.push({ 问题: qa.Q, 回答: qa.A, 来源: e.paragraph }) }) })
+			app.l表格读取结果 = l
+		}
 
+		f保存自动总结问题 = async () => {
+			let sheetName = '闻达自动总结问题'
+			let wb = XLSX.utils.book_new()
+			let ws = XLSX.utils.json_to_sheet(app.l表格读取结果)
+			wb.SheetNames.push(sheetName)
+			wb.Sheets[sheetName] = ws
+			let wopts = {
+				bookType: 'xlsx',
+				bookSST: false,
+				type: 'binary'
+			};
+			let wbout = XLSX.write(wb, wopts)
+			let blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' })
+			saveAs(blob, sheetName + '.xlsx')
+		}
+		const s2ab = s => {
+			var buf;
+			if (typeof ArrayBuffer !== 'undefined') {
+			buf = new ArrayBuffer(s.length)
+			var view = new Uint8Array(buf)
+			for (let i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xff
+			return buf
+			} else {
+			buf = new Array(s.length);
+			for (let i = 0; i != s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
+			return buf;
+			}
+		}
+		function saveAs(obj, fileName) {//当然可以自定义简单的下载文件实现方式
+			var tmpa = document.createElement("a");
+			tmpa.download = fileName ? fileName + '.xlsx' : new Date().getTime() + '.xlsx';
+			tmpa.href = URL.createObjectURL(obj); //绑定a标签
+			tmpa.click(); //模拟点击实现下载
+
+			setTimeout(function () { //延时释放
+				URL.revokeObjectURL(obj); //用URL.revokeObjectURL()来释放这个object URL
+			}, 100);
+
+		}
 		f批量上传 = async () => {
 			app.b批量上传中 = true
 			for (question_index in app.l表格读取结果) {

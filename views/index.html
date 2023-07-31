@@ -481,12 +481,12 @@
                     <template v-slot:activator="{ on, attrs }">
                       <div v-bind="attrs" v-on="on" style="width: 100%;">
                         <v-slider :min="0" :max="2" :step="0.1"
-                          v-model="temperature"
-                          :thumb-color="color" label="temperature"
-                          thumb-label><template v-slot:append>
+                          v-model="temperature" :thumb-color="color"
+                          label="temperature" thumb-label><template
+                            v-slot:append>
                             <v-text-field v-model="temperature"
-                              class="mt-0 pt-0"
-                              type="number" style="width: 60px">
+                              class="mt-0 pt-0" type="number"
+                              style="width: 60px">
                             </v-text-field>
                           </template>
                         </v-slider>
@@ -497,9 +497,10 @@
 
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <div v-bind="attrs" v-on="on"  style="width: 100%;">
+                      <div v-bind="attrs" v-on="on" style="width: 100%;">
                         <v-slider :min="0" :max="1" :step="0.1" v-model="top_p"
-                          :thumb-color="color" label="top_p" thumb-label>
+                          :thumb-color="color" label="top_p"
+                          thumb-label>
                           <template v-slot:append>
                             <v-text-field v-model="top_p" class="mt-0 pt-0"
                               type="number" style="width: 60px">
@@ -514,12 +515,11 @@
                     <template v-slot:activator="{ on, attrs }">
                       <div v-bind="attrs" v-on="on" style="width: 100%;">
                         <v-slider :min="0.2" :max="1.8" :step="0.1"
-                          v-model="cfg_factor"
-                          :thumb-color="color" label="cfg_factor" thumb-label>
+                          v-model="cfg_factor" :thumb-color="color"
+                          label="cfg_factor" thumb-label>
                           <template v-slot:append>
-                            <v-text-field v-model="cfg_factor"
-                              class="mt-0 pt-0" type="number"
-                              style="width: 60px">
+                            <v-text-field v-model="cfg_factor" class="mt-0 pt-0"
+                              type="number" style="width: 60px">
                             </v-text-field>
                           </template>
                         </v-slider>
@@ -751,7 +751,7 @@
           // 生成回答的top_p
           top_p: 0.8,
           //classifier free guidence 因子，当前仅支持rwkv
-          cfg_factor:1,
+          cfg_factor: 1,
           // 语言模型类型
           llm_type: "",
           // tab列表
@@ -829,15 +829,21 @@
 
     // 处理表单提交事件并将用户的输入发送到服务器
     submit = async (e) => {
-      e && e.preventDefault()
       if (e && e.shiftKey) {
-        app.question += "\n";
-      } else if (typeof app.func_mode.question == "function") {
+        return
+      }
+      e && e.preventDefault()
+      if (typeof app.func_mode.question == "function") {
         await app.func_mode.question(app.question);
         app.question = ''
       } else {
         let Q = app.question
-        await send(app.func_mode.question + Q, Q);
+
+        if (app.history_on)
+          await send(app.func_mode.question + Q, Q, show = true, sources = [],
+            addition_args = { cfg_factor: app.cfg_factor, cfg_ctx: Q });
+        else
+          await send(app.func_mode.question + Q, Q);
       }
     };
 
@@ -874,7 +880,7 @@
     // 将用户的输入发送到服务器并更新 app 的 chat 数组
     // 参数s为用户输入的内容，keyword为用户输入的关键词，show为是否显示用户输入的内容，sources为知识库的来源
     let last_cost = []
-    send = async (s, keyword = "", show = true, sources = [],addition_args={}) => {
+    send = async (s, keyword = "", show = true, sources = [], addition_args = {}) => {
       app.question = ''
       if (keyword == "") keyword = s;
       is_abord = false;
@@ -925,7 +931,7 @@
         avg_cost /= last_cost.length
         app.TPS = 1000 / avg_cost
         last_token_time = now
-      },addition_args);
+      }, addition_args);
       if (app.tts_on) {
         speak(current_session.content);
       }
