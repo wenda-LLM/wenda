@@ -130,8 +130,12 @@ def upload_zhishiku():
         docs=[Document(page_content=data, metadata={"source":title })]
         print(docs)
         
-        text_splitter = CharacterTextSplitter(
-            chunk_size=20, chunk_overlap=0, separator='\n')
+        if hasattr(settings.librarys.rtst,"size") and hasattr(settings.librarys.rtst,"overlap"):
+            text_splitter = CharacterTextSplitter(
+                chunk_size=int(settings.librarys.rtst.size), chunk_overlap=int(settings.librarys.rtst.overlap), separator='\n')
+        else:
+            text_splitter = CharacterTextSplitter(
+                chunk_size=20, chunk_overlap=0, separator='\n')
         doc_texts = text_splitter.split_documents(docs)
 
         texts = [d.page_content for d in doc_texts]
