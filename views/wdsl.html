@@ -23,7 +23,9 @@
 			margin: 20px;
 			padding: 10px;
 		}
-
+		svg{
+			background-color: white;
+		}
 		.logo-center {
 			left: calc(50% - 140px);
 			width: 260px;
@@ -78,19 +80,24 @@
 			<v-card elevation="2" v-if="s提纲">
 				<v-card-title>导图</v-card-title>
 				<v-divider></v-divider>
-				<v-card-text>
-					<v-textarea autofocus v-model="s提纲" label="文本"  rows="30"
-						hide-details="auto"></v-textarea>
-
-					<svg id="markmap" style="width: 100%; height: 600px"></svg>
+				<v-card-text> <v-row>
+						<v-col cols="5">
+							<v-textarea autofocus v-model="s提纲" label="文本" rows="20" hide-details="auto"></v-textarea>
+						</v-col>
+						<v-col cols="7">
+							<svg id="markmap" style="width: 100%; height: 600px"></svg> </v-col>
+					</v-row>
 				</v-card-text>
 				<v-card-action>
-					<!-- <v-btn color="purple" dark size="x-large" @click="f生成导图()">
-						生成导图
-					</v-btn> -->
-					<!-- <v-btn color="purple" dark size="x-large" @click="f复制正文()" v-if="results.length">
+					<v-btn color="purple" dark size="x-large" @click="mm.svg._groups[0][0].requestFullscreen()">
+						全屏显示
+					</v-btn>
+					<v-btn color="purple" dark size="x-large" @click="f复制正文()">
 						复制正文
-					</v-btn> -->
+					</v-btn>
+					<v-btn color="purple" dark size="x-large" @click="f保存()">
+						保存导图
+					</v-btn>
 				</v-card-action>
 			</v-card>
 			<!-- <v-card elevation="2" v-for="result in results">
@@ -138,6 +145,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/d3@6"></script>
 	<script src="https://cdn.jsdelivr.net/npm/markmap-view"></script>
 	<script src="https://cdn.jsdelivr.net/npm/markmap-lib"></script>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/markmap-toolbar"></script> -->
 	<script>
 
 		const { Markmap, loadCSS, loadJS } = window.markmap;
@@ -168,9 +176,9 @@
 			},
 			watch: {
 				s提纲: () => {
-					window.b需重新生成=true
+					window.b需重新生成 = true
+				}
 			}
-		}
 		})
 		f生成提纲 = async (e) => {
 			e && e.preventDefault()
@@ -187,12 +195,12 @@
 				}
 			], (s) => { app.s提纲 = s })
 		}
-		setInterval(()=>{
-			if(window.b需重新生成){
-				window.b需重新生成=false
+		setInterval(() => {
+			if (window.b需重新生成) {
+				window.b需重新生成 = false
 				f生成导图()
 			}
-		},1000)
+		}, 1000)
 		f清除导图 = async (e) => {
 			const svgEl = document.querySelector('#markmap');
 			while (svgEl.children.length > 0) svgEl.removeChild(svgEl.children[0])
@@ -205,6 +213,8 @@
 				window.mm.fit();
 			} else {
 				window.mm = Markmap.create('#markmap', null, root)
+				//toolbar = markmap.Toolbar.create(mm);
+				//document.body.append(toolbar.el);
 			}
 		}
 		sctg = f生成提纲
@@ -252,6 +262,17 @@
 		}
 		f复制正文 = async () => {
 			copy(app.results.map(i => i.title + "\n" + i.content).join("\n"))
+		}
+		f保存 = async () => {
+			const blob = new Blob([new XMLSerializer().serializeToString(mm.svg._groups[0][0])], {
+				type: "text/plain;charset=utf-8"
+			})
+			const objectURL = URL.createObjectURL(blob)
+			const aTag = document.createElement('a')
+			aTag.href = objectURL
+			aTag.download = '【闻达思路】'+ app.s题目+".svg"
+			aTag.click()
+			URL.revokeObjectURL(objectURL)
 		}
 		alert = (text) => {
 			app.s提示文本 = text; //.replace(/\n/g,"<br>")
