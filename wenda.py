@@ -171,7 +171,7 @@ def api_chat_box():
     prompt = messages[-1]['content']
     data['prompt'] = prompt
     history = []
-    for i, old_chat in enumerate(messages[1:len(messages)-1]):
+    for i, old_chat in enumerate(messages[0:len(messages)-1]):
         if old_chat['role'] == "user":
             history.append(old_chat)
         elif old_chat['role'] == "assistant":
