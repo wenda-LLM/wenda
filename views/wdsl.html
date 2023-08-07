@@ -79,31 +79,21 @@
 				<v-card-title>导图</v-card-title>
 				<v-divider></v-divider>
 				<v-card-text>
-					<v-row>
-						<v-col cols="5">
-							<v-textarea autofocus v-model="s提纲" label="文本" style="height: 600px" rows="20" hide-details="auto"></v-textarea>
-						</v-col>
-						<v-col cols="7">
-							<svg id="markmap" style="width: 100%; height: 600px"></svg>
-						</v-col>
-					</v-row>
+					<v-textarea autofocus v-model="s提纲" label="文本"  rows="30"
+						hide-details="auto"></v-textarea>
+
+					<svg id="markmap" style="width: 100%; height: 600px"></svg>
 				</v-card-text>
 				<v-card-action>
-					<!-- <v-btn color="purple" dark size="x-large" @click="f生成正文()">
-						生成正文
-					</v-btn> -->
-					<v-btn color="purple" dark size="x-large" @click="f生成导图()">
+					<!-- <v-btn color="purple" dark size="x-large" @click="f生成导图()">
 						生成导图
-					</v-btn>
-					<v-btn color="purple" dark size="x-large" @click="f清除导图()">
-						清除导图
-					</v-btn>
-					<v-btn color="purple" dark size="x-large" @click="f复制正文()" v-if="results.length">
+					</v-btn> -->
+					<!-- <v-btn color="purple" dark size="x-large" @click="f复制正文()" v-if="results.length">
 						复制正文
-					</v-btn>
+					</v-btn> -->
 				</v-card-action>
 			</v-card>
-			<v-card elevation="2" v-for="result in results">
+			<!-- <v-card elevation="2" v-for="result in results">
 				<v-card-title>{{result.title}} <v-spacer></v-spacer>
 					<v-icon @click="copy(result.content)" v-if="result.prompt">
 						mdi-content-copy
@@ -118,7 +108,7 @@
 
 				<v-divider v-if="result.prompt"></v-divider>
 				<pre v-text="result.content"></pre>
-			</v-card>
+			</v-card> -->
 			<v-snackbar v-model="b显示提示文本" :timeout="3000" style="white-space: pre-line">{{s提示文本}}</v-snackbar>
 			<v-dialog v-model="show_dialog" persistent max-width="600px">
 				<v-card class="ma-0 pa0">
@@ -177,7 +167,10 @@
 			methods: {
 			},
 			watch: {
+				s提纲: () => {
+					window.b需重新生成=true
 			}
+		}
 		})
 		f生成提纲 = async (e) => {
 			e && e.preventDefault()
@@ -194,14 +187,25 @@
 				}
 			], (s) => { app.s提纲 = s })
 		}
+		setInterval(()=>{
+			if(window.b需重新生成){
+				window.b需重新生成=false
+				f生成导图()
+			}
+		},1000)
 		f清除导图 = async (e) => {
 			const svgEl = document.querySelector('#markmap');
-			while(svgEl.children.length>0)svgEl.removeChild(svgEl.children[0])
+			while (svgEl.children.length > 0) svgEl.removeChild(svgEl.children[0])
 		}
 		f生成导图 = async (e) => {
 			const transformer = new markmap.Transformer()
 			const { root, features } = transformer.transform(app.s提纲)
-			Markmap.create('#markmap', null, root)
+			if (window.mm) {
+				window.mm.setData(root);
+				window.mm.fit();
+			} else {
+				window.mm = Markmap.create('#markmap', null, root)
+			}
 		}
 		sctg = f生成提纲
 		f生成正文 = async (e) => {
