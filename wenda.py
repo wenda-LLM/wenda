@@ -19,7 +19,8 @@ from plugins.common import error_helper, error_print, success_print
 from plugins.common import allowCROS
 from plugins.common import settings
 from plugins.common import app
-from md2pptx.md2pptxllm import writeMdFile, genPPTX
+# from md2pptx.md2pptxllm import writeMdFile, genPPTX
+from md2pptx.md2ppt import writeMdFile, genPPTX
 from starlette.responses import FileResponse
 import logging
 logging.captureWarnings(True)
@@ -170,8 +171,14 @@ def api_genppt():
     if not data:
         return '0'
     content = data.get('content')
-    print(content)
-    inputfile = writeMdFile('template: CHATOVENS.pptx\n\n' + content)
+    # print(content)
+    # inputfile = writeMdFile('template: CHATOVENS.pptx\n\n' + 'cardlayout: horizontal\n' +
+    #                         'baseTextSize: 20\n' +
+    #                         'CardColour: BACKGROUND 2\n' +
+    #                         'CardTitlePosition: inside\n' +
+    #                         'cardshadow: yes\n' +
+    #                         'cardshape: rounde\n\n' + content)
+    inputfile = writeMdFile(content)
     now = time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime(time.time()))
     outputfile = os.getcwd() + os.sep + 'md2pptx' + os.sep + 'data' + os.sep + now + r'output.pptx'
     # sys.argv.append(inputfile)

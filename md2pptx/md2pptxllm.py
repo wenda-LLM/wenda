@@ -6843,8 +6843,8 @@ def genPPTX(outputfile, inputfile):
 
         createPictureHyperlinkOrTooltip(picture, target, tooltip)
 
-    if templateSlideCount > 0:
-        createProcessingSummarySlide(prs, metadata)
+    # if templateSlideCount > 0:
+        # createProcessingSummarySlide(prs, metadata)
 
     try:
         if processingOptions.getCurrentOption("deletefirstslide"):
