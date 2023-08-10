@@ -94,6 +94,9 @@ librarys:
 llm_type: rwkv
 #llm模型类型:glm6b、rwkv、llama、replitcode等，详见相关文件
 llm_models:
+   qwen:
+      path: model\Qwen-7B-Chat
+      #模型位置"
    rwkv:
       path: "model/RWKV-4-World-7B-v1-OnlyForTest_52%_trained-20230606-ctx4096-i8.pth" #rwkv模型位置"
       strategy: "cuda fp16i8"
