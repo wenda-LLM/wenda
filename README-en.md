@@ -242,7 +242,7 @@ Wenda user "Beifan" has trained and provided weighted combined models and Lora w
 1. [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)  Not recommended due to lack of English support and high GPU memory consumption.
 2. [moka-ai/m3e-base](https://huggingface.co/moka-ai/m3e-base) Recommended
 ### Fess Mode
-After installing Fess on the local machine using the default port, it can be directly executed. Otherwise, you need to modify the `fess_host` in the `config.yml` (copy from [example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml)) from `127.0.0.1:8080` to the appropriate value.[FESS安装教程](install_fess.md)
+After installing Fess on the local machine using the default port, it can be directly executed. Otherwise, you need to modify the `fess_host` in the `config.yml` (copy from [example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml)) from `127.0.0.1:8080` to the appropriate value.[FESS安装教程](docs/install_fess.md)
 
 ###  Knowledge Base Debugging
 ![](imgs/zsk-test.png)
