@@ -45,7 +45,7 @@ def chat_one(prompt, history, max_length, top_p, temperature, data):
     model.generation_config.top_p=top_p
     model.generation_config.temperature=temperature
     model.generation_config.max_new_tokens=max_length
-    for response in model.chat(tokenizer, prompt, history=history, stream=True):
+    for response in model.chat_stream(tokenizer, prompt, history=history):
         yield response
 
 
