@@ -1,5 +1,4 @@
 
-import argparse
 import sentence_transformers
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.docstore.document import Document
@@ -10,6 +9,7 @@ import chardet
 import os
 import sys
 import time
+import docx
 sys.path.append(os.getcwd())
 from plugins.common import success_print, error_print
 from plugins.common import error_helper
@@ -117,6 +117,12 @@ for i in range(len(all_files)):
                 result = chardet.detect(b)
             with open(file_path, 'r', encoding=result['encoding']) as f:
                 data = f.read()
+        elif ext.lower() == '.docx':
+           doc = docx.Document(file_path)
+           data_list = []
+           for para in doc.paragraphs:
+               data_list.append(para.text)
+           data = '\n'.join(data_list)
         else:
             print("目前还不支持文件格式：", ext)
     except Exception as e:
