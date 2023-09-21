@@ -145,16 +145,16 @@ llm_models:
       #lora模型位置"
       # lora: "model/64rank"
    baichuan:
-      # path: "model\\Baichuan-13B-Chat"
-      path: model\Vicuna-33B-v1.3-GPTQ
+      path: "model\\Baichuan-13B-Chat"
+      # path: model\Vicuna-33B-v1.3-GPTQ
       #模型名字中有gptq会进入gptq模式，不加载lora，且会加载basename中的模型
       basename: vicuna-33b-GPTQ-4bit--1g.act.order
-      # user: "<human>" #百川
-      # answer: "<bot>" #百川
-      # interface: ":" #百川
-      user: "Human"        #vicuna
-      answer: "Assistant"  #vicuna
-      interface: ": "      #vicuna
+      user: "<human>" #百川
+      answer: "<bot>" #百川
+      interface: ":" #百川
+      # user: "Human"        #vicuna
+      # answer: "Assistant"  #vicuna
+      # interface: ": "      #vicuna
       #模型位置"
       # lora: "model/64rank"
    aquila: #https://model.baai.ac.cn/model-detail/100101
