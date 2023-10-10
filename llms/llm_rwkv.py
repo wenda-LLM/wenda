@@ -8,23 +8,10 @@ import math
 import re
 from typing import List,Dict
 interface = ":"
-if settings.llm.path.lower().find("chntuned") > -1:
-    print("RWKV CHNtuned mode")
-    tokenizers_type = "world"
-    user = "User"
-    answer = "Assistant"
-    tokenizers_file = "rwkv_vocab_v20230424"
-elif settings.llm.path.lower().find("world") > -1:
-    print("RWKV world mode")
-    tokenizers_type = "world"
-    user = "Question"
-    answer = "Answer"
-    tokenizers_file = "rwkv_vocab_v20230424"
-else:
-    tokenizers_type = "20B"
-    user = "Bob"
-    answer = "Alice"
-    tokenizers_file = "20B_tokenizer.json"
+tokenizers_type = "world"
+user = "User"
+answer = "Assistant"
+tokenizers_file = "rwkv_vocab_v20230424"
 
 states = {}
 
@@ -306,9 +293,8 @@ else:
             tmp = pipeline.decode(all_tokens[out_last:])
             if '\ufffd' not in tmp:
                 response += tmp
-                if response.endswith('\n\n') or response.endswith(f"{user}{interface}"):
-                    response = remove_suffix(
-                        remove_suffix(response, '\n\n'),
+                if response.endswith(f"{user}{interface}"):
+                    response = remove_suffix(response,
                         f"{user}{interface}"
                     )
                     break
