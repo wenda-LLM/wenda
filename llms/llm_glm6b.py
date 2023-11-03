@@ -3,9 +3,8 @@ import json
 chatglm3_mode =settings.llm.path.lower().find("chatglm3-6b") > -1
 print('chatglm3_mode',chatglm3_mode)
 def chat_init(history):
-    history_formatted = None
+    history_formatted = []
     if history is not None:
-        history_formatted = []
         tmp = []
         for i, old_chat in enumerate(history):
             if len(tmp) == 0 and old_chat['role'] == "user":
@@ -31,7 +30,7 @@ def chat_init(history):
 def chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
     yield str(len(prompt))+'字正在计算'
     
-    if history_formatted[0]['role']=="system":
+    if len(history_formatted)>0 and history_formatted[0]['role']=="system":
         if prompt.startswith("observation!"):
             prompt = prompt.replace("observation!", "")
             response, history = model.chat(tokenizer, prompt, history_formatted, role="observation",
