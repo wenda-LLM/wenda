@@ -1,5 +1,7 @@
 from plugins.common import settings
 
+chatglm3_mode =settings.llm.path.lower().find("chatglm3-6b") > -1
+print('chatglm3_mode',chatglm3_mode)
 def chat_init(history):
     history_formatted = None
     if history is not None:
@@ -7,10 +9,16 @@ def chat_init(history):
         tmp = []
         for i, old_chat in enumerate(history):
             if len(tmp) == 0 and old_chat['role'] == "user":
-                tmp.append(old_chat['content'])
+                if chatglm3_mode:
+                    history_formatted.append({'role': 'user', 'content':old_chat['content']})
+                else:
+                    tmp.append(old_chat['content'])
             elif old_chat['role'] == "AI" or old_chat['role'] == 'assistant':
-                tmp.append(old_chat['content'])
-                history_formatted.append(tuple(tmp))
+                if chatglm3_mode:
+                    history_formatted.append({'role': 'assistant', 'metadata': '', 'content':old_chat['content']})
+                else:
+                    tmp.append(old_chat['content'])
+                    history_formatted.append(tuple(tmp))
                 tmp = []
             else:
                 continue
@@ -22,6 +30,7 @@ def chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
     for response, history in model.stream_chat(tokenizer, prompt, history_formatted,
                                                max_length=max_length, top_p=top_p, temperature=temperature):
         yield response
+        print(history)
 
 def sum_values(dict):
     total = 0
