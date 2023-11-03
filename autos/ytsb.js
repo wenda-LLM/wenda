@@ -116,7 +116,7 @@ func.push({
         yt = ({ "画图": '中文绘图', "提问": '快速知识库', "写论文": '根据标题写论文', "其他": '' })[r.yt]
         let 当前_auot = app.func_menu.find((i) => i.name == yt)
         if (typeof 当前_auot.question == "function") {
-            当前_auot.question();
+            当前_auot.question(r.text);
         } else {
             let Q = app.question
             await send(当前_auot.question + Q, Q);
