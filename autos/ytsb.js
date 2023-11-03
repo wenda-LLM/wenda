@@ -13,6 +13,15 @@
 app.buttons.push({
     icon: "multicast",
     click: async () => {
+        app.current_func = '意图识别(GLM3)'
+
+    },
+    color: () => app.color,
+    description: "意图识别(GLM3)"
+})
+app.buttons.push({
+    icon: "multicast",
+    click: async () => {
 
         app.chat = []
         app.current_func = '意图识别'
@@ -27,7 +36,7 @@ app.buttons.push({
                 }
                 for (yt in yt2prompt_dict) {
                     for (prompt in yt2prompt_dict[yt]) {
-                        await add_rtst_memory(yt, yt2prompt_dict[yt][prompt],"_ytsb")
+                        await add_rtst_memory(yt, yt2prompt_dict[yt][prompt], "_ytsb")
                     }
                 }
                 alert("初始化完成")
@@ -52,11 +61,11 @@ func.push({
     name: "意图识别",
     question: async () => {
         Q = app.question
-        memory = await find_rtst_memory(Q,"_ytsb")
+        memory = await find_rtst_memory(Q, "_ytsb")
         if (memory.length > 0) {
             add_conversation("AI", '识别到意图为:' + memory[0].title + "，正在调用相应auto")
             // A = await send(app.question )
-            let 当前_auot=app.func_menu.find((i) => i.name == memory[0].title)
+            let 当前_auot = app.func_menu.find((i) => i.name == memory[0].title)
             if (typeof 当前_auot.question == "function") {
                 当前_auot.question();
             } else {
@@ -68,6 +77,53 @@ func.push({
         } else {
             A = await send(app.question)
         }
+        //+ " Alice: " + A
+    },
+})
+func.push({
+    name: "意图识别(GLM3)",
+    question: async () => {
+        Q = app.question
+        tools = [
+            {
+                "name": "ytsb",
+                "description": `用户意图识别`,
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "yt": {
+                            "description": `从列表["画图","提问","写论文","其他"]中选择用户意图`
+                        },
+                        "text": {
+                            "description": `用户意图对应的主题，如，用户输入画一只狗，应返回"狗"`
+                        },
+                    },
+                    "required": ['yt', "text"]
+                }
+            }
+        ]
+        r = await send_raw(Q, '', [
+            {
+                "role": "system",
+                "content": JSON.stringify(tools),
+            },
+
+        ], (s) => { },
+        )
+        r = (JSON.parse(r)).parameters
+        app.question=r.text
+        alert('识别到意图为:' + r.yt + '，主题为:' + r.text + "，正在调用相应auto")
+        yt = ({ "画图": '中文绘图', "提问": '快速知识库', "写论文": '根据标题写论文', "其他": '' })[r.yt]
+        let 当前_auot = app.func_menu.find((i) => i.name == yt)
+        if (typeof 当前_auot.question == "function") {
+            当前_auot.question();
+        } else {
+            let Q = app.question
+            await send(当前_auot.question + Q, Q);
+            app.question = ''
+        }
+        // app.func_menu.find((i) => i.name == memory[0].title).question(Q)
+
         //+ " Alice: " + A
     },
 })
