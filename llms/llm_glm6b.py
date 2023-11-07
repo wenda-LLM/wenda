@@ -1,17 +1,27 @@
 from plugins.common import settings
-
+import json
+chatglm3_mode =settings.llm.path.lower().find("chatglm3-6b") > -1
+print('chatglm3_mode',chatglm3_mode)
 def chat_init(history):
-    history_formatted = None
+    history_formatted = []
     if history is not None:
-        history_formatted = []
         tmp = []
         for i, old_chat in enumerate(history):
             if len(tmp) == 0 and old_chat['role'] == "user":
-                tmp.append(old_chat['content'])
+                if chatglm3_mode:
+                    history_formatted.append({'role': 'user', 'content':old_chat['content']})
+                else:
+                    tmp.append(old_chat['content'])
             elif old_chat['role'] == "AI" or old_chat['role'] == 'assistant':
-                tmp.append(old_chat['content'])
-                history_formatted.append(tuple(tmp))
+                if chatglm3_mode:
+                    history_formatted.append({'role': 'assistant', 'metadata': '', 'content':old_chat['content']})
+                else:
+                    tmp.append(old_chat['content'])
+                    history_formatted.append(tuple(tmp))
                 tmp = []
+            elif old_chat['role'] == "system":
+                if chatglm3_mode:
+                    history_formatted.append({'role': 'system', 'content':"Answer the following questions as best as you can. You have access to the following tools:", "tools":json.loads(old_chat['content'])})
             else:
                 continue
     return history_formatted
@@ -19,9 +29,21 @@ def chat_init(history):
 
 def chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
     yield str(len(prompt))+'字正在计算'
-    for response, history in model.stream_chat(tokenizer, prompt, history_formatted,
-                                               max_length=max_length, top_p=top_p, temperature=temperature):
-        yield response
+    
+    if len(history_formatted)>0 and history_formatted[0]['role']=="system":
+        if prompt.startswith("observation!"):
+            prompt = prompt.replace("observation!", "")
+            response, history = model.chat(tokenizer, prompt, history_formatted, role="observation",
+                                                max_length=max_length, top_p=top_p, temperature=temperature)
+            yield response
+        else:
+            response, history = model.chat(tokenizer, prompt, history_formatted,
+                                                max_length=max_length, top_p=top_p, temperature=temperature)
+            yield json.dumps(response)
+    else:
+        for response, history in model.stream_chat(tokenizer, prompt, history_formatted,
+                                                max_length=max_length, top_p=top_p, temperature=temperature):
+            yield response
 
 def sum_values(dict):
     total = 0

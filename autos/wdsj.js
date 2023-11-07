@@ -10,3 +10,4 @@
 // ==/UserScript==
 
 app.plugins.push({ icon: "microsoft-excel", url: "wdsj.html", hide_title: true })
+app.plugins.push({ icon: "microsoft-excel", url: "wdsj_glm3.html", hide_title: true })

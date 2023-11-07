@@ -805,6 +805,7 @@
       let s修改后的内容 = await input('请输入修改后的内容', current_conversation.content)
       if (s修改后的内容) {
         current_conversation.content = s修改后的内容
+        if(current_conversation.keyword)current_conversation.keyword=s修改后的内容
         alert('修改成功')
       } else
         alert('取消修改')
