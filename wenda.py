@@ -21,6 +21,7 @@ from plugins.common import settings
 from plugins.common import app
 # from md2pptx.md2pptxllm import writeMdFile, genPPTX
 from md2pptx.md2ppt import writeMdFile, genPPTX
+from img2analysis.imganalysis import gencontent
 from starlette.responses import FileResponse
 import logging
 logging.captureWarnings(True)
@@ -196,6 +197,14 @@ def downloadppt(outputfile):
     noCache()
     # print(outputfile)
     return FileResponse(outputfile)
+
+@route('/imganalysis', method=("POST", "OPTIONS"))
+def imganalysis():
+    allowCROS()
+    # data = request.json
+    imgbase64 = request.forms['imgbase64']
+    # print(outputfile)
+    return gencontent(imgbase64)
 
 @route('/completions', method=("POST", "OPTIONS"))
 def api_chat_box():
@@ -373,6 +382,7 @@ async def websocket_endpoint(websocket: WebSocket):
         async with lock:
             print("\033[1;32m"+IP+":\033[1;31m"+prompt+"\033[1;37m")
             try:
+                torch.cuda.empty_cache()
                 for response in LLM.chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
                     if (response):
                         # start = time.time()
