@@ -242,7 +242,7 @@ Linux直接使用wenda环境执行 `python plugins/gen_data_st.py`
 1. [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese) 不再推荐，不支持英文且显存占用高
 2. [moka-ai/m3e-base](https://huggingface.co/moka-ai/m3e-base) 推荐
 ### fess模式
-在本机使用默认端口安装fess后可直接运行。否则需修改`config.yml`(复制[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml))中`fess_host`的`127.0.0.1:8080`为相应值。[FESS安装教程](install_fess.md)
+在本机使用默认端口安装fess后可直接运行。否则需修改`config.yml`(复制[example.config.yml](https://github.com/l15y/wenda/blob/main/example.config.yml))中`fess_host`的`127.0.0.1:8080`为相应值。[FESS安装教程](docs/install_fess.md)
 ###  知识库调试
 ![](imgs/zsk-test.png)
 ![](imgs/zsk-glm.png)
