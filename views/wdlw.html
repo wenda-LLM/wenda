@@ -208,7 +208,7 @@
 				let line = resp[i]
 				if (line == "") continue
 				line = line.split(".")
-				if (line.length < 2) {
+				if (line.length < 2&&!resp[i].match(/[一二三四五六七八九十]+/)) {
 					continue  // 判断非提纲内容
 				}
 				let num = find_RomanNumerals(line[0])
