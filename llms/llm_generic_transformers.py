@@ -105,13 +105,14 @@ def load_model():
             settings.llm.path, trust_remote_code=True,
             low_cpu_mem_usage=True,
             torch_dtype=torch.float16,
+            device_map="cuda:0",
             revision="1")
         if not (settings.llm.lora == '' or settings.llm.lora == None):
             print('Lora模型地址', settings.llm.lora)
             from peft import PeftModel
             model = PeftModel.from_pretrained(
                 model, settings.llm.lora, adapter_name=settings.llm.lora)
-        if settings.llm.path.lower().find("13b"):
+        if settings.llm.path.lower().find("13b")!=-1:
             model = model.quantize(8)
         model = model.cuda()
         model = model.eval()
