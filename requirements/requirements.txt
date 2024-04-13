@@ -24,3 +24,6 @@ openai
 tiktoken
 loguru
 transformers_stream_generator
+sentencepiece
+python-docx
+accelerate
