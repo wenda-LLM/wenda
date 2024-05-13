@@ -4,10 +4,10 @@ websockets
 fastapi
 sqlalchemy
 sqlalchemy_utils
-transformers==4.26.1
+transformers==4.37.1
 faiss-cpu
 sentence_transformers
-langchain
+langchain==0.0.344
 pdfplumber
 InstructorEmbedding
 tiktoken
@@ -29,3 +29,6 @@ thulac
 pymongo==4.3.3
 websocket==0.2.1
 websocket-client==1.6.1
+sentencepiece
+python-docx
+accelerate
