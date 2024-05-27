@@ -30,7 +30,7 @@ def chat_init(history):
 def chat_one(prompt, history_formatted, max_length, top_p, temperature, data):
     yield str(len(prompt))+'字正在计算'
     
-    if len(history_formatted)>0 and history_formatted[0]['role']=="system":
+    if len(history_formatted)>0 and chatglm3_mode and history_formatted[0]['role']=="system":
         if prompt.startswith("observation!"):
             prompt = prompt.replace("observation!", "")
             response, history = model.chat(tokenizer, prompt, history_formatted, role="observation",
