@@ -26,27 +26,40 @@ class ThreadWithReturnValue(Thread):
 
 
 def chat_init(history):
-    tmp = []
+    tmp = [
+        {"role": "system", "content": "You are a helpful assistant."},
+    ]
     # print(history)
-    tmp_conver = []
     for i, old_chat in enumerate(history):
         if old_chat['role'] == "user":
-            tmp_conver.append(old_chat['content'])
+            tmp.append({"role": "user", "content": old_chat['content']})
         elif old_chat['role'] == "AI":
-            tmp_conver.append(old_chat['content'])
-            tmp.append(tmp_conver)
-            tmp_conver = []
+            tmp.append({"role": "assistant", "content": old_chat['content']})
         else:
             continue
     return tmp
 
 
 def chat_one(prompt, history, max_length, top_p, temperature, data):
-    model.generation_config.top_p=top_p
-    model.generation_config.temperature=temperature
-    model.generation_config.max_new_tokens=max_length
-    for response in model.chat_stream(tokenizer, prompt, history=history):
-        yield response
+    messages = history
+    messages.append({"role": "user", "content": prompt})
+    text = tokenizer.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=True
+    )
+    model_inputs = tokenizer([text], return_tensors="pt").to('cuda')
+
+    generated_ids = model.generate(
+        model_inputs.input_ids,
+        max_new_tokens=max_length
+    )
+    generated_ids = [
+        output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
+    ]
+
+    response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
+    yield(response[0])
 
 
 def load_model():
@@ -54,15 +67,8 @@ def load_model():
     tokenizer = AutoTokenizer.from_pretrained(
         settings.llm.path, trust_remote_code=True)
 
-    # use bf16
-    # model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen-7B-Chat", device_map="auto", trust_remote_code=True, bf16=True).eval()
-    # use fp16
-    # model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen-7B-Chat", device_map="auto", trust_remote_code=True, fp16=True).eval()
-    # use cpu only
-    # model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen-7B-Chat", device_map="cpu", trust_remote_code=True).eval()
-    # use auto mode, automatically select precision based on the device.
     model = AutoModelForCausalLM.from_pretrained(
-        settings.llm.path, device_map="auto", trust_remote_code=True).eval()
+        settings.llm.path,
+        torch_dtype="auto",
+        device_map="auto")
     
-    model.generation_config = GenerationConfig.from_pretrained(settings.llm.path, trust_remote_code=True)  # 可指定不同的生成长度、top_p等相关超参
-
