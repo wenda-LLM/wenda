@@ -59,7 +59,7 @@ def get_doc(id,score,step,memory_name):
     return {'title': title,'content':re.sub(r'\n+', "\n", final_content),"score":int(score)}
 def find(s,step = 0,memory_name="default"):
     try:
-        embedding = get_vectorstore(memory_name).embedding_function(s)
+        embedding = get_vectorstore(memory_name).embedding_function.embed_query(s)
         scores, indices = vectorstores[memory_name].index.search(np.array([embedding], dtype=np.float32), int(cunnrent_setting.count))
         docs = []
         for j, i in enumerate(indices[0]):

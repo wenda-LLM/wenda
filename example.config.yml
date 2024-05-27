@@ -114,6 +114,9 @@ llm_models:
    qwen:
       path: model\Qwen-7B-Chat
       #模型位置"
+   Yi:
+      path: model\Yi-6B-Chat
+      #模型位置"
    baichuan:
       #模型名字中有gptq会进入gptq模式，不加载lora，且会加载basename中的模型
       #百川
