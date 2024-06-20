@@ -33,3 +33,6 @@ llms/convert_rwkv.py
 convert_safetensors.py
 llms/convert_rwkv.py
 
+# IDE
+.vscode/
+.idea/
