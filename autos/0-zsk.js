@@ -76,13 +76,20 @@ window.answer_with_zsk = async (Q) => {
         }
         app.chat.push(answer)
         result = []
-        for (let i in kownladge) {
-            answer.content = '正在查找：' + kownladge[i].title
-            if (i > 3) continue
-            let prompt = app.zsk_summarize_prompt + '\n' +
-                kownladge[i].content + "\n问题：" + Q
-            result.push(await send(prompt, keyword = Q, show = false))
-        }
+        let index = 0
+        await new Promise(resolve => {
+
+            kownladge.forEach(async (question) => {
+                let prompt = app.zsk_summarize_prompt + '\n' +
+                question.content + "\n问题：" + Q
+                result.push(await send(prompt, keyword = Q, show = false))
+
+                answer.content = `正在查找：${index}/${kownladge.length}`
+                index += 1
+                if (index == kownladge.length)
+                    resolve()
+            })
+        })
         app.chat.pop()
         app.chat.pop()
         let prompt = app.zsk_answer_prompt + '\n' +
