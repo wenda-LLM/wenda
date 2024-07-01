@@ -1,6 +1,0 @@
-websocket-client
-tls-client
-pypasser
-names
-colorama
-curl_cffi

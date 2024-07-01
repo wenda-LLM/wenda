@@ -25,18 +25,52 @@ get_url_form_md = (s) => {
         return s
     }
 }
+
+f批量上传 = async () => {
+    app.b批量上传中 = true
+    app.i批量上传进度 = 0
+    app.l表格读取结果.forEach(async (question) => {
+        await add_memory_by_string(question.问题, question.回答)
+        app.i批量上传进度 += 1
+        if (app.i批量上传进度 == app.l表格读取结果.length)
+            app.b批量上传中 = false
+    })
+}
+f载入表格 = async () => {
+    // await new Promise(resolve => {
+    let input = document.createElement('input')
+    input.type = 'file'
+    input.accept = '.xlsx'
+    input.onchange = function () {
+        var file = input.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            let contents = e.target.result;
+            var workbook = XLSX.read(new Uint8Array(contents), {
+                type: 'array'
+            });
+            app.l表格读取结果 = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]])
+            // resolve()
+        };
+        reader.readAsArrayBuffer(file);
+    }
+    input.click()
+    // })
+}
 window.answer_with_zsk = async (Q) => {
     // lsdh(false)
     app.top_p = 0.2
-    app.chat.push({ "role": "user", "content": Q })
-    kownladge = (await find(Q, 5)).filter(i => !i.score || i.score < 120).map(i => ({
-        title: get_title_form_md(i.title),
+    app.chat.push({ "role": "User", "content": Q })
+    kownladge = (await find(Q, 5))
+    console.log(kownladge)
+    kownladge = kownladge.filter(i => i.score > 60).map(i => ({
+        title: `${get_title_form_md(i.title)}(${i.score})`,
         url: get_url_form_md(i.title),
         content: i.content
     }))
     if (kownladge.length > 0) {
         answer = {
-            role: "AI",
+            role: "Assistant",
             content: "",
             sources: kownladge
         }
@@ -78,81 +112,16 @@ window.answer_with_fast_zsk = async (Q) => {
         url: get_url_form_md(i.title),
         content: i.content
     }))
-    if (kownladge.length > 0) {
-        if (app.llm_type == "rwkv") {
-            let prompt = 'raw!Instruction: 深刻理解下面提供的信息，根据信息完成问答。\n\nInput: ' +
-                kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n\nResponse: Question: " + Q + "\nAnswer: "
-            return await send(prompt, keyword = Q, show = true, sources = kownladge,
-                addition_args = { cfg_factor: app.cfg_factor, cfg_ctx: Q })
-        } else {
+    app.chat.pop()
+    sources = [{
+        title: '未匹配到知识库',
+        content: '本次对话内容完全由模型提供'
+    }]
+    return await send(Q, keyword = Q, show = true, sources = sources)
 
-            let prompt = app.zsk_answer_prompt + '\n' +
-                kownladge.map((e, i) => i + 1 + "." + e.content).join('\n') + "\n问题：" + Q
-            return await send(prompt, keyword = Q, show = true, sources = kownladge)
-        }
-    } else {
-        app.chat.pop()
-        sources = [{
-            title: '未匹配到知识库',
-            content: '本次对话内容完全由模型提供'
-        }]
-        return await send(Q, keyword = Q, show = true, sources = sources)
-    }
 }
 func.push({
     name: "快速知识库",
     question: window.answer_with_fast_zsk
 }
 )
-func.push({
-    name: "sgwx知识库全文爬取",
-    question: async () => {
-        let Q = app.question
-
-        lsdh(true)//打开历史对话
-        lsdh(false)
-        app.chat.push({ "role": "user", "content": Q })
-        kownladge = await find(Q, 2)
-        app.chat.push({
-            "role": "AI", "content": "识别结果:\n|标题|内容|\n|--|--|\n" +
-                kownladge.map(i => "|" + i.title + "|" + i.content.replace(/\n/g, ' ') + "|").join("\n")
-        })
-        result = []
-        for (let i in kownladge) {
-            wx_response = await fetch("/api/read_sgwx", {
-                method: 'post',
-                body: JSON.stringify({
-                    url: kownladge[i].title.match(/\((.+)\)/)[1],
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-
-            let prompt = "精炼地总结以下文段中与问题相关的信息为二十个字。\n" + await wx_response.text() + "\n问题：" + Q
-            result.push(await send(prompt))
-        }
-        let prompt = "根据以下资料，用中文回答问题。\n" +
-            result.join('\n') + "\n问题：" + Q
-        await send(prompt)
-
-    },
-})
-// func.push({
-//     name: "知识库step",
-//     question: async () => {
-//         let Q = app.question
-//         app.chat.push({ "role": "user", "content": "步数为0" })
-//         kownladge = await find(Q, 0)
-//         kownladge=kownladge.map(i => i.content).join('\n\n').replace(/'/g,"")
-//         app.chat.push({ "role": "AI", "content": kownladge })
-//         app.chat.push({ "role": "user", "content": "步数为1" })
-//         kownladge = await find(Q, 1)
-//         kownladge=kownladge.map(i => i.content).join('\n\n').replace(/'/g,"")
-//         app.chat.push({ "role": "AI", "content": kownladge })
-//         app.chat.push({ "role": "user", "content": "步数为2" })
-//         kownladge = await find(Q, 2)
-//         kownladge=kownladge.map(i => i.content).join('\n\n').replace(/'/g,"")
-//         app.chat.push({ "role": "AI", "content": kownladge })
-//     },
-// })

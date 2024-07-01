@@ -1,0 +1,1084 @@
+<html>
+
+<head>
+  <title>闻达</title>
+  <meta charset="utf-8" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=400,  user-scalable=no" />
+  <link rel="shortcut icon" href="wd.png" />
+  <!-- <link href="https://npm.elemecdn.com/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
+	<link href="https://npm.elemecdn.com/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+	<script src="https://npm.elemecdn.com/vue@2.x/dist/vue.min.js"></script>
+	<script src="https://npm.elemecdn.com/vuetify@2.x/dist/vuetify.min.js"></script> -->
+  <link rel="manifest" href="/manifest.json" />
+  <link href="/static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet" />
+
+  <link href="/static/vuetify.min.css" rel="stylesheet" />
+  <script src="/static/vue.js"></script>
+  <script src="/static/vue-i18n.js"></script>
+  <script src="/static/vuetify.min.js"></script>
+  <script src="/static/markdown-it.min.js"></script>
+  <script src="/static/strings.js"></script>
+  <script defer src="/static/xlsx.core.min.js"></script>
+  <style>
+    .v-navigation-drawer__content::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .v-navigation-drawer__content::-webkit-scrollbar-track {
+      background-color: #333;
+    }
+
+    /* 滚动条的滑轨背景颜色 */
+
+    .v-navigation-drawer__content::-webkit-scrollbar-thumb {
+      background-color: #aaa;
+    }
+
+    /* 滑块颜色 */
+
+    .v-navigation-drawer__content::-webkit-scrollbar-button {
+      display: none;
+    }
+
+    /* 滑轨两头的监听按钮颜色 */
+    .answer th,
+    .answer td {
+      outline: 1px solid;
+      padding: 2px;
+    }
+
+    div[aria-haspopup] {
+      display: inline-block;
+      margin: 10px;
+    }
+
+    .answer table {
+      outline: 1px solid;
+    }
+
+    .ask,
+    .answer {
+      padding: 1em;
+      background: #fff;
+      border-radius: 16px;
+      max-width: 80%;
+      margin: 0 10px;
+      word-break: break-word;
+      line-height: 1.2;
+    }
+
+    pre:has(code) {
+      background-color: rgb(0 0 0);
+      color: white;
+      padding: 3px;
+      border-radius: 5px;
+    }
+
+    code::before {
+      content: attr(class);
+      color: yellow;
+      float: right;
+    }
+
+    .ask {
+      margin-left: auto;
+      white-space: break-spaces;
+    }
+
+    .头像 {
+      margin-bottom: auto;
+      color: #fff !important;
+      position: unset;
+      filter: brightness(150%) grayscale(50%);
+    }
+
+    .answer img {
+      max-width: 100%;
+    }
+
+    #app,
+    .v-application--wrap {
+      background: transparent;
+      min-height: 100%;
+      /* background: #cecece0a; */
+    }
+
+    .float {
+      position: absolute !important;
+    }
+
+    .float button {
+      display: block !important;
+    }
+
+    header {
+      position: fixed !important;
+      top: 0;
+      z-index: 1;
+      width: 100%;
+    }
+
+    footer {
+      padding-bottom: 54px !important;
+    }
+
+    .v-tabs {
+      position: fixed !important;
+      bottom: 0;
+      z-index: 3;
+      width: 100%;
+    }
+
+    html,
+    .v-window__container {
+      background-color: #0001;
+    }
+
+    [v-cloak] {
+      display: none;
+    }
+
+    .v-tabs-items {
+      height: 100%;
+    }
+
+    .v-window-item {
+      min-height: 100%;
+      margin: 3%;
+    }
+
+    .v-window-item:has(iframe) {
+      margin: 0;
+    }
+
+    .v-tab.v-tab {
+      color: inherit;
+      font-weight: bold;
+      font-size: large;
+    }
+
+    .user-avatar {
+      background-color: #0000a0bb;
+    }
+
+    .bot-avatar {
+      background-color: #7a0099bb;
+    }
+
+    .v-application p {
+      margin-bottom: 10px;
+      white-space: break-spaces;
+    }
+
+    .v-application a {
+      line-height: 1.3;
+    }
+
+    .v-input.v-textarea.v-text-field {
+      padding-top: 0;
+      margin-top: 0;
+    }
+
+    .v-application--is-ltr .v-input--selection-controls__input {
+      /* 紧凑右上角开关 */
+      margin-right: 0px;
+    }
+
+    .v-slide-group:not(.v-slide-group--has-affixes)>.v-slide-group__prev {
+      /* 隐藏手机选项卡左侧空白 */
+      display: none !important;
+    }
+
+    .v-sheet.v-card {
+      margin: 20px;
+      padding: 10px;
+    }
+
+    .chat_toolbar {
+      width: 100%;
+      color: #d0d0d0;
+    }
+
+    .chat_toolbar .v-input,
+    .chat_toolbar div[aria-haspopup] {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app" v-cloak>
+    <v-app>
+      <v-navigation-drawer width="350" v-model="drawer" style="height: 100%; position: fixed" temporary>
+        <v-list>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title class="text-h6"> Auto </v-list-item-title>
+              <br />
+              <v-list-item-subtitle>
+                {{$t("feature_selection") }}
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item v-for="func in func_menu" @click.stop="load_func(func)" v-if="func.name!=''">
+            <v-list-item-title v-text="func.name"> </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+      <v-toolbar v-if="show_header" style="opacity: 80%">
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-toolbar-title><a :style="'filter: brightness(50%);font-size: larger;text-decoration: none; color: '+color"
+            href="https://github.com/l15y/wenda">{{$t("wenda") }}</a></v-toolbar-title>
+      </v-toolbar>
+      <v-tabs-items v-model="tab" style="margin-bottom: 48px" :style="{marginTop: show_header ? '64px' : '0px'}">
+        <v-tab-item key="chat">
+          <div v-for="(current_conversation, index) in chat" :key="index"
+            :class="['d-flex flex-row align-center my-2', current_conversation.role == 'User' ? 'justify-end': null]">
+            <span v-if="current_conversation.role == 'User'" class="ask"
+              v-text="current_conversation.keyword||current_conversation.content"></span>
+            <v-hover v-slot="{ hover }">
+              <div style="margin-bottom: auto;">
+                <v-avatar :class="current_conversation.role == 'User' ? 'user-avatar': 'bot-avatar'" size="36"
+                  class="头像">
+                  <span>{{ {User:"问",Assistant:'答'}[current_conversation.role]
+                    }}</span>
+                </v-avatar>
+                <br />
+                <v-expand-transition>
+                  <div v-if="hover" class="float">
+                    <v-icon v-if="!loading" large text :color="color"
+                      @click="delete_current_conversation(current_conversation)">
+                      mdi-delete
+                    </v-icon>
+
+                    <v-icon large text :color="color" @click="copy(current_conversation.content)">
+                      mdi-content-copy
+                    </v-icon>
+                    <v-icon large text :color="color" @click="edit(current_conversation)">
+                      mdi-pencil
+                    </v-icon>
+                  </div>
+                </v-expand-transition>
+              </div>
+            </v-hover>
+
+            <span v-if="current_conversation.role != 'User'" class="answer">
+              <div v-html="md2html(current_conversation.content)"></div>
+              <template style="margin-top: 10px">
+                <v-tooltip bottom v-for="source in current_conversation.sources" :max-width="500">
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on" style="margin: 3px">
+                      <v-btn outlined style="
+                            margin-top: 0px;
+                            max-width: -webkit-fill-available;
+                            overflow-x: hidden;
+                          " :color="color" rounded="lg"
+                        @click='source.url?window.open(source.url,"_blank"):source.click()' x-small>
+                        <span class="d-inline-block text-truncate" style="max-width: 150px">
+                          {{source.title}}
+                        </span>
+                      </v-btn>
+                    </div>
+                  </template>
+                  <span v-html="source.content"></span>
+                </v-tooltip>
+              </template>
+            </span>
+          </div>
+          <br /><br /><br /><br /><br /><br /><br /><br /><br />
+          <v-footer fixed class="pr-0">
+            <div class="chat_toolbar">
+
+              <v-tooltip bottom v-for="button in buttons">
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs" v-on="on">
+                    <v-icon :color="button.color()" text @click="button.click">
+                      mdi-{{button.icon}}
+                    </v-icon>
+                  </div>
+                </template>
+                <span>{{button.description}}</span>
+              </v-tooltip>
+              {{buttons.length>0?"|":""}}
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs" v-on="on">
+                    <v-icon :color="current_func=='知识库'?color:''" text
+                      @click="current_func=='知识库'?current_func='':current_func='知识库'">
+                      mdi-book-open-variant
+                    </v-icon>
+                  </div>
+                </template>
+                <span>{{$t("zhishiku")}}</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs" v-on="on">
+                    <v-icon :color="current_func=='快速知识库'?color:''" text
+                      @click="current_func=='快速知识库'?current_func='':current_func='快速知识库'">
+                      mdi-lightning-bolt
+                    </v-icon>
+                  </div>
+                </template>
+                <span>{{$t("zhishiku")}}快速模式</span>
+              </v-tooltip>
+              |
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs" v-on="on">
+                    <v-icon :color="sst_started?color:''" text @click="sst_started?stop_listen():listen()">
+                      mdi-microphone
+                    </v-icon>
+                  </div>
+                </template>
+                <span>语音输入</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs" v-on="on">
+                    <v-icon :color="tts_on?color:''" text @click="tts_on=!tts_on">
+                      mdi-headset
+                    </v-icon>
+                  </div>
+                </template>
+                <span>阅读文本</span>
+              </v-tooltip>
+              |
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs" v-on="on">
+                    <v-icon :color="history_on?color:''" text @click="history_on=!history_on">
+                      mdi-history
+                    </v-icon>
+                  </div>
+                </template>
+                <span>{{$t("history")}}</span>
+              </v-tooltip>
+              <v-tooltip bottom v-if="(!loading)&&(chat.length>0)">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon :color="color" v-bind="attrs" v-on="on" @click="re_generate()">
+                    mdi-refresh
+                  </v-icon>
+                </template>
+                <span>{{$t("re_generate")}}</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs" v-on="on">
+                    <v-icon :color="color" text @click="chat=[];save_history()">
+                      mdi-delete-clock-outline
+                    </v-icon>
+                  </div>
+                </template>
+                <span>{{$t("clear_history")}}</span>
+              </v-tooltip>
+              <b>TPS:{{TPS.toFixed(2)}}</b>
+            </div>
+            <v-row no-gutters>
+              <v-col cols="8" md="11">
+                <v-textarea hide-details no-resize rows="3" :loading="loading" :placeholder="$t(func_mode.description)"
+                  @keypress.enter="submit" v-model="question">
+                </v-textarea>
+              </v-col>
+              <v-col cols="4" md="1">
+                <div style="text-align: center">
+                  <v-btn style="margin-bottom: 10px" v-if="loading" :color="color" rounded="lg" dark size="x-large"
+                    @click="abort_chatting()">
+                    {{$t("abord")}}
+                  </v-btn>
+                  <v-btn style="margin-bottom: 10px" :color="color" rounded="lg" dark size="x-large" @click="submit()"
+                    v-if="!loading">
+                    {{$t("send")}}
+                  </v-btn>
+                  <br />
+                  <v-expand-transition>
+                    <v-chip v-if="func_mode.name!=''" :color="color" outlined close @click:close="current_func=''">
+                      <span class="d-inline-block text-truncate" style="max-width: 120px">
+                        {{func_mode.name}}
+                      </span>
+                    </v-chip>
+                  </v-expand-transition>
+                </div>
+              </v-col>
+            </v-row>
+          </v-footer>
+        </v-tab-item>
+        <v-tab-item key="apps">
+          <v-text-field v-model="autos_search" append-icon="mdi-magnify" label="搜索应用" single-line
+            hide-details></v-text-field>
+          <v-divider></v-divider>
+          <v-data-table item-key="name" show-expand :search="autos_search"
+            :headers="[{ text: '名称', value: 'name' },{ text: '描述', value: 'description' },{ text: '禁用', value: 'disabled' },  { text: '', value: 'data-table-expand' },]"
+            :items="autos">
+            <template v-slot:item.disabled="{ item }">
+              <v-switch v-model="item.disabled" :color="color"></v-switch>
+            </template>
+            <template v-slot:expanded-item="{ headers, item }">
+              <v-icon v-if="find_auto(item.name)>-1" large text @click="del_auto(item.name)">
+                mdi-delete
+              </v-icon>
+              <pre style="width: 200px" :colspan="headers.length">{{ item.content }}</pre>
+            </template>
+          </v-data-table>
+          <v-btn :color="color" dark size="x-large"
+            @click="disabled_auto={};app.autos.forEach(auto=>disabled_auto[auto.name]=auto.disabled);localStorage['wenda_disabled_auto'] =JSON.stringify(disabled_auto)">
+            保存（刷新后起效）
+          </v-btn>
+        </v-tab-item>
+        <v-tab-item key="zsk">
+          <h1>知识库管理</h1>
+
+          <v-card elevation="2">
+            <v-card-title>查询知识库</v-card-title>
+            <v-divider></v-divider><br />
+            <v-card-text>
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <v-text-field v-model="test_zsk_prompt" outlined label="关键词" clearable></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field v-model="zsk_step" outlined label="上下文数量" clearable></v-text-field>
+                </v-col>
+              </v-row>
+              <v-data-table
+                :headers="[{ text: '来源', value: 'title' },{ text: '分数', value: 'score' },{ text: '内容', value: 'content' }]"
+                :items="zhishiku" hide-default-footer>
+                <template v-slot:item.title="{ item }">
+                  <p v-html="md2html(item.title)"></p>
+                </template>
+              </v-data-table>
+              <v-card-actions>
+                <v-btn :color="color" dark size="x-large" @click="find(test_zsk_prompt,zsk_step)">
+                  测试
+                </v-btn>
+              </v-card-actions>
+            </v-card-text>
+          </v-card>
+
+          <v-card elevation="2">
+            <v-card-title>批量上传</v-card-title>
+            <v-divider></v-divider><br>
+            <v-card-text>
+              <v-data-table :headers="[{ text: '问题', value: '问题' },{ text: '回答', value: '回答' }]" :items="l表格读取结果">
+              </v-data-table>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn :color="color" dark size="x-large" @click="f载入表格()">
+                载入表格
+              </v-btn>
+              <v-btn :color="color" dark size="x-large" @click="f批量上传()" :loading="b批量上传中">
+                上传
+
+              </v-btn><template v-if="b批量上传中">{{i批量上传进度}}/{{l表格读取结果.length}}</template>
+            </v-card-actions>
+          </v-card>
+          <v-btn :color="color" dark size="x-large" @click="add_memory_by_string(prompt('输入标题'),prompt('输入内容'))">
+            单条上传
+          </v-btn>
+          <v-card elevation="2">
+            <v-card-title>知识提取提示词</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text><br />
+              <v-combobox v-model="zsk_summarize_prompt" :items="['总结以下文段中与问题相关的信息。']" label="总结提示词"></v-combobox>
+
+              <v-combobox v-model="zsk_answer_prompt" :items="['学习以下文段,用中文回答问题。如果无法从中得到答案，忽略文段内容并用中文回答问题。']"
+                label="回答提示词"></v-combobox>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item key="setting">
+          <h1>参数管理</h1>
+          <v-card elevation="2">
+            <v-card-title>模型管理(ollama)</v-card-title>
+            <v-divider></v-divider><br />
+            <v-card-text>
+              <v-data-table :headers="[{ text: '名称', value: 'name' },
+                { text: '家族', value: 'family' },
+                { text: '格式', value: 'format' },
+                { text: '参数量', value: 'parameter_size' },
+                { text: '量化', value: 'quantization_level' },
+                { text: '修改日期', value: 'modified_at' },
+                { text: '大小', value: 'size' },{ text: '选择', value: 'setting' }]" :items="server_models">
+                <template v-slot:item.family="{ item }">{{item.details.family}}
+                </template>
+                <template v-slot:item.format="{ item }"> {{item.details.format}}
+                </template>
+                <template v-slot:item.parameter_size="{ item }">{{item.details.parameter_size}}
+                </template>
+                <template v-slot:item.quantization_level="{ item }"> {{item.details.quantization_level}}
+                </template>
+                <template v-slot:item.setting="{ item }">
+                  <v-btn :color="item.using==true?color:'gray'" dark @click="set_model(item.name);">
+                    使用
+                  </v-btn>
+                </template>
+              </v-data-table>
+              <v-card-actions>
+                <v-btn :color="color" dark size="x-large" @click="find(test_zsk_prompt,zsk_step)">
+                  测试
+                </v-btn>
+              </v-card-actions>
+            </v-card-text>
+          </v-card>
+          <!-- <v-card elevation="2">
+              <v-card-title>模型运行参数</v-card-title>
+              <v-divider></v-divider>
+              <v-card-text><br />
+                <v-form>
+
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <div v-bind="attrs" v-on="on" style="width: 100%;">
+                        <v-slider :min="2000" :max="8192" :step="100"
+                          v-model="max_length" :thumb-color="color"
+                          label="max_length" thumb-label><template v-slot:append>
+                            <v-text-field v-model="max_length" class="mt-0 pt-0"
+                              type="number" style="width: 60px">
+                            </v-text-field>
+                          </template>
+                        </v-slider>
+                      </div>
+                    </template>
+                    <span>最大生成token数（注意，不同模型对此参数实现不同。部分会将输入token计入）</span>
+                  </v-tooltip>
+
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <div v-bind="attrs" v-on="on" style="width: 100%;">
+                        <v-slider :min="0" :max="2" :step="0.1"
+                          v-model="temperature" :thumb-color="color"
+                          label="temperature" thumb-label><template
+                            v-slot:append>
+                            <v-text-field v-model="temperature"
+                              class="mt-0 pt-0" type="number"
+                              style="width: 60px">
+                            </v-text-field>
+                          </template>
+                        </v-slider>
+                      </div>
+                    </template>
+                    <span>温度（随机性）</span>
+                  </v-tooltip>
+
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <div v-bind="attrs" v-on="on" style="width: 100%;">
+                        <v-slider :min="0" :max="1" :step="0.1" v-model="top_p"
+                          :thumb-color="color" label="top_p"
+                          thumb-label>
+                          <template v-slot:append>
+                            <v-text-field v-model="top_p" class="mt-0 pt-0"
+                              type="number" style="width: 60px">
+                            </v-text-field>
+                          </template>
+                        </v-slider>
+                      </div>
+                    </template>
+                    <span>选取的前p个输出数量</span>
+                  </v-tooltip>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <div v-bind="attrs" v-on="on" style="width: 100%;">
+                        <v-slider :min="0.2" :max="1.8" :step="0.1"
+                          v-model="cfg_factor" :thumb-color="color"
+                          label="cfg_factor" thumb-label>
+                          <template v-slot:append>
+                            <v-text-field v-model="cfg_factor" class="mt-0 pt-0"
+                              type="number" style="width: 60px">
+                            </v-text-field>
+                          </template>
+                        </v-slider>
+                      </div>
+                    </template>
+                    <span>classifier free guidence 因子，当前仅支持rwkv</span>
+                  </v-tooltip>
+                  <v-row>
+                    <v-col cols="12" sm="2">
+                      <v-switch hide-details
+                        :label="$t('simplify_historical_information')"
+                        :color="color" inset
+                        v-model="simplify_historical_information">
+                      </v-switch>
+                    </v-col>
+                    <v-col cols="12" sm="10">
+                      <v-slider :min="0" :max="10" :step="1"
+                        v-model="history_limit" :thumb-color="color"
+                        label="对话轮数限制"
+                        thumb-label>
+                        <template v-slot:append>
+                          <v-text-field v-model="history_limit"
+                            class="mt-0 pt-0" type="number" style="width: 60px">
+                          </v-text-field>
+                        </template>
+                      </v-slider>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </v-card-text>
+            </v-card>
+            <v-card elevation="2">
+              <v-card-title>动态调整知识库</v-card-title>
+              <v-divider></v-divider>
+              <v-card-text>网页刷新后恢复<br />
+                <v-row>
+                  <v-col cols="8">
+                    <v-combobox v-model="zsk_libraryStategy"
+                      :items="['rtst:3:default agents:0','sogowx:3 bing:3']"
+                      label="库参数"></v-combobox>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-text-field v-model="zsk_maxItmes" outlined label="最大数量"></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn :color="color" dark size="x-large"
+                  @click="find=(s, step = 1)=>find_dynamic(s, step, {libraryStategy:zsk_libraryStategy,maxItmes:zsk_maxItmes})">
+                  设置
+                </v-btn>
+              </v-card-actions>
+            </v-card> -->
+          <v-tab-item v-for="plugin in plugins" :key="plugin.name">
+            <iframe frameborder="0" :src="plugin.url+'?time='+new Date().getTime()"
+              style="width: 100%; height: 100%"></iframe>
+          </v-tab-item>
+      </v-tabs-items>
+      <v-tabs v-model="tab" :color="color" style="background: #fff">
+        <v-tabs-slider :color="color"></v-tabs-slider>
+        <v-tab key="chat">
+          <v-icon text> mdi-tooltip-edit-outline </v-icon>
+        </v-tab>
+        <v-tab key="apps">
+          <v-icon text> mdi-application-parentheses </v-icon>
+        </v-tab>
+        <v-tab key="zsk">
+          <v-icon text> mdi-book-alphabet </v-icon>
+        </v-tab>
+        <v-tab key="setting">
+          <v-icon text> mdi-cog </v-icon>
+        </v-tab>
+        <v-tab v-for="plugin in plugins" :key="plugin.name">
+          <v-icon text v-if="plugin.icon"> {{"mdi-"+plugin.icon}} </v-icon>{{plugin.name}}
+        </v-tab>
+      </v-tabs>
+      <v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line">{{snackbar_text}}</v-snackbar>
+      <v-dialog v-model="show_dialog" persistent max-width="600px">
+        <v-card class="ma-0 pa0">
+          <v-card-title>
+            <span class="text-h5">{{dialog_title}}</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-textarea autofocus v-model="dialog_input" rows="5" hide-details="auto"
+                @keypress.enter="show_dialog = false;window.dialog_input_resolver()"></v-textarea>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text
+              @click="show_dialog = false;dialog_input='';window.dialog_input_resolver()">
+              取消
+            </v-btn>
+            <v-btn color="blue darken-1" text @click="show_dialog = false;window.dialog_input_resolver()">
+              确认
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-app>
+  </div>
+  <script>
+    func = [
+      {
+        name: "",
+        description: "input_question",
+        question: "",
+      },
+    ];
+    app = new Vue({
+      el: "#app",
+      vuetify: new Vuetify(),
+      i18n: i18n,
+      watch: {
+        current_func: (current_func) => {
+          current_func = app.func_menu.find((i) => i.name == current_func);
+          if (current_func) {
+            app.func_mode = current_func
+            document.location.hash = current_func.name
+          } else {
+            app.current_func = ''
+          }
+        },
+        tab: (val) => {
+          if (val > 2) {
+            if (app.plugins[val - 3].hide_title == true) {
+              app.show_header = false;
+              return;
+            }
+          }
+          app.show_header = true;
+        },
+      },
+      data() {
+        return {
+          // 用户输入的问题
+          question: "",
+          // 聊天记录
+          chat: JSON.parse(localStorage["wenda_chat_history"] || "[]"),
+          // 是否开启历史记录
+          history_on: false,
+          // 历史记录的数量限制
+          history_limit: 5,
+          // 功能菜单
+          func_menu: func,
+          // 当前选中的功能
+          current_func: "",
+          // 知识库检索策略
+          zsk_libraryStategy: "",
+          // 知识库检索结果数量
+          zsk_maxItmes: 5,
+          // 知识库总结问题的提示
+          zsk_summarize_prompt: "总结以下文段中与问题相关的信息。",
+          // 知识库回答问题的提示
+          zsk_answer_prompt:
+            "总结以下文段中与问题相关的信息。",
+          // 载入的auto
+          func_mode: func[0],
+          // 插件列表
+          plugins: [],
+          // 按钮列表
+          buttons: [],
+          // auto列表
+          autos: [],
+          // 是否简化历史记录
+          simplify_historical_information: false,
+          // 是否开启语音合成
+          tts_on: false,
+          // 是否开启语音识别
+          sst_started: false,
+          // 测试知识库的提示
+          test_zsk_prompt: "",
+          // 测试知识库的步骤
+          zsk_step: 2,
+          // 知识库
+          zhishiku: [],
+          // 设置
+          setting: {},
+          // 当前选中的tab
+          tab: 0,
+          // 生成回答的温度
+          temperature: 0.8,
+          // 生成回答的最大长度
+          max_length: 4096,
+          // 生成回答的top_p
+          top_p: 0.8,
+          //classifier free guidence 因子，当前仅支持rwkv
+          cfg_factor: 1,
+          // 语言模型类型
+          llm_type: "",
+          // tab列表
+          tabs: ["chat", "zhishiku", "setting"],
+          // 是否显示snackbar
+          snackbar: false,
+          // snackbar的文本
+          snackbar_text: "",
+          // 是否正在加载
+          loading: false,
+          // 是否显示左侧菜单
+          drawer: false,
+          //是否显示顶部菜单栏，逻辑中根据插件的hide_title属性来判断是否需要隐藏
+          show_header: true,
+          //主题色
+          color: "purple",
+          //管理界面中，搜索auto的关键词
+          autos_search: "",
+          TPS: 0,
+          //显示对话框
+          show_dialog: false,
+          //对话框标题
+          dialog_title: "",
+          //对话框用户输入
+          dialog_input: "",
+          //服务端模型
+          server_models: [],
+          //知识库批量上传
+          l表格读取结果: [],
+          b批量上传中: false,
+          i批量上传进度: 0,
+        };
+      },
+      methods: {
+        md2html: (conent) => {
+          // return conent
+          conent = String(conent);
+          let md = new markdownit();
+          // md.disable(['link', 'image'])
+          return md.render(conent).replace(/<a /g, '<a target="_blank"').replace(/[\r\n]+!$/g, "<br>")
+        },
+      },
+    });
+    //获取用户输入
+    input = async (title = '请输入', input = '') => {
+      app.dialog_title = title
+      app.dialog_input = input
+      app.show_dialog = true
+
+      await new Promise(resolve => {
+        window.dialog_input_resolver = resolve
+      })
+      return app.dialog_input
+    }
+    //编辑会话内容
+    edit = async (current_conversation) => {
+      let s修改后的内容 = await input('请输入修改后的内容', current_conversation.content)
+      if (s修改后的内容) {
+        current_conversation.content = s修改后的内容
+        if (current_conversation.keyword) current_conversation.keyword = s修改后的内容
+        alert('修改成功')
+      } else
+        alert('取消修改')
+    }
+    // 加载指定功能
+    load_func = (func) => {
+      app.current_func = func.name;
+      app.drawer = false;
+    };
+
+    // 从 app 的 chat 数组中删除当前的对话项并保存更新后的历史记录
+    delete_current_conversation = (item) => {
+      app.chat.splice(Math.floor(app.chat.indexOf(item) / 2) * 2, 2);
+      save_history();
+    };
+
+    // 将 is_abord 标志设置为 true 并关闭 WebSocket 连接
+    abort_chatting = () => {
+      is_abord = true;
+      app.loading = false
+      controller.abort();
+    };
+
+    // 处理表单提交事件并将用户的输入发送到服务器
+    submit = async (e) => {
+      if (e && e.shiftKey) {
+        return
+      }
+      e && e.preventDefault()
+      if (typeof app.func_mode.question == "function") {
+        await app.func_mode.question(app.question);
+        app.question = ''
+      } else {
+        let Q = app.question
+
+        if (app.history_on)
+          await send(app.func_mode.question + Q, Q, show = true, sources = [],
+            addition_args = { cfg_factor: app.cfg_factor, cfg_ctx: Q });
+        else
+          await send(app.func_mode.question + Q, Q);
+      }
+    };
+
+    // 重新生成用户的最后一条消息并将其发送到服务器
+    re_generate = () => {
+      let last_send = app.chat[app.chat.length - 2];
+      app.chat.splice(app.chat.length - 2, 2);
+      if (last_send.keyword) app.question = last_send.keyword;
+      else app.question = last_send.content;
+
+      submit();
+    };
+
+    // 总结聊天历史记录并提示用户提取关键信息
+    summerize_history = async () => {
+      zsk(false);
+      lsdh(false);
+      let prompt =
+        "提取以下对话中的关键信息。\n" +
+        app.chat
+          .map(
+            (i) =>
+              (i.role == "User" ? "Alice: " : "Bob: ") +
+              i.content.replace(/\n/g, "")
+          )
+          .join("\n");
+      await send(prompt);
+      lsdh(true);
+      app.loading = true;
+      app.chat = app.chat.slice(app.chat.length - 2);
+      app.chat[0].content = "提供本次对话中的关键信息。";
+    };
+
+    // 将用户的输入发送到服务器并更新 app 的 chat 数组
+    // 参数s为用户输入的内容，keyword为用户输入的关键词，show为是否显示用户输入的内容，sources为知识库的来源
+    let last_cost = []
+    send = async (s, keyword = "", show = true, sources = [], addition_args = {}) => {
+      app.question = ''
+      if (keyword == "") keyword = s;
+      is_abord = false;
+      app.loading = true;
+
+      let QA_history;
+      // 如果历史记录开启,则将历史记录保存到 QA_history 中
+      if (app.history_on) {
+        if (
+          app.history_limit != 0 &&
+          app.chat.length + 1 >= app.history_limit * 2
+        ) {
+          if (app.simplify_historical_information) {
+            alert(`历史信息过长，自动进行总结`);
+            await summerize_history();
+            QA_history = app.chat
+          } else {
+            alert(
+              `历史信息过长，将仅保留最后${app.history_limit}次chat记忆。setting为0不限制`
+            );
+            QA_history = app.chat.slice(
+              app.chat.length - app.history_limit * 2
+            );
+          }
+        } else {
+          QA_history = app.chat
+        }
+        QA_history = QA_history.filter(i => !i.no_history)
+      } else {
+        QA_history = [];
+      }
+      let current_session = { role: "Assistant", content: "……", sources: sources };
+      if (show) {
+        app.chat.push({ role: "User", content: s, keyword: keyword });
+        app.chat.push(current_session);
+      }
+      setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 0);
+      // 调用websocket聊天，具体函数在wd_sdk.js中
+      let last_token_time = Date.now()
+      await send_raw(s.replace(/\r\n/g, "\n"), keyword, QA_history, (message) => {
+        current_session.content = message;
+        let now = Date.now()
+        let cost = now - last_token_time
+        last_cost.push(cost)
+        if (last_cost.length > 10) last_cost.shift()
+        let avg_cost = 0
+        last_cost.forEach(v => avg_cost += v)
+        avg_cost /= last_cost.length
+        app.TPS = 1000 / avg_cost
+        last_token_time = now
+      }, addition_args);
+      if (app.tts_on) {
+        speak(current_session.content);
+      }
+      app.loading = false;
+      save_history();
+      if (is_abord) throw new MyException("已中断");
+      return current_session.content;
+    };
+
+
+    // 覆盖 console.warn 函数以不执行任何操作
+    console.warn = function () { };
+  </script>
+  <script type="module" src="/static/idb-vector/idb-vector.js"></script>
+  <script src="/wd_sdk.js"></script>
+  <script>
+    // 从插件内容中提取描述信息
+    get_auto_description = (plugin) => {
+      try {
+        return plugin.content.match(/@description (.+)\n/)[1].trim();
+      } catch { }
+      return "";
+    };
+
+    // 判断是否禁用了某个插件
+    get_auto_disabled = (plugin, name) => {
+      if (disabled_auto[name] == undefined)
+        return !!plugin.content.match(/wenda_auto_default_disabled/);
+      return disabled_auto[name];
+    };
+
+    // 从插件内容中提取名称信息
+    get_auto_name = (plugin) => {
+      try {
+        return (
+          plugin.content.match(/@name (.+)\n/)[1].trim() + `(${plugin.name})`
+        );
+      } catch { }
+      return plugin.name;
+    };
+
+    // 将启用的插件内容添加到 app.autos 数组中，显示在菜单中
+    add_auto = (content) => {
+      let plugin = { content: content, name: "用户添加" };
+      let name = get_auto_name(plugin);
+      let auto = {
+        name: name,
+        description: get_auto_description(plugin),
+        content: plugin.content,
+        disabled: false,
+      };
+      saved_auto.push(auto);
+      app.autos.push(auto);
+      try {
+
+        if (!auto.disabled) eval(plugin.content);
+      } catch {
+
+      }
+      localStorage["wenda_saved_auto"] = JSON.stringify(saved_auto);
+    };
+
+    // 查找指定名称的插件在 saved_auto 数组中的索引
+    find_auto = (name) => saved_auto.findIndex((a) => a.name == name);
+
+    // 删除指定名称的插件
+    del_auto = (name) => {
+      let auto_index = find_auto(name);
+      saved_auto.splice(auto_index, 1);
+      localStorage["wenda_saved_auto"] = JSON.stringify(saved_auto);
+      location.reload();
+    };
+
+    // 加载所有插件并将其添加到 app.autos 数组中
+    load_plugins = async () => {
+      disabled_auto = JSON.parse(localStorage["wenda_disabled_auto"] || "{}");
+      server_auto = await fetch("/autos/autos");
+      server_auto = (await server_auto.text()).split(/[\r\n]+/)
+      console.log(server_auto)
+      await server_auto.forEach(async (name) => {
+        if (name == '') return
+        let plugin = {
+          name: name,
+          content: await (await fetch("/autos/" + name)).text(),
+        };
+        let auto = {
+          name: name,
+          description: get_auto_description(plugin),
+          content: plugin.content,
+          disabled: get_auto_disabled(plugin, name),
+        };
+        app.autos.push(auto);
+        setTimeout(() => {
+          if (!auto.disabled) eval(plugin.content);
+        }, 0)
+      });
+
+      saved_auto = JSON.parse(localStorage["wenda_saved_auto"] || "[]");
+      saved_auto.forEach((auto) => {
+        app.autos.push(auto);
+        setTimeout(() => {
+          if (!auto.disabled) eval(auto.content);
+        }, 0)
+      });
+
+      setTimeout(() => app.current_func = decodeURI(document.location.hash.replace('#', '')), 1000)
+    };
+    load_plugins();
+    alert = (text) => {
+      app.snackbar_text = text; //.replace(/\n/g,"<br>")
+      app.snackbar = true;
+    }
+  </script>
+</body>
+
+</html>
