@@ -492,6 +492,25 @@
         </v-tab-item>
         <v-tab-item key="setting">
           <h1>参数管理</h1>
+
+          <v-card elevation="2">
+            <v-card-title>接口管理</v-card-title>
+            <v-divider></v-divider><br />
+            <v-card-text>
+              <v-row>
+                <v-col cols="12" sm="10">
+                  <v-text-field v-model="api_authorization" outlined label="api_key" clearable
+                    placeholder="sk-xxx"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="2">
+                  <v-btn :color="color" dark size="x-large"
+                    @click='localStorage["wenda_api_authorization"]=app.api_authorization'>
+                    保存
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
           <v-card elevation="2">
             <v-card-title>模型管理(ollama)</v-card-title>
             <v-divider></v-divider><br />
@@ -517,109 +536,89 @@
                   </v-btn>
                 </template>
               </v-data-table>
-              <v-card-actions>
-                <v-btn :color="color" dark size="x-large" @click="find(test_zsk_prompt,zsk_step)">
-                  测试
-                </v-btn>
-              </v-card-actions>
             </v-card-text>
           </v-card>
-          <!-- <v-card elevation="2">
-              <v-card-title>模型运行参数</v-card-title>
-              <v-divider></v-divider>
-              <v-card-text><br />
-                <v-form>
+          <v-card elevation="2">
+            <v-card-title>模型运行参数</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text><br />
+              <v-form>
 
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                      <div v-bind="attrs" v-on="on" style="width: 100%;">
-                        <v-slider :min="2000" :max="8192" :step="100"
-                          v-model="max_length" :thumb-color="color"
-                          label="max_length" thumb-label><template v-slot:append>
-                            <v-text-field v-model="max_length" class="mt-0 pt-0"
-                              type="number" style="width: 60px">
-                            </v-text-field>
-                          </template>
-                        </v-slider>
-                      </div>
-                    </template>
-                    <span>最大生成token数（注意，不同模型对此参数实现不同。部分会将输入token计入）</span>
-                  </v-tooltip>
-
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                      <div v-bind="attrs" v-on="on" style="width: 100%;">
-                        <v-slider :min="0" :max="2" :step="0.1"
-                          v-model="temperature" :thumb-color="color"
-                          label="temperature" thumb-label><template
-                            v-slot:append>
-                            <v-text-field v-model="temperature"
-                              class="mt-0 pt-0" type="number"
-                              style="width: 60px">
-                            </v-text-field>
-                          </template>
-                        </v-slider>
-                      </div>
-                    </template>
-                    <span>温度（随机性）</span>
-                  </v-tooltip>
-
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                      <div v-bind="attrs" v-on="on" style="width: 100%;">
-                        <v-slider :min="0" :max="1" :step="0.1" v-model="top_p"
-                          :thumb-color="color" label="top_p"
-                          thumb-label>
-                          <template v-slot:append>
-                            <v-text-field v-model="top_p" class="mt-0 pt-0"
-                              type="number" style="width: 60px">
-                            </v-text-field>
-                          </template>
-                        </v-slider>
-                      </div>
-                    </template>
-                    <span>选取的前p个输出数量</span>
-                  </v-tooltip>
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on, attrs }">
-                      <div v-bind="attrs" v-on="on" style="width: 100%;">
-                        <v-slider :min="0.2" :max="1.8" :step="0.1"
-                          v-model="cfg_factor" :thumb-color="color"
-                          label="cfg_factor" thumb-label>
-                          <template v-slot:append>
-                            <v-text-field v-model="cfg_factor" class="mt-0 pt-0"
-                              type="number" style="width: 60px">
-                            </v-text-field>
-                          </template>
-                        </v-slider>
-                      </div>
-                    </template>
-                    <span>classifier free guidence 因子，当前仅支持rwkv</span>
-                  </v-tooltip>
-                  <v-row>
-                    <v-col cols="12" sm="2">
-                      <v-switch hide-details
-                        :label="$t('simplify_historical_information')"
-                        :color="color" inset
-                        v-model="simplify_historical_information">
-                      </v-switch>
-                    </v-col>
-                    <v-col cols="12" sm="10">
-                      <v-slider :min="0" :max="10" :step="1"
-                        v-model="history_limit" :thumb-color="color"
-                        label="对话轮数限制"
-                        thumb-label>
-                        <template v-slot:append>
-                          <v-text-field v-model="history_limit"
-                            class="mt-0 pt-0" type="number" style="width: 60px">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on" style="width: 100%;">
+                      <v-slider :min="2000" :max="8192" :step="100" v-model="max_length" :thumb-color="color"
+                        label="max_length" thumb-label><template v-slot:append>
+                          <v-text-field v-model="max_length" class="mt-0 pt-0" type="number" style="width: 60px">
                           </v-text-field>
                         </template>
                       </v-slider>
-                    </v-col>
-                  </v-row>
-                </v-form>
-              </v-card-text>
-            </v-card>
+                    </div>
+                  </template>
+                  <span>最大生成token数</span>
+                </v-tooltip>
+
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on" style="width: 100%;">
+                      <v-slider :min="0" :max="2" :step="0.1" v-model="temperature" :thumb-color="color"
+                        label="temperature" thumb-label><template v-slot:append>
+                          <v-text-field v-model="temperature" class="mt-0 pt-0" type="number" style="width: 60px">
+                          </v-text-field>
+                        </template>
+                      </v-slider>
+                    </div>
+                  </template>
+                  <span>温度（随机性）</span>
+                </v-tooltip>
+
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on" style="width: 100%;">
+                      <v-slider :min="0" :max="1" :step="0.1" v-model="top_p" :thumb-color="color" label="top_p"
+                        thumb-label>
+                        <template v-slot:append>
+                          <v-text-field v-model="top_p" class="mt-0 pt-0" type="number" style="width: 60px">
+                          </v-text-field>
+                        </template>
+                      </v-slider>
+                    </div>
+                  </template>
+                  <span>选取的前p个输出数量</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div v-bind="attrs" v-on="on" style="width: 100%;">
+                      <v-slider :min="0.2" :max="1.8" :step="0.1" v-model="cfg_factor" :thumb-color="color"
+                        label="cfg_factor" thumb-label>
+                        <template v-slot:append>
+                          <v-text-field v-model="cfg_factor" class="mt-0 pt-0" type="number" style="width: 60px">
+                          </v-text-field>
+                        </template>
+                      </v-slider>
+                    </div>
+                  </template>
+                  <span>classifier free guidence 因子，当前仅支持rwkv</span>
+                </v-tooltip>
+                <v-row>
+                  <v-col cols="12" sm="2">
+                    <v-switch hide-details :label="$t('simplify_historical_information')" :color="color" inset
+                      v-model="simplify_historical_information">
+                    </v-switch>
+                  </v-col>
+                  <v-col cols="12" sm="10">
+                    <v-slider :min="0" :max="10" :step="1" v-model="history_limit" :thumb-color="color" label="对话轮数限制"
+                      thumb-label>
+                      <template v-slot:append>
+                        <v-text-field v-model="history_limit" class="mt-0 pt-0" type="number" style="width: 60px">
+                        </v-text-field>
+                      </template>
+                    </v-slider>
+                  </v-col>
+                </v-row>
+              </v-form>
+            </v-card-text>
+          </v-card><!-- 
             <v-card elevation="2">
               <v-card-title>动态调整知识库</v-card-title>
               <v-divider></v-divider>
@@ -805,6 +804,8 @@
           dialog_input: "",
           //服务端模型
           server_models: [],
+          api_authorization: localStorage["wenda_api_authorization"] || '',
+          api_base_url: localStorage["wenda_api_base_url"] || '',
           //知识库批量上传
           l表格读取结果: [],
           b批量上传中: false,

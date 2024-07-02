@@ -21,7 +21,7 @@ send_raw = async (prompt, prompt2, QA_history, onmessage = alert, args = {}) => 
         res = await fetch(llm_server , {
             method: "POST",
             headers: {
-                "authorization": "Bearer sk-" + app.authorization,
+                "authorization": "Bearer " + app.api_authorization,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(Object.assign({
