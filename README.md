@@ -12,6 +12,8 @@
 ### ollama
 *推荐*
 推荐使用nginx将本前端与ollama api放至同一服务下，配置参考`nginx.conf`。
+建议使用软连接将项目文件放到nginx下：
+```mklink /j D:\ollama-windows-amd64\frontend\html D:\wenda_pure_frontend\index```
 当前支持：知识库、在线切换模型、AUTOS
 
 ### AI00
