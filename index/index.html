@@ -985,8 +985,11 @@
     // 从插件内容中提取描述信息
     get_auto_description = (plugin) => {
       try {
-        return plugin.content.match(/@description (.+)\n/)[1].trim();
-      } catch { }
+        return plugin.content.match(/@description (.+)[\r\n]/)[1].trim();
+      } catch (error) {
+        // console.log(error,plugin.content.match(/@description (.+)[\r\n]/))
+      }
+
       return "";
     };
 

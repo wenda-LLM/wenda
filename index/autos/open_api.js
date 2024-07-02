@@ -13,25 +13,39 @@
 
 
 send_raw = async (prompt, prompt2, QA_history, onmessage = alert, args = {}) => {
-    let llm_server = 'http://localhost:3000/v1/chat/completions'
-    const res = await fetch(llm_server + "", {
-        method: "POST",
-        headers: {
-            "authorization": "Bearer sk-" + app.authorization,
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(Object.assign({
-            model: "gpt-3.5-turbo",
-            messages: QA_history.concat([{ role: "user", content: prompt }]),
-            stream: true,
-            "top_p": app.top_p || 0.5,
-            "temperature": app.temperature || 1,
-            "presence_penalty": 0.3,
-            "frequency_penalty": 0.3,
 
-        }, args)),
-        // signal: controller.signal
-    });
+    controller = new AbortController()
+    let llm_server = 'http://localhost:3000/v1/chat/completions'
+    let res
+    try {
+        res = await fetch(llm_server , {
+            method: "POST",
+            headers: {
+                "authorization": "Bearer sk-" + app.authorization,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(Object.assign({
+                model: "gpt-3.5-turbo",
+                messages: QA_history.concat([{ role: "user", content: prompt }]),
+                stream: true,
+                "top_p": app.top_p || 0.5,
+                "temperature": app.temperature || 1,
+                "presence_penalty": 0.3,
+                "frequency_penalty": 0.3,
+
+            }, args)),
+            signal: controller.signal
+        })
+
+    } catch (error) {
+        console.log(error)
+        onmessage(result ||error)
+        return result || error
+    }
+    if(res.status === 401) {
+        onmessage('401!')
+        return '401!'
+    }
     let result = ''
     const decoder = new TextDecoder();
     const reader = res.body.getReader();
