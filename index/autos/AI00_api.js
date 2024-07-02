@@ -10,7 +10,7 @@
 // @grant        none
 // ==/UserScript==
 
-if (document.location.href.indexOf("plugins")) {
+if (document.location.href.indexOf("plugins")>0) {
     make_embedding_by_string = async (prompt) => {
         res = await fetch("/api/oai/v1/embeddings", {
             method: "POST",
