@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>自动流</title>
+  <link href="../static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet" />
+  <script src="../static/vue.js"></script>
+</head>
+
+<body>
+  <script src="drawflow.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="drawflow.min.css" />
+  <link rel="stylesheet" type="text/css" href="beautiful.css" />
+  <script src="micromodal.min.js"></script>
+
+  <div class="wrapper" id="app">
+    <div class="col">
+      <div class="drag-drawflow" v-for='i in nodes' draggable="true" ondragstart="drag(event)" :data-node="i.node">
+        <i :class="'mdi mdi-'+i.icon"></i><span> {{i.name}}</span>
+      </div>
+
+    </div>
+    <div class="col-right">
+      <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div class="btn-run" onclick="run()">运行</div>
+        <div class="btn-export" onclick="console.log(JSON.stringify((editor.export()).drawflow.Home.data))">导出</div>
+        <div class="btn-clear" onclick="editor.clearModuleSelected()">清空</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    app = new Vue({
+      el: "#app",
+      watch: {
+      },
+      data() {
+        return {
+          plugins: [],
+          // 生成回答的温度
+          temperature: 0.8,
+          // 生成回答的最大长度
+          max_length: 4096,
+          // 生成回答的top_p
+          top_p: 0.8,
+          chat: [],
+          nodes: [{
+            name: '初始 prompt',
+            function: '`{{template}}`',
+            node: "prompt",
+            icon: "ray-start",
+            in: 0,
+            out: 1,
+            data: { "template": '' },
+            template: `
+<textarea df-template placeholder='输入初始 prompt'></textarea>`
+          },
+          {
+            name: '程序',
+            function: '{{template}}',
+            node: "function",
+            icon: "function-variant",
+            in: 3,
+            out: 1,
+            data: { "template": '' },
+            template: `
+<textarea df-template placeholder='参数：a,b,c'></textarea>`
+          },
+          {
+            name: '报警',
+            function: 'alert(a)',
+            node: "alert",
+            icon: "alert-circle",
+            in: 1,
+            out: 0,
+            data: {},
+            template: ``
+          },
+          {
+            name: '控制台打印',
+            function: 'console.log(a)',
+            node: "console_log",
+            icon: "printer-outline",
+            in: 1,
+            out: 0,
+            data: {},
+            template: ``
+          },
+          {
+            name: '模板',
+            function: '`{{template}}`.replace("{1}",a).replace("{2}",b).replace("{3}",c)',
+            node: "template",
+            icon: "text-box-plus",
+            in: 3,
+            out: 1,
+            data: { "template": '' },
+            template: `    Ger Vars
+<textarea df-template placeholder='输入内容{1}{2}{3}'></textarea>
+Output template with vars`
+          }],
+          buttons: []
+        };
+      },
+      methods: {
+      },
+    });
+    var id = document.getElementById("drawflow");
+    const editor = new Drawflow(id);
+    editor.reroute = true;
+    editor.reroute_fix_curvature = true;
+    editor.force_first_input = false;
+
+    const dataToImport = {
+      "drawflow": {
+        "Home": {
+          "data":JSON.parse(`{"1":{"id":1,"name":"prompt","data":{"template":"我想退货"},"class":"prompt","html":"\\n<div>\\n  <div class=\\"title-box\\"><i class=\\"mdi mdi-ray-start\\"></i> 初始 prompt</div>\\n  <div class=\\"box\\">\\n    \\n<textarea df-template placeholder='输入初始 prompt'></textarea>\\n  </div>\\n</div>","typenode":false,"inputs":{},"outputs":{"output_1":{"connections":[{"node":"3","output":"input_1"}]}},"pos_x":113,"pos_y":136},"2":{"id":2,"name":"alert","data":{},"class":"alert","html":"\\n<div>\\n  <div class=\\"title-box\\"><i class=\\"mdi mdi-alert-circle\\"></i> 报警</div>\\n  <div class=\\"box\\">\\n    \\n  </div>\\n</div>","typenode":false,"inputs":{"input_1":{"connections":[{"node":"3","input":"output_1"}]}},"outputs":{},"pos_x":600,"pos_y":230},"3":{"id":3,"name":"answer_with_fast_zsk","data":{"template":""},"class":"answer_with_fast_zsk","html":"\\n<div>\\n  <div class=\\"title-box\\"><i class=\\"mdi mdi-book-account\\"></i> 知识库回答</div>\\n  <div class=\\"box\\">\\n    \\n  </div>\\n</div>","typenode":false,"inputs":{"input_1":{"connections":[{"node":"1","input":"output_1"}]}},"outputs":{"output_1":{"connections":[{"node":"2","output":"input_1"}]}},"pos_x":353,"pos_y":174}}`)
+          
+        }
+      }
+    }
+    editor.start();
+    editor.import(dataToImport);
+
+    var elements = document.getElementsByClassName('drag-drawflow');
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].addEventListener('touchend', drop, false);
+      elements[i].addEventListener('touchmove', positionMobile, false);
+      elements[i].addEventListener('touchstart', drag, false);
+    }
+
+    var mobile_item_selec = '';
+    var mobile_last_move = null;
+    function positionMobile(ev) {
+      mobile_last_move = ev;
+    }
+
+    function allowDrop(ev) {
+      ev.preventDefault();
+    }
+
+    function drag(ev) {
+      if (ev.type === "touchstart") {
+        mobile_item_selec = ev.target.closest(".drag-drawflow").getAttribute('data-node');
+      } else {
+        ev.dataTransfer.setData("node", ev.target.getAttribute('data-node'));
+      }
+    }
+
+    function drop(ev) {
+      if (ev.type === "touchend") {
+        var parentdrawflow = document.elementFromPoint(mobile_last_move.touches[0].clientX, mobile_last_move.touches[0].clientY).closest("#drawflow");
+        if (parentdrawflow != null) {
+          addNodeToDrawFlow(mobile_item_selec, mobile_last_move.touches[0].clientX, mobile_last_move.touches[0].clientY);
+        }
+        mobile_item_selec = '';
+      } else {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("node");
+        addNodeToDrawFlow(data, ev.clientX, ev.clientY);
+      }
+
+    }
+
+
+    function addNodeToDrawFlow(name, pos_x, pos_y) {
+      if (editor.editor_mode === 'fixed') {
+        return false;
+      }
+      pos_x = pos_x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
+      pos_y = pos_y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
+      let node = app.nodes.find(n => n.node == name)
+      console.log(node)
+      editor.addNode(name, node.in, node.out, pos_x, pos_y, name, node.data, `
+<div>
+  <div class="title-box"><i class="mdi mdi-${node.icon}"></i> ${node.name}</div>
+  <div class="box">
+    ${node.template}
+  </div>
+</div>`);
+
+
+    }
+
+    var transform = '';
+    function showpopup(e) {
+      e.target.closest(".drawflow-node").style.zIndex = "9999";
+      e.target.children[0].style.display = "block";
+      transform = editor.precanvas.style.transform;
+      editor.precanvas.style.transform = '';
+      editor.precanvas.style.left = editor.canvas_x + 'px';
+      editor.precanvas.style.top = editor.canvas_y + 'px';
+      console.log(transform);
+      editor.editor_mode = "fixed";
+
+    }
+
+    function closemodal(e) {
+      e.target.closest(".drawflow-node").style.zIndex = "2";
+      e.target.parentElement.parentElement.style.display = "none";
+      editor.precanvas.style.transform = transform;
+      editor.precanvas.style.left = '0px';
+      editor.precanvas.style.top = '0px';
+      editor.editor_mode = "edit";
+    }
+
+    function changeModule(event) {
+      var all = document.querySelectorAll(".menu ul li");
+      for (var i = 0; i < all.length; i++) {
+        all[i].classList.remove('selected');
+      }
+      event.target.classList.add('selected');
+    }
+
+    function changeMode(option) {
+      if (option == 'lock') {
+        lock.style.display = 'none';
+        unlock.style.display = 'block';
+      } else {
+        lock.style.display = 'block';
+        unlock.style.display = 'none';
+      }
+
+    }
+    is_returned = i => typeof i == "object" && i.connections.length > 0
+    run = async () => {
+      let flow = (editor.export()).drawflow.Home.data
+      let runned = true
+      while (runned) {
+        runned = false
+        for (i in flow) {
+          if (!flow[i].runned) {
+            if (flow[i].inputs && (is_returned(flow[i].inputs.input_1) || is_returned(flow[i].inputs.input_2) || is_returned(flow[i].inputs.input_3)))
+              continue
+            let output = await eval(
+              `(async(a,b,c)=>${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", flow[i].data.template)})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
+            // console.log(i, output,`(async(a,b,c)=>${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", flow[i].data.template)})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
+            if (flow[i].outputs.output_1) for (connection of flow[i].outputs.output_1.connections) {
+              flow[connection.node].inputs[connection.output] = output
+
+            }
+            flow[i].runned = true
+            runned = true
+          }
+        }
+      }
+    }
+    send = async (s, keyword = "", show = true, sources = [], addition_args = {}) => {
+      let content=''
+      await send_raw(s.replace(/\r\n/g, "\n"), keyword, [], (message) => {
+        content = message;
+      }, addition_args);
+      return content;
+    };
+  </script>
+  <script type="module" src="../static/idb-vector/idb-vector.js"></script>
+  <script src="../wd_sdk.js"></script>
+  <script>
+    // 从插件内容中提取描述信息
+    get_auto_description = (plugin) => {
+      try {
+        return plugin.content.match(/@description (.+)[\r\n]/)[1].trim();
+      } catch (error) {
+        // console.log(error,plugin.content.match(/@description (.+)[\r\n]/))
+      }
+
+      return "";
+    };
+
+    // 判断是否禁用了某个插件
+    get_auto_disabled = (plugin, name) => {
+      if (disabled_auto[name] == undefined)
+        return !!plugin.content.match(/wenda_auto_default_disabled/);
+      return disabled_auto[name];
+    };
+
+    // 从插件内容中提取名称信息
+    get_auto_name = (plugin) => {
+      try {
+        return (
+          plugin.content.match(/@name (.+)\n/)[1].trim() + `(${plugin.name})`
+        );
+      } catch { }
+      return plugin.name;
+    };
+
+    // 将启用的插件内容添加到 app.autos 数组中，显示在菜单中
+    add_auto = (content) => {
+      let plugin = { content: content, name: "用户添加" };
+      let name = get_auto_name(plugin);
+      let auto = {
+        name: name,
+        description: get_auto_description(plugin),
+        content: plugin.content,
+        disabled: false,
+      };
+      saved_auto.push(auto);
+      app.autos.push(auto);
+      try {
+
+        if (!auto.disabled) eval(plugin.content);
+      } catch {
+
+      }
+      localStorage["wenda_saved_auto"] = JSON.stringify(saved_auto);
+    };
+
+    // 查找指定名称的插件在 saved_auto 数组中的索引
+    find_auto = (name) => saved_auto.findIndex((a) => a.name == name);
+
+    // 删除指定名称的插件
+    del_auto = (name) => {
+      let auto_index = find_auto(name);
+      saved_auto.splice(auto_index, 1);
+      localStorage["wenda_saved_auto"] = JSON.stringify(saved_auto);
+      location.reload();
+    };
+    func = []
+    // 加载所有插件并将其添加到 app.autos 数组中
+    load_plugins = async () => {
+      disabled_auto = JSON.parse(localStorage["wenda_disabled_auto"] || "{}");
+      server_auto = await fetch("../autos/autos");
+      server_auto = (await server_auto.text()).split(/[\r\n]+/)
+      console.log(server_auto)
+      await server_auto.forEach(async (name) => {
+        if (name == '') return
+        let plugin = {
+          name: name,
+          content: await (await fetch("../autos/" + name)).text(),
+        };
+        let auto = {
+          name: name,
+          description: get_auto_description(plugin),
+          content: plugin.content,
+          disabled: get_auto_disabled(plugin, name),
+        };
+        // app.autos.push(auto);
+        setTimeout(() => {
+          if (!auto.disabled) eval(plugin.content);
+        }, 0)
+      });
+
+      saved_auto = JSON.parse(localStorage["wenda_saved_auto"] || "[]");
+      saved_auto.forEach((auto) => {
+        app.autos.push(auto);
+        setTimeout(() => {
+          if (!auto.disabled) eval(auto.content);
+        }, 0)
+      });
+
+    };
+    load_plugins();
+  </script>
+</body>
+
+</html>

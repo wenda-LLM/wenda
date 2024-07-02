@@ -81,7 +81,7 @@ window.answer_with_zsk = async (Q) => {
 
             kownladge.forEach(async (question) => {
                 let prompt = app.zsk_summarize_prompt + '\n' +
-                question.content + "\n问题：" + Q
+                    question.content + "\n问题：" + Q
                 result.push(await send(prompt, keyword = Q, show = false))
 
                 answer.content = `正在查找：${index}/${kownladge.length}`
@@ -125,8 +125,17 @@ window.answer_with_fast_zsk = async (Q) => {
         content: '本次对话内容完全由模型提供'
     }]
     return await send(Q, keyword = Q, show = true, sources = sources)
-
 }
+app.nodes && app.nodes.push({
+    name: '知识库回答',
+    function: 'answer_with_fast_zsk(a)',
+    node: "answer_with_fast_zsk",
+    icon: "book-account",
+    in: 1,
+    out: 1,
+    data: { "template": '' },
+    template: ``
+})
 func.push({
     name: "快速知识库",
     question: window.answer_with_fast_zsk
