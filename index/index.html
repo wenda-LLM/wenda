@@ -530,6 +530,8 @@
                 </template>
                 <template v-slot:item.quantization_level="{ item }"> {{item.details.quantization_level}}
                 </template>
+                <template v-slot:item.size="{ item }"> {{(item.size/( 1024**3)).toFixed(2) + "GB"}}
+                </template>
                 <template v-slot:item.setting="{ item }">
                   <v-btn :color="item.using==true?color:'gray'" dark @click="set_model(item.name);">
                     使用

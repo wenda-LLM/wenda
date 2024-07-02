@@ -37,7 +37,7 @@ function find_RomanNumerals(str) {
     }
     return number
 }
-
+lsdh = b => app.history_on = b
 func.push({
     name: "根据标题写论文",
     description: "根据主题撰写内容翔实、有信服力的论文",
@@ -50,23 +50,35 @@ func.push({
             .replace(/\n- /g, '\n1.')//兼容不同格式
             .split("\n")
         content = [resp.join("\n\n"), "------------------------------正文------------------------------"]
-        for (let i in resp) {
-            let line = resp[i]
-            if (line == "") continue
-            line = line.split(".")
-            if (line.length < 2) {
-                continue  // 判断非提纲内容
-            }
-            content.push(resp[i])   // 保存提纲
-            let num = find_RomanNumerals(line[0])
-            if (num <= 0 || num == 100) {
-                content.push(await send("根据主题：" + Q +
-                    "\n对下列段落进行详细的撰写：" + line[1], line[1]) + "\n\n")
-            }
-        }
+
+        await new Promise(resolve => {
+            let resp_count = 0
+            resp.forEach(async (line_) => {
+                if (line_ == "") {
+                    resp_count += 1
+                    if (resp_count == resp.length) resolve()
+                    return
+                }
+                let line = line_.split(".")
+                if (line.length < 2) {
+                    resp_count += 1
+                    if (resp_count == resp.length) resolve()
+                    return
+                }
+                content.push(line_)   // 保存提纲
+                let index = content.push(line_) - 1
+                let num = find_RomanNumerals(line[0])
+                if (num <= 0 || num == 100) {
+                    content[index] = (await send("根据主题：" + Q +
+                        "\n对下列段落进行详细的撰写：" + line[1], line[1]) + "\n\n")
+                }
+                resp_count += 1
+                if (resp_count == resp.length) resolve()
+            })
+        })
         content = content.join("\n\n")
-        add_conversation("user",  Q )
-        add_conversation("AI",  content )
+        add_conversation("user", Q)
+        add_conversation("AI", content)
         console.log(content)
 
         copy(content)
@@ -80,8 +92,8 @@ func.push({
         title = app.question
         app.max_length = 4096
         app.chat = []
-        resp =title.split("\n")
-        title=resp[0]
+        resp = title.split("\n")
+        title = resp[0]
         content = [resp.join("\n\n"), "------------------------------正文------------------------------"]
         for (let i in resp) {
             let line = resp[i]
@@ -98,8 +110,8 @@ func.push({
             }
         }
         content = content.join("\n\n")
-        add_conversation("user",  title )
-        add_conversation("AI",  content )
+        add_conversation("user", title)
+        add_conversation("AI", content)
         console.log(content)
 
         copy(content)

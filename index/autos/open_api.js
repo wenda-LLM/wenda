@@ -9,6 +9,7 @@
 // @run-at document-idle
 // @grant        none
 // ==/UserScript==
+//wenda_auto_default_disabled 这行代码将使本auto默认不启用
 
 
 
