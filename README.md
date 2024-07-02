@@ -10,13 +10,17 @@
 ## 部署
 
 ### ollama
+*推荐*
 推荐使用nginx将本前端与ollama api放至同一服务下，配置参考`nginx.conf`。
+当前支持：知识库、在线切换模型、AUTOS
 
 ### AI00
 将前端文件整体打包，放到`\assets\www\plugins\wenda.zip`，然后通过`http://127.0.0.1:65530/plugins/wenda/`访问。
 在使用插件访问时，会自动激活auto:`AI00_api.js`，以切换API。如果替换`\assets\www\index.zip`，可以使程序主页变为闻达，但需修改`AI00_api.js`，删除其中`if (document.location.href.indexOf("plugins")) {`语句，以使切换API生效。
+当前支持：知识库(效果不佳)、AUTOS
 
 ### llama-server
 参考命令：
 ```llama-server.exe -m 模型路径 --path 前端路径 -c 4096 -cb -ngl 65 --port 65530 --verbose-prompt -co```
 前端路径为本项目所在文件夹。需手动开启auto：`llama_server_api.js`，以切换API。
+当前支持：AUTOS
