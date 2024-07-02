@@ -12,16 +12,16 @@
 	<link href="https://npm.elemecdn.com/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
 	<script src="https://npm.elemecdn.com/vue@2.x/dist/vue.min.js"></script>
 	<script src="https://npm.elemecdn.com/vuetify@2.x/dist/vuetify.min.js"></script> -->
-  <link rel="manifest" href="/manifest.json" />
-  <link href="/static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <link href="static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet" />
 
-  <link href="/static/vuetify.min.css" rel="stylesheet" />
-  <script src="/static/vue.js"></script>
-  <script src="/static/vue-i18n.js"></script>
-  <script src="/static/vuetify.min.js"></script>
-  <script src="/static/markdown-it.min.js"></script>
-  <script src="/static/strings.js"></script>
-  <script defer src="/static/xlsx.core.min.js"></script>
+  <link href="static/vuetify.min.css" rel="stylesheet" />
+  <script src="static/vue.js"></script>
+  <script src="static/vue-i18n.js"></script>
+  <script src="static/vuetify.min.js"></script>
+  <script src="static/markdown-it.min.js"></script>
+  <script src="static/strings.js"></script>
+  <script defer src="static/xlsx.core.min.js"></script>
   <style>
     .v-navigation-drawer__content::-webkit-scrollbar {
       width: 5px;
@@ -714,8 +714,8 @@
           }
         },
         tab: (val) => {
-          if (val > 2) {
-            if (app.plugins[val - 3].hide_title == true) {
+          if (val > 3) {
+            if (app.plugins[val - 4].hide_title == true) {
               app.show_header = false;
               return;
             }
@@ -979,8 +979,8 @@
     // 覆盖 console.warn 函数以不执行任何操作
     console.warn = function () { };
   </script>
-  <script type="module" src="/static/idb-vector/idb-vector.js"></script>
-  <script src="/wd_sdk.js"></script>
+  <script type="module" src="static/idb-vector/idb-vector.js"></script>
+  <script src="wd_sdk.js"></script>
   <script>
     // 从插件内容中提取描述信息
     get_auto_description = (plugin) => {
@@ -1042,14 +1042,14 @@
     // 加载所有插件并将其添加到 app.autos 数组中
     load_plugins = async () => {
       disabled_auto = JSON.parse(localStorage["wenda_disabled_auto"] || "{}");
-      server_auto = await fetch("/autos/autos");
+      server_auto = await fetch("autos/autos");
       server_auto = (await server_auto.text()).split(/[\r\n]+/)
       console.log(server_auto)
       await server_auto.forEach(async (name) => {
         if (name == '') return
         let plugin = {
           name: name,
-          content: await (await fetch("/autos/" + name)).text(),
+          content: await (await fetch("autos/" + name)).text(),
         };
         let auto = {
           name: name,
