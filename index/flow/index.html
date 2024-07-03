@@ -48,60 +48,7 @@
           // 生成回答的top_p
           top_p: 0.8,
           chat: [],
-          nodes: [{
-            name: '初始 prompt',
-            function: '`{{template}}`',
-            node: "prompt",
-            icon: "ray-start",
-            in: 0,
-            out: 1,
-            data: { "template": '' },
-            template: `
-<textarea df-template placeholder='输入初始 prompt'></textarea>`
-          },
-          {
-            name: '程序',
-            function: '{{template}}',
-            node: "function",
-            icon: "function-variant",
-            in: 3,
-            out: 1,
-            data: { "template": '' },
-            template: `
-<textarea df-template placeholder='参数：a,b,c'></textarea>`
-          },
-          {
-            name: '报警',
-            function: 'alert(a)',
-            node: "alert",
-            icon: "alert-circle",
-            in: 1,
-            out: 0,
-            data: {},
-            template: ``
-          },
-          {
-            name: '控制台打印',
-            function: 'console.log(a)',
-            node: "console_log",
-            icon: "printer-outline",
-            in: 1,
-            out: 0,
-            data: {},
-            template: ``
-          },
-          {
-            name: '模板',
-            function: '`{{template}}`.replace("{1}",a).replace("{2}",b).replace("{3}",c)',
-            node: "template",
-            icon: "text-box-plus",
-            in: 3,
-            out: 1,
-            data: { "template": '' },
-            template: `    Ger Vars
-<textarea df-template placeholder='输入内容{1}{2}{3}'></textarea>
-Output template with vars`
-          }],
+          nodes: [],
           buttons: []
         };
       },
@@ -117,7 +64,7 @@ Output template with vars`
     const dataToImport = {
       "drawflow": {
         "Home": {
-          "data":JSON.parse(`{"1":{"id":1,"name":"prompt","data":{"template":"我想退货"},"class":"prompt","html":"\\n<div>\\n  <div class=\\"title-box\\"><i class=\\"mdi mdi-ray-start\\"></i> 初始 prompt</div>\\n  <div class=\\"box\\">\\n    \\n<textarea df-template placeholder='输入初始 prompt'></textarea>\\n  </div>\\n</div>","typenode":false,"inputs":{},"outputs":{"output_1":{"connections":[{"node":"3","output":"input_1"}]}},"pos_x":113,"pos_y":136},"2":{"id":2,"name":"alert","data":{},"class":"alert","html":"\\n<div>\\n  <div class=\\"title-box\\"><i class=\\"mdi mdi-alert-circle\\"></i> 报警</div>\\n  <div class=\\"box\\">\\n    \\n  </div>\\n</div>","typenode":false,"inputs":{"input_1":{"connections":[{"node":"3","input":"output_1"}]}},"outputs":{},"pos_x":600,"pos_y":230},"3":{"id":3,"name":"answer_with_fast_zsk","data":{"template":""},"class":"answer_with_fast_zsk","html":"\\n<div>\\n  <div class=\\"title-box\\"><i class=\\"mdi mdi-book-account\\"></i> 知识库回答</div>\\n  <div class=\\"box\\">\\n    \\n  </div>\\n</div>","typenode":false,"inputs":{"input_1":{"connections":[{"node":"1","input":"output_1"}]}},"outputs":{"output_1":{"connections":[{"node":"2","output":"input_1"}]}},"pos_x":353,"pos_y":174}}`)
+          "data":{"1":{"id":1,"name":"prompt","data":{"template":"你好"},"class":"prompt","html":"\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-ray-start\"></i> 初始 prompt</div>\n  <div class=\"box\">\n    \n<textarea df-template placeholder='输入初始 prompt'></textarea>\n  </div>\n</div>","typenode":false,"inputs":{},"outputs":{"output_1":{"connections":[{"node":"5","output":"input_1"}]}},"pos_x":89,"pos_y":148},"5":{"id":5,"name":"send","data":{},"class":"send","html":"\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-chat\"></i> 单轮对话</div>\n    \n</div>","typenode":false,"inputs":{"input_1":{"connections":[{"node":"1","input":"output_1"}]}},"outputs":{"output_1":{"connections":[{"node":"6","output":"input_1"},{"node":"7","output":"input_1"}]}},"pos_x":364,"pos_y":202},"6":{"id":6,"name":"alert","data":{},"class":"alert","html":"\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-alert-circle\"></i> 报警</div>\n    \n</div>","typenode":false,"inputs":{"input_1":{"connections":[{"node":"5","input":"output_1"}]}},"outputs":{},"pos_x":688,"pos_y":153},"7":{"id":7,"name":"console_log","data":{},"class":"console_log","html":"\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-printer-outline\"></i> 控制台打印</div>\n    \n</div>","typenode":false,"inputs":{"input_1":{"connections":[{"node":"5","input":"output_1"}]}},"outputs":{},"pos_x":697,"pos_y":277}}
           
         }
       }
@@ -177,9 +124,7 @@ Output template with vars`
       editor.addNode(name, node.in, node.out, pos_x, pos_y, name, node.data, `
 <div>
   <div class="title-box"><i class="mdi mdi-${node.icon}"></i> ${node.name}</div>
-  <div class="box">
     ${node.template}
-  </div>
 </div>`);
 
 
