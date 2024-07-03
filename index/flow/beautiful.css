@@ -112,6 +112,20 @@ cursor: pointer;
   cursor: pointer;
   z-index: 5;
 }
+.btn-import {
+  float: right;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  color: white;
+  font-weight: bold;
+  border: 1px solid #0e5ba3;
+  background: #4ea9ff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 5;
+}
 
 .btn-clear {
   float: right;

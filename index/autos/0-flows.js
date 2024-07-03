@@ -84,6 +84,7 @@ if (typeof app.nodes == 'object') {
         template: `<div class="box">Ger Vars
 <textarea df-template placeholder='输入内容{1}{2}{3}'></textarea>
 Output template with vars</div>`
-    }])
+    },
+])
 
 }
