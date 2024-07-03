@@ -47,7 +47,7 @@ textarea { resize: none; }
 
 .col {
   overflow: auto;
-  width: 300px;
+  width: 200px;
   height: 100%;
   border-right: 1px solid var(--border-color);
 }
@@ -185,9 +185,8 @@ cursor: pointer;
 
 #drawflow {
   position: relative;
-  width: calc(100vw - 301px);
+  width: calc(100vw - 201px);
   height: calc(100% );
-  /* top: 40px; */
   background: var(--background-color);
   background-size: 25px 25px;
   background-image:
@@ -303,17 +302,15 @@ cursor: pointer;
 }
 
 .drawflow-node input, .drawflow-node select, .drawflow-node textarea {
-  border-radius: 4px;
   border: 1px solid var(--border-color);
   height: 30px;
-  line-height: 30px;
-  font-size: 16px;
+  font-size: 12px;
   width: 158px;
   color: #555555;
 }
 
 .drawflow-node textarea {
-  height: 100px;
+  height: 200px;
 }
 
 

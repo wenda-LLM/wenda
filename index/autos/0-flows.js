@@ -40,7 +40,7 @@ if (typeof app.nodes == 'object') {
         out: 1,
         data: { "template": "['\\n\\n','#']" },
         template: `<div class="box">停止符：
-<textarea df-template></textarea></div>`
+<input df-template></input></div>`
     },
     {
         name: '程序',
@@ -81,9 +81,8 @@ if (typeof app.nodes == 'object') {
         in: 3,
         out: 1,
         data: { "template": '' },
-        template: `<div class="box">Ger Vars
-<textarea df-template placeholder='输入内容{1}{2}{3}'></textarea>
-Output template with vars</div>`
+        template: `<div class="box">输入参数：{1}{2}{3}
+<textarea df-template placeholder='输入内容{1}{2}{3}'></textarea></div>`
     },
 ])
 
