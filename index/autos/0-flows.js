@@ -102,6 +102,17 @@ if (typeof app.nodes == 'object') {
 </div>`
     },
     {
+        name: '输入文本',
+        function: 'prompt(`{{template}}`)',
+        node: "input_prompt",
+        icon: "import",
+        in: 0,
+        out: 1,
+        data: { "template": "请输入文本：" },
+        template: `<div class="box">输入提示：
+<input df-template></input></div>`
+    },
+    {
         name: '报警',
         function: 'alert(a)',
         node: "alert",
