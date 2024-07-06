@@ -24,12 +24,12 @@
         <v-menu open-on-hover transition="slide-x-transition" offset-y>
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark v-bind="attrs" v-on="on">
-              导出 </v-btn>
+              保存 </v-btn>
           </template>
 
           <v-btn color="primary" style="margin-top: 1em;" dark
             @click="copy(JSON.stringify((editor.export()).drawflow.Home.data))">
-            到剪贴板
+            剪贴板
           </v-btn>
           <v-btn color="primary" style="margin-top: 1em;" dark @click="save_flow(prompt('请输入文件名'))">
             新建
@@ -42,11 +42,11 @@
         <v-menu open-on-hover transition="slide-x-transition" offset-y>
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark v-bind="attrs" v-on="on">
-              导入 </v-btn>
+              读取 </v-btn>
           </template>
 
           <v-btn color="primary" style="margin-top: 1em;" dark @click="import_from_cb()">
-            从剪贴板
+            剪贴板
           </v-btn>
           <v-btn color="primary" style="margin-top: 1em;" dark v-for="(item, index) in filse"
             @click="editor_import(JSON.parse(item.content))">
@@ -65,6 +65,9 @@
         </v-menu>
         <v-btn color="success" dark @click="run((editor.export()).drawflow.Home.data)">
           运行
+        </v-btn>
+        <v-btn color="success" dark v-if="is_nwjs" @click="gui.Window.open('http://127.0.0.1:65530')">
+          打开聊天界面
         </v-btn>
       </div>
     </v-app>
@@ -100,6 +103,7 @@
           chat: [],
           nodes: [],
           buttons: [],
+          is_nwjs:false,
           filse: JSON.parse(localStorage["wenda_flow_filse"] || "[]")
         };
       },
