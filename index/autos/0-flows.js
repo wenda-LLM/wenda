@@ -141,9 +141,7 @@ if (typeof app.nodes == 'object') {
         in: 3,
         out: 1,
         data: { "template": '' },
-        template: `<div class="box">Ger Vars
-<textarea df-template placeholder='输入内容{1}{2}{3}'></textarea>
-Output template with vars</div>`
+        template: `<div class="box"><textarea df-template placeholder='输入内容{1}{2}{3}'></textarea></div>`
     },
     ])
 
