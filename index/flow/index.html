@@ -49,7 +49,7 @@
             剪贴板
           </v-btn>
           <v-btn color="primary" style="margin-top: 1em;" dark v-for="(item, index) in filse"
-            @click="editor_import(JSON.parse(item.content))">
+            @click="read_flow(item.name)">
             {{ item.name }}
           </v-btn>
         </v-menu>
@@ -122,13 +122,13 @@
         "drawflow": {
           "Home": {
             "data": data
-
           }
         }
       }
       editor.import(dataToImport);
     }
     save_flow = name => {
+      document.title=name
       let file = app.filse.find(i => i.name == name)
       if (file)
         file.content = JSON.stringify((editor.export()).drawflow.Home.data)
@@ -136,10 +136,11 @@
         app.filse.push({ name: name, content: JSON.stringify((editor.export()).drawflow.Home.data) })
       localStorage["wenda_flow_filse"] = JSON.stringify(app.filse)
     }
-    // read_flow = name => {
-    //   let file = app.filse.find(i => i.name == name)
-    //   editor_import(file.content)
-    // }
+    read_flow = name => {
+      document.title=name
+      let file = app.filse.find(i => i.name == name)
+      editor_import(JSON.parse(file.content))
+    }
     import_from_cb = async () => {
       editor_import(JSON.parse(await navigator.clipboard.readText()))
     }
