@@ -23,7 +23,7 @@ if (typeof app.nodes == 'object') {
     },
     {
         name: '单轮对话',
-        function: '{console.log(a);let rtn=send(a);console.dir([rtn]);return [rtn]}',
+        function: '[await send(a)]',
         node: "send",
         icon: "chat",
         in: 1,
@@ -142,6 +142,16 @@ if (typeof app.nodes == 'object') {
         out: 1,
         data: { "template": '' },
         template: `<div class="box"><textarea df-template placeholder='输入内容{1}{2}{3}'></textarea></div>`
+    },
+    {
+        name: '格式化文本',
+        function: '[a.replace(/[\\r\\n]+/g, \'\\n\').replace(/^[\\n\\s\\t]+/, \'\').replace(/[\\n\\s\\t]+$/, \'\')]',
+        node: "format",
+        icon: "text-box-plus",
+        in: 1,
+        out: 1,
+        data: {  },
+        template: ``
     },
     ])
 

@@ -8,6 +8,8 @@
   <title>智能工作流</title>
   <link href="../static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet" />
   <script src="../static/vue.js"></script>
+  <link href="../static/vuetify.min.css" rel="stylesheet">
+  <script src="../static/vuetify.min.js"></script>
 </head>
 
 <body>
@@ -17,6 +19,55 @@
   <script src="micromodal.min.js"></script>
 
   <div class="wrapper" id="app">
+    <v-app>
+      <div class="btn_bar" style="position: fixed;;left: 220px;display: flex;top: 10px;">
+        <v-menu open-on-hover transition="slide-x-transition" offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" dark v-bind="attrs" v-on="on">
+              导出 </v-btn>
+          </template>
+
+          <v-btn color="primary" style="margin-top: 1em;" dark
+            @click="copy(JSON.stringify((editor.export()).drawflow.Home.data))">
+            到剪贴板
+          </v-btn>
+          <v-btn color="primary" style="margin-top: 1em;" dark @click="save_flow(prompt('请输入文件名'))">
+            新建
+          </v-btn>
+          <v-btn color="primary" style="margin-top: 1em;" dark v-for="(item, index) in filse"
+            @click="content=item.content">
+            {{ item.name }}
+          </v-btn>
+        </v-menu>
+        <v-menu open-on-hover transition="slide-x-transition" offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" dark v-bind="attrs" v-on="on">
+              导入 </v-btn>
+          </template>
+
+          <v-btn color="primary" style="margin-top: 1em;" dark @click="import_from_cb()">
+            从剪贴板
+          </v-btn>
+          <v-btn color="primary" style="margin-top: 1em;" dark v-for="(item, index) in filse"
+            @click="editor_import(JSON.parse(item.content))">
+            {{ item.name }}
+          </v-btn>
+        </v-menu>
+        <v-menu open-on-hover transition="slide-x-transition" offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="warning" dark v-bind="attrs" v-on="on" @click="editor.clearModuleSelected()">
+              清空 </v-btn>
+          </template>
+          <v-btn color="error" style="margin-top: 1em;" dark v-for="(item, index) in filse"
+            @click=" app.filse.splice(index,1);localStorage['wenda_flow_filse'] = JSON.stringify(app.filse)">
+            删除：{{ item.name }}
+          </v-btn>
+        </v-menu>
+        <v-btn color="success" dark @click="run((editor.export()).drawflow.Home.data)">
+          运行
+        </v-btn>
+      </div>
+    </v-app>
     <div class="col">
       <div class="drag-drawflow" v-for='i in nodes' draggable="true" ondragstart="drag(event)" :data-node="i.node">
         <i :class="'mdi mdi-'+i.icon"></i><span> {{i.name}}</span>
@@ -25,18 +76,16 @@
     </div>
     <div class="col-right">
       <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
-        <div class="btn-run" onclick="run()">运行</div>
-        <div class="btn-export" onclick="copy(JSON.stringify((editor.export()).drawflow.Home.data))">导出</div>
-        <div class="btn-import" onclick="import_from_cb()">导入</div>
-        <div class="btn-clear" onclick="editor.clearModuleSelected()">清空</div>
       </div>
     </div>
+
   </div>
 
   <script>
 
     app = new Vue({
       el: "#app",
+      vuetify: new Vuetify(),
       watch: {
       },
       data() {
@@ -50,7 +99,8 @@
           top_p: 0.8,
           chat: [],
           nodes: [],
-          buttons: []
+          buttons: [],
+          filse: JSON.parse(localStorage["wenda_flow_filse"] || "[]")
         };
       },
       methods: {
@@ -74,6 +124,18 @@
       }
       editor.import(dataToImport);
     }
+    save_flow = name => {
+      let file = app.filse.find(i => i.name == name)
+      if (file)
+        file.content = JSON.stringify((editor.export()).drawflow.Home.data)
+      else
+        app.filse.push({ name: name, content: JSON.stringify((editor.export()).drawflow.Home.data) })
+      localStorage["wenda_flow_filse"] = JSON.stringify(app.filse)
+    }
+    // read_flow = name => {
+    //   let file = app.filse.find(i => i.name == name)
+    //   editor_import(file.content)
+    // }
     import_from_cb = async () => {
       editor_import(JSON.parse(await navigator.clipboard.readText()))
     }
@@ -212,9 +274,8 @@
       return rtn
     }
 
-    run = async () => {
+    run = async (flow) => {
       // 获取智能工作流的数据
-      let flow = (editor.export()).drawflow.Home.data
       let runned = true
 
       while (runned) {
