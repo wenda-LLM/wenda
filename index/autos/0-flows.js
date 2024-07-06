@@ -32,6 +32,31 @@ if (typeof app.nodes == 'object') {
         template: ``
     },
     {
+        name: '对话(LLMs可选)',
+        function: 'send(a,b)',
+        node: "chatbyllm",
+        icon: "chat",
+        in: 2,
+        out: 1,
+        data: { "channel": 'channel_3'},
+        template:  `
+          <div>
+            <div class="title-box"><i class="fab fa-telegram-plane"></i> Telegram bot</div>
+            <div class="box">
+              <p>调用大模型生成文本</p>
+              <p>请在两个输入端分别输入系统提示词和用户提示词</p>
+              <p>请选择大语言模型</p>
+              <select df-channel>
+                <option value="channel_1">chatGLM2</option>
+                <option value="channel_2">chatGLM3</option>
+                <option value="channel_3">Qwen2-0.5B</option>
+                <option value="channel_4">Qwen2-7B</option>
+              </select>
+            </div>
+          </div>
+          `
+    },
+    {
         name: '补全文段',
         function: 'send_prompt(a,{{template}},()=>{})',
         node: "send_prompt",
@@ -54,15 +79,27 @@ if (typeof app.nodes == 'object') {
 <textarea df-template placeholder='参数：a,b,c'></textarea></div>`
     },
     {
-        name: '程序2_多输出',
+        name: '程序（多输出）',
         function: '{{template}}',
         node: "function2",
         icon: "function-variant",
-        in: 2,
+        in: 3,
         out:2,
         data: { "template": "{return [a+'wenda',b+'我喜欢']}" },
         template: `<div class="box">
 <textarea df-template placeholder='参数：a,b'></textarea></div>`
+    },
+    {
+        name: '代码块',
+        function: '{{template}}',
+        node: "code_block",
+        icon: "text-box-plus",
+        in: 1,
+        out: 1,
+        data: { "template": 'alert(`这是一段警告框代码！`);send(a)' },
+        template: `<div class="box">请输入源码
+<textarea df-template placeholder='alert("这是一段警告框代码！");send(a)'></textarea>
+</div>`
     },
     {
         name: '报警',
@@ -96,43 +133,6 @@ if (typeof app.nodes == 'object') {
         template: `<div class="box">Ger Vars
 <textarea df-template placeholder='输入内容{1}{2}{3}'></textarea>
 Output template with vars</div>`
-    },
-    {
-        name: '对话(LLMs可选)',
-        function: 'send(a,b)',
-        node: "chatbyllm",
-        icon: "chat",
-        in: 2,
-        out: 1,
-        data: { "channel": 'channel_3'},
-        template:  `
-          <div>
-            <div class="title-box"><i class="fab fa-telegram-plane"></i> Telegram bot</div>
-            <div class="box">
-              <p>调用大模型生成文本</p>
-              <p>请在两个输入端分别输入系统提示词和用户提示词</p>
-              <p>请选择大语言模型</p>
-              <select df-channel>
-                <option value="channel_1">chatGLM2</option>
-                <option value="channel_2">chatGLM3</option>
-                <option value="channel_3">Qwen2-0.5B</option>
-                <option value="channel_4">Qwen2-7B</option>
-              </select>
-            </div>
-          </div>
-          `
-    },
-    {
-        name: '代码块',
-        function: '{{template}}',
-        node: "code_block",
-        icon: "text-box-plus",
-        in: 1,
-        out: 1,
-        data: { "template": 'alert(`这是一段警告框代码！`);send(a)' },
-        template: `<div class="box">请输入源码
-<textarea df-template placeholder='alert("这是一段警告框代码！");send(a)'></textarea>
-</div>`
     },
     ])
 
