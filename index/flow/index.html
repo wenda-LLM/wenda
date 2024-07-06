@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>自动流</title>
+  <title>智能工作流</title>
   <link href="../static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet" />
   <script src="../static/vue.js"></script>
 </head>
@@ -74,10 +74,10 @@
       }
       editor.import(dataToImport);
     }
-    import_from_cb=async()=>{
+    import_from_cb = async () => {
       editor_import(JSON.parse(await navigator.clipboard.readText()))
     }
-    editor_import({"1":{"id":1,"name":"prompt","data":{"template":"柚别名为文旦、抛等，为芸香科柑橘属的一种常绿乔木。 [1]其嫩枝、叶背、花梗、花萼及子房均被柔毛，嫩叶通常暗紫红色，嫩枝扁且有棱，叶质颇厚，色浓绿，阔卵形或椭圆形；总状花序，有时兼有腋生单花；花蕾淡紫红色，稀乳白色；果圆球形，扁圆形，梨形或阔圆锥状，淡黄或黄绿色；种子形状不规则，通常近似长方形，上部质薄且常截平，下部饱满，多兼有发育不全的，有明显纵肋棱，子叶乳白色，单胚。花期4-5月，果期9-12月。"},"class":"prompt","html":"\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-ray-start\"></i> 初始 prompt</div>\n  <div class=\"box\">\n    \n<textarea df-template placeholder='输入初始 prompt'></textarea>\n  </div>\n</div>","typenode":false,"inputs":{},"outputs":{"output_1":{"connections":[{"node":"11","output":"input_1"}]}},"pos_x":28,"pos_y":180},"6":{"id":6,"name":"alert","data":{},"class":"alert","html":"\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-alert-circle\"></i> 报警</div>\n    \n</div>","typenode":false,"inputs":{"input_1":{"connections":[{"node":"10","input":"output_1"}]}},"outputs":{},"pos_x":526,"pos_y":417},"10":{"id":10,"name":"send_prompt","data":{"template":"['\\n\\n','#']"},"class":"send_prompt","html":"\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-typewriter\"></i> 补全文段</div>\n    <div class=\"box\">停止符：\n<input df-template></input></div>\n</div>","typenode":false,"inputs":{"input_1":{"connections":[{"node":"11","input":"output_1"}]}},"outputs":{"output_1":{"connections":[{"node":"6","output":"input_1"}]}},"pos_x":512,"pos_y":189},"11":{"id":11,"name":"template","data":{"template":"# {1}\n\n# 关键词："},"class":"template","html":"\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-text-box-plus\"></i> 模板</div>\n    <div class=\"box\">输入参数：{1}{2}{3}\n<textarea df-template placeholder='输入内容{1}{2}{3}'></textarea></div>\n</div>","typenode":false,"inputs":{"input_1":{"connections":[{"node":"1","input":"output_1"}]},"input_2":{"connections":[]},"input_3":{"connections":[]}},"outputs":{"output_1":{"connections":[{"node":"10","output":"input_1"}]}},"pos_x":257,"pos_y":174}})
+    editor_import({ "1": { "id": 1, "name": "prompt", "data": { "template": "你好" }, "class": "prompt", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-ray-start\"></i> 初始 prompt</div>\n  <div class=\"box\">\n    \n<textarea df-template placeholder='输入初始 prompt'></textarea>\n  </div>\n</div>", "typenode": false, "inputs": {}, "outputs": { "output_1": { "connections": [{ "node": "5", "output": "input_1" }] } }, "pos_x": 89, "pos_y": 148 }, "5": { "id": 5, "name": "send", "data": {}, "class": "send", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-chat\"></i> 单轮对话</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "1", "input": "output_1" }] } }, "outputs": { "output_1": { "connections": [{ "node": "6", "output": "input_1" }, { "node": "7", "output": "input_1" }] } }, "pos_x": 364, "pos_y": 202 }, "6": { "id": 6, "name": "alert", "data": {}, "class": "alert", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-alert-circle\"></i> 报警</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "5", "input": "output_1" }] } }, "outputs": {}, "pos_x": 688, "pos_y": 153 }, "7": { "id": 7, "name": "console_log", "data": {}, "class": "console_log", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-printer-outline\"></i> 控制台打印</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "5", "input": "output_1" }] } }, "outputs": {}, "pos_x": 697, "pos_y": 277 } })
     var elements = document.getElementsByClassName('drag-drawflow');
     for (var i = 0; i < elements.length; i++) {
       elements[i].addEventListener('touchend', drop, false);
@@ -101,6 +101,7 @@
       } else {
         ev.dataTransfer.setData("node", ev.target.getAttribute('data-node'));
       }
+      console.log(ev);
     }
 
     function drop(ev) {
@@ -116,8 +117,17 @@
         addNodeToDrawFlow(data, ev.clientX, ev.clientY);
       }
 
+      console.log(ev);
+
     }
 
+    function deepCopy(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    // let originalObj = { a: 1, b: { c: 2 } };
+    // let copiedObj = deepCopy(originalObj);
+    // console.log(copiedObj); // { a: 1, b: { c: 2 } }
 
     function addNodeToDrawFlow(name, pos_x, pos_y) {
       if (editor.editor_mode === 'fixed') {
@@ -125,8 +135,11 @@
       }
       pos_x = pos_x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
       pos_y = pos_y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
-      let node = app.nodes.find(n => n.node == name)
-      console.log(node)
+      // app.nodes 是左侧菜单的节点列表
+      // 按照节点名查找，要找到那个名字相同的节点，然后进行深度拷贝处理，如果不深度拷贝，会导致拖放的节点都是同一个节点
+      let node = deepCopy(app.nodes.find(n => n.node == name))
+      // console.log(app.nodes)
+      // 注意下面的$的意思是调用遍历并转化为字符串
       editor.addNode(name, node.in, node.out, pos_x, pos_y, name, node.data, `
 <div>
   <div class="title-box"><i class="mdi mdi-${node.icon}"></i> ${node.name}</div>
@@ -176,23 +189,93 @@
       }
 
     }
-    is_returned = i => typeof i == "object" && i.connections.length > 0
+
+    editor.on('nodeCreated', function (id) {
+      console.log("Node created " + id);
+    })
+
+    // is_returned = i => typeof i == "object" && i.connections.length > 0
+    is_returned = (i) => {
+      let rtn = false
+
+      for (let j in i) {
+        // 最后一个节点没有连接，这种情况会导致报错，所以加了i[j].connections&&....
+        if ((typeof i[j] == "object") && (i[j].connections && i[j].connections.length > 0))
+          rtn = rtn || true
+        else
+          rtn = rtn || false
+
+        // console.dir(i[j])
+        // console.log(rtn)
+      }
+
+      return rtn
+    }
+
     run = async () => {
+      // 获取智能工作流的数据
       let flow = (editor.export()).drawflow.Home.data
       let runned = true
+
       while (runned) {
         runned = false
+        // 遍历智能工作流的每一个节点的数据对象
+        let nodesCounter = 0
         for (i in flow) {
+          // 节点数量计数器
+          nodesCounter++
+          console.log('第' + nodesCounter + '个节点、flow[' + flow[i].name + ']:')
+          console.dir(flow[i])
+          // 判断当前节点是否已经运行过
           if (!flow[i].runned) {
-            if (flow[i].inputs && (is_returned(flow[i].inputs.input_1) || is_returned(flow[i].inputs.input_2) || is_returned(flow[i].inputs.input_3)))
+            // if (flow[i].inputs && (is_returned(flow[i].inputs.input_1) || is_returned(flow[i].inputs.input_2) || is_returned(flow[i].inputs.input_3)))
+            if (flow[i].inputs && (is_returned(flow[i].inputs)))
               continue
             let output = await eval(
               `(async(a,b,c)=>${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", flow[i].data.template)})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
             // console.log(i, output,`(async(a,b,c)=>${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", flow[i].data.template)})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
-            if (flow[i].outputs.output_1) for (connection of flow[i].outputs.output_1.connections) {
-              flow[connection.node].inputs[connection.output] = output
 
+            console.log(output + '.1、输出：')
+            console.dir(output)
+            // 获取当前节点outputs对象的所有键
+            const outputKeys = Object.keys(flow[i].outputs);
+
+
+            // 如果存在输出端口，遍历每一个输出端口 端口序号存放在j中
+            for (j = 0; j < outputKeys.length; j++) {
+              // 获取flow[i].outputs中的第一个对象
+              console.log(nodesCounter + '.' + j + '.1、遍历每一个输出端口 端口序号存放在j中')
+
+              // 获取一个键（也就是outputs中的属性名）
+              const OutputKey = outputKeys[j];
+
+              // 使用这个键依次获取对应的输出端口对象
+              const OutputObject = flow[i].outputs[OutputKey];
+
+              console.log(nodesCounter + '.' + j + '.2、OutputKey:' + OutputKey)
+
+              // console.dir(OutputObject); // 输出：{ connections: [...] }
+              // console.log(j + '.3、OutputObject.connections:')
+
+              // console.dir(OutputObject.connections); // 输出：{ connections: [...] }
+
+              //   if (flow[i].outputs.output_1) for (connection of flow[i].outputs.output_1.connections) {
+              //   flow[connection.node].inputs[connection.output] = output
+              // }
+
+              // flow[connection.node].inputs[connection.output] = output
+              let connectionCounter = 0
+              // 遍历每一个端口的链接
+              if (OutputObject) for (connection of OutputObject.connections) {
+                connectionCounter++
+
+                flow[connection.node].inputs[connection.output] = await output[j]
+
+                console.log(nodesCounter + '.' + j + '.3.' + connectionCounter + '、flow[connection.node].inputs[connection.output]:')
+                console.log(flow[connection.node].inputs[connection.output]); // 输出：{ connections: [...] }
+              }
             }
+
             flow[i].runned = true
             runned = true
           }
