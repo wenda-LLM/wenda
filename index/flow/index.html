@@ -224,8 +224,8 @@
         for (i in flow) {
           // 节点数量计数器
           nodesCounter++
-          console.log('第' + nodesCounter + '个节点、flow[' + flow[i].name + ']:')
-          console.dir(flow[i])
+          // console.log('第' + nodesCounter + '个节点、flow[' + flow[i].name + ']:')
+          // console.dir(flow[i])
           // 判断当前节点是否已经运行过
           if (!flow[i].runned) {
             // if (flow[i].inputs && (is_returned(flow[i].inputs.input_1) || is_returned(flow[i].inputs.input_2) || is_returned(flow[i].inputs.input_3)))
@@ -235,8 +235,8 @@
               `(async(a,b,c)=>${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", flow[i].data.template)})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
             // console.log(i, output,`(async(a,b,c)=>${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", flow[i].data.template)})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
 
-            console.log(output + '.1、输出：')
-            console.dir(output)
+            // console.log(output + '.1、输出：')
+            // console.dir(output)
             // 获取当前节点outputs对象的所有键
             const outputKeys = Object.keys(flow[i].outputs);
 
@@ -244,7 +244,7 @@
             // 如果存在输出端口，遍历每一个输出端口 端口序号存放在j中
             for (j = 0; j < outputKeys.length; j++) {
               // 获取flow[i].outputs中的第一个对象
-              console.log(nodesCounter + '.' + j + '.1、遍历每一个输出端口 端口序号存放在j中')
+              // console.log(nodesCounter + '.' + j + '.1、遍历每一个输出端口 端口序号存放在j中')
 
               // 获取一个键（也就是outputs中的属性名）
               const OutputKey = outputKeys[j];
@@ -252,7 +252,7 @@
               // 使用这个键依次获取对应的输出端口对象
               const OutputObject = flow[i].outputs[OutputKey];
 
-              console.log(nodesCounter + '.' + j + '.2、OutputKey:' + OutputKey)
+              // console.log(nodesCounter + '.' + j + '.2、OutputKey:' + OutputKey)
 
               // console.dir(OutputObject); // 输出：{ connections: [...] }
               // console.log(j + '.3、OutputObject.connections:')
@@ -271,8 +271,8 @@
 
                 flow[connection.node].inputs[connection.output] = await output[j]
 
-                console.log(nodesCounter + '.' + j + '.3.' + connectionCounter + '、flow[connection.node].inputs[connection.output]:')
-                console.log(flow[connection.node].inputs[connection.output]); // 输出：{ connections: [...] }
+                // console.log(nodesCounter + '.' + j + '.3.' + connectionCounter + '、flow[connection.node].inputs[connection.output]:')
+                // console.log(flow[connection.node].inputs[connection.output]); // 输出：{ connections: [...] }
               }
             }
 

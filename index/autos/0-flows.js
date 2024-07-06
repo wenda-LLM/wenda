@@ -103,7 +103,7 @@ if (typeof app.nodes == 'object') {
     },
     {
         name: '输入文本',
-        function: 'prompt(`{{template}}`)',
+        function: '[prompt(`{{template}}`)]',
         node: "input_prompt",
         icon: "import",
         in: 0,
@@ -135,7 +135,7 @@ if (typeof app.nodes == 'object') {
     // {{template}}是上一个节点输入的数据？a b c 是用户输入到这个节点的三个数据，{1}、{2}、{3} 是用户输入到节点输入框中的数据 
     {
         name: '模板',
-        function: '`{{template}}`.replace("{1}",a).replace("{2}",b).replace("{3}",c)',
+        function: '[`{{template}}`.replace("{1}",a).replace("{2}",b).replace("{3}",c)]',
         node: "template",
         icon: "text-box-plus",
         in: 3,
