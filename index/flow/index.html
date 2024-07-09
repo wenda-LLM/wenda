@@ -69,6 +69,9 @@
         <v-btn color="success" dark v-if="is_nwjs" @click="gui.Window.open('http://127.0.0.1:65530')">
           打开聊天界面
         </v-btn>
+        <v-btn color="success" dark v-if="!have_improver" @click="window.open('flow.user.js')">
+          安装增强脚本
+        </v-btn>
       </div>
     </v-app>
     <div class="col">
@@ -104,7 +107,8 @@
           nodes: [],
           buttons: [],
           is_nwjs: false,
-          files: JSON.parse(localStorage["wenda_flow_files"] || "[]")
+          have_improver:false,
+          files: JSON.parse(localStorage["wenda_flow_files"] || "[]"),
         };
       },
       methods: {
