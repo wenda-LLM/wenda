@@ -23,6 +23,7 @@ workbox.routing.registerRoute(
         // console.log(event.url.pathname)
         if (["/", '/favicon.png', '/style.css', '/sw.js'].indexOf(event.url.pathname) > -1) return true;
         if (event.url.pathname.indexOf('.html') > -1) return true;
+        if (event.url.pathname.indexOf('/flow/') > -1) return true;
         return false;
     },
     new  workbox.strategies.StaleWhileRevalidate({
