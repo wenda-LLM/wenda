@@ -483,7 +483,7 @@
   <p class="desc">${node.desc}</p>
    <hr class="debug">
    <i class="debug mdi mdi-bug" style="cursor: pointer;" onclick=toggleDebug(event)>调试信息：</i>
-  <p class="debug">${node.data.template.debug}</p>
+  <p class="debug">${node.data.template?node.data.template.debug:"无调试"}</p>
 </div>`);
 
 
@@ -727,9 +727,9 @@
               updateDebugInfo(flow[i].id, input_debuginfo, 'lightblue')
 
               // 获取当前节点的函数的字符串中{{template}}需要替换的内容
-              exestring = typeof flow[i].data.template === 'object' ? JSON.stringify(flow[i].data.template) : ''
+              exestring = typeof flow[i].data.template === 'object' ? JSON.stringify(flow[i].data.template).replaceAll('\\','\\\\') : ''
               // 获取当前节点的函数的字符串中{{usercodes}}需要替换的内容，如果不是程序代码段，则替换为空字符串
-              codestr = typeof flow[i].data.template.codes === 'string' ? flow[i].data.template.codes : ''
+              codestr = (flow[i].data.template&&typeof flow[i].data.template.codes === 'string') ? flow[i].data.template.codes : ''
               console.log('exestring:' + exestring)
 
               // console.log(`(async(a,b,c)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
