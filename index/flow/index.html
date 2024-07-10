@@ -22,7 +22,7 @@
   <div class="wrapper" id="app">
     <v-app>
       <div class="btn_bar" style="position: fixed;;left: 220px;display: flex;top: 10px;">
-       
+
         <v-menu open-on-hover transition="slide-x-transition" offset-y>
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark v-bind="attrs" v-on="on">
@@ -87,13 +87,13 @@
 
           <v-btn color="light-green darken-3" style="margin-top: 1em;" dark @click="read_flow(document.title)">
             复位
-        </v-btn>
-        
-        <v-btn color="light-green darken-3" style="margin-top: 1em;" dark @click="location.reload();">
-          刷新
-        </v-btn>
+          </v-btn>
 
-      </v-menu>
+          <v-btn color="light-green darken-3" style="margin-top: 1em;" dark @click="location.reload();">
+            刷新
+          </v-btn>
+
+        </v-menu>
 
       </div>
 
@@ -112,6 +112,9 @@
             发布为auto文件
           </v-btn>
 
+          <v-btn color="blue lighten-3" style="margin-top: 1em;" @click="save_autoAI_file(document.title)">
+            保存为auto
+          </v-btn>
         </v-menu>
         <v-btn color="success" dark v-if="!have_improver" @click="window.open('flow.user.js')">
           安装增强脚本
@@ -137,7 +140,7 @@
             退出编辑
           </v-btn> 
         </v-menu> -->
-    </div>
+      </div>
 
       <v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line">{{snackbar_text}}</v-snackbar>
       <v-dialog v-model="show_dialog" persistent max-width="600px">
@@ -216,7 +219,7 @@
           nodes: [],
           buttons: [],
           is_nwjs: false,
-          have_improver:false,
+          have_improver: false,
           files: JSON.parse(localStorage["wenda_flow_files"] || "[]"),
         };
       },
@@ -483,7 +486,7 @@
   <p class="desc">${node.desc}</p>
    <hr class="debug">
    <i class="debug mdi mdi-bug" style="cursor: pointer;" onclick=toggleDebug(event)>调试信息：</i>
-  <p class="debug">${node.data.template?node.data.template.debug:"无调试"}</p>
+  <p class="debug">${node.data.template ? node.data.template.debug : "无调试"}</p>
 </div>`);
 
 
@@ -727,9 +730,9 @@
               updateDebugInfo(flow[i].id, input_debuginfo, 'lightblue')
 
               // 获取当前节点的函数的字符串中{{template}}需要替换的内容
-              exestring = typeof flow[i].data.template === 'object' ? JSON.stringify(flow[i].data.template).replaceAll('\\','\\\\') : ''
+              exestring = typeof flow[i].data.template === 'object' ? JSON.stringify(flow[i].data.template).replaceAll('\\', '\\\\') : ''
               // 获取当前节点的函数的字符串中{{usercodes}}需要替换的内容，如果不是程序代码段，则替换为空字符串
-              codestr = (flow[i].data.template&&typeof flow[i].data.template.codes === 'string') ? flow[i].data.template.codes : ''
+              codestr = (flow[i].data.template && typeof flow[i].data.template.codes === 'string') ? flow[i].data.template.codes : ''
               console.log('exestring:' + exestring)
 
               // console.log(`(async(a,b,c)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
@@ -754,7 +757,7 @@
 
               console.log(inputParasStr)
 
-            let output = await eval(
+              let output = await eval(
                 `(async(...args)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)}})${inputParasStr}`)
 
               // eval(async(a,b,c)=>{let para=JSON.parse('{"userinput":"输入提示词或其他文本","background":"#ffe8e8","debug":"调试信息在运行后显示"}');return [para.userinput]})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)
@@ -766,49 +769,49 @@
               // console.log(i, output,`(async(...args)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)}})${inputParasStr}`)
 
 
-            // console.log(output + '.1、输出：')
-            // console.dir(output)
-            // 获取当前节点outputs对象的所有键
-            const outputKeys = Object.keys(flow[i].outputs);
+              // console.log(output + '.1、输出：')
+              // console.dir(output)
+              // 获取当前节点outputs对象的所有键
+              const outputKeys = Object.keys(flow[i].outputs);
 
 
-            // 如果存在输出端口，遍历每一个输出端口 端口序号存放在j中
-            for (j = 0; j < outputKeys.length; j++) {
-              // 获取flow[i].outputs中的第一个对象
-              // console.log(nodesCounter + '.' + j + '.1、遍历每一个输出端口 端口序号存放在j中')
+              // 如果存在输出端口，遍历每一个输出端口 端口序号存放在j中
+              for (j = 0; j < outputKeys.length; j++) {
+                // 获取flow[i].outputs中的第一个对象
+                // console.log(nodesCounter + '.' + j + '.1、遍历每一个输出端口 端口序号存放在j中')
 
-              // 获取一个键（也就是outputs中的属性名）
-              const OutputKey = outputKeys[j];
+                // 获取一个键（也就是outputs中的属性名）
+                const OutputKey = outputKeys[j];
 
-              // 使用这个键依次获取对应的输出端口对象
-              const OutputObject = flow[i].outputs[OutputKey];
+                // 使用这个键依次获取对应的输出端口对象
+                const OutputObject = flow[i].outputs[OutputKey];
 
-              // console.log(nodesCounter + '.' + j + '.2、OutputKey:' + OutputKey)
+                // console.log(nodesCounter + '.' + j + '.2、OutputKey:' + OutputKey)
 
-              // console.dir(OutputObject); // 输出：{ connections: [...] }
-              // console.log(j + '.3、OutputObject.connections:')
+                // console.dir(OutputObject); // 输出：{ connections: [...] }
+                // console.log(j + '.3、OutputObject.connections:')
 
-              // console.dir(OutputObject.connections); // 输出：{ connections: [...] }
+                // console.dir(OutputObject.connections); // 输出：{ connections: [...] }
 
-              //   if (flow[i].outputs.output_1) for (connection of flow[i].outputs.output_1.connections) {
-              //   flow[connection.node].inputs[connection.output] = output
-              // }
+                //   if (flow[i].outputs.output_1) for (connection of flow[i].outputs.output_1.connections) {
+                //   flow[connection.node].inputs[connection.output] = output
+                // }
 
-              // flow[connection.node].inputs[connection.output] = output
-              let connectionCounter = 0
-              // 遍历每一个端口的链接
-              if (OutputObject) for (connection of OutputObject.connections) {
-                connectionCounter++
+                // flow[connection.node].inputs[connection.output] = output
+                let connectionCounter = 0
+                // 遍历每一个端口的链接
+                if (OutputObject) for (connection of OutputObject.connections) {
+                  connectionCounter++
 
-                flow[connection.node].inputs[connection.output] = await output[j]
+                  flow[connection.node].inputs[connection.output] = await output[j]
 
-                // console.log(nodesCounter + '.' + j + '.3.' + connectionCounter + '、flow[connection.node].inputs[connection.output]:')
-                // console.log(flow[connection.node].inputs[connection.output]); // 输出：{ connections: [...] }
+                  // console.log(nodesCounter + '.' + j + '.3.' + connectionCounter + '、flow[connection.node].inputs[connection.output]:')
+                  // console.log(flow[connection.node].inputs[connection.output]); // 输出：{ connections: [...] }
+                }
               }
-            }
 
-            flow[i].runned = true
-            runned = true
+              flow[i].runned = true
+              runned = true
 
               // flow[i].data.template.background = '#0000FF'
               // flow[i].data.template.debug = '该节点已成功运行'
@@ -828,7 +831,7 @@
               // 常用于执行清理操作，如关闭文件、数据库连接等
               // console.log('finally块中的代码始终会执行');
             }
-    }
+          }
         }
       }
     }
@@ -862,19 +865,60 @@
       // @grant        none
       // ==/UserScript==
       func.push({
-          name:`+name
-        +`,
+          name:`+ name
+        + `,
           description: "自动流程",
           question: async () => {
               let  flow_test_data = JSON.parse(`
-        +"`"+
+        + "`" +
         JSON.stringify(flow) + "`)"
-        + 
-        ";await run_flow(flow_test_data);}})"
+        +
+        ";\nawait run_flow(flow_test_data);}})"
 
       // 生成文件并下载
-      downloadBlob(name+".js",str)
+      downloadBlob(name + ".js", str)
+    }
+    save_autoAI_file = (name) => {
+      let flow = (editor.export()).drawflow.Home.data
 
+      // 先清理flow中的html、pos_x、pos_y、typenode等无用数据
+      for (i in flow) {
+        delete flow[i].html
+        delete flow[i].pos_x
+        delete flow[i].pos_y
+        delete flow[i].typenode
+
+        console.log(flow[i])
+      }
+
+      str = `
+      // @namespace    http://tampermonkey.net/
+      // @version      0.1
+      // @description  闻达自动流的节点
+      // @author       lyyyyy
+      // @match        http://127.0.0.1:17860/
+      // @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
+      // @run-at document-idle
+      // @grant        none
+      // ==/UserScript==
+      func.push({
+          name:`+ name
+        + `,
+          description: "自动流程",
+          question: async () => {
+              let  flow_test_data = JSON.parse(`
+        + "`" +
+        JSON.stringify(flow) + "`)"
+        +
+        ";\nawait run_flow(flow_test_data);}})"
+      let auto = {
+        "name": "闻达自动流程：" + name,
+        "description": "闻达自动流程：" + name,
+        "content": str,
+        "disabled": false
+      }
+      saved_auto.push(auto)
+      localStorage["wenda_saved_auto"] = JSON.stringify(saved_auto);
     }
 
 
