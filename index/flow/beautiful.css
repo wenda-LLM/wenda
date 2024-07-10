@@ -260,6 +260,10 @@ textarea {
   position: initial;
 }
 
+.title-box {
+user-select: none;
+}
+
 .title-box .help {
 
   float: right;
