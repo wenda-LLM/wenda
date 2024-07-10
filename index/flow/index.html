@@ -22,6 +22,7 @@
   <div class="wrapper" id="app">
     <v-app>
       <div class="btn_bar" style="position: fixed;;left: 220px;display: flex;top: 10px;">
+       
         <v-menu open-on-hover transition="slide-x-transition" offset-y>
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark v-bind="attrs" v-on="on">
@@ -30,12 +31,18 @@
 
           <v-btn color="primary" style="margin-top: 1em;" dark
             @click="copy(JSON.stringify((editor.export()).drawflow.Home.data))">
-            剪贴板
+            保存到剪贴板
           </v-btn>
-          <v-btn color="primary" style="margin-top: 1em;" dark @click="save_flow(prompt('请输入文件名'))">
+
+          <v-btn color="primary" style="margin-top: 1em;" dark
+            @click="downloadBlob(document.title,read_flow(document.title))">
+            保存到本地文件
+          </v-btn>
+          <v-btn color="blue lighten-1" dark @click="save_flow(prompt('请输入文件名'))">
             新建
           </v-btn>
-          <v-btn color="primary" style="margin-top: 1em;" dark v-for="(item, index) in files"
+
+          <v-btn color="teal darken-1" style="margin-top: 1em;" dark v-for="(item, index) in files"
             @click="save_flow(item.name)">
             {{ item.name }}
           </v-btn>
@@ -47,9 +54,12 @@
           </template>
 
           <v-btn color="primary" style="margin-top: 1em;" dark @click="import_from_cb()">
-            剪贴板
+            从剪贴板载入
           </v-btn>
-          <v-btn color="primary" style="margin-top: 1em;" dark v-for="(item, index) in files"
+          <v-btn color="primary" style="margin-top: 1em;" dark @click="import_by_text()">
+            从文本数据载入
+          </v-btn>
+          <v-btn color="teal darken-1" style="margin-top: 1em;" dark v-for="(item, index) in files"
             @click="read_flow(item.name)">
             {{ item.name }}
           </v-btn>
@@ -64,17 +74,105 @@
             删除：{{ item.name }}
           </v-btn>
         </v-menu>
-        <v-btn color="success" dark @click="run((editor.export()).drawflow.Home.data)">
-          运行
+
+        <v-menu open-on-hover transition="slide-x-transition" offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="light-green darken-2" dark @click="run((editor.export()).drawflow.Home.data)" v-bind="attrs"
+              v-on="on">
+              <v-icon dark>
+                mdi-motion-play-outline
+              </v-icon>
+              运行 </v-btn>
+          </template>
+
+          <v-btn color="light-green darken-3" style="margin-top: 1em;" dark @click="read_flow(document.title)">
+            复位
         </v-btn>
-        <v-btn color="success" dark v-if="is_nwjs" @click="gui.Window.open('http://127.0.0.1:65530')">
-          打开聊天界面
+        
+        <v-btn color="light-green darken-3" style="margin-top: 1em;" dark @click="location.reload();">
+          刷新
         </v-btn>
+
+      </v-menu>
+
+      </div>
+
+      <div class="btn_bar" style="position: fixed;right:1em;display:flex;top:10px;">
+        <v-menu open-on-hover transition="slide-x-transition" offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="light-blue lighten-4" @click="run((editor.export()).drawflow.Home.data)" v-bind="attrs"
+              v-on="on">
+              <v-icon dark>
+                mdi-semantic-web
+              </v-icon>
+              发布 </v-btn>
+          </template>
+
+          <v-btn color="blue lighten-3" style="margin-top: 1em;" @click="export_autoAI_file(document.title)">
+            发布为auto文件
+          </v-btn>
+
+        </v-menu>
         <v-btn color="success" dark v-if="!have_improver" @click="window.open('flow.user.js')">
           安装增强脚本
         </v-btn>
-      </div>
+        <v-menu open-on-hover transition="slide-x-transition" offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="light-blue lighten-4" @click="run((editor.export()).drawflow.Home.data)" v-bind="attrs"
+              v-on="on">
+              <v-icon dark>
+                mdi-home
+              </v-icon>
+              跳转 </v-btn>
+          </template>
+
+          <v-btn color="light-blue lighten-3" style="margin-top: 1em;"
+            @click="window.open('http://wenda2.bore.life/apps')">
+            应用市场
+          </v-btn>
+          <v-btn color="light-blue lighten-3" style="margin-top: 1em;" @click="window.open('http://wenda2.bore.life')">
+            对话页面
+          </v-btn>
+          <!-- <v-btn color="light-blue lighten-3" style="margin-top: 1em;" @click="location.reload();">
+            退出编辑
+          </v-btn> -->
+        </v-menu>
+    </div>
+
+      <v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line">{{snackbar_text}}</v-snackbar>
+      <v-dialog v-model="show_dialog" persistent max-width="600px">
+        <v-card class="ma-0 pa0">
+          <v-card-title>
+            <span class="text-h5">{{dialog_title}}</span>
+          </v-card-title>
+          <v-divider></v-divider>
+          <br>
+          <v-card-text>
+            <v-spacer></v-spacer>
+            <input type="file" id="fileInput" accept=".txt">
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-container>
+              <v-textarea autofocus v-model="dialog_input" rows="5" hide-details="auto"
+                @keypress.enter="show_dialog = false;window.dialog_input_resolver()"></v-textarea>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text
+              @click="show_dialog = false;dialog_input='';window.dialog_input_resolver()">
+              取消
+            </v-btn>
+            <v-btn color="blue darken-1" text @click="show_dialog = false;window.dialog_input_resolver()">
+              确认
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
     </v-app>
+
     <div class="col">
       <div class="drag-drawflow" v-for='i in nodes' draggable="true" ondragstart="drag(event)" :data-node="i.node">
         <i :class="'mdi mdi-'+i.icon"></i><span> {{i.name}}</span>
@@ -103,6 +201,16 @@
           // 生成回答的最大长度
           max_length: 4096,
           // 生成回答的top_p
+          // 是否显示snackbar
+          snackbar: false,
+          // snackbar的文本
+          snackbar_text: "",
+          //显示对话框
+          show_dialog: false,
+          //对话框标题
+          dialog_title: "",
+          //对话框用户输入
+          dialog_input: "",
           top_p: 0.8,
           chat: [],
           nodes: [],
@@ -121,7 +229,18 @@
     editor.reroute_fix_curvature = true;
     editor.force_first_input = false;
 
+    editor.zoom_max = 2.0;
+    editor.zoom_min = 0.3;
+    editor.zoom_value = 0.1;
+
+    // 输入信息时，不允许拖动
+    editor.draggable_inputs = false;
+
+    // 节点采用唯一标识符，为多节点导入提供支撑
+    editor.useuuid = true;
+
     editor.start();
+    // 将外部流程图数据导入当前图中
     editor_import = (data) => {
       const dataToImport = {
         "drawflow": {
@@ -147,10 +266,138 @@
       document.title = name
       let file = app.files.find(i => i.name == name)
       editor_import(JSON.parse(file.content))
+      return file.content
     }
+
+    // 通过名字读取到工作流
+    get_flow_data_by_name = name => {
+      // document.title = name
+      let file = app.files.find(i => i.name == name)
+      // editor_import(JSON.parse(file.content))
+      // 返回工作流数据
+      // return JSON.parse(file.content)
+      return file.content
+    }
+
+    // 运行工作流
+    window.run_flow = function (data) {
+      let output_tmp = run(data)
+      // alert('run_flow运行完成:' + output_tmp); // 
+      // 载入文件
+    };
+
+
+    function downloadBlob(filename, content) {
+      var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      a.href = url;
+      a.download = filename;
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+    }
+
+    //获取用户输入
+    input = async (title = '请输入', input = '') => {
+      app.dialog_title = title
+      app.dialog_input = input
+      app.show_dialog = true
+
+      setTimeout(() => {
+        document.getElementById('fileInput').addEventListener('change', function (e) {
+          var file = e.target.files[0];
+          if (!file) {
+            return;
+          }
+
+          // 创建一个 FileReader 实例
+          var reader = new FileReader();
+
+          // 定义 FileReader 读取完成后的操作
+          reader.onload = function (e) {
+            // 读取结果保存在 result 属性中
+            var text = e.target.result;
+            console.log(text);
+            app.dialog_input = text
+            // 在这里你可以对读取到的文本进行处理，比如显示在页面上
+          };
+
+          // 使用 FileReader 读取文件内容
+          reader.readAsText(file);
+        });
+      }, 0);
+
+
+
+      await new Promise(resolve => {
+        window.dialog_input_resolver = resolve
+      })
+      return app.dialog_input
+    }
+
+    //导入流内容
+    import_by_text = async () => {
+      let s修改后的内容 = await input('请输入导入的工作流内容', app.dialog_input)
+
+      if (s修改后的内容) {
+        // current_conversation.content = s修改后的内容
+        // 尝试将文本解析为JSON
+        const data = JSON.parse(s修改后的内容);
+
+        // 这里是处理解析后数据的代码
+        // 例如，如果你正在使用一个编辑器，你可能会将data传递给某个函数或方法
+        editor_import(data);
+
+        alert('导入成功')
+      } else
+        alert('取消导入或导入数据识别')
+    }
+
     import_from_cb = async () => {
-      editor_import(JSON.parse(await navigator.clipboard.readText()))
+
+      // editor_import(JSON.parse(await navigator.clipboard.readText()))
+      if (typeof navigator.clipboard === "undefined") {
+        alert('当前浏览器不支持剪贴板操作，请使用Chrome浏览器!')
+        return
+      }
+
+
+      try {
+
+        console.dir(navigator)
+        console.dir(navigator.clipboard)
+        // 读取剪贴板中的文本
+        const text = await navigator.clipboard.readText();
+
+        // 尝试将文本解析为JSON
+        const data = JSON.parse(text);
+
+        // 这里是处理解析后数据的代码
+        // 例如，如果你正在使用一个编辑器，你可能会将data传递给某个函数或方法
+        editor_import(data);
+
+        console.log('成功从剪贴板导入数据');
+      } catch (error) {
+        // 检查错误类型并处理
+        if (error.name === 'AbortError') {
+          console.log('读取剪贴板被用户中止');
+        } else if (error.name === 'NotFoundError') {
+          console.log('剪贴板中没有文本');
+        } else if (error instanceof SyntaxError) {
+          // 如果JSON.parse失败，会抛出SyntaxError
+          console.error('剪贴板中的文本不是有效的JSON:', error.message);
+        } else {
+          // 其他类型的错误
+          console.error('发生错误:', error);
+          alert(error)
+        }
+      }
     }
+
     if (app.files.length > 0)
       read_flow(app.files[0].name)
     else
@@ -178,7 +425,7 @@
       } else {
         ev.dataTransfer.setData("node", ev.target.getAttribute('data-node'));
       }
-      console.log(ev);
+      // console.log(ev);
     }
 
     function drop(ev) {
@@ -194,13 +441,18 @@
         addNodeToDrawFlow(data, ev.clientX, ev.clientY);
       }
 
-      console.log(ev);
+      // console.log(ev);
 
     }
 
     function deepCopy(obj) {
       return JSON.parse(JSON.stringify(obj));
     }
+
+    // 初始化全局变量
+    if (localStorage.getItem("wenda_func_global_vars") !== null)
+      localStorage["wenda_func_global_vars"] = '{}'
+
 
     // let originalObj = { a: 1, b: { c: 2 } };
     // let copiedObj = deepCopy(originalObj);
@@ -219,8 +471,19 @@
       // 注意下面的$的意思是调用遍历并转化为字符串
       editor.addNode(name, node.in, node.out, pos_x, pos_y, name, node.data, `
 <div>
-  <div class="title-box"><i class="mdi mdi-${node.icon}"></i> ${node.name}</div>
+  <div class="title-box">
+    <i class="mdi mdi-${node.icon}" style="cursor: pointer;" onclick=toggleDebug(event)></i> ${node.name} 
+    
+    <i class="mdi mdi-help-circle-outline help" style="margin-right:15px;" onclick=toggleHelp(event)></i>
+    <i class="mdi mdi-bug help"   onclick=toggleDebug(event)></i>
+  </div>
     ${node.template}
+    <hr class="desc">
+    <i class="desc mdi mdi-book-open-page-variant" style="cursor: pointer;" onclick=toggleHelp(event)>使用说明：</i>
+  <p class="desc">${node.desc}</p>
+   <hr class="debug">
+   <i class="debug mdi mdi-bug" style="cursor: pointer;" onclick=toggleDebug(event)>调试信息：</i>
+  <p class="debug">${node.data.template.debug}</p>
 </div>`);
 
 
@@ -236,6 +499,67 @@
       editor.precanvas.style.top = editor.canvas_y + 'px';
       console.log(transform);
       editor.editor_mode = "fixed";
+
+    }
+
+    function toggleDebug(e) {
+      // 首先，找到带有.drawflow-node类的最近祖先元素
+      var nodeElement = e.target.closest(".drawflow-node");
+      if (nodeElement) {
+        // 然后，在该祖先元素下查找.debug类的子元素或后代元素
+        var descElement = nodeElement.querySelectorAll(".debug");
+        if (descElement.length === 3) {
+          // 切换.desc元素的显隐状态
+          // 使用classList.toggle方法来切换'hidden'类（假设你有一个.hidden类来隐藏元素）
+          // descElement.classList.toggle("hidden");
+          console.log(descElement)
+          // 如果你没有使用.hidden类，而是直接设置display属性，可以这样做：
+          // 如果当前是可见的（display不是none），则隐藏它；否则显示它
+          if (descElement[0].style.display === 'none' || descElement[1].style.display === 'none') {
+            descElement[0].style.display = 'block'; // 或 'inline', 'inline-block' 等，取决于你的需求
+            descElement[1].style.display = 'block'; // 或 'inline', 'inline-block' 等，取决于你的需求
+            descElement[2].style.display = 'block';
+          } else {
+            descElement[0].style.display = 'none';
+            descElement[1].style.display = 'none';
+            descElement[2].style.display = 'none';
+          }
+
+          // 设置z-index（如果需要的话）
+          // nodeElement.style.zIndex = "9999";
+        }
+      }
+
+    }
+
+    function toggleHelp(e) {
+      // 首先，找到带有.drawflow-node类的最近祖先元素
+      var nodeElement = e.target.closest(".drawflow-node");
+      if (nodeElement) {
+        // 然后，在该祖先元素下查找.desc类的子元素或后代元素
+        var descElement = nodeElement.querySelectorAll(".desc");
+        console.log(descElement)
+        if (descElement.length == 3) {
+          // 切换.desc元素的显隐状态
+          // 使用classList.toggle方法来切换'hidden'类（假设你有一个.hidden类来隐藏元素）
+          // descElement.classList.toggle("hidden");
+
+          // 如果你没有使用.hidden类，而是直接设置display属性，可以这样做：
+          // 如果当前是可见的（display不是none），则隐藏它；否则显示它
+          if (descElement[0].style.display === 'none' || descElement[1].style.display === 'none') {
+            descElement[0].style.display = 'block'; // 或 'inline', 'inline-block' 等，取决于你的需求
+            descElement[1].style.display = 'block'; // 或 'inline', 'inline-block' 等，取决于你的需求
+            descElement[2].style.display = 'block';
+          } else {
+            descElement[0].style.display = 'none';
+            descElement[1].style.display = 'none';
+            descElement[2].style.display = 'none';
+          }
+
+          // 设置z-index（如果需要的话）
+          // nodeElement.style.zIndex = "9999";
+        }
+      }
 
     }
 
@@ -267,8 +591,88 @@
 
     }
 
-    editor.on('nodeCreated', function (id) {
-      console.log("Node created " + id);
+    function getCurrentDateTime() {
+      var now = new Date(); // 创建一个Date对象表示当前日期和时间
+
+      var year = now.getFullYear(); // 获取年份
+      var month = String(now.getMonth() + 1).padStart(2, '0'); // 获取月份（注意月份是从0开始的，所以需要+1），并使用padStart确保总是两位数
+      var day = String(now.getDate()).padStart(2, '0'); // 获取日期，并使用padStart确保总是两位数
+      var hours = String(now.getHours()).padStart(2, '0'); // 获取小时，并使用padStart确保总是两位数
+      var minutes = String(now.getMinutes()).padStart(2, '0'); // 获取分钟，并使用padStart确保总是两位数
+      var seconds = String(now.getSeconds()).padStart(2, '0'); // 获取分钟，并使用padStart确保总是两位数
+
+      // 将日期和时间拼接成指定的格式
+      var dateTimeString = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+
+      return dateTimeString;
+    }
+
+    // console.log(getCurrentDateTime()); // 输出类似 "2023-07-19 14:30" 这样的字符串
+
+    function updateDebugInfo(id, db_info = '用户正在输入...', title_color = 'yellow') {
+
+      // let node=editor.getNodeFromId(id)
+      // console.log(node)
+      // console.log(node.data)
+      // 首先，通过ID找到父元素
+      var parentElement = document.getElementById('node-' + id);
+      if (!parentElement) {
+        console.error('无法找到ID为' + id + '的元素');
+        return;
+      }
+
+
+      // 设置父元素台头的背景颜色
+      var titleDiv = parentElement.getElementsByClassName('title-box');
+
+      // 遍历这些DIV元素,正常情况下只有一个符合要求的DIV
+      for (var i = 0; i < titleDiv.length; i++) {
+        // 更新颜色
+        titleDiv[i].style.backgroundColor = title_color;
+      }
+
+      // 在父元素下查找所有class为debug的p元素
+      var debugPElements = parentElement.getElementsByClassName('debug');
+
+
+      // 遍历这些p元素
+      for (var i = 0; i < debugPElements.length; i++) {
+        // 检查元素是否真的是p元素（虽然getElementsByClassName通常只返回p元素，但这里为了严谨性进行检查）
+        if (debugPElements[i].tagName.toLowerCase() === 'p') {
+          // 更新p元素的内容
+          debugPElements[i].innerHTML += '<br>' + getCurrentDateTime() + '-' + db_info;
+        }
+      }
+    }
+
+    function isObjectHasProperties(obj) {
+      // 首先确保对象存在
+      if (obj === null || obj === undefined) {
+        return false;
+      }
+      // 使用for...in循环检查对象的可枚举属性
+      for (let key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // 示例用法
+    // updateDebugInfo('myDivId', '这是新的调试信息');
+
+    editor.on('nodeDataChanged', function (id) {
+      console.log("Node data changed " + id);
+      // 获取当前节点的DIV元素
+      // 获取当前节点下title的背景颜色并改变成数据的颜色
+      // 获取当前节点的Debug信息并显示出来
+      let node = editor.getNodeFromId(id)
+      // console.log(node)
+      // console.log(node.data)
+
+      updateDebugInfo(id, '节点数据发生变化：' + JSON.stringify(node.data.template));
+
     })
 
     // is_returned = i => typeof i == "object" && i.connections.length > 0
@@ -307,9 +711,60 @@
             // if (flow[i].inputs && (is_returned(flow[i].inputs.input_1) || is_returned(flow[i].inputs.input_2) || is_returned(flow[i].inputs.input_3)))
             if (flow[i].inputs && (is_returned(flow[i].inputs)))
               continue
+
+            // let strjson=JSON.stringify(flow[i].data.template)
+            // console.log(strjson)
+            // let rtn= JSON.parse(strjson)
+            // console.dir(rtn)
+
+            try {
+              // flow[i].data.template.background = '#00FF00'
+              updateDebugInfo(flow[i].id, '该节点即将运行', 'green')
+
+              let input_debuginfo = `输入参数：<br>${isObjectHasProperties(flow[i].inputs) ? JSON.stringify(flow[i].inputs) : '无<br>'}`
+
+              // alert(await rtn1)
+              updateDebugInfo(flow[i].id, input_debuginfo, 'lightblue')
+
+              // 获取当前节点的函数的字符串中{{template}}需要替换的内容
+              exestring = typeof flow[i].data.template === 'object' ? JSON.stringify(flow[i].data.template) : ''
+              // 获取当前节点的函数的字符串中{{usercodes}}需要替换的内容，如果不是程序代码段，则替换为空字符串
+              codestr = typeof flow[i].data.template.codes === 'string' ? flow[i].data.template.codes : ''
+              console.log('exestring:' + exestring)
+
+              // console.log(`(async(a,b,c)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
+              // 尝试执行节点代码，引发异常将报错，节点台头变红色
+
+              // let output = await eval(
+              //   `(async(a,b,c)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)}})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
+
+              const inputKeys = Object.keys(flow[i].inputs);
+              let inputParasStr = ''
+
+              // 如果存在输入端口，遍历每一个输入端口 端口序号存放在j中
+              for (j = 0; j < inputKeys.length; j++) {
+                // 获取一个键（也就是outputs中的属性名）
+                const OutputKey = inputKeys[j];
+                // 使用这个键依次获取对应的输出端口对象
+                // const OutputObject = flow[i].outputs[OutputKey];
+                inputParasStr += 'flow[i].inputs.' + OutputKey + ','
+              }
+
+              inputParasStr = ('(' + inputParasStr + ')').replace(',)', ')')
+
+              console.log(inputParasStr)
+
             let output = await eval(
-              `(async(a,b,c)=>${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", flow[i].data.template)})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
-            // console.log(i, output,`(async(a,b,c)=>${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", flow[i].data.template)})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
+                `(async(...args)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)}})${inputParasStr}`)
+
+              // eval(async(a,b,c)=>{let para=JSON.parse('{"userinput":"输入提示词或其他文本","background":"#ffe8e8","debug":"调试信息在运行后显示"}');return [para.userinput]})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)
+
+              let output_debuginfo = `输出参数：<br>${isObjectHasProperties(flow[i].outputs) ? JSON.stringify(flow[i].outputs) : '无<br>'}`
+
+              updateDebugInfo(flow[i].id, output_debuginfo, 'lightblue')
+
+              // console.log(i, output,`(async(...args)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)}})${inputParasStr}`)
+
 
             // console.log(output + '.1、输出：')
             // console.dir(output)
@@ -354,10 +809,75 @@
 
             flow[i].runned = true
             runned = true
-          }
+
+              // flow[i].data.template.background = '#0000FF'
+              // flow[i].data.template.debug = '该节点已成功运行'
+
+              // flow[i].html = flow[i].html.replace('使用说明', '废话说明')
+              updateDebugInfo(flow[i].id, '该节点已成功运行', 'lightgreen')
+
+            } catch (error) {
+              // 捕获并处理异常
+              // flow[i].data.template.background = 'FF0000'
+              // flow[i].data.template.debug = error
+              console.error('该节点运行时捕获到异常:', error);
+              updateDebugInfo(flow[i].id, '该节点运行时捕获到异常,错误信息:' + error, 'red')
+              // 在这里，你可以根据需要对错误进行处理，比如记录日志、显示错误消息等
+            } finally {
+              // 可选的finally块，无论是否发生异常，都会执行这里的代码
+              // 常用于执行清理操作，如关闭文件、数据库连接等
+              // console.log('finally块中的代码始终会执行');
+            }
+    }
         }
       }
     }
+
+    // export_autoAI_by_flow = (name) => {
+    //   downloadBlob(name, get_flow_data_by_name(name))
+    // }
+
+    // 导出 auto_flow 文件
+    export_autoAI_file = (name) => {
+      let flow = (editor.export()).drawflow.Home.data
+
+      // 先清理flow中的html、pos_x、pos_y、typenode等无用数据
+      for (i in flow) {
+        delete flow[i].html
+        delete flow[i].pos_x
+        delete flow[i].pos_y
+        delete flow[i].typenode
+
+        console.log(flow[i])
+      }
+
+      str = `
+      // @namespace    http://tampermonkey.net/
+      // @version      0.1
+      // @description  闻达自动流的节点
+      // @author       lyyyyy
+      // @match        http://127.0.0.1:17860/
+      // @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
+      // @run-at document-idle
+      // @grant        none
+      // ==/UserScript==
+      func.push({
+          name:`+name
+        +`,
+          description: "自动流程",
+          question: async () => {
+              let  flow_test_data = JSON.parse(`
+        +"`"+
+        JSON.stringify(flow) + "`)"
+        + 
+        ";await run_flow(flow_test_data);}})"
+
+      // 生成文件并下载
+      downloadBlob(name+".js",str)
+
+    }
+
+
     send = async (s, keyword = "", show = true, sources = [], addition_args = {}) => {
       let content = ''
       await send_raw(s.replace(/\r\n/g, "\n"), keyword, [], (message) => {
