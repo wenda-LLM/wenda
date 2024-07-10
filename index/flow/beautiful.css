@@ -260,6 +260,16 @@ textarea {
   position: initial;
 }
 
+.title-box .help {
+
+  float: right;
+  /* 如果你想要和其他文本之间有间距，可以使用margin */
+  margin-right: 5px;
+  margin-left: 5px;
+  cursor: pointer;
+  /* 例如，左侧添加10像素的边距 */
+}
+
 .drawflow-node .box {
   padding: 10px 20px 20px 20px;
   font-size: 14px;
@@ -270,6 +280,37 @@ textarea {
 .drawflow-node .box p {
   margin-top: 5px;
   margin-bottom: 5px;
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+.desc {
+  font-size: 12px;
+  color: hsl(218, 74%, 47%);
+  display: none;
+}
+
+.debug {
+  font-size: 12px;
+  /* color: #2bd21f; */
+  /* background-color: #282626; */
+  display: none;
+}
+
+p.desc {
+  margin-right: 10px;
+  margin-left: 10px;
+  max-height: 80px; /* 设置p元素的高度为300px */
+  overflow-y: auto; /* 当内容垂直溢出时显示滚动条 */
+  overflow-x: hidden;  /* 你也可以添加 overflow-x: hidden; 来确保水平方向不出现滚动条 */
+}
+
+p.debug {
+  margin-right: 10px;
+  margin-left: 10px;
+  max-height: 150px; /* 设置p元素的高度为300px */
+  overflow-y: auto; /* 当内容垂直溢出时显示滚动条 */
+  overflow-x: hidden;  /* 你也可以添加 overflow-x: hidden; 来确保水平方向不出现滚动条 */
 }
 
 .drawflow-node.welcome {
@@ -283,6 +324,7 @@ textarea {
 .drawflow-node input,
 .drawflow-node select,
 .drawflow-node textarea {
+  border-radius: 4px;
   border: 1px solid var(--border-color);
   height: 30px;
   font-size: 12px;
@@ -291,7 +333,7 @@ textarea {
 }
 
 .drawflow-node textarea {
-  height: 200px;
+  height: 100px;
 }
 
 
