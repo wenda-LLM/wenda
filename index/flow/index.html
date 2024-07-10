@@ -38,7 +38,7 @@
             @click="downloadBlob(document.title,read_flow(document.title))">
             保存到本地文件
           </v-btn>
-          <v-btn color="blue lighten-1" dark @click="save_flow(prompt('请输入文件名'))">
+          <v-btn color="blue lighten-1" style="margin-top: 1em;" dark @click="save_flow(prompt('请输入文件名'))">
             新建
           </v-btn>
 
@@ -116,7 +116,7 @@
         <v-btn color="success" dark v-if="!have_improver" @click="window.open('flow.user.js')">
           安装增强脚本
         </v-btn>
-        <v-menu open-on-hover transition="slide-x-transition" offset-y>
+        <!-- <v-menu open-on-hover transition="slide-x-transition" offset-y>
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="light-blue lighten-4" @click="run((editor.export()).drawflow.Home.data)" v-bind="attrs"
               v-on="on">
@@ -133,10 +133,10 @@
           <v-btn color="light-blue lighten-3" style="margin-top: 1em;" @click="window.open('http://wenda2.bore.life')">
             对话页面
           </v-btn>
-          <!-- <v-btn color="light-blue lighten-3" style="margin-top: 1em;" @click="location.reload();">
+          <v-btn color="light-blue lighten-3" style="margin-top: 1em;" @click="location.reload();">
             退出编辑
-          </v-btn> -->
-        </v-menu>
+          </v-btn> 
+        </v-menu> -->
     </div>
 
       <v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line">{{snackbar_text}}</v-snackbar>
