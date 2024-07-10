@@ -854,26 +854,25 @@
         console.log(flow[i])
       }
 
-      str = `
-      // @namespace    http://tampermonkey.net/
-      // @version      0.1
-      // @description  闻达自动流的节点
-      // @author       lyyyyy
-      // @match        http://127.0.0.1:17860/
-      // @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
-      // @run-at document-idle
-      // @grant        none
-      // ==/UserScript==
-      func.push({
-          name:`+ name
-        + `,
-          description: "自动流程",
-          question: async () => {
-              let  flow_test_data = JSON.parse(`
-        + "`" +
+      str = `// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  闻达自动流的节点
+// @author       lyyyyy
+// @match        http://127.0.0.1:17860/
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
+// @run-at document-idle
+// @grant        none
+// ==/UserScript==
+func.push({
+name:`+ name
++ `,
+description: "自动流程",
+question: async () => {
+let  flow_test_data = JSON.parse(`
+  + "`" +
         JSON.stringify(flow) + "`)"
         +
-        ";\nawait run_flow(flow_test_data);}})"
+        ";\nawait run_flow(flow_test_data);\n}})"
 
       // 生成文件并下载
       downloadBlob(name + ".js", str)
@@ -891,26 +890,25 @@
         console.log(flow[i])
       }
 
-      str = `
-      // @namespace    http://tampermonkey.net/
-      // @version      0.1
-      // @description  闻达自动流的节点
-      // @author       lyyyyy
-      // @match        http://127.0.0.1:17860/
-      // @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
-      // @run-at document-idle
-      // @grant        none
-      // ==/UserScript==
-      func.push({
-          name:`+ name
-        + `,
-          description: "自动流程",
-          question: async () => {
-              let  flow_test_data = JSON.parse(`
-        + "`" +
-        JSON.stringify(flow) + "`)"
-        +
-        ";\nawait run_flow(flow_test_data);}})"
+      str = `// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  闻达自动流的节点
+// @author       lyyyyy
+// @match        http://127.0.0.1:17860/
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=0.1
+// @run-at document-idle
+// @grant        none
+// ==/UserScript==
+func.push({
+name:`+ name
++ `,
+description: "自动流程",
+question: async () => {
+let  flow_test_data = JSON.parse(`
++ "`" +
+JSON.stringify(flow) + "`)"
++
+";\nawait run_flow(flow_test_data);\n}})"
       let auto = {
         "name": "闻达自动流程：" + name,
         "description": "闻达自动流程：" + name,
