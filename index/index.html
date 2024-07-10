@@ -1151,7 +1151,7 @@
               // updateDebugInfo(flow[i].id, input_debuginfo, 'lightblue')
 
               // 获取当前节点的函数的字符串中{{template}}需要替换的内容
-              exestring = typeof flow[i].data.template === 'object' ? JSON.stringify(flow[i].data.template) : ''
+              exestring = typeof flow[i].data.template === 'object' ? JSON.stringify(flow[i].data.template) .replaceAll('\\','\\\\') : ''
               // 获取当前节点的函数的字符串中{{usercodes}}需要替换的内容，如果不是程序代码段，则替换为空字符串
               codestr = typeof flow[i].data.template.codes === 'string' ? flow[i].data.template.codes : ''
               console.log('exestring:' + exestring)
