@@ -683,14 +683,13 @@
       let rtn = false
 
       for (let j in i) {
+        if (i[j] == null)
+          rtn = rtn || false
         // 最后一个节点没有连接，这种情况会导致报错，所以加了i[j].connections&&....
-        if ((typeof i[j] == "object") && (i[j].connections && i[j].connections.length > 0))
+        else if ((typeof i[j] == "object") && (i[j].connections && i[j].connections.length > 0))
           rtn = rtn || true
         else
           rtn = rtn || false
-
-        // console.dir(i[j])
-        // console.log(rtn)
       }
 
       return rtn
@@ -707,25 +706,16 @@
         for (i in flow) {
           // 节点数量计数器
           nodesCounter++
-          // console.log('第' + nodesCounter + '个节点、flow[' + flow[i].name + ']:')
-          // console.dir(flow[i])
           // 判断当前节点是否已经运行过
           if (!flow[i].runned) {
             // if (flow[i].inputs && (is_returned(flow[i].inputs.input_1) || is_returned(flow[i].inputs.input_2) || is_returned(flow[i].inputs.input_3)))
             if (flow[i].inputs && (is_returned(flow[i].inputs)))
               continue
 
-            // let strjson=JSON.stringify(flow[i].data.template)
-            // console.log(strjson)
-            // let rtn= JSON.parse(strjson)
-            // console.dir(rtn)
-
             try {
               // flow[i].data.template.background = '#00FF00'
               updateDebugInfo(flow[i].id, '该节点即将运行', 'green')
-
               let input_debuginfo = `输入参数：<br>${isObjectHasProperties(flow[i].inputs) ? JSON.stringify(flow[i].inputs) : '无<br>'}`
-
               // alert(await rtn1)
               updateDebugInfo(flow[i].id, input_debuginfo, 'lightblue')
 
@@ -734,13 +724,6 @@
               // 获取当前节点的函数的字符串中{{usercodes}}需要替换的内容，如果不是程序代码段，则替换为空字符串
               codestr = (flow[i].data.template && typeof flow[i].data.template.codes === 'string') ? flow[i].data.template.codes : ''
               console.log('exestring:' + exestring)
-
-              // console.log(`(async(a,b,c)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
-              // 尝试执行节点代码，引发异常将报错，节点台头变红色
-
-              // let output = await eval(
-              //   `(async(a,b,c)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)}})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)`)
-
               const inputKeys = Object.keys(flow[i].inputs);
               let inputParasStr = ''
 
@@ -759,77 +742,33 @@
 
               let output = await eval(
                 `(async(...args)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)}})${inputParasStr}`)
-
-              // eval(async(a,b,c)=>{let para=JSON.parse('{"userinput":"输入提示词或其他文本","background":"#ffe8e8","debug":"调试信息在运行后显示"}');return [para.userinput]})(flow[i].inputs.input_1,flow[i].inputs.input_2,flow[i].inputs.input_3)
-
               let output_debuginfo = `输出参数：<br>${isObjectHasProperties(flow[i].outputs) ? JSON.stringify(flow[i].outputs) : '无<br>'}`
-
               updateDebugInfo(flow[i].id, output_debuginfo, 'lightblue')
-
-              // console.log(i, output,`(async(...args)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)}})${inputParasStr}`)
-
-
-              // console.log(output + '.1、输出：')
-              // console.dir(output)
-              // 获取当前节点outputs对象的所有键
               const outputKeys = Object.keys(flow[i].outputs);
-
-
               // 如果存在输出端口，遍历每一个输出端口 端口序号存放在j中
               for (j = 0; j < outputKeys.length; j++) {
-                // 获取flow[i].outputs中的第一个对象
-                // console.log(nodesCounter + '.' + j + '.1、遍历每一个输出端口 端口序号存放在j中')
-
                 // 获取一个键（也就是outputs中的属性名）
                 const OutputKey = outputKeys[j];
-
                 // 使用这个键依次获取对应的输出端口对象
                 const OutputObject = flow[i].outputs[OutputKey];
-
-                // console.log(nodesCounter + '.' + j + '.2、OutputKey:' + OutputKey)
-
-                // console.dir(OutputObject); // 输出：{ connections: [...] }
-                // console.log(j + '.3、OutputObject.connections:')
-
-                // console.dir(OutputObject.connections); // 输出：{ connections: [...] }
-
-                //   if (flow[i].outputs.output_1) for (connection of flow[i].outputs.output_1.connections) {
-                //   flow[connection.node].inputs[connection.output] = output
-                // }
-
-                // flow[connection.node].inputs[connection.output] = output
                 let connectionCounter = 0
                 // 遍历每一个端口的链接
                 if (OutputObject) for (connection of OutputObject.connections) {
                   connectionCounter++
-
                   flow[connection.node].inputs[connection.output] = await output[j]
-
-                  // console.log(nodesCounter + '.' + j + '.3.' + connectionCounter + '、flow[connection.node].inputs[connection.output]:')
-                  // console.log(flow[connection.node].inputs[connection.output]); // 输出：{ connections: [...] }
                 }
               }
 
               flow[i].runned = true
               runned = true
-
-              // flow[i].data.template.background = '#0000FF'
-              // flow[i].data.template.debug = '该节点已成功运行'
-
-              // flow[i].html = flow[i].html.replace('使用说明', '废话说明')
               updateDebugInfo(flow[i].id, '该节点已成功运行', 'lightgreen')
 
             } catch (error) {
-              // 捕获并处理异常
-              // flow[i].data.template.background = 'FF0000'
-              // flow[i].data.template.debug = error
-              console.error('该节点运行时捕获到异常:', error);
-              updateDebugInfo(flow[i].id, '该节点运行时捕获到异常,错误信息:' + error, 'red')
-              // 在这里，你可以根据需要对错误进行处理，比如记录日志、显示错误消息等
-            } finally {
-              // 可选的finally块，无论是否发生异常，都会执行这里的代码
-              // 常用于执行清理操作，如关闭文件、数据库连接等
-              // console.log('finally块中的代码始终会执行');
+              console.error('该节点运行时捕获到异常:', error.message);
+              updateDebugInfo(flow[i].id, '该节点运行时捕获到异常,错误信息:' + error.stack, 'red')
+              if (error.message.includes('null')) {
+                updateDebugInfo(flow[i].id, '该节点所在的分支将不会运行...', 'gray')
+              }
             }
           }
         }
@@ -865,11 +804,11 @@
 // ==/UserScript==
 func.push({
 name:`+ name
-+ `,
+        + `,
 description: "自动流程",
 question: async () => {
 let  flow_test_data = JSON.parse(`
-  + "`" +
+        + "`" +
         JSON.stringify(flow) + "`)"
         +
         ";\nawait run_flow(flow_test_data);\n}})"
@@ -901,14 +840,14 @@ let  flow_test_data = JSON.parse(`
 // ==/UserScript==
 func.push({
 name:`+ name
-+ `,
+        + `,
 description: "自动流程",
 question: async () => {
 let  flow_test_data = JSON.parse(`
-+ "`" +
-JSON.stringify(flow) + "`)"
-+
-";\nawait run_flow(flow_test_data);\n}})"
+        + "`" +
+        JSON.stringify(flow) + "`)"
+        +
+        ";\nawait run_flow(flow_test_data);\n}})"
       let auto = {
         "name": "闻达自动流程：" + name,
         "description": "闻达自动流程：" + name,
