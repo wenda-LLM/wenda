@@ -122,9 +122,10 @@ if (typeof app.nodes == 'object') {
             template: `<div class="box">请输入停止符：
             <textarea df-template-userinput></textarea></div>`
         },
+        // 执行过程中，鉴别出非激活的分支，将非活分支flow[i].runned = true，那么该分支的后续分支如何保障其不运行呢？
         {
             name: '条件分支',
-            function: "{let para=JSON.parse('{{template}}');console.dir(para);if(args[0].includes(para.keywords)){return [para.specialText,args[0]]} else return [args[0],para.specialText]}",
+            function: "{let para=JSON.parse('{{template}}');console.dir(para);if(args[0].includes(para.keywords)){return [para.specialText,null]} else return [null,para.specialText]}",
             node: "ifelsenode",
             icon: "apple-keyboard-option",
             in: 1,
