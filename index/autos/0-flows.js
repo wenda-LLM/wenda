@@ -64,7 +64,7 @@ if (typeof app.nodes == 'object') {
         },
         {
             name: '大模型对话',
-            function: '{console.log(args[0]);let rtn=send(args[0],"",show=false);console.dir([rtn]);return [rtn]}',
+            function: 'return [send(args[0],"",show=false)]',
             node: "send",
             icon: "chat",
             in: 1,
