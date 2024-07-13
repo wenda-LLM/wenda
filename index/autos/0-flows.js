@@ -221,7 +221,7 @@ if (typeof app.nodes == 'object') {
         },
         {
             name: '格式化文本',
-            function: 'return [args[0].replace(/[\\s]+/g, \' \').replace(/[\\r\\n]+/g, \'\\n\').replace(/^[\\n\\s\\t]+/, \'\').replace(/[\\n\\s\\t]+$/, \'\')]',
+            function: 'return [args[0].replace(/ +/g, \' \').replace(/[\\r\\n]+/g, \'\\n\').replace(/^[\\n\\s\\t]+/, \'\').replace(/[\\n\\s\\t]+$/, \'\')]',
             node: "format",
             icon: "text-box-plus",
             in: 1,
