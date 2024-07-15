@@ -24,6 +24,7 @@ workbox.routing.registerRoute(
         if (["/", '/favicon.png', '/style.css', '/sw.js'].indexOf(event.url.pathname) > -1) return true;
         if (event.url.pathname.indexOf('.html') > -1) return true;
         if (event.url.pathname.indexOf('/flow/') > -1) return true;
+        if (event.url.pathname.indexOf('/autos/') > -1) return true;
         return false;
     },
     new  workbox.strategies.StaleWhileRevalidate({

@@ -14,7 +14,7 @@ if (typeof app.nodes == 'object') {
         {
             name: '开始',
             // 检查是否处于chat页面环境中，如果不是则将输入参数作为输出参数，如果是则直接反馈输入参数
-            function: "{let para=JSON.parse('{{template}}');if(app.question !== undefined && app.question !== null) {add_conversation('User', 'autoflow_start:'+app.question);return [app.question]} else {return [para.userinput]}}",
+            function: "{let para=JSON.parse(`{{template}}`);if(app.question !== undefined && app.question !== null) {add_conversation('User', 'autoflow_start:'+app.question);return [app.question]} else {return [para.userinput]}}",
             node: "autoAI_start",
             icon: "alpha-s-circle-outline",
             in: 0,

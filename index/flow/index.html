@@ -614,7 +614,7 @@
 
     // console.log(getCurrentDateTime()); // 输出类似 "2023-07-19 14:30" 这样的字符串
 
-    function updateDebugInfo(id, db_info = '用户正在输入...', title_color = 'yellow') {
+    function updateDebugInfo(id, db_info = '用户正在输入...', title_color = 'rgba(0, 255, 0, 0.5)') {
 
       // let node=editor.getNodeFromId(id)
       // console.log(node)
@@ -716,10 +716,10 @@
 
             try {
               // flow[i].data.template.background = '#00FF00'
-              updateDebugInfo(flow[i].id, '该节点即将运行', 'green')
+              updateDebugInfo(flow[i].id, '该节点即将运行', 'rgba(0, 255, 0, 0.5)')
               let input_debuginfo = `输入参数：<br>${isObjectHasProperties(flow[i].inputs) ? JSON.stringify(flow[i].inputs) : '无<br>'}`
               // alert(await rtn1)
-              updateDebugInfo(flow[i].id, input_debuginfo, 'lightblue')
+              updateDebugInfo(flow[i].id, input_debuginfo, 'rgba(0, 0, 255, 0.5)')
 
               // 获取当前节点的函数的字符串中{{template}}需要替换的内容
               exestring = typeof flow[i].data.template === 'object' ? JSON.stringify(flow[i].data.template).replaceAll('\\', '\\\\') : ''
@@ -745,7 +745,7 @@
               let output = await eval(
                 `(async(...args)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)}})${inputParasStr}`)
               let output_debuginfo = `输出参数：<br>${isObjectHasProperties(flow[i].outputs) ? JSON.stringify(flow[i].outputs) : '无<br>'}`
-              updateDebugInfo(flow[i].id, output_debuginfo, 'lightblue')
+              updateDebugInfo(flow[i].id, output_debuginfo, 'rgba(0, 0, 255, 0.5)')
               const outputKeys = Object.keys(flow[i].outputs);
               // 如果存在输出端口，遍历每一个输出端口 端口序号存放在j中
               for (j = 0; j < outputKeys.length; j++) {
@@ -763,13 +763,13 @@
 
               flow[i].runned = true
               runned = true
-              updateDebugInfo(flow[i].id, '该节点已成功运行', 'lightgreen')
+              updateDebugInfo(flow[i].id, '该节点已成功运行', 'rgba(0, 255, 0, 0.5)')
 
             } catch (error) {
               console.error('该节点运行时捕获到异常:', error.message);
-              updateDebugInfo(flow[i].id, '该节点运行时捕获到异常,错误信息:' + error.stack, 'red')
+              updateDebugInfo(flow[i].id, '该节点运行时捕获到异常,错误信息:' + error.stack, 'rgba(255, 0, 0, 0.5)')
               if (error.message.includes('null')) {
-                updateDebugInfo(flow[i].id, '该节点所在的分支将不会运行...', 'gray')
+                updateDebugInfo(flow[i].id, '该节点所在的分支将不会运行...', 'rgba(0, 0, 0, 0.5);')
               }
             }
           }
