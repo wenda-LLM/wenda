@@ -127,7 +127,7 @@ window.answer_with_fast_zsk = async (Q) => {
     return await send(Q, keyword = Q, show = true, sources = sources)
 }
 app.nodes && app.nodes.push({
-    name: '知识库回答',
+    name: '知识库',
     function: 'answer_with_fast_zsk(a)',
     node: "answer_with_fast_zsk",
     icon: "book-account",

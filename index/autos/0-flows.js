@@ -12,7 +12,7 @@
 if (typeof app.nodes == 'object') {
     app.nodes = app.nodes.concat([
         {
-            name: 'autoAI开始',
+            name: '开始',
             // 检查是否处于chat页面环境中，如果不是则将输入参数作为输出参数，如果是则直接反馈输入参数
             function: "{let para=JSON.parse('{{template}}');if(app.question !== undefined && app.question !== null) {add_conversation('User', 'autoflow_start:'+app.question);return [app.question]} else {return [para.userinput]}}",
             node: "autoAI_start",
@@ -26,7 +26,7 @@ if (typeof app.nodes == 'object') {
     </div>`
         },
         {
-            name: 'autoAI结束',
+            name: '结束',
             function: "{if (app.question !== undefined && app.question !== null)add_conversation('Assistant', 'autoflow_end:'+args[0]);console.log(args[0]);}",
             node: "autoAI_end",
             icon: "alpha-e-circle-outline",
@@ -63,7 +63,7 @@ if (typeof app.nodes == 'object') {
             template: ``
         },
         {
-            name: '大模型对话',
+            name: '对话',
             function: 'return [send(args[0],"",show=false)]',
             node: "send",
             icon: "chat",
@@ -73,43 +73,32 @@ if (typeof app.nodes == 'object') {
             desc: '和大语言模型对话',
             template: ``
         },
-        {
-            name: 'LLM高级对话',
-            function: '{let para=JSON.parse("{{template}}");return [send(args[0],args[1])]}',
-            node: "chatbyllm",
-            icon: "wechat",
-            in: 2,
-            out: 1,
-            data: { "template": { "channel": 'channel_3', "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
-            desc: '和大语言模型对话，可以指定模型',
-            template: `
-          <div>
-            <div class="title-box"><i class="fab fa-telegram-plane"></i> Telegram bot</div>
-            <div class="box">
-              <p>调用大模型生成文本</p>
-              <p>请在两个输入端分别输入系统提示词和用户提示词</p>
-              <p>请选择大语言模型</p>
-              <select df-template-channel>
-                <option value="channel_1">chatGLM2</option>
-                <option value="channel_2">chatGLM3</option>
-                <option value="channel_3">Qwen2-0.5B</option>
-                <option value="channel_4">Qwen2-7B</option>
-              </select>
-            </div>
-          </div>
-          `
-        },
-        {
-            name: '知识库回答',
-            function: '[answer_with_fast_zsk(args[0])]',
-            node: "answer_with_fast_zsk",
-            icon: "book-account",
-            in: 1,
-            out: 1,
-            data: { "template": { "userinput": '输入提示词或其他文本', "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
-            desc: '可以调用知识库回答',
-            template: ``
-        },
+        // {
+        //     name: 'LLM高级对话',
+        //     function: '{let para=JSON.parse("{{template}}");return [send(args[0],args[1])]}',
+        //     node: "chatbyllm",
+        //     icon: "wechat",
+        //     in: 2,
+        //     out: 1,
+        //     data: { "template": { "channel": 'channel_3', "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
+        //     desc: '和大语言模型对话，可以指定模型',
+        //     template: `
+        //   <div>
+        //     <div class="title-box"><i class="fab fa-telegram-plane"></i> Telegram bot</div>
+        //     <div class="box">
+        //       <p>调用大模型生成文本</p>
+        //       <p>请在两个输入端分别输入系统提示词和用户提示词</p>
+        //       <p>请选择大语言模型</p>
+        //       <select df-template-channel>
+        //         <option value="channel_1">chatGLM2</option>
+        //         <option value="channel_2">chatGLM3</option>
+        //         <option value="channel_3">Qwen2-0.5B</option>
+        //         <option value="channel_4">Qwen2-7B</option>
+        //       </select>
+        //     </div>
+        //   </div>
+        //   `
+        // },
         {
             name: '补全文段',
             function: "{let para=JSON.parse('{{template}}');let rtn=send_prompt(args[0],para.userinput,()=>{});return [rtn]}",
@@ -159,7 +148,7 @@ if (typeof app.nodes == 'object') {
             <textarea df-template-codes placeholder='上一节点的输入参数：a,args[1],args[2]'></textarea></div>`
         },
         {
-            name: '程序块_多路',
+            name: '多路程序',
             function: "{{usercodes}}",
             node: "function2",
             icon: "function-variant",
@@ -195,7 +184,7 @@ if (typeof app.nodes == 'object') {
             template: ``
         },
         {
-            name: '控制台打印',
+            name: '日志',
             function: 'console.log(args[0])',
             node: "console_log",
             icon: "printer-outline",
@@ -218,7 +207,7 @@ if (typeof app.nodes == 'object') {
             template: `<div class="box"><textarea df-template-userinput placeholder='输入内容{1}{2}{3}'></textarea></div>`
         },
         {
-            name: '格式化文本',
+            name: '格式化',
             function: 'return [args[0].replace(/ +/g, \' \').replace(/[\\r\\n]+/g, \'\\n\').replace(/^[\\n\\s\\t]+/, \'\').replace(/[\\n\\s\\t]+$/, \'\')]',
             node: "format",
             icon: "text-box-plus",
