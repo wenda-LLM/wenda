@@ -120,27 +120,6 @@
         <v-btn color="success" dark v-if="!have_improver" @click="window.open('flow.user.js')">
           安装增强脚本
         </v-btn>
-        <!-- <v-menu open-on-hover transition="slide-x-transition" offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="light-blue lighten-4" @click="run((editor.export()).drawflow.Home.data)" v-bind="attrs"
-              v-on="on">
-              <v-icon dark>
-                mdi-home
-              </v-icon>
-              跳转 </v-btn>
-          </template>
-
-          <v-btn color="light-blue lighten-3" style="margin-top: 1em;"
-            @click="window.open('http://wenda2.bore.life/apps')">
-            应用市场
-          </v-btn>
-          <v-btn color="light-blue lighten-3" style="margin-top: 1em;" @click="window.open('http://wenda2.bore.life')">
-            对话页面
-          </v-btn>
-          <v-btn color="light-blue lighten-3" style="margin-top: 1em;" @click="location.reload();">
-            退出编辑
-          </v-btn> 
-        </v-menu> -->
       </div>
 
       <v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line">{{snackbar_text}}</v-snackbar>
@@ -178,7 +157,7 @@
     </v-app>
 
     <div class="col">
-      <div class="drag-drawflow" v-for='i in nodes' draggable="true" ondragstart="drag(event)" :data-node="i.node">
+      <div class="drag-drawflow" v-for='i in nodes' draggable="true" ondragstart="drag(event)" :data-node="i.node" @touchstart="addNodeToDrawFlow(i.node, 200, 200)">
         <i :class="'mdi mdi-'+i.icon"></i><span> {{i.name}}</span>
       </div>
 
