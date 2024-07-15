@@ -157,27 +157,13 @@ textarea {
 
 #drawflow {
   position: relative;
-  width: calc(100vw - 201px);
+  width: calc(100vw - 151px);
   height: calc(100%);
   background: var(--background-color);
   background-size: 25px 25px;
   background-image:
     linear-gradient(to right, #f1f1f1 1px, transparent 1px),
     linear-gradient(to bottom, #f1f1f1 1px, transparent 1px);
-}
-
-@media only screen and (max-width: 768px) {
-  .col {
-    width: 50px;
-  }
-
-  .col .drag-drawflow span {
-    display: none;
-  }
-
-  #drawflow {
-    width: calc(100vw - 51px);
-  }
 }
 
 
@@ -406,10 +392,4 @@ p.debug {
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
-}
-
-@media only screen and (max-width: 768px) {
-  .modal-content {
-    width: 80%;
-  }
 }

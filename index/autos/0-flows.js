@@ -147,7 +147,7 @@ if (typeof app.nodes == 'object') {
             <input df-template-var1 ></input></div>`
         },
         {
-            name: '程序块儿',
+            name: '程序块',
             function: "{{usercodes}}",
             node: "function",
             icon: "function-variant",
@@ -159,7 +159,7 @@ if (typeof app.nodes == 'object') {
             <textarea df-template-codes placeholder='上一节点的输入参数：a,args[1],args[2]'></textarea></div>`
         },
         {
-            name: '程序块儿_双输出',
+            name: '程序块_多路',
             function: "{{usercodes}}",
             node: "function2",
             icon: "function-variant",
@@ -207,7 +207,7 @@ if (typeof app.nodes == 'object') {
         },
         // {{template}}是上一个节点输入的数据？a b c 是用户输入到这个节点的三个数据，{1}、{2}、{3} 是用户输入到节点输入框中的数据 
         {
-            name: '信息汇聚模板',
+            name: '汇聚模板',
             function: "{let para=JSON.parse('{{template}}');return [para.userinput.replace('{1}',args[0]).replace('{2}',args[1]).replace('{3}',args[2])]}",
             node: "template",
             icon: "text-box-plus",
@@ -215,9 +215,7 @@ if (typeof app.nodes == 'object') {
             out: 1,
             data: { "template": { "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
             desc: '可以将多路输入信息汇聚到一个输出中,注意输入内容按照{1}{2}{3}格式填写',
-            template: `<div class="box">分别输入需要处理的信息
-            <textarea df-template-userinput placeholder='输入内容{1}{2}{3}'></textarea>
-                使用多路输入量输出模板</div>`
+            template: `<div class="box"><textarea df-template-userinput placeholder='输入内容{1}{2}{3}'></textarea></div>`
         },
         {
             name: '格式化文本',
