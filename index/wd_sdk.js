@@ -1,6 +1,4 @@
-// model="qwen:32b"
-// // model="qwen2:7b"
-// model="deepseek-v2:16b"
+
 load_models = async () => {
     let server_models = await fetch("/api/tags");
     server_models = await server_models.json();
@@ -172,57 +170,67 @@ send_prompt = async (prompt, stop, onmessage = alert, args = {}) => {
     await readChunk()
     return result
 }
+let isSpeaking = false;
 speak = (s) => {
     msg = new SpeechSynthesisUtterance();
     msg.rate = 1;
     msg.pitch = 10;
     msg.text = s;
     msg.volume = 1;
-    msg.onend = () => app.is_tts_saying = false
-    app.is_tts_saying = true
-    speechSynthesis.speak(msg);
-};
+    speechSynthesis.speak(msg)
+
+    msg.onstart = (event) => {
+    }
+
+    msg.onend = (event) => {
+        isSpeaking = false;
+    }
+
+}
 stop_listen = () => {
-    recognition.stop();
-    app.loading = true;
-};
+    recognition.stop()
+    app.loading = true
+}
 listen = () => {
-    recognition = new window.webkitSpeechRecognition();
-    let final_transcript = "";
+    if (isSpeaking) return;
+    recognition = new window.webkitSpeechRecognition;
+    let final_transcript = '';
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.onstart = function () { };
+    recognition.onstart = function () {
+    };
     recognition.onresult = function (event) {
-        let interim_transcript = "";
+        let interim_transcript = '';
         for (var i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
                 final_transcript += event.results[i][0].transcript;
                 console.log(final_transcript);
-                app.question = final_transcript;
+                app.question = final_transcript
             } else {
+
                 interim_transcript += event.results[i][0].transcript;
             }
         }
     };
     recognition.onerror = function (e) {
         console.log(final_transcript);
-        alert("语音识别失败:" + e.error);
-        app.sst_started = false;
-        console.log(e);
+        alert('语音识别失败:', e.error)
+        app.sst_started = false
+        console.log('======================' + "error" + '======================', e);
     };
     recognition.onend = function () {
         console.log(final_transcript);
-        app.question = final_transcript;
-        if (final_transcript.length > 1) submit();
-        app.sst_started = false;
-        console.log(
-            "======================" + "end" + "======================"
-        );
-    };
+        app.question = final_transcript
+        if (final_transcript.length > 1)
+            submit()
+        app.sst_started = false
+        console.log('======================' + "end" + '======================');
+    }
     recognition.lang = "zh-CN";
-    recognition.start();
-    app.sst_started = true;
-};
+    recognition.start()
+    app.sst_started = true
+}
+
 
 copy = (s) => {
     navigator.permissions
@@ -283,16 +291,16 @@ find_memory_by_string = async (string, limit = 20, name = 'embedding') => {
     let embedding = await make_embedding_by_string(string)
     return find_memory_by_vector(embedding.embedding, limit, db)
 }
-add_memory_by_string = async (string,content, name = 'embedding') => {
+add_memory_by_string = async (string, content, name = 'embedding') => {
     let db = await make_db(name)
     let embedding = await make_embedding_by_string(string)
-    return await add_memory_by_vector({ embedding: embedding.embedding, text: string,content:content }, db)
+    return await add_memory_by_vector({ embedding: embedding.embedding, text: string, content: content }, db)
 }
 find = async (string, limit = 20) => {
     let r = await find_memory_by_string(string, limit = 20)
-    app.zhishiku=r.map(i => ({
+    app.zhishiku = r.map(i => ({
         title: i.object.text,
-        score:  Math.round(i.similarity * 100),
+        score: Math.round(i.similarity * 100),
         content: i.object.content
     }))
     return app.zhishiku

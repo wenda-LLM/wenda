@@ -216,6 +216,16 @@ if (typeof app.nodes == 'object') {
             data: {},
             template: ``
         },
+        {
+            name: '朗读',
+            function: 'speak(args[0])',
+            node: "speak",
+            icon: "headset",
+            in: 1,
+            out: 0,
+            data: {},
+            template: ``
+        },
     ])
 
 }

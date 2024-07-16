@@ -10,63 +10,22 @@
 // @grant        none
 // ==/UserScript==
 
-let isSpeaking = false;
-speak = (s) => {
-    msg = new SpeechSynthesisUtterance();
-    msg.rate = 1;
-    msg.pitch = 10;
-    msg.text = s;
-    msg.volume = 1;
-    speechSynthesis.speak(msg)
-
-    msg.onstart = (event) => {
-    }
-
-    msg.onend = (event) => {
-        isSpeaking = false;
-    }
-
-}
-stop_listen = () => {
-    recognition.stop()
-    app.loading = true
-}
-listen = () => {
-    if (isSpeaking) return;
-    recognition = new window.webkitSpeechRecognition;
-    let final_transcript = '';
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.onstart = function () {
-    };
-    recognition.onresult = function (event) {
-        let interim_transcript = '';
-        for (var i = event.resultIndex; i < event.results.length; ++i) {
-            if (event.results[i].isFinal) {
-                final_transcript += event.results[i][0].transcript;
-                console.log(final_transcript);
-                app.question = final_transcript
-            } else {
-
-                interim_transcript += event.results[i][0].transcript;
-            }
+speak_fifo = []
+speak = text_to_speak => {
+    let mp3 = new Audio(`http://127.0.0.1:9880/?text=${text_to_speak}&seed=9&text_language=zh`) // 创建音频对象
+    speak_fifo.push(mp3)
+    console.log(text_to_speak)
+    mp3.addEventListener('ended', function () {
+        speak_fifo = speak_fifo.slice(1)
+        if (speak_fifo[0])
+            speak_fifo[0].play()
+        else {
+            if (!app.loading)
+                app.is_tts_saying = false
         }
-    };
-    recognition.onerror = function (e) {
-        console.log(final_transcript);
-        alert('语音识别失败:', e.error)
-        app.sst_started = false
-        console.log('======================' + "error" + '======================', e);
-    };
-    recognition.onend = function () {
-        console.log(final_transcript);
-        app.question = final_transcript
-        if (final_transcript.length > 1)
-            submit()
-        app.sst_started = false
-        console.log('======================' + "end" + '======================');
+    }, false);
+    if (speak_fifo.length == 1) {
+        mp3.play()
+        app.is_tts_saying = true
     }
-    recognition.lang = "zh-CN";
-    recognition.start()
-    app.sst_started = true
 }

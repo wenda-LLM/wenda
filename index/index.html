@@ -960,6 +960,7 @@
       let last_token_time = Date.now()
       await send_raw(s.replace(/\r\n/g, "\n"), keyword, QA_history, (message) => {
         current_session.content = message;
+
         let now = Date.now()
         let cost = now - last_token_time
         last_cost.push(cost)
@@ -969,17 +970,36 @@
         avg_cost /= last_cost.length
         app.TPS = 1000 / avg_cost
         last_token_time = now
+        if (app.tts_on) {
+          speak_manager(current_session.content, isloading = true);
+        }
       }, addition_args);
-      if (app.tts_on) {
-        speak(current_session.content);
-      }
+        if (app.tts_on) {
+          speak_manager(current_session.content);
+        }
       app.loading = false;
       save_history();
       if (is_abord) throw new MyException("已中断");
       return current_session.content;
     };
 
-
+    let tts_start_index = 0
+    speak_manager = (s, isloading = false) => {
+      let stop_index = s.slice(tts_start_index).search(/[，\n。！？：]/) + tts_start_index
+      let text_to_speak
+      if (stop_index >= tts_start_index) {
+        text_to_speak = s.slice(tts_start_index, stop_index + 1)
+        tts_start_index = stop_index + 1
+        if (!isloading) setTimeout(() => speak_manager(s, isloading = isloading))
+      } else {
+        if (isloading) return
+        text_to_speak = s.slice(tts_start_index)
+        tts_start_index = 0
+      }
+      if (text_to_speak.replace(/[，\n。！？：]/g, '').length == 0) return
+      console.log('[speak]',text_to_speak)
+      speak(text_to_speak)
+    }
     // 覆盖 console.warn 函数以不执行任何操作
     console.warn = function () { };
   </script>
@@ -1139,7 +1159,7 @@
 
             // 如果当前节点有输入，且当前节点的输入端至少有一个有连接的情况下，跳出当前循环直接进入下一个循环以分析下一个节点
             // 这个逻辑到底是干什么用的？
-            if (flow[i].inputs && (is_returned(flow[i].inputs))){
+            if (flow[i].inputs && (is_returned(flow[i].inputs))) {
               // console.log('continue...')
               continue
             }
@@ -1147,7 +1167,7 @@
             try {
 
               // 获取当前节点的函数的字符串中{{template}}需要替换的内容
-              exestring = typeof flow[i].data.template === 'object' ? JSON.stringify(flow[i].data.template) .replaceAll('\\','\\\\') : ''
+              exestring = typeof flow[i].data.template === 'object' ? JSON.stringify(flow[i].data.template).replaceAll('\\', '\\\\') : ''
               // 获取当前节点的函数的字符串中{{usercodes}}需要替换的内容，如果不是程序代码段，则替换为空字符串
               codestr = typeof flow[i].data.template.codes === 'string' ? flow[i].data.template.codes : ''
               // console.log('exestring:' + exestring)
@@ -1202,10 +1222,10 @@
             } catch (error) {
               console.error('该节点运行时捕获到异常:', error.message);
               updateDebugInfo(flow[i].id, '该节点运行时捕获到异常,错误信息:' + error.stack, 'red')
-              if(error.message.includes('null')) {
-                updateDebugInfo(flow[i].id, '该节点所在的分支将不会运行...' , 'gray')
+              if (error.message.includes('null')) {
+                updateDebugInfo(flow[i].id, '该节点所在的分支将不会运行...', 'gray')
               }
-            } 
+            }
           }
         }
       }
