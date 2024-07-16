@@ -78,7 +78,7 @@
 
         <v-menu open-on-hover transition="slide-x-transition" offset-y>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="light-green darken-2" dark @click="run((editor.export()).drawflow.Home.data)" v-bind="attrs"
+            <v-btn color="light-green darken-2" dark @click="run_flow((editor.export()).drawflow.Home.data)" v-bind="attrs"
               v-on="on">
               <v-icon dark>
                 mdi-motion-play-outline
@@ -101,7 +101,7 @@
       <div class="btn_bar" style="position: fixed;right:1em;display:flex;top:10px;">
         <v-menu open-on-hover transition="slide-x-transition" offset-y>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="light-blue lighten-4" @click="run((editor.export()).drawflow.Home.data)" v-bind="attrs"
+            <v-btn color="light-blue lighten-4" v-bind="attrs"
               v-on="on">
               <v-icon dark>
                 mdi-semantic-web
@@ -262,13 +262,6 @@
       // return JSON.parse(file.content)
       return file.content
     }
-
-    // 运行工作流
-    window.run_flow = function (data) {
-      let output_tmp = run(data)
-      // alert('run_flow运行完成:' + output_tmp); // 
-      // 载入文件
-    };
 
 
     function downloadBlob(filename, content) {
@@ -676,7 +669,7 @@
       return rtn
     }
 
-    run = async (flow) => {
+    run_flow = async (flow) => {
       // 获取智能工作流的数据
       let runned = true
 
