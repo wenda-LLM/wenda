@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="viewport" content="width=770,  user-scalable=no">
+  <meta name="viewport" content="width=770,  user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>智能工作流</title>
   <link href="../static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet" />
@@ -78,8 +78,8 @@
 
         <v-menu open-on-hover transition="slide-x-transition" offset-y>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="light-green darken-2" dark @click="run_flow((editor.export()).drawflow.Home.data)" v-bind="attrs"
-              v-on="on">
+            <v-btn color="light-green darken-2" dark @click="run_flow((editor.export()).drawflow.Home.data)"
+              v-bind="attrs" v-on="on">
               <v-icon dark>
                 mdi-motion-play-outline
               </v-icon>
@@ -101,8 +101,7 @@
       <div class="btn_bar" style="position: fixed;right:1em;display:flex;top:10px;">
         <v-menu open-on-hover transition="slide-x-transition" offset-y>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="light-blue lighten-4" v-bind="attrs"
-              v-on="on">
+            <v-btn color="light-blue lighten-4" v-bind="attrs" v-on="on">
               <v-icon dark>
                 mdi-semantic-web
               </v-icon>
@@ -157,7 +156,8 @@
     </v-app>
 
     <div class="col">
-      <div class="drag-drawflow" v-for='i in nodes' draggable="true" ondragstart="drag(event)" :data-node="i.node" @touchstart="addNodeToDrawFlow(i.node, 200, 200)">
+      <div class="drag-drawflow" v-for='i in nodes' draggable="true" ondragstart="drag(event)" :data-node="i.node"
+        @touchstart="addNodeToDrawFlow(i.node, 200, 200)">
         <i :class="'mdi mdi-'+i.icon"></i><span> {{i.name}}</span>
       </div>
 
@@ -673,6 +673,7 @@
       // 获取智能工作流的数据
       let runned = true
 
+      let return_value = '无返回'
       while (runned) {
         runned = false
         // 遍历智能工作流的每一个节点的数据对象
@@ -733,6 +734,7 @@
                 }
               }
 
+              if (flow[i].class == 'autoAI_end') return_value = flow[i].inputs
               flow[i].runned = true
               runned = true
               updateDebugInfo(flow[i].id, '该节点已成功运行', 'rgba(0, 255, 0, 0.5)')
@@ -747,6 +749,7 @@
           }
         }
       }
+      return return_value
     }
 
     // export_autoAI_by_flow = (name) => {
