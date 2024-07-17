@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=770,  user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>批量智能工作流</title>
+  <link href="../static/mdi_font/css/materialdesignicons.min.css" rel="stylesheet" />
+  <script src="../static/vue.js"></script>
+  <link href="../static/vuetify.min.css" rel="stylesheet">
+  <script src="../static/vuetify.min.js"></script>
+
+  <script defer src="../static/xlsx.core.min.js"></script>
+  <link rel="shortcut icon" href="logo.png" />
+</head>
+
+<body>
+
+  <div class="wrapper" id="app">
+    <v-app>
+      <v-btn color="green" dark size="x-large" @click="read_xls()">
+        载入表格
+      </v-btn>
+      <v-btn color="teal darken-1" style="margin-top: 1em;" dark v-for="(item, index) in files"
+        @click="read_flow(item.name)">
+        {{ item.name }}
+      </v-btn>
+
+
+      <v-snackbar v-model="snackbar" :timeout="3000" style="white-space: pre-line">{{snackbar_text}}</v-snackbar>
+      <v-dialog v-model="show_dialog" persistent max-width="600px">
+        <v-card class="ma-0 pa0">
+          <v-card-title>
+            <span class="text-h5">{{dialog_title}}</span>
+          </v-card-title>
+          <v-divider></v-divider>
+          <br>
+          <v-card-text>
+            <v-spacer></v-spacer>
+            <input type="file" id="fileInput" accept=".txt">
+          </v-card-text>
+          <v-divider></v-divider>
+          <!-- <v-card-text>
+            <v-container>
+              <v-textarea autofocus v-model="dialog_input" rows="5" hide-details="auto"
+                @keypress.enter="show_dialog = false;window.dialog_input_resolver()"></v-textarea>
+            </v-container>
+          </v-card-text> -->
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text
+              @click="show_dialog = false;dialog_input='';window.dialog_input_resolver()">
+              取消
+            </v-btn>
+            <v-btn color="blue darken-1" text @click="show_dialog = false;window.dialog_input_resolver()">
+              确认
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+    </v-app>
+
+  </div>
+
+  <script>
+
+    app = new Vue({
+      el: "#app",
+      vuetify: new Vuetify(),
+      watch: {
+      },
+      data() {
+        return {
+          plugins: [],
+          // 生成回答的温度
+          temperature: 0.8,
+          // 生成回答的最大长度
+          max_length: 4096,
+          // 生成回答的top_p
+          // 是否显示snackbar
+          snackbar: false,
+          // snackbar的文本
+          snackbar_text: "",
+          //显示对话框
+          show_dialog: false,
+          //对话框标题
+          dialog_title: "",
+          //对话框用户输入
+          dialog_input: "",
+          top_p: 0.8,
+          chat: [],
+          nodes: [],
+          buttons: [],
+          autos: [],
+          is_nwjs: false,
+          have_improver: false,
+          files: JSON.parse(localStorage["wenda_flow_files"]),
+          l表格读取结果: [],
+        };
+      },
+      methods: {
+      },
+    });
+    // 将外部流程图数据导入当前图中
+
+    save_flow = name => {
+      document.title = name
+      let file = app.files.find(i => i.name == name)
+      if (file) {
+        console.log(file)
+        file.content = JSON.stringify((editor.export()).drawflow.Home.data)
+      }
+      else
+        app.files.push({ name: name, content: JSON.stringify((editor.export()).drawflow.Home.data) })
+      localStorage["wenda_flow_files"] = JSON.stringify(app.files)
+    }
+    read_xls = name => {
+      let input = document.createElement('input')
+      input.type = 'file'
+      input.accept = '.xlsx'
+      input.onchange = function () {
+        var file = input.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          let contents = e.target.result;
+          var workbook = XLSX.read(new Uint8Array(contents), {
+            type: 'array'
+          });
+          app.l表格读取结果 = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]])
+          // resolve()
+          console.log(app.l表格读取结果)
+        };
+        reader.readAsArrayBuffer(file);
+      }
+      input.click()
+    }
+    read_flow = async name => {
+      document.title = name
+      app.nodes.find(i => i.name == '开始').function = `return [input_data]`
+      app.nodes.find(i => i.name == '结束').function = `return []`
+      let file = app.files.find(i => i.name == name)
+      for (i of app.l表格读取结果) {
+        i.Assistant = (await run_flow(JSON.parse(file.content), i.User)).input_1.replace('<|endoftext|>','')
+        console.log([i.User, i.Assistant])
+      }
+
+    }
+
+    // 通过名字读取到工作流
+    get_flow_data_by_name = name => {
+      // document.title = name
+      let file = app.files.find(i => i.name == name)
+      // editor_import(JSON.parse(file.content))
+      // 返回工作流数据
+      // return JSON.parse(file.content)
+      return file.content
+    }
+
+
+    function downloadBlob(filename, content) {
+      var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      a.href = url;
+      a.download = filename;
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+    }
+
+    //获取用户输入
+    input = async (title = '请输入', input = '') => {
+      app.dialog_title = title
+      app.dialog_input = input
+      app.show_dialog = true
+
+      setTimeout(() => {
+        document.getElementById('fileInput').addEventListener('change', function (e) {
+          var file = e.target.files[0];
+          if (!file) {
+            return;
+          }
+
+          // 创建一个 FileReader 实例
+          var reader = new FileReader();
+
+          // 定义 FileReader 读取完成后的操作
+          reader.onload = function (e) {
+            // 读取结果保存在 result 属性中
+            var text = e.target.result;
+            console.log(text);
+            app.dialog_input = text
+            // 在这里你可以对读取到的文本进行处理，比如显示在页面上
+          };
+
+          // 使用 FileReader 读取文件内容
+          reader.readAsText(file);
+        });
+      }, 0);
+
+
+
+      await new Promise(resolve => {
+        window.dialog_input_resolver = resolve
+      })
+      return app.dialog_input
+    }
+
+
+    // 初始化全局变量
+    if (localStorage.getItem("wenda_func_global_vars") !== null)
+      localStorage["wenda_func_global_vars"] = '{}'
+
+
+
+    function updateDebugInfo(id, db_info = '用户正在输入...', title_color = 'rgba(0, 255, 0, 0.5)') {
+
+    }
+
+    function isObjectHasProperties(obj) {
+      // 首先确保对象存在
+      if (obj === null || obj === undefined) {
+        return false;
+      }
+      // 使用for...in循环检查对象的可枚举属性
+      for (let key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    // is_returned = i => typeof i == "object" && i.connections.length > 0
+    is_returned = (i) => {
+      let rtn = false
+
+      for (let j in i) {
+        if (i[j] == null)
+          rtn = rtn || false
+        // 最后一个节点没有连接，这种情况会导致报错，所以加了i[j].connections&&....
+        else if ((typeof i[j] == "object") && (i[j].connections && i[j].connections.length > 0))
+          rtn = rtn || true
+        else
+          rtn = rtn || false
+      }
+
+      return rtn
+    }
+
+    run_flow = async (flow, input_data) => {
+      // 获取智能工作流的数据
+      let runned = true
+
+      let return_value = '无返回'
+      while (runned) {
+        runned = false
+        // 遍历智能工作流的每一个节点的数据对象
+        let nodesCounter = 0
+        for (let i in flow) {
+          // 节点数量计数器
+          nodesCounter++
+          // 判断当前节点是否已经运行过
+          if (!flow[i].runned) {
+            // if (flow[i].inputs && (is_returned(flow[i].inputs.input_1) || is_returned(flow[i].inputs.input_2) || is_returned(flow[i].inputs.input_3)))
+            if (flow[i].inputs && (is_returned(flow[i].inputs)))
+              continue
+
+            try {
+              // flow[i].data.template.background = '#00FF00'
+              updateDebugInfo(flow[i].id, '该节点即将运行', 'rgba(0, 255, 0, 0.5)')
+              let input_debuginfo = `输入参数：<br>${isObjectHasProperties(flow[i].inputs) ? JSON.stringify(flow[i].inputs) : '无<br>'}`
+              // alert(await rtn1)
+              updateDebugInfo(flow[i].id, input_debuginfo, 'rgba(0, 0, 255, 0.5)')
+
+              // 获取当前节点的函数的字符串中{{template}}需要替换的内容
+              exestring = typeof flow[i].data.template === 'object' ? JSON.stringify(flow[i].data.template).replaceAll('\\', '\\\\') : ''
+              // 获取当前节点的函数的字符串中{{usercodes}}需要替换的内容，如果不是程序代码段，则替换为空字符串
+              codestr = (flow[i].data.template && typeof flow[i].data.template.codes === 'string') ? flow[i].data.template.codes : ''
+              // console.log('exestring:' + exestring)
+              const inputKeys = Object.keys(flow[i].inputs);
+              let inputParasStr = ''
+
+              // 如果存在输入端口，遍历每一个输入端口 端口序号存放在j中
+              for (j = 0; j < inputKeys.length; j++) {
+                // 获取一个键（也就是outputs中的属性名）
+                const OutputKey = inputKeys[j];
+                // 使用这个键依次获取对应的输出端口对象
+                // const OutputObject = flow[i].outputs[OutputKey];
+                inputParasStr += 'flow[i].inputs.' + OutputKey + ','
+              }
+
+              inputParasStr = ('(' + inputParasStr + ')').replace(',)', ')')
+
+              // console.log(inputParasStr)
+
+              let output = await eval(
+                `(async(...args)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)}})${inputParasStr}`)
+              let output_debuginfo = `输出参数：<br>${isObjectHasProperties(flow[i].outputs) ? JSON.stringify(flow[i].outputs) : '无<br>'}`
+              updateDebugInfo(flow[i].id, output_debuginfo, 'rgba(0, 0, 255, 0.5)')
+              const outputKeys = Object.keys(flow[i].outputs);
+              // 如果存在输出端口，遍历每一个输出端口 端口序号存放在j中
+              for (j = 0; j < outputKeys.length; j++) {
+                // 获取一个键（也就是outputs中的属性名）
+                const OutputKey = outputKeys[j];
+                // 使用这个键依次获取对应的输出端口对象
+                const OutputObject = flow[i].outputs[OutputKey];
+                let connectionCounter = 0
+                // 遍历每一个端口的链接
+                if (OutputObject) for (connection of OutputObject.connections) {
+                  connectionCounter++
+                  flow[connection.node].inputs[connection.output] = await output[j]
+                }
+              }
+
+              if (flow[i].class == 'autoAI_end') return_value = flow[i].inputs
+              flow[i].runned = true
+              runned = true
+              updateDebugInfo(flow[i].id, '该节点已成功运行', 'rgba(0, 255, 0, 0.5)')
+
+            } catch (error) {
+              console.error('该节点运行时捕获到异常:', error.message);
+              updateDebugInfo(flow[i].id, '该节点运行时捕获到异常,错误信息:' + error.stack, 'rgba(255, 0, 0, 0.5)')
+              if (error.message.includes('null')) {
+                updateDebugInfo(flow[i].id, '该节点所在的分支将不会运行...', 'rgba(0, 0, 0, 0.5);')
+              }
+            }
+          }
+        }
+      }
+      return return_value
+    }
+
+
+    send = async (s, keyword = "", show = true, sources = [], addition_args = {}) => {
+      let content = ''
+      await send_raw(s.replace(/\r\n/g, "\n"), keyword, [], (message) => {
+        content = message;
+      }, addition_args);
+      return content;
+    };
+  </script>
+  <script type="module" src="../static/idb-vector/idb-vector.js"></script>
+  <script src="../wd_sdk.js"></script>
+  <script>
+    // 从插件内容中提取描述信息
+    get_auto_description = (plugin) => {
+      try {
+        return plugin.content.match(/@description (.+)[\r\n]/)[1].trim();
+      } catch (error) {
+        // console.log(error,plugin.content.match(/@description (.+)[\r\n]/))
+      }
+
+      return "";
+    };
+
+    // 判断是否禁用了某个插件
+    get_auto_disabled = (plugin, name) => {
+      if (disabled_auto[name] == undefined)
+        return !!plugin.content.match(/wenda_auto_default_disabled/);
+      return disabled_auto[name];
+    };
+
+    // 从插件内容中提取名称信息
+    get_auto_name = (plugin) => {
+      try {
+        return (
+          plugin.content.match(/@name (.+)\n/)[1].trim() + `(${plugin.name})`
+        );
+      } catch { }
+      return plugin.name;
+    };
+
+    // 将启用的插件内容添加到 app.autos 数组中，显示在菜单中
+    add_auto = (content) => {
+      let plugin = { content: content, name: "用户添加" };
+      let name = get_auto_name(plugin);
+      let auto = {
+        name: name,
+        description: get_auto_description(plugin),
+        content: plugin.content,
+        disabled: false,
+      };
+      saved_auto.push(auto);
+      app.autos.push(auto);
+      try {
+
+        if (!auto.disabled) eval(plugin.content);
+      } catch {
+
+      }
+      localStorage["wenda_saved_auto"] = JSON.stringify(saved_auto);
+    };
+
+    // 查找指定名称的插件在 saved_auto 数组中的索引
+    find_auto = (name) => saved_auto.findIndex((a) => a.name == name);
+
+    // 删除指定名称的插件
+    del_auto = (name) => {
+      let auto_index = find_auto(name);
+      saved_auto.splice(auto_index, 1);
+      localStorage["wenda_saved_auto"] = JSON.stringify(saved_auto);
+      location.reload();
+    };
+    func = []
+    // 加载所有插件并将其添加到 app.autos 数组中
+    load_plugins = async () => {
+      disabled_auto = JSON.parse(localStorage["wenda_disabled_auto"] || "{}");
+      server_auto = await fetch("../autos/autos");
+      server_auto = (await server_auto.text()).split(/[\r\n]+/)
+      console.log(server_auto)
+      await server_auto.forEach(async (name) => {
+        if (name == '') return
+        let plugin = {
+          name: name,
+          content: await (await fetch("../autos/" + name)).text(),
+        };
+        let auto = {
+          name: name,
+          description: get_auto_description(plugin),
+          content: plugin.content,
+          disabled: get_auto_disabled(plugin, name),
+        };
+        // app.autos.push(auto);
+        setTimeout(() => {
+          if (!auto.disabled) eval(plugin.content);
+        }, 0)
+      });
+
+      saved_auto = JSON.parse(localStorage["wenda_saved_auto"] || "[]");
+      saved_auto.forEach((auto) => {
+        app.autos.push(auto);
+        setTimeout(() => {
+          if (!auto.disabled) eval(auto.content);
+        }, 0)
+      });
+
+    };
+    load_plugins();
+  </script>
+</body>
+
+</html>

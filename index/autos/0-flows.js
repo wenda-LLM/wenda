@@ -101,7 +101,7 @@ if (typeof app.nodes == 'object') {
         // },
         {
             name: '补全文段',
-            function: "{let para=JSON.parse('{{template}}');let rtn=send_prompt(args[0],para.userinput,()=>{});return [rtn]}",
+            function: "{let para=JSON.parse(`{{template}}`);return[send_prompt(args[0],para.userinput,()=>{})]}",
             node: "send_prompt",
             icon: "typewriter",
             in: 1,
