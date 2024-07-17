@@ -14,6 +14,11 @@
 
   <script defer src="../static/xlsx.core.min.js"></script>
   <link rel="shortcut icon" href="logo.png" />
+  <style>
+    .v-btn{
+      margin-top: 1em;
+    }
+  </style>
 </head>
 
 <body>
@@ -23,7 +28,13 @@
       <v-btn color="green" dark size="x-large" @click="read_xls()">
         载入表格
       </v-btn>
-      <v-btn color="teal darken-1" style="margin-top: 1em;" dark v-for="(item, index) in files"
+      <v-btn color="green" dark size="x-large" @click="save_xls()">
+        保存表格
+      </v-btn>
+      <v-btn color="green" dark size="x-large" @click="save_jsonl()">
+        保存jsonl
+      </v-btn>
+      <v-btn color="teal darken-1" dark v-for="(item, index) in files"
         @click="read_flow(item.name)">
         {{ item.name }}
       </v-btn>
@@ -137,6 +148,51 @@
       }
       input.click()
     }
+    save_jsonl=()=>{
+      let p_prompt=prompt("输入前置prompt：")
+			let blob = new Blob([(app.l表格读取结果.map(j=>JSON.stringify({"text": `User: ${p_prompt}${j.User}\n\nAssistant: ${j.Assistant}\n\n`})).join('\n'))], { type: 'text/plain;charset=utf-8' })
+			saveAs(blob, '闻达批量智能工作流.jsonl')
+      
+    }
+		save_xls = async () => {
+			let sheetName = '闻达批量智能工作流'
+			let wb = XLSX.utils.book_new()
+			let ws = XLSX.utils.json_to_sheet(app.l表格读取结果)
+			wb.SheetNames.push(sheetName)
+			wb.Sheets[sheetName] = ws
+			let wopts = {
+				bookType: 'xlsx',
+				bookSST: false,
+				type: 'binary'
+			};
+			let wbout = XLSX.write(wb, wopts)
+			let blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' })
+			saveAs(blob, sheetName + '.xlsx')
+		}
+		const s2ab = s => {
+			var buf;
+			if (typeof ArrayBuffer !== 'undefined') {
+			buf = new ArrayBuffer(s.length)
+			var view = new Uint8Array(buf)
+			for (let i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xff
+			return buf
+			} else {
+			buf = new Array(s.length);
+			for (let i = 0; i != s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
+			return buf;
+			}
+		}
+		function saveAs(obj, fileName) {//当然可以自定义简单的下载文件实现方式
+			var tmpa = document.createElement("a");
+			tmpa.download = fileName 
+			tmpa.href = URL.createObjectURL(obj); //绑定a标签
+			tmpa.click(); //模拟点击实现下载
+
+			setTimeout(function () { //延时释放
+				URL.revokeObjectURL(obj); //用URL.revokeObjectURL()来释放这个object URL
+			}, 100);
+
+		}
     read_flow = async name => {
       document.title = name
       app.nodes.find(i => i.name == '开始').function = `return [input_data]`
