@@ -92,7 +92,7 @@ send_raw = async (prompt, prompt2, QA_history, onmessage = alert, args = {}) => 
     return result
 }
 send_prompt = async (prompt, stop, onmessage = alert, args = {}) => {
-    controller = new AbortController()
+  let  controller = new AbortController()
     let llm_server = '/api/generate'
     // let llm_server = 'http://127.0.0.1:11434/api/generate'
     const res = await fetch(llm_server + "", {

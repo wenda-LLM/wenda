@@ -39,26 +39,6 @@ header {
   padding-left: 20px;
 }
 
-header h2 {
-  margin: 0px;
-  line-height: 66px;
-}
-
-header a {
-  color: black;
-}
-
-.them-edit-link {
-  position: absolute;
-  top: 10px;
-  right: 100px;
-  color: black;
-  font-size: 40px;
-}
-
-.them-edit-link a {
-  text-decoration: none;
-}
 
 textarea {
   resize: none;
@@ -109,50 +89,6 @@ textarea {
 
 .menu ul li.selected {
   font-weight: bold;
-}
-
-.swal-wide {
-  width: 80% !important;
-}
-
-.btn-lock {
-  float: right;
-  position: absolute;
-  bottom: 10px;
-  right: 140px;
-  display: flex;
-  font-size: 24px;
-  color: white;
-  padding: 5px 10px;
-  background: #555555;
-  border-radius: 4px;
-  border-right: 1px solid var(--border-color);
-  z-index: 5;
-  cursor: pointer;
-}
-
-.bar-zoom {
-  float: right;
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  display: flex;
-  font-size: 24px;
-  color: white;
-  padding: 5px 10px;
-  background: #555555;
-  border-radius: 4px;
-  border-right: 1px solid var(--border-color);
-  z-index: 5;
-}
-
-.bar-zoom svg {
-  cursor: pointer;
-  padding-left: 10px;
-}
-
-.bar-zoom svg:nth-child(1) {
-  padding-left: 0px;
 }
 
 #drawflow {
