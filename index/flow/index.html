@@ -760,14 +760,22 @@
     export_autoAI_file = (name) => {
       let flow = (editor.export()).drawflow.Home.data
 
+      console.dir(flow)
       // 先清理flow中的html、pos_x、pos_y、typenode等无用数据
       for (i in flow) {
         delete flow[i].html
         delete flow[i].pos_x
         delete flow[i].pos_y
         delete flow[i].typenode
+        // delete flow[i].data
 
-        console.log(flow[i])
+        for (tp in flow[i].data) {
+          // console.dir('tp:' + tp)
+          delete flow[i].data[tp].background
+          delete flow[i].data[tp].debug
+
+        }
+        // console.log(flow[i])
       }
 
       str = `// @namespace    http://tampermonkey.net/
@@ -793,6 +801,7 @@ let  flow_test_data = JSON.parse(`
       // 生成文件并下载
       downloadBlob(name + ".js", str)
     }
+
     save_autoAI_file = (name) => {
       let flow = (editor.export()).drawflow.Home.data
 
@@ -803,6 +812,13 @@ let  flow_test_data = JSON.parse(`
         delete flow[i].pos_y
         delete flow[i].typenode
 
+        for (tp in flow[i].data) {
+          // console.dir('tp:' + tp)
+          delete flow[i].data[tp].background
+          delete flow[i].data[tp].debug
+
+        }
+        
         console.log(flow[i])
       }
 
