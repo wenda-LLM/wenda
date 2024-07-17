@@ -812,6 +812,13 @@ let  flow_test_data = JSON.parse(`
         delete flow[i].pos_y
         delete flow[i].typenode
 
+        for (tp in flow[i].data) {
+          // console.dir('tp:' + tp)
+          delete flow[i].data[tp].background
+          delete flow[i].data[tp].debug
+
+        }
+        
         console.log(flow[i])
       }
 
