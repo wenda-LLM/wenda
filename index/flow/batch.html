@@ -28,8 +28,17 @@
       <v-btn color="green" dark size="x-large" @click="read_xls()">
         载入表格
       </v-btn>
+      <v-btn color="green" dark size="x-large" @click="read_json()">
+        载入json
+      </v-btn>
       <v-btn color="green" dark size="x-large" @click="save_xls()">
-        保存表格
+        保存表格(过长无法保存)
+      </v-btn>
+      <v-btn color="green" dark size="x-large" @click='app.l表格读取结果=app.l表格读取结果.map(j=>({"User": j.Assistant}))'>
+        输出变输入
+      </v-btn>
+      <v-btn color="green" dark size="x-large" @click="save_json()">
+        保存json
       </v-btn>
       <v-btn color="green" dark size="x-large" @click="save_jsonl()">
         保存jsonl
@@ -149,6 +158,27 @@
       }
       input.click()
     }
+    read_json = name => {
+      let input = document.createElement('input')
+      input.type = 'file'
+      input.accept = '.json'
+      input.onchange = function () {
+        var file = input.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          let contents = e.target.result;
+          console.log(contents)
+          app.l表格读取结果 = JSON.parse(contents)
+          // resolve()
+        };
+        reader.readAsArrayBuffer(file);
+      }
+      input.click()
+    }
+    save_json = () => {
+      let blob = new Blob([JSON.stringify(app.l表格读取结果)])
+      saveAs(blob, '闻达批量智能工作流.json')
+    }
     save_jsonl = () => {
       let p_prompt = prompt("输入前置prompt：")
       let blob = new Blob([(app.l表格读取结果.map(j => JSON.stringify({ "text": `User: ${p_prompt}${j.User}\n\nAssistant: ${j.Assistant}\n\n` })).join('\n'))], { type: 'text/plain;charset=utf-8' })
@@ -194,6 +224,10 @@
       }, 100);
 
     }
+    function sleep(time) {
+      return new Promise((resolve) => setTimeout(resolve, time));
+    }
+
     read_flow = async name => {
       document.title = name
       app.nodes.find(i => i.name == '开始').function = `return [input_data]`
@@ -201,22 +235,20 @@
       let file = app.files.find(i => i.name == name)
 
       app.i批量进度 = 0
-
       let running = 0
+
       for (let i of app.l表格读取结果) {
         let run = async () => {
           running += 1
           i.Assistant = (await run_flow(JSON.parse(file.content), i.User)).input_1.replace('<|endoftext|>', '')
           running -= 1
           console.log([i.User, i.Assistant])
-          app.i批量进度+=1
+          app.i批量进度 += 1
         }
-        if (running > 16) {
-          await run()
+        while (running > 5) {
+          await sleep(100)
         }
-        else run()
-        // if (app.i批量进度 == app.l表格读取结果.length)
-        //     app.b批量中 = false
+        run()
       }
 
     }
