@@ -39,6 +39,10 @@
             @click="downloadBlob(document.title,read_flow(document.title))">
             保存到本地文件
           </v-btn>
+          <v-btn color="primary" style="margin-top: 1em;" dark
+            @click="document.location.hash=encodeURI(JSON.stringify((editor.export()).drawflow.Home.data))">
+            到URL
+          </v-btn>
           <v-btn color="blue lighten-1" style="margin-top: 1em;" dark @click="save_flow(prompt('请输入文件名'))">
             新建
           </v-btn>
@@ -374,12 +378,16 @@
         }
       }
     }
-
-    if (app.files.length > 0)
-      read_flow(app.files[0].name)
-    else
-      editor_import({ "1": { "id": 1, "name": "prompt", "data": { "template": "你好" }, "class": "prompt", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-ray-start\"></i> 初始 prompt</div>\n  <div class=\"box\">\n    \n<textarea df-template placeholder='输入初始 prompt'></textarea>\n  </div>\n</div>", "typenode": false, "inputs": {}, "outputs": { "output_1": { "connections": [{ "node": "5", "output": "input_1" }] } }, "pos_x": 89, "pos_y": 148 }, "5": { "id": 5, "name": "send", "data": {}, "class": "send", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-chat\"></i> 单轮对话</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "1", "input": "output_1" }] } }, "outputs": { "output_1": { "connections": [{ "node": "6", "output": "input_1" }, { "node": "7", "output": "input_1" }] } }, "pos_x": 364, "pos_y": 202 }, "6": { "id": 6, "name": "alert", "data": {}, "class": "alert", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-alert-circle\"></i> 报警</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "5", "input": "output_1" }] } }, "outputs": {}, "pos_x": 688, "pos_y": 153 }, "7": { "id": 7, "name": "console_log", "data": {}, "class": "console_log", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-printer-outline\"></i> 控制台打印</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "5", "input": "output_1" }] } }, "outputs": {}, "pos_x": 697, "pos_y": 277 } })
-    var elements = document.getElementsByClassName('drag-drawflow');
+    let hash = document.location.hash.replace(/^#/, '')
+    if (hash) {
+      hash=decodeURI(document.location.hash.replace(/^#/,''))
+      editor_import(JSON.parse(hash))
+    } else {
+      if (app.files.length > 0)
+        read_flow(app.files[0].name)
+      else
+        editor_import({ "1": { "id": 1, "name": "prompt", "data": { "template": "你好" }, "class": "prompt", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-ray-start\"></i> 初始 prompt</div>\n  <div class=\"box\">\n    \n<textarea df-template placeholder='输入初始 prompt'></textarea>\n  </div>\n</div>", "typenode": false, "inputs": {}, "outputs": { "output_1": { "connections": [{ "node": "5", "output": "input_1" }] } }, "pos_x": 89, "pos_y": 148 }, "5": { "id": 5, "name": "send", "data": {}, "class": "send", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-chat\"></i> 单轮对话</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "1", "input": "output_1" }] } }, "outputs": { "output_1": { "connections": [{ "node": "6", "output": "input_1" }, { "node": "7", "output": "input_1" }] } }, "pos_x": 364, "pos_y": 202 }, "6": { "id": 6, "name": "alert", "data": {}, "class": "alert", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-alert-circle\"></i> 报警</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "5", "input": "output_1" }] } }, "outputs": {}, "pos_x": 688, "pos_y": 153 }, "7": { "id": 7, "name": "console_log", "data": {}, "class": "console_log", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-printer-outline\"></i> 控制台打印</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "5", "input": "output_1" }] } }, "outputs": {}, "pos_x": 697, "pos_y": 277 } })
+    } var elements = document.getElementsByClassName('drag-drawflow');
     for (var i = 0; i < elements.length; i++) {
       elements[i].addEventListener('touchend', drop, false);
       elements[i].addEventListener('touchmove', positionMobile, false);
@@ -760,22 +768,14 @@
     export_autoAI_file = (name) => {
       let flow = (editor.export()).drawflow.Home.data
 
-      console.dir(flow)
       // 先清理flow中的html、pos_x、pos_y、typenode等无用数据
       for (i in flow) {
         delete flow[i].html
         delete flow[i].pos_x
         delete flow[i].pos_y
         delete flow[i].typenode
-        // delete flow[i].data
 
-        for (tp in flow[i].data) {
-          // console.dir('tp:' + tp)
-          delete flow[i].data[tp].background
-          delete flow[i].data[tp].debug
-
-        }
-        // console.log(flow[i])
+        console.log(flow[i])
       }
 
       str = `// @namespace    http://tampermonkey.net/
@@ -801,7 +801,6 @@ let  flow_test_data = JSON.parse(`
       // 生成文件并下载
       downloadBlob(name + ".js", str)
     }
-
     save_autoAI_file = (name) => {
       let flow = (editor.export()).drawflow.Home.data
 
@@ -812,13 +811,6 @@ let  flow_test_data = JSON.parse(`
         delete flow[i].pos_y
         delete flow[i].typenode
 
-        for (tp in flow[i].data) {
-          // console.dir('tp:' + tp)
-          delete flow[i].data[tp].background
-          delete flow[i].data[tp].debug
-
-        }
-        
         console.log(flow[i])
       }
 

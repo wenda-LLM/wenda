@@ -21,9 +21,7 @@ if (typeof app.nodes == 'object') {
             out: 1,
             data: { "template": { "userinput": "这是autoAI开始节点...", "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
             desc: '闻达auto应用的开始节点，可以模拟chat模式下用户输入文字，如果要生成auto插件，该节点必须作为起始节点。',
-            template: `<div class="box">
-    <textarea df-template-userinput placeholder='输入模拟的对话信息'></textarea>
-    </div>`
+            template: `<div class="box"><textarea df-template-userinput placeholder='输入模拟的对话信息'></textarea></div>`
         },
         {
             name: '结束',
@@ -46,10 +44,7 @@ if (typeof app.nodes == 'object') {
             out: 1,
             data: { "template": { "userinput": '输入提示词或其他文本', "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
             desc: '用户可以在此输入文本，该节点将其转换为信息流对外输出。如果将其用于autos应用开发，在发布前，需要将文本输入框清空。也可以直接将该节点在发布时替换为“autoAI开始”节点',
-            template: `<div class="box">
-<textarea df-template-userinput placeholder='输入初始 prompt'></textarea>
-</div>
-`
+            template: `<div class="box"><textarea df-template-userinput placeholder='输入初始 prompt'></textarea></div>`
         },
         {
             name: '对话记录',
@@ -108,8 +103,7 @@ if (typeof app.nodes == 'object') {
             out: 1,
             data: { "template": { "userinput": "['\\n\\n','#']", "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
             desc: '根据输入内容补全全文段',
-            template: `<div class="box">请输入停止符：
-            <textarea df-template-userinput></textarea></div>`
+            template: `<div class="box">请输入停止符：<textarea df-template-userinput></textarea></div>`
         },
         // 执行过程中，鉴别出非激活的分支，将非活分支flow[i].runned = true，那么该分支的后续分支如何保障其不运行呢？
         {
@@ -144,8 +138,7 @@ if (typeof app.nodes == 'object') {
             out: 1,
             data: { "template": { "codes": "console.log(args[0]+args[1]+args[2]);return [args[0]+args[1]+args[2]+\'->输入节点合并后输出\']", "background": "#ffe8e8", "debug": "调试信息在运行后显示" } },
             desc: '用户自定义的程序块儿，可以在编辑框中输入，用于复杂的数据处理等',
-            template: `<div class="box">
-            <textarea df-template-codes placeholder='上一节点的输入参数：a,args[1],args[2]'></textarea></div>`
+            template: `<div class="box"><textarea df-template-codes placeholder='上一节点的输入参数：a,args[1],args[2]'></textarea></div>`
         },
         {
             name: '多路程序',
@@ -156,8 +149,7 @@ if (typeof app.nodes == 'object') {
             out: 2,
             data: { "template": { "codes": 'console.log(args[0]+\'88999\');return [args[0]+\'->第一个输出\',args[1]+\'->第二个输出\']', "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
             desc: '用户自定义的程序块儿，可以用于处理数据，该程序支持双输出',
-            template: `<div class="box">
-            <textarea df-template-codes placeholder='参数：args[0],args[1]'></textarea></div>`
+            template: `<div class="box"><textarea df-template-codes placeholder='参数：args[0],args[1]'></textarea></div>`
         },
         {
             name: '输入文本',
@@ -168,8 +160,7 @@ if (typeof app.nodes == 'object') {
             out: 1,
             data: { "template": { "userinput": "just a test", "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
             desc: '用户自定义的程序块儿，可以用于处理数据，该程序支持双输出',
-            template: `<div class="box">
-            <textarea df-template-codes placeholder='参数：args[0],args[1]....'></textarea></div>`
+            template: `<div class="box"><textarea df-template-codes placeholder='参数：args[0],args[1]....'></textarea></div>`
 
         },
         {

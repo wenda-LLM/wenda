@@ -4,7 +4,10 @@ load_models = async () => {
     server_models = await server_models.json();
     app.server_models = window.server_models = server_models.models
     if (!localStorage["wenda_model"]) {
-        set_model(window.server_models[0].name)
+        if (server_models.find(i => i.name == 'qwen:32b'))
+            set_model('qwen:32b')
+        else
+            set_model(window.server_models[0].name)
     } else {
         set_model(localStorage["wenda_model"])
     }
@@ -92,7 +95,7 @@ send_raw = async (prompt, prompt2, QA_history, onmessage = alert, args = {}) => 
     return result
 }
 send_prompt = async (prompt, stop, onmessage = alert, args = {}) => {
-  let  controller = new AbortController()
+    let controller = new AbortController()
     let llm_server = '/api/generate'
     // let llm_server = 'http://127.0.0.1:11434/api/generate'
     const res = await fetch(llm_server + "", {
