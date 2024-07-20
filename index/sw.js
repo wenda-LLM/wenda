@@ -7,10 +7,7 @@ workbox.setConfig({
 });
 
 workbox.routing.registerRoute(
-    function (event) {
-        if (event.url.pathname.indexOf('/static/') > -1) return true;
-        return false;
-    },
+    new RegExp('/static/'),
     new  workbox.strategies.CacheFirst({
         cacheName: 'static',
         plugins: [
@@ -24,10 +21,10 @@ workbox.routing.registerRoute(
 workbox.routing.registerRoute(
     function (event) {
         // console.log(event.url.pathname)
-        if (["/", '/favicon.png', '/style.css', '/sw.js', '/wd_sdk.js'].indexOf(event.url.pathname) > -1) return true;
+        if (["/", '/favicon.png', '/style.css', '/sw.js'].indexOf(event.url.pathname) > -1) return true;
         if (event.url.pathname.indexOf('.html') > -1) return true;
         if (event.url.pathname.indexOf('/flow/') > -1) return true;
-        if (event.url.pathname.indexOf('/autos/') > -1) return true;
+        if (event.url.pathname.indexOf('/auto/') > -1) return true;
         return false;
     },
     new  workbox.strategies.StaleWhileRevalidate({

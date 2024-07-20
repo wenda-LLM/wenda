@@ -39,8 +39,7 @@
             @click="downloadBlob(document.title,read_flow(document.title))">
             保存到本地文件
           </v-btn>
-          <v-btn color="primary" style="margin-top: 1em;" dark
-            @click="document.location.hash=encodeURI(JSON.stringify((editor.export()).drawflow.Home.data))">
+          <v-btn color="primary" style="margin-top: 1em;" dark @click="document.location.hash=get_flow_string();copy(decodeURI(document.location.href))">
             到URL
           </v-btn>
           <v-btn color="blue lighten-1" style="margin-top: 1em;" dark @click="save_flow(prompt('请输入文件名'))">
@@ -378,16 +377,8 @@
         }
       }
     }
-    let hash = document.location.hash.replace(/^#/, '')
-    if (hash) {
-      hash=decodeURI(document.location.hash.replace(/^#/,''))
-      editor_import(JSON.parse(hash))
-    } else {
-      if (app.files.length > 0)
-        read_flow(app.files[0].name)
-      else
-        editor_import({ "1": { "id": 1, "name": "prompt", "data": { "template": "你好" }, "class": "prompt", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-ray-start\"></i> 初始 prompt</div>\n  <div class=\"box\">\n    \n<textarea df-template placeholder='输入初始 prompt'></textarea>\n  </div>\n</div>", "typenode": false, "inputs": {}, "outputs": { "output_1": { "connections": [{ "node": "5", "output": "input_1" }] } }, "pos_x": 89, "pos_y": 148 }, "5": { "id": 5, "name": "send", "data": {}, "class": "send", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-chat\"></i> 单轮对话</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "1", "input": "output_1" }] } }, "outputs": { "output_1": { "connections": [{ "node": "6", "output": "input_1" }, { "node": "7", "output": "input_1" }] } }, "pos_x": 364, "pos_y": 202 }, "6": { "id": 6, "name": "alert", "data": {}, "class": "alert", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-alert-circle\"></i> 报警</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "5", "input": "output_1" }] } }, "outputs": {}, "pos_x": 688, "pos_y": 153 }, "7": { "id": 7, "name": "console_log", "data": {}, "class": "console_log", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-printer-outline\"></i> 控制台打印</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "5", "input": "output_1" }] } }, "outputs": {}, "pos_x": 697, "pos_y": 277 } })
-    } var elements = document.getElementsByClassName('drag-drawflow');
+
+    var elements = document.getElementsByClassName('drag-drawflow');
     for (var i = 0; i < elements.length; i++) {
       elements[i].addEventListener('touchend', drop, false);
       elements[i].addEventListener('touchmove', positionMobile, false);
@@ -442,20 +433,8 @@
     // let originalObj = { a: 1, b: { c: 2 } };
     // let copiedObj = deepCopy(originalObj);
     // console.log(copiedObj); // { a: 1, b: { c: 2 } }
-
-    function addNodeToDrawFlow(name, pos_x, pos_y) {
-      if (editor.editor_mode === 'fixed') {
-        return false;
-      }
-      pos_x = pos_x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
-      pos_y = pos_y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
-      // app.nodes 是左侧菜单的节点列表
-      // 按照节点名查找，要找到那个名字相同的节点，然后进行深度拷贝处理，如果不深度拷贝，会导致拖放的节点都是同一个节点
-      let node = deepCopy(app.nodes.find(n => n.node == name))
-      // console.log(app.nodes)
-      // 注意下面的$的意思是调用遍历并转化为字符串
-      editor.addNode(name, node.in, node.out, pos_x, pos_y, name, node.data, `
-<div>
+    function get_node_html(node) {
+      return `<div>
   <div class="title-box">
     <i class="mdi mdi-${node.icon}" style="cursor: pointer;" onclick=toggleDebug(event)></i> ${node.name} 
     
@@ -469,7 +448,20 @@
    <hr class="debug">
    <i class="debug mdi mdi-bug" style="cursor: pointer;" onclick=toggleDebug(event)>调试信息：</i>
   <p class="debug">${node.data.template ? node.data.template.debug : "无调试"}</p>
-</div>`);
+</div>`
+    }
+    function addNodeToDrawFlow(name, pos_x, pos_y) {
+      if (editor.editor_mode === 'fixed') {
+        return false;
+      }
+      pos_x = pos_x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
+      pos_y = pos_y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
+      // app.nodes 是左侧菜单的节点列表
+      // 按照节点名查找，要找到那个名字相同的节点，然后进行深度拷贝处理，如果不深度拷贝，会导致拖放的节点都是同一个节点
+      let node = deepCopy(app.nodes.find(n => n.node == name))
+      // console.log(app.nodes)
+      // 注意下面的$的意思是调用遍历并转化为字符串
+      editor.addNode(name, node.in, node.out, pos_x, pos_y, name, node.data, get_node_html(node));
 
 
     }
@@ -801,6 +793,41 @@ let  flow_test_data = JSON.parse(`
       // 生成文件并下载
       downloadBlob(name + ".js", str)
     }
+
+    get_flow_string = () => {
+      let flow = (editor.export()).drawflow.Home.data
+      for (i in flow) {
+        delete flow[i].html
+        delete flow[i].typenode
+        delete flow[i].class
+        if (flow[i].data.template) {
+          flow[i].data.template.debug && delete flow[i].data.template.debug
+          flow[i].data.template.background && delete flow[i].data.template.background
+        }
+      }
+      s=JSON.stringify(flow)
+      let index=0
+      for (let i in flow) {
+       s=s.replaceAll(i,'id-'+index)
+       index+=1
+      }
+      return s
+    }
+    read_flow_string = (s) => {
+      let flow = JSON.parse(s)
+      for (i in flow) {
+        let name = flow[i].name
+        let node = deepCopy(app.nodes.find(n => n.node == name))
+        flow[i].html = get_node_html(node)
+        flow[i].typenode = false
+        flow[i].class = name
+        if (node.data.template) {
+          flow[i].data.template.debug = node.data.template.debug
+          flow[i].data.template.background = node.data.template.background
+        }
+      }
+      return flow
+    }
     save_autoAI_file = (name) => {
       let flow = (editor.export()).drawflow.Home.data
 
@@ -921,8 +948,8 @@ let  flow_test_data = JSON.parse(`
       server_auto = await fetch("../autos/autos");
       server_auto = (await server_auto.text()).split(/[\r\n]+/)
       console.log(server_auto)
-      await server_auto.forEach(async (name) => {
-        if (name == '') return
+      for(let name of server_auto) {
+        if (name == '') continue
         let plugin = {
           name: name,
           content: await (await fetch("../autos/" + name)).text(),
@@ -937,7 +964,7 @@ let  flow_test_data = JSON.parse(`
         setTimeout(() => {
           if (!auto.disabled) eval(plugin.content);
         }, 0)
-      });
+      }
 
       saved_auto = JSON.parse(localStorage["wenda_saved_auto"] || "[]");
       saved_auto.forEach((auto) => {
@@ -945,10 +972,24 @@ let  flow_test_data = JSON.parse(`
         setTimeout(() => {
           if (!auto.disabled) eval(auto.content);
         }, 0)
-      });
+      })
 
+      setTimeout(() => {
+        let hash = document.location.hash.replace(/^#/, '')
+        if (hash) {
+          hash = decodeURI(document.location.hash.replace(/^#/, ''))
+          editor_import(read_flow_string(hash))
+        } else {
+          if (app.files.length > 0)
+            read_flow(app.files[0].name)
+          else
+            editor_import({ "1": { "id": 1, "name": "prompt", "data": { "template": "你好" }, "class": "prompt", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-ray-start\"></i> 初始 prompt</div>\n  <div class=\"box\">\n    \n<textarea df-template placeholder='输入初始 prompt'></textarea>\n  </div>\n</div>", "typenode": false, "inputs": {}, "outputs": { "output_1": { "connections": [{ "node": "5", "output": "input_1" }] } }, "pos_x": 89, "pos_y": 148 }, "5": { "id": 5, "name": "send", "data": {}, "class": "send", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-chat\"></i> 单轮对话</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "1", "input": "output_1" }] } }, "outputs": { "output_1": { "connections": [{ "node": "6", "output": "input_1" }, { "node": "7", "output": "input_1" }] } }, "pos_x": 364, "pos_y": 202 }, "6": { "id": 6, "name": "alert", "data": {}, "class": "alert", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-alert-circle\"></i> 报警</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "5", "input": "output_1" }] } }, "outputs": {}, "pos_x": 688, "pos_y": 153 }, "7": { "id": 7, "name": "console_log", "data": {}, "class": "console_log", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-printer-outline\"></i> 控制台打印</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "5", "input": "output_1" }] } }, "outputs": {}, "pos_x": 697, "pos_y": 277 } })
+        }
+
+      }, 50)
     };
     load_plugins();
+
   </script>
 </body>
 
