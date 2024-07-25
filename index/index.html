@@ -620,7 +620,9 @@
                 </v-row>
               </v-form>
             </v-card-text>
-          </v-card><!-- 
+          </v-card>
+        </v-tab-item>
+        <!-- 
             <v-card elevation="2">
               <v-card-title>动态调整知识库</v-card-title>
               <v-divider></v-divider>
@@ -643,10 +645,10 @@
                 </v-btn>
               </v-card-actions>
             </v-card> -->
-          <v-tab-item v-for="plugin in plugins" :key="plugin.name">
-            <iframe frameborder="0" :src="plugin.url+'?time='+new Date().getTime()"
-              style="width: 100%; height: 100%"></iframe>
-          </v-tab-item>
+        <v-tab-item v-for="plugin in plugins" :key="plugin.name">
+          <iframe frameborder="0" :src="plugin.url+'?time='+new Date().getTime()"
+            style="width: 100%; height: 100%"></iframe>
+        </v-tab-item>
       </v-tabs-items>
       <v-tabs v-model="tab" :color="color" style="background: #fff">
         <v-tabs-slider :color="color"></v-tabs-slider>
@@ -974,9 +976,9 @@
           speak_manager(current_session.content, isloading = true);
         }
       }, addition_args);
-        if (app.tts_on) {
-          speak_manager(current_session.content);
-        }
+      if (app.tts_on) {
+        speak_manager(current_session.content);
+      }
       app.loading = false;
       save_history();
       if (is_abord) throw new MyException("已中断");
@@ -997,7 +999,7 @@
         tts_start_index = 0
       }
       if (text_to_speak.replace(/[，\n。！？：]/g, '').length == 0) return
-      console.log('[speak]',text_to_speak)
+      console.log('[speak]', text_to_speak)
       speak(text_to_speak)
     }
     // 覆盖 console.warn 函数以不执行任何操作

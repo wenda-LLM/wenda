@@ -10,6 +10,9 @@
 // @grant        none
 // ==/UserScript==
 if (typeof app.nodes == 'object') {
+    
+    app.plugins.push({ icon:'waves-arrow-right', url: "flow/index.html" ,name:'自动流'})
+    app.plugins.push({ icon:'waves-arrow-up', url: "flow/batch.html" ,name:'批量流' })
     app.nodes = app.nodes.concat([
         {
             name: '开始',
