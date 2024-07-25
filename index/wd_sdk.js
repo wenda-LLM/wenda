@@ -2,14 +2,19 @@
 load_models = async () => {
     let server_models = await fetch("/api/tags");
     server_models = await server_models.json();
-    app.server_models = window.server_models = server_models.models
+    server_models = server_models.models
+    app.server_models = window.server_models = server_models
     if (!localStorage["wenda_model"]) {
         if (server_models.find(i => i.name == 'qwen:32b'))
             set_model('qwen:32b')
         else
             set_model(window.server_models[0].name)
     } else {
-        set_model(localStorage["wenda_model"])
+        if (server_models.find(i => i.name == localStorage["wenda_model"]))
+            set_model(localStorage["wenda_model"])
+        else
+            set_model(window.server_models[0].name)
+
     }
 };
 set_model = name => {
