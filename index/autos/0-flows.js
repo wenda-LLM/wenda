@@ -68,32 +68,17 @@ if (typeof app.nodes == 'object') {
             desc: '和大语言模型对话',
             template: ``
         },
-        // {
-        //     name: 'LLM高级对话',
-        //     function: '{let para=JSON.parse("{{template}}");return [send(args[0],args[1])]}',
-        //     node: "chatbyllm",
-        //     icon: "wechat",
-        //     in: 2,
-        //     out: 1,
-        //     data: { "template": { "channel": 'channel_3', "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
-        //     desc: '和大语言模型对话，可以指定模型',
-        //     template: `
-        //   <div>
-        //     <div class="title-box"><i class="fab fa-telegram-plane"></i> Telegram bot</div>
-        //     <div class="box">
-        //       <p>调用大模型生成文本</p>
-        //       <p>请在两个输入端分别输入系统提示词和用户提示词</p>
-        //       <p>请选择大语言模型</p>
-        //       <select df-template-channel>
-        //         <option value="channel_1">chatGLM2</option>
-        //         <option value="channel_2">chatGLM3</option>
-        //         <option value="channel_3">Qwen2-0.5B</option>
-        //         <option value="channel_4">Qwen2-7B</option>
-        //       </select>
-        //     </div>
-        //   </div>
-        //   `
-        // },
+        {
+            name: '对话(autos)',
+            function: 'return [call_autos(args[0],({{template}}).userinput)]',
+            node: "chatbyllm",
+            icon: "wechat",
+            in: 1,
+            out: 1,
+            data: { "template": { "userinput": '', "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
+            desc: '调用autos和大语言模型对话',
+            template: `<div class="box">auto名称：<input df-template-userinput></input></div>`
+        },
         {
             name: '补全文段',
             function: "{let para=JSON.parse(`{{template}}`);return[send_prompt(args[0],para.userinput,()=>{})]}",
@@ -103,7 +88,7 @@ if (typeof app.nodes == 'object') {
             out: 1,
             data: { "template": { "userinput": "['\\n\\n','#']", "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
             desc: '根据输入内容补全全文段',
-            template: `<div class="box">请输入停止符：<textarea df-template-userinput></textarea></div>`
+            template: `<div class="box">请输入停止符：<input df-template-userinput></input></div>`
         },
         // 执行过程中，鉴别出非激活的分支，将非活分支flow[i].runned = true，那么该分支的后续分支如何保障其不运行呢？
         {
@@ -218,5 +203,13 @@ if (typeof app.nodes == 'object') {
             template: ``
         },
     ])
-
+    call_autos=async(s,auto_name)=>{
+     let   current_func = app.func_menu.find((i) => i.name == auto_name);
+      if (typeof current_func.question == "function") {
+        return await current_func.question(s);
+      } else {
+        
+         return await send(current_func.question + s);
+      }
+    }
 }

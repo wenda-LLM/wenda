@@ -108,7 +108,7 @@ func.push({
     name: "知识库",
     description: "通过知识库回答问题",
     question: async (Q) => {
-        answer_with_zsk(Q)
+        return await answer_with_zsk(Q)
     }
 })
 window.answer_with_fast_zsk = async (Q) => {

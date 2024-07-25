@@ -39,7 +39,8 @@
             @click="downloadBlob(document.title,read_flow(document.title))">
             保存到本地文件
           </v-btn>
-          <v-btn color="primary" style="margin-top: 1em;" dark @click="document.location.hash=get_flow_string();copy(decodeURI(document.location.href))">
+          <v-btn color="primary" style="margin-top: 1em;" dark
+            @click="document.location.hash=get_flow_string();copy(decodeURI(document.location.href))">
             到URL
           </v-btn>
           <v-btn color="blue lighten-1" style="margin-top: 1em;" dark @click="save_flow(prompt('请输入文件名'))">
@@ -687,36 +688,36 @@
             if (flow[i].inputs && (is_returned(flow[i].inputs)))
               continue
 
+            // flow[i].data.template.background = '#00FF00'
+            updateDebugInfo(flow[i].id, '该节点即将运行', 'rgba(0, 255, 0, 0.5)')
+            let input_debuginfo = `输入参数：<br>${isObjectHasProperties(flow[i].inputs) ? JSON.stringify(flow[i].inputs) : '无<br>'}`
+            // alert(await rtn1)
+            updateDebugInfo(flow[i].id, input_debuginfo, 'rgba(0, 0, 255, 0.5)')
+
+            // 获取当前节点的函数的字符串中{{template}}需要替换的内容
+            exestring = typeof flow[i].data.template === 'object' ? JSON.stringify(flow[i].data.template).replaceAll('\\', '\\\\') : ''
+            // 获取当前节点的函数的字符串中{{usercodes}}需要替换的内容，如果不是程序代码段，则替换为空字符串
+            codestr = (flow[i].data.template && typeof flow[i].data.template.codes === 'string') ? flow[i].data.template.codes : ''
+            // console.log('exestring:' + exestring)
+            const inputKeys = Object.keys(flow[i].inputs);
+            let inputParasStr = ''
+
+            // 如果存在输入端口，遍历每一个输入端口 端口序号存放在j中
+            for (j = 0; j < inputKeys.length; j++) {
+              // 获取一个键（也就是outputs中的属性名）
+              const OutputKey = inputKeys[j];
+              // 使用这个键依次获取对应的输出端口对象
+              // const OutputObject = flow[i].outputs[OutputKey];
+              inputParasStr += 'flow[i].inputs.' + OutputKey + ','
+            }
+
+            inputParasStr = ('(' + inputParasStr + ')').replace(',)', ')')
+
+            // console.log(inputParasStr)
+            let eval_str = `(async(...args)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)}})${inputParasStr}`
+
             try {
-              // flow[i].data.template.background = '#00FF00'
-              updateDebugInfo(flow[i].id, '该节点即将运行', 'rgba(0, 255, 0, 0.5)')
-              let input_debuginfo = `输入参数：<br>${isObjectHasProperties(flow[i].inputs) ? JSON.stringify(flow[i].inputs) : '无<br>'}`
-              // alert(await rtn1)
-              updateDebugInfo(flow[i].id, input_debuginfo, 'rgba(0, 0, 255, 0.5)')
-
-              // 获取当前节点的函数的字符串中{{template}}需要替换的内容
-              exestring = typeof flow[i].data.template === 'object' ? JSON.stringify(flow[i].data.template).replaceAll('\\', '\\\\') : ''
-              // 获取当前节点的函数的字符串中{{usercodes}}需要替换的内容，如果不是程序代码段，则替换为空字符串
-              codestr = (flow[i].data.template && typeof flow[i].data.template.codes === 'string') ? flow[i].data.template.codes : ''
-              // console.log('exestring:' + exestring)
-              const inputKeys = Object.keys(flow[i].inputs);
-              let inputParasStr = ''
-
-              // 如果存在输入端口，遍历每一个输入端口 端口序号存放在j中
-              for (j = 0; j < inputKeys.length; j++) {
-                // 获取一个键（也就是outputs中的属性名）
-                const OutputKey = inputKeys[j];
-                // 使用这个键依次获取对应的输出端口对象
-                // const OutputObject = flow[i].outputs[OutputKey];
-                inputParasStr += 'flow[i].inputs.' + OutputKey + ','
-              }
-
-              inputParasStr = ('(' + inputParasStr + ')').replace(',)', ')')
-
-              // console.log(inputParasStr)
-
-              let output = await eval(
-                `(async(...args)=>{${app.nodes.find(n => n.node == flow[i].class).function.replace("{{template}}", exestring).replace("{{usercodes}}", codestr)}})${inputParasStr}`)
+              let output = await eval(eval_str)
               let output_debuginfo = `输出参数：<br>${isObjectHasProperties(flow[i].outputs) ? JSON.stringify(flow[i].outputs) : '无<br>'}`
               updateDebugInfo(flow[i].id, output_debuginfo, 'rgba(0, 0, 255, 0.5)')
               const outputKeys = Object.keys(flow[i].outputs);
@@ -740,7 +741,7 @@
               updateDebugInfo(flow[i].id, '该节点已成功运行', 'rgba(0, 255, 0, 0.5)')
 
             } catch (error) {
-              console.error('该节点运行时捕获到异常:', error.message);
+              console.error('该节点运行时捕获到异常:',eval_str, error);
               updateDebugInfo(flow[i].id, '该节点运行时捕获到异常,错误信息:' + error.stack, 'rgba(255, 0, 0, 0.5)')
               if (error.message.includes('null')) {
                 updateDebugInfo(flow[i].id, '该节点所在的分支将不会运行...', 'rgba(0, 0, 0, 0.5);')
@@ -805,11 +806,11 @@ let  flow_test_data = JSON.parse(`
           flow[i].data.template.background && delete flow[i].data.template.background
         }
       }
-      s=JSON.stringify(flow)
-      let index=0
+      s = JSON.stringify(flow)
+      let index = 0
       for (let i in flow) {
-       s=s.replaceAll(i,'id-'+index)
-       index+=1
+        s = s.replaceAll(i, 'id-' + index)
+        index += 1
       }
       return s
     }
@@ -948,7 +949,7 @@ let  flow_test_data = JSON.parse(`
       server_auto = await fetch("../autos/autos");
       server_auto = (await server_auto.text()).split(/[\r\n]+/)
       console.log(server_auto)
-      for(let name of server_auto) {
+      for (let name of server_auto) {
         if (name == '') continue
         let plugin = {
           name: name,
@@ -981,7 +982,7 @@ let  flow_test_data = JSON.parse(`
           editor_import(read_flow_string(hash))
         } else {
           if (app.files.length > 0)
-            read_flow(app.files[0].name)
+            read_flow(app.files[app.files.length-1].name)
           else
             editor_import({ "1": { "id": 1, "name": "prompt", "data": { "template": "你好" }, "class": "prompt", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-ray-start\"></i> 初始 prompt</div>\n  <div class=\"box\">\n    \n<textarea df-template placeholder='输入初始 prompt'></textarea>\n  </div>\n</div>", "typenode": false, "inputs": {}, "outputs": { "output_1": { "connections": [{ "node": "5", "output": "input_1" }] } }, "pos_x": 89, "pos_y": 148 }, "5": { "id": 5, "name": "send", "data": {}, "class": "send", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-chat\"></i> 单轮对话</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "1", "input": "output_1" }] } }, "outputs": { "output_1": { "connections": [{ "node": "6", "output": "input_1" }, { "node": "7", "output": "input_1" }] } }, "pos_x": 364, "pos_y": 202 }, "6": { "id": 6, "name": "alert", "data": {}, "class": "alert", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-alert-circle\"></i> 报警</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "5", "input": "output_1" }] } }, "outputs": {}, "pos_x": 688, "pos_y": 153 }, "7": { "id": 7, "name": "console_log", "data": {}, "class": "console_log", "html": "\n<div>\n  <div class=\"title-box\"><i class=\"mdi mdi-printer-outline\"></i> 控制台打印</div>\n    \n</div>", "typenode": false, "inputs": { "input_1": { "connections": [{ "node": "5", "input": "output_1" }] } }, "outputs": {}, "pos_x": 697, "pos_y": 277 } })
         }
