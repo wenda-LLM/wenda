@@ -66,6 +66,13 @@ send_raw = async (prompt, prompt2, QA_history, onmessage = alert, args = {}) => 
         return result || '网络连接失败'
     }
 
+    if (res.status != 200) {
+        let error=await res.text()
+        
+        console.log(error)
+        onmessage('错误：'+error)
+        return '错误：'+error
+    }
     const decoder = new TextDecoder();
     const reader = res.body.getReader();
     const readChunk = async () => {
