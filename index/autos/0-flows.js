@@ -10,9 +10,9 @@
 // @grant        none
 // ==/UserScript==
 if (typeof app.nodes == 'object') {
-    
-    app.plugins.push({ icon:'waves-arrow-right', url: "flow/index.html" ,name:'自动流'})
-    app.plugins.push({ icon:'waves-arrow-up', url: "flow/batch.html" ,name:'批量流' })
+
+    app.plugins.push({ icon: 'waves-arrow-right', url: "flow/index.html", name: '自动流' })
+    app.plugins.push({ icon: 'waves-arrow-up', url: "flow/batch.html", name: '批量流' })
     app.nodes = app.nodes.concat([
         {
             name: '开始',
@@ -70,6 +70,17 @@ if (typeof app.nodes == 'object') {
             data: { "template": { "userinput": '输入提示词或其他文本', "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
             desc: '和大语言模型对话',
             template: ``
+        },
+        {
+            name: '对话(高级）',
+            function: 'return [ollama_chat(args[0],({{template}}))]',
+            node: "ollama_chat",
+            icon: "chat",
+            in: 1,
+            out: 1,
+            data: { "template": { "api": '/api/chat', "model": 'qwen:32b', "background": '#ffe8e8', "debug": '调试信息在运行后显示' } },
+            desc: '和大语言模型对话',
+            template: `<div class="box">api url:<input df-template-api></input>model:<input df-template-model></input></div>`
         },
         {
             name: '对话(autos)',
@@ -206,13 +217,57 @@ if (typeof app.nodes == 'object') {
             template: ``
         },
     ])
-    call_autos=async(s,auto_name)=>{
-     let   current_func = app.func_menu.find((i) => i.name == auto_name);
-      if (typeof current_func.question == "function") {
-        return await current_func.question(s);
-      } else {
-        
-         return await send(current_func.question + s);
-      }
+    call_autos = async (s, auto_name) => {
+        let current_func = app.func_menu.find((i) => i.name == auto_name);
+        if (typeof current_func.question == "function") {
+            return await current_func.question(s);
+        } else {
+
+            return await send(current_func.question + s);
+        }
+    }
+
+    ollama_chat = async (prompt, args) => {
+        let llm_server = args.api
+        let model = args.model
+        let res
+        res = await fetch(llm_server + "", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                max_tokens: app.max_length || 1000,
+                messages: [].concat([{ role: "user", content: prompt }]),
+                stream: false,
+                "model": model,
+                "names": chat_names,
+                "stop": ["User:", "\n\n", "Assistant:", "User:"],
+                "sampler_override": {
+                    "type": "Nucleus",
+                    "top_p": app.top_p || 0.5,
+                    "top_k": 128,
+                    "temperature": app.temperature || 1,
+                    "presence_penalty": 0.3,
+                    "frequency_penalty": 0.3, "penalty": 400, "penalty_decay": 0.99654026
+                }
+
+            }),
+        });
+        res = await res.json()
+        try {
+
+            return res.message.content
+        } catch (error) {
+
+            try {
+
+                return res.error
+
+            } catch (error) {
+                return JSON.stringify(res)
+            }
+        }
+
     }
 }
