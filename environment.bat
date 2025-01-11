@@ -23,10 +23,7 @@ echo 检测到RWKV-Runner集成环境
 set "PATH=%WINPYDIR%\;%WINPYDIR%\DLLs;%WINPYDIR%\Scripts;%PATH%;"
 set "PYTHON=%WINPYDIR%\python.exe "
 goto end
-) 
-IF EXIST python (
+)
 echo 未检测到集成环境，使用系统Python解释器
 set "PYTHON=python.exe "
-)ELSE (
-)
 :end
